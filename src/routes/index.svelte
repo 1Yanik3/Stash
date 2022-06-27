@@ -2,8 +2,7 @@
     import type { Group, Cluster, Tag, Medium } from 'src/types'
 
     import { page } from '$app/stores'
-
-    import { mdiArchive, mdiCog, mdiFolder, mdiImageAlbum, mdiTrashCan, mdiVideo } from '@mdi/js'
+    import { mdiArchive, mdiCog, mdiFileUpload, mdiFolder, mdiImageAlbum, mdiTrashCan, mdiVideo } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     import SidebarButton from "../components/SidebarButton.svelte"
@@ -11,18 +10,15 @@
     import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
     import ImageGrid from '../components/ImageGrid.svelte'
     import Toolbar from '../components/Toolbar.svelte'
+    import DropFile from '../components/DropFile.svelte'
     
+    //#region Clusters and Groups
+
     let clusters: Array<Cluster> = []
     let cluster: Cluster = { id: 0, name: "Loading..." }
 
-    $: console.log({cluster})
-
     let groups: Array<Group> = []
     let group: Group = { id: 0, name: "Loading...", children: [] }
-
-    $: console.log({group})
-
-    let tags: Array<Tag> = []
 
     ;(async () => {
         console.log("Updating clusters...")
@@ -30,6 +26,10 @@
         clusters = await res.json()
         cluster = clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || clusters[0]
     })()
+
+    //#endregion
+
+    //#region Groups
 
     const updateGroups = async () => {
         console.log("Updating groups...")
@@ -61,6 +61,12 @@
     }
     $: cluster && updateGroups()
 
+    //#endregion
+
+    //#region Tags
+    
+    let tags: Array<Tag> = []
+
     const updateTags = async () => {
         console.log("Updating tags...")
         const res = await fetch(`http://localhost:8080/${cluster.id}/tags`)
@@ -71,7 +77,40 @@
     const clearTagSelection = () => tags = tags.map(t => { t.active = false; return t })
     $: if($page.url) clearTagSelection()
 
+    //#endregion
+
     let visibleMedium: Medium
+
+    //#region Uploader
+
+    let fileOver = false
+    let uploadProgress: null | { done: number, from: number } = null
+
+    const onDrop = async (files: File[]) => {
+
+        for (const i in files) {
+
+            uploadProgress = {
+                done: +i,
+                from: files.length
+            }
+
+            const data = new FormData()
+            data.append('file', files[i])
+            data.append('user', 'hubot')
+
+            await fetch(`http://localhost:8080/${cluster.id}/${group.id}/media`, {
+                method: 'POST',
+                body: data
+            }).catch(console.error)
+
+        }
+    
+        fileOver = false
+        uploadProgress = null
+    }
+
+    //#endregion
 
 </script>
 
@@ -123,10 +162,33 @@
     </section>
 
     <section style={visibleMedium ? "" : "grid-column: 2 / span 2;"}>
-        
-        {#key [group]}
-            <ImageGrid {cluster} {group} bind:visibleMedium />
-        {/key}
+
+        <DropFile
+            onDrop={onDrop}
+            onEnter={() => fileOver = true}
+            onLeave={() => fileOver = false}
+        >
+
+            {#if fileOver || uploadProgress != null}
+                
+                    <div class="dropZone">
+                        <Icon path={mdiFileUpload} size={3}/>
+                        {#if uploadProgress}
+                            <span>uploading {uploadProgress?.done} out of {uploadProgress?.from}</span>
+                        {:else}
+                            <span>Drop to upload</span>
+                        {/if}
+                    </div>
+
+            {:else}
+
+                {#key [group]}
+                    <ImageGrid {cluster} {group} bind:visibleMedium />
+                {/key}
+
+            {/if}
+            
+        </DropFile>
 
     </section>
     
@@ -160,6 +222,20 @@
             }
             &:nth-child(2) {
                 padding: 1em;
+
+                .dropZone {
+                    box-shadow: inset 0.7px 0.7px 0.7px rgba($color: #fff, $alpha: 0.15);
+                    background: #444;
+                    height: 100%;
+                    width: 100%;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+
+                    span { margin-top: 0.5em }
+                }
             }
 
             // Grid

@@ -3,19 +3,18 @@ package main
 import (
 	"bytes"
 	"errors"
-	"image"
 	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/chai2010/webp"
-	"github.com/disintegration/imaging"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 type Cluster struct {
@@ -246,16 +245,11 @@ func main() {
 
 		src, _ := file.Open()
 		defer src.Close()
-
-		var allowedTypes = []string{
-			"image/png",
-			"image/jpg",
-		}
 		media_type, _ := mimetype.DetectReader(src)
 		log.Println(media_type.String())
 
-		if !isInArray(media_type.String(), allowedTypes) {
-			c.Status(422)
+		if !strings.HasPrefix(media_type.String(), "image") && !strings.HasPrefix(media_type.String(), "video") {
+			c.Status(415)
 			return
 		}
 
@@ -283,7 +277,7 @@ func main() {
 		cluster := c.Param("cluster")
 		id := c.Param("id")
 
-		var thumbnailPath = "thumbnails/" + cluster + "/" + id + "." + ".webp"
+		var thumbnailPath = "thumbnails/" + cluster + "/" + id + ".webp"
 
 		var original []byte
 		var err error
@@ -292,29 +286,43 @@ func main() {
 
 			log.Printf("Thumbnail not found, creating new one: %v", err)
 
-			media, err := imaging.Open("media/" + cluster + "/" + id)
+			buf := bytes.NewBuffer(nil)
+
+			err := ffmpeg.
+				Input("media/"+cluster+"/"+id).
+				Filter("scale", ffmpeg.Args{"w=650:h=650:force_original_aspect_ratio=increase"}).
+				Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}).
+				WithOutput(buf, os.Stdout).Run()
+
 			if err != nil {
-				log.Printf("failed to open image: %v", err)
-			}
-
-			// the smallest side is always 1000 pixels
-			var dstImage *image.NRGBA
-			if media.Bounds().Dx() > media.Bounds().Dy() {
-				// if the image is wider than tall
-				dstImage = imaging.Resize(media, 0, 650, imaging.Lanczos)
-			} else {
-				// if the image is taller than wide
-				dstImage = imaging.Resize(media, 650, 0, imaging.Lanczos)
-			}
-
-			var buf bytes.Buffer
-			if err = webp.Encode(&buf, dstImage, &webp.Options{Quality: 20}); err != nil {
-				log.Printf("failed to encode image: %v", err)
+				c.String(422, "Failed to encode")
+				log.Print(err)
+				return
 			}
 
 			original = buf.Bytes()
 
-			ioutil.WriteFile(thumbnailPath, original, 0740)
+			// media, err := imaging.Open("media/" + cluster + "/" + id)
+			// if err != nil {
+			// 	log.Printf("failed to open image: %v", err)
+			// }
+
+			// // the smallest side is always 1000 pixels
+			// var dstImage *image.NRGBA
+			// if media.Bounds().Dx() > media.Bounds().Dy() {
+			// 	// if the image is wider than tall
+			// 	dstImage = imaging.Resize(media, 0, 650, imaging.Lanczos)
+			// } else {
+			// 	// if the image is taller than wide
+			// 	dstImage = imaging.Resize(media, 650, 0, imaging.Lanczos)
+			// }
+
+			// var buf bytes.Buffer
+			// if err = webp.Encode(&buf, dstImage, &webp.Options{Quality: 20}); err != nil {
+			// 	log.Printf("failed to encode image: %v", err)
+			// }
+
+			// original = buf.Bytes()
 
 		}
 
