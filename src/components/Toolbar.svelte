@@ -1,10 +1,12 @@
 <script lang="ts">
-    import type { Medium } from 'src/types';
+    import type { Cluster, Medium } from 'src/types';
 
     import Icon from 'mdi-svelte'
-    import { mdiClose, mdiDownload, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiPencil } from '@mdi/js'
+    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiPencil } from '@mdi/js'
 
     export let visibleMedium: Medium | null
+    export let isFullscreen: boolean 
+    export let cluster: Cluster
 </script>
 
 <main>
@@ -13,10 +15,7 @@
         <div on:click={() => visibleMedium = null}>
             <Icon path={mdiClose}/>
         </div>
-        <div>
-            <Icon path={mdiDownload} size={0.8}/>
-        </div>
-        <div>
+        <div on:click={() => isFullscreen = !isFullscreen}>
             <Icon path={mdiFullscreen}/>
         </div>
 
@@ -26,7 +25,7 @@
 
     <div>
 
-        <div>
+        <div on:click={() => window.open(`http://localhost:8080/${cluster.id}/media/${visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>
@@ -35,6 +34,7 @@
         <div>
             <Icon path={mdiPencil} size={0.8}/>
         </div>
+
     </div>
 
 </main>

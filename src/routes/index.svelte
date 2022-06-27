@@ -2,7 +2,7 @@
     import type { Group, Cluster, Tag, Medium } from 'src/types'
 
     import { page } from '$app/stores'
-    import { mdiArchive, mdiCog, mdiFileUpload, mdiFolder, mdiImageAlbum, mdiTrashCan, mdiVideo } from '@mdi/js'
+    import { mdiArchive, mdiCog, mdiFileUpload, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     import SidebarButton from "../components/SidebarButton.svelte"
@@ -22,9 +22,13 @@
 
     ;(async () => {
         console.log("Updating clusters...")
-        const res = await fetch(`http://localhost:8080/clusters`)
-        clusters = await res.json()
-        cluster = clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || clusters[0]
+        try {
+            const res = await fetch(`http://localhost:8080/clusters`)
+            clusters = await res.json()
+            cluster = clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || clusters[0]
+        } catch (err) {
+            console.error("failed to update clusters", err)
+        }
     })()
 
     //#endregion
@@ -33,31 +37,37 @@
 
     const updateGroups = async () => {
         console.log("Updating groups...")
-        const res = await fetch(`http://localhost:8080/${cluster.id}/groups`)
-        groups = (await res.json()).map((c: Group) => {
+        try {
 
-            if (c.id == -1) c.icon = mdiArchive
-            if (c.id == -2) c.icon = mdiTrashCan
+            const res = await fetch(`http://localhost:8080/${cluster.id}/groups`)
+            groups = (await res.json()).map((c: Group) => {
 
-            if (c.id == 1) c.icon = mdiImageAlbum
-            if (c.id == 2) c.icon = mdiVideo
+                if (c.id == -1) c.icon = mdiArchive
+                if (c.id == -2) c.icon = mdiTrashCan
 
-            return c
+                if (c.icon == "images") c.icon = mdiImage
+                if (c.icon == "videos") c.icon = mdiVideo
 
-        })
+                return c
 
-        const flattentedGroups: Array<Group> = []
-        const flatten = (input: Group) => {
+            })
 
-            if (input.children.length)
-                input.children.forEach(g => flatten(g))
+            const flattentedGroups: Array<Group> = []
+            const flatten = (input: Group) => {
 
-            flattentedGroups.push(input)
+                if (input.children.length)
+                    input.children.forEach(g => flatten(g))
 
+                flattentedGroups.push(input)
+
+            }
+            groups.forEach(g => flatten(g))
+
+            group = flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || groups[0]
+
+        } catch (err) {
+            console.error("failed to update groups", err)
         }
-        groups.forEach(g => flatten(g))
-
-        group = flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || groups[0]
     }
     $: cluster && updateGroups()
 
@@ -69,8 +79,14 @@
 
     const updateTags = async () => {
         console.log("Updating tags...")
-        const res = await fetch(`http://localhost:8080/${cluster.id}/tags`)
-        tags = (await res.json()).map((t: any) => { t.active = false; return t })
+        try {
+
+            const res = await fetch(`http://localhost:8080/${cluster.id}/tags`)
+            tags = (await res.json()).map((t: any) => { t.active = false; return t })
+            
+        } catch (err) {
+            console.error("failed to update tags", err)
+        }
     }
     $: cluster && updateTags()
 
@@ -79,7 +95,10 @@
 
     //#endregion
 
-    let visibleMedium: Medium
+    let visibleMedium: Medium | null = null
+    let isFullscreen: boolean
+    $: if (!visibleMedium) isFullscreen = false
+    let traverse: boolean = false
 
     //#region Uploader
 
@@ -112,11 +131,31 @@
 
     //#endregion
 
+    //#region Shortcuts
+
+    let mediaIndex = 0
+    let mediaCount = 0
+
+    const keyDownEventListener = (e: KeyboardEvent) => {
+
+        if (visibleMedium && e.key == "ArrowLeft")
+            if (mediaIndex > 0)
+                mediaIndex -= 1
+        if (visibleMedium && e.key == "ArrowRight")
+            if (mediaIndex < mediaCount)
+                mediaIndex += 1
+
+    }
+
+    //#endregion    
+
 </script>
+
+<svelte:window on:keydown={keyDownEventListener}/>
 
 <main>
     
-    <section>
+    <section style={isFullscreen ? 'display: none' : ''}>
 
         <SidebarSection justify>
             <select bind:value={cluster}>
@@ -125,7 +164,18 @@
                 {/each}
             </select>
 
-            <Icon path={mdiCog} size={0.8}/>
+            <div style="display: flex; align-items: center">
+                
+                <div on:click={() => traverse = !traverse} style="cursor: pointer; margin-right: 0.25em">
+                    {#if traverse}
+                        <Icon path={mdiHook} size={0.8}/>
+                    {:else}
+                        <Icon path={mdiHookOff} size={0.8}/>
+                    {/if}
+                </div>
+
+                <Icon path={mdiCog} size={0.8}/>
+            </div>
         </SidebarSection>
 
         <!-- Statics -->
@@ -161,7 +211,7 @@
 
     </section>
 
-    <section style={visibleMedium ? "" : "grid-column: 2 / span 2;"}>
+    <section style={`${visibleMedium ? "" : "grid-column: 2 / span 2;"} ${isFullscreen ? 'display: none' : ''}`}>
 
         <DropFile
             onDrop={onDrop}
@@ -182,8 +232,8 @@
 
             {:else}
 
-                {#key [group]}
-                    <ImageGrid {cluster} {group} bind:visibleMedium />
+                {#key  [ group, traverse ]}
+                    <ImageGrid {cluster} {group} bind:visibleMedium {traverse} bind:mediaIndex bind:mediaCount />
                 {/key}
 
             {/if}
@@ -193,13 +243,24 @@
     </section>
     
     {#if visibleMedium}
-        <section>
+        <section style={isFullscreen ? 'grid-column: 1 / span 3' : ''}>
 
-            <Toolbar bind:visibleMedium/>
+            <Toolbar bind:visibleMedium bind:isFullscreen {cluster} />
             
-                <div class="image">
-                    <img src={`http://localhost:8080/${cluster.id}/media/${visibleMedium.id}`} alt={visibleMedium.name}>
-                </div>
+            <div class="media">
+                {#if visibleMedium.type.startsWith("image")}
+                    <img src={`http://localhost:8080/${cluster.id}/media/${visibleMedium.id}`} alt={visibleMedium.name}/>
+                {:else if visibleMedium.type.startsWith("video")}
+                    <video
+                        src={`http://localhost:8080/${cluster.id}/media/${visibleMedium.id}`}
+                        alt={visibleMedium.name}
+                        controls
+                        autoplay
+                    ><track kind="captions"/></video>
+                {:else}
+                    <span>{visibleMedium.name}</span>
+                {/if}
+            </div>
 
         </section>
     {/if}
@@ -252,7 +313,7 @@
                 display: grid;
                 grid-template-rows: auto 1fr;
 
-                .image {
+                .media {
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -262,7 +323,7 @@
 
                     background: #202020;
 
-                    img {
+                    img, video {
                         max-width: 100%;
                         // TODO: Make more elegant
                         max-height: calc(100vh - 40.25px);

@@ -22,5 +22,5 @@ export interface Medium {
     name:   string
     width:  number
     height: number
-    date:   string
+    date:   number
 }

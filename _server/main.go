@@ -9,12 +9,12 @@ import (
 	"strconv"
 	"strings"
 
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-
+	"github.com/Jeffail/gabs"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Cluster struct {
@@ -33,6 +33,7 @@ type Group struct {
 	Cluster int
 	Name    string
 	Parent  int
+	Icon    string
 }
 
 type Media struct {
@@ -74,8 +75,22 @@ func getCluster(c *gin.Context, db *gorm.DB) (int, error) {
 
 	return clusterId, nil
 }
+func getClusterString(c *gin.Context, db *gorm.DB) (string, error) {
+	clusterId, _ := strconv.Atoi(c.Param("cluster"))
+
+	var count int64
+	db.Model(&Cluster{}).Where(&Cluster{Id: clusterId}).Count(&count)
+
+	if count < 1 {
+		c.String(404, "Cluster not found")
+		return "-1", errors.New("Cluster not found")
+	}
+
+	return strconv.Itoa(clusterId), nil
+}
+
 func getGroup(c *gin.Context, db *gorm.DB) (int, error) {
-	clusterId, _ := strconv.Atoi(c.Param("clusterId"))
+	clusterId, _ := getCluster(c, db)
 	groupId, _ := strconv.Atoi(c.Param("group"))
 
 	var count int64
@@ -164,6 +179,7 @@ func main() {
 		type Group_json struct {
 			Id       int          `json:"id"`
 			Name     string       `json:"name"`
+			Icon     string       `json:"icon"`
 			Children []Group_json `json:"children"`
 		}
 
@@ -175,10 +191,12 @@ func main() {
 			var result struct {
 				Name     string
 				Children string
+				Icon     string
 			}
-			db.Raw("SELECT Name, (select group_concat(id) FROM groups as g WHERE g.parent == groups.id) as Children FROM groups WHERE id = ?", Id).Scan(&result)
+			db.Raw("SELECT Name, Icon, (select group_concat(id) FROM groups as g WHERE g.parent == groups.id) as Children FROM groups WHERE id = ?", Id).Scan(&result)
 
 			group.Name = result.Name
+			group.Icon = result.Icon
 			group.Children = []Group_json{}
 
 			group.Children = []Group_json{}
@@ -216,13 +234,14 @@ func main() {
 	})
 
 	r.GET("/:cluster/:group/media", func(c *gin.Context) {
-		group, err := getGroup(c, db)
-		if err != nil {
-			return
-		}
+		group, _ := strconv.Atoi(c.Param("group"))
 
 		var media []Media
-		db.Model(&Media{}).Where(&Media{Group: group}).Scan(&media)
+		if group != -1 {
+			db.Model(&Media{}).Where(&Media{Group: group}).Scan(&media)
+		} else {
+			db.Model(&Media{}).Where("`group` IS NULL").Scan(&media)
+		}
 
 		c.JSON(200, media)
 	})
@@ -262,19 +281,25 @@ func main() {
 	})
 
 	r.GET("/:cluster/media/:id", func(c *gin.Context) {
-		cluster := c.Param("cluster")
+		cluster, err := getClusterString(c, db)
+		if err != nil {
+			return
+		}
 		id := c.Param("id")
 
 		content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
 		if err != nil {
-			log.Fatalf("failed to open image: %v", err)
+			log.Printf("failed to open image: %v", err)
 		}
 
 		c.Data(200, mimetype.Detect(content).String(), content)
 	})
 
 	r.GET("/:cluster/media/:id/thumbnail", func(c *gin.Context) {
-		cluster := c.Param("cluster")
+		cluster, clusterError := getClusterString(c, db)
+		if clusterError != nil {
+			return
+		}
 		id := c.Param("id")
 
 		var thumbnailPath = "thumbnails/" + cluster + "/" + id + ".webp"
@@ -302,31 +327,33 @@ func main() {
 
 			original = buf.Bytes()
 
-			// media, err := imaging.Open("media/" + cluster + "/" + id)
-			// if err != nil {
-			// 	log.Printf("failed to open image: %v", err)
-			// }
-
-			// // the smallest side is always 1000 pixels
-			// var dstImage *image.NRGBA
-			// if media.Bounds().Dx() > media.Bounds().Dy() {
-			// 	// if the image is wider than tall
-			// 	dstImage = imaging.Resize(media, 0, 650, imaging.Lanczos)
-			// } else {
-			// 	// if the image is taller than wide
-			// 	dstImage = imaging.Resize(media, 650, 0, imaging.Lanczos)
-			// }
-
-			// var buf bytes.Buffer
-			// if err = webp.Encode(&buf, dstImage, &webp.Options{Quality: 20}); err != nil {
-			// 	log.Printf("failed to encode image: %v", err)
-			// }
-
-			// original = buf.Bytes()
-
 		}
 
 		c.Data(200, "images/webp", original)
+	})
+
+	r.GET("/:cluster/media/:id/info", func(c *gin.Context) {
+		cluster, err := getClusterString(c, db)
+		if err != nil {
+			return
+		}
+		id := c.Param("id")
+
+		information, err := ffmpeg.Probe("media/" + cluster + "/" + id)
+		if err != nil {
+			c.String(422, "Failed to get media information")
+			log.Print(err)
+			return
+		}
+
+		jsonParsed, err := gabs.ParseJSON([]byte(information))
+		if err != nil {
+			c.String(422, "Failed to parse media information")
+			log.Print(err)
+			return
+		}
+
+		c.JSON(200, jsonParsed.Data())
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080

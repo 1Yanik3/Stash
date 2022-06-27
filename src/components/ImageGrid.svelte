@@ -7,13 +7,35 @@
     export let group: Group
     // export let tags: Array<Tag>
     export let visibleMedium: Medium
+    export let traverse: boolean
 
     let media: Array<Medium> = []
-    ;(async () => {
+
+    const setVisibleMedium = (i: number) => visibleMedium = media[i]
+    export let mediaIndex: number
+    export let mediaCount: number
+    $: setVisibleMedium(mediaIndex);
+
+    (async () => {
         console.log("Updating media...")
-        const res = await fetch(`http://localhost:8080/${cluster.id}/${group.id}/media`)
-        media = await res.json() || []
-        console.log(`http://localhost:8080/${cluster.id}/${group.id}/media`, media)
+        try {
+            let output: Array<Medium> = []
+
+            const addToOutput = async (g: Group) => {
+                const res = await fetch(`http://localhost:8080/${cluster.id}/${g.id}/media`)
+                output = [ ...output, ...await res.json() ]
+
+                if (traverse)
+                    for (const i in g.children)
+                        await addToOutput(g.children[i])
+            }
+            await addToOutput(group)
+            
+            media = output.sort((a: Medium, b: Medium) => b.date - a.date)
+            mediaCount = media.length - 1
+        } catch (err) {
+            console.error("failed to update media", err)
+        }
     })()
 
 </script>
@@ -29,8 +51,8 @@
     isCroppedSize={true}
 >
 
-    {#each media as medium}
-        <div on:click={() => visibleMedium = medium}>
+    {#each media as medium, i}
+        <div on:click={() => { visibleMedium = medium; mediaIndex = i }}>
             <img
                 src={`http://localhost:8080/${cluster.id}/media/${medium.id}/thumbnail`}
                 alt={medium.name}
