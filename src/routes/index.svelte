@@ -71,6 +71,17 @@
     }
     $: cluster && updateGroups()
 
+    const createGroup = () => {
+        fetch(`http://localhost:8080/${cluster.id}/groups`,{
+            method: "POST",
+            body: JSON.stringify({
+                Cluster: cluster.id,
+                Name: window.prompt("Enter a name for the new collection"),
+                Parent: group.id != -1 ? group.id : ""
+            })
+        }).then(() => updateGroups())
+    }
+
     //#endregion
 
     //#region Tags
@@ -189,10 +200,10 @@
         </SidebarSection>
 
         <!-- Folders -->
-        <SidebarSection title="Folders">
+        <SidebarSection title="Folders" action={createGroup}>
             
             {#each groups.filter(({ id }) => id > 0) as target}
-                <SidebarHierarchyEntry {target} bind:group />
+                <SidebarHierarchyEntry {target} bind:group bind:cluster={cluster} />
             {/each}
             
         </SidebarSection>
@@ -294,6 +305,8 @@
                     justify-content: center;
                     align-items: center;
                     flex-direction: column;
+
+                    pointer-events: none;
 
                     span { margin-top: 0.5em }
                 }

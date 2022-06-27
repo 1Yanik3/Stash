@@ -6,7 +6,7 @@
     export let cluster: Cluster
     export let group: Group
     // export let tags: Array<Tag>
-    export let visibleMedium: Medium
+    export let visibleMedium: Medium | null
     export let traverse: boolean
 
     let media: Array<Medium> = []
@@ -30,7 +30,7 @@
                         await addToOutput(g.children[i])
             }
             await addToOutput(group)
-            
+
             media = output.sort((a: Medium, b: Medium) => b.date - a.date)
             mediaCount = media.length - 1
         } catch (err) {

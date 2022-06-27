@@ -1,15 +1,19 @@
 <script lang="ts">
-    import type { Group } from 'src/types'
+    import type { Cluster, Group } from 'src/types'
 
     import SidebarButton from '../components/SidebarButton.svelte'
     import { mdiFolder } from '@mdi/js'
 
+    export let cluster: Cluster
     export let group: Group
     export let target: Group
     export let indent: number = 0
 </script>
 
-<SidebarButton {target} bind:group icon={target.icon || mdiFolder} {indent}>
+<SidebarButton
+    bind:group {target} {indent}
+    icon={target.icon || mdiFolder}
+>
     {target.name}
 </SidebarButton>
 

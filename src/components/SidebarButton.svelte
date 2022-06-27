@@ -13,6 +13,8 @@
     export let active: boolean | null = null
     export let count: number | null = null
     export let indent: number = 0
+
+    export let callback: Function | null = null
 </script>
 
 <a href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}

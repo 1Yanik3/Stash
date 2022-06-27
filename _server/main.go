@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"log"
@@ -231,6 +232,31 @@ func main() {
 		}
 
 		c.JSON(200, output)
+	})
+
+	r.POST("/:cluster/groups", func(c *gin.Context) {
+		cluster, _ := getCluster(c, db)
+
+		if c.Request.Body == nil {
+			c.String(400, "Please send a request body")
+			return
+		}
+
+		var g struct {
+			Name   string
+			Parent int
+		}
+
+		err := json.NewDecoder(c.Request.Body).Decode(&g)
+		if err != nil {
+			c.String(400, "Could not decode body")
+			return
+		}
+
+		db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: g.Parent})
+
+		c.Status(200)
+
 	})
 
 	r.GET("/:cluster/:group/media", func(c *gin.Context) {
