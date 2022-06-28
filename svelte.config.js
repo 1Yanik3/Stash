@@ -3,9 +3,7 @@ import adapter from '@sveltejs/adapter-static'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  optimizeDeps: {
-    exclude: ['@egjs/svelte-grid', '@egjs/grid'],
-  },
+  
 
   kit: {
     adapter: adapter(),
@@ -14,7 +12,7 @@ const config = {
       default: true
     },
 		paths: {
-			base: process.env.NODE_ENV ? '' : '/stash'
+			base: process.env.NODE_ENV != "production" ? '' : '/stash'
 		},
 
     vite: {
@@ -25,6 +23,9 @@ const config = {
           },
         },
       },
+      ssr: {
+        noExternal: ['@egjs/grid']
+      }
     },
   },
 
