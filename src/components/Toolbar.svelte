@@ -50,7 +50,7 @@
 
     <section>
 
-        <div on:click={() => window.open(`https://stash.hera.lan/${cluster.id}/media/${visibleMedium?.id}`, "_blank")}>
+        <div on:click={() => window.open(`https://stash.hera.lan/${cluster.id}/file/${visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>

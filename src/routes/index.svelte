@@ -283,7 +283,7 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: 200px minmax(200px, 600px) minmax(350px, 1fr);
+        grid-template-columns: 220px minmax(200px, 600px) minmax(350px, 1fr);
 
         height: 100%;
         width: 100%;
