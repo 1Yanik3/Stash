@@ -2,9 +2,9 @@ pages:
   image: node:latest
   needs: []
   before_script:
-    - export NODE_ENV=production
-  script:
     - npm install
+  script:
+    - export NODE_ENV=production
     - npm run build
   after_script:
     - mv build public
