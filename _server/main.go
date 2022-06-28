@@ -15,6 +15,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
+
+	// TODO: replace
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -518,5 +520,5 @@ func main() {
 		c.JSON(200, jsonParsed.Data())
 	})
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":80")
 }
