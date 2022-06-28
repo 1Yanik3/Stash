@@ -409,7 +409,7 @@ func main() {
 	clusters := []Cluster{}
 	db.Model(&Cluster{}).Scan(&clusters)
 	for _, i := range clusters {
-		r.Static(fmt.Sprintf("/%d/media", i.Id), fmt.Sprintf("media/%d", i.Id))
+		r.Static(fmt.Sprintf("/%d/file", i.Id), fmt.Sprintf("media/%d", i.Id))
 	}
 
 	// TODO

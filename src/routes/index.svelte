@@ -262,10 +262,10 @@
             
             <div class="media">
                 {#if visibleMedium.type.startsWith("image")}
-                    <img src={`https://stash.hera.lan/${cluster.id}/media/${visibleMedium.id}`} alt={visibleMedium.name}/>
+                    <img src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`} alt={visibleMedium.name}/>
                 {:else if visibleMedium.type.startsWith("video")}
                     <video
-                        src={`https://stash.hera.lan/${cluster.id}/media/${visibleMedium.id}`}
+                        src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`}
                         alt={visibleMedium.name}
                         controls
                         autoplay
