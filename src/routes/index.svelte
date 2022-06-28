@@ -169,9 +169,9 @@
     <section style={isFullscreen ? 'display: none' : ''}>
 
         <SidebarSection justify>
-            <select bind:value={cluster}>
+            <select value={cluster}>
                 {#each clusters as cluster}
-                    <option value={cluster}>{cluster.name}</option>
+                    <option value={cluster}  on:select={() => window.location.href = `?c=${cluster.id}`}>{cluster.name}</option>
                 {/each}
             </select>
 

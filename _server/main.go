@@ -391,20 +391,26 @@ func main() {
 		c.Status(200)
 	})
 
-	r.GET("/:cluster/media/:id", func(c *gin.Context) {
-		cluster, err := getClusterString(c, db)
-		if err != nil {
-			return
-		}
-		id := c.Param("id")
+	// r.GET("/:cluster/media/:id", func(c *gin.Context) {
+	// 	cluster, err := getClusterString(c, db)
+	// 	if err != nil {
+	// 		return
+	// 	}
+	// 	id := c.Param("id")
 
-		content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
-		if err != nil {
-			log.Printf("failed to open image: %v", err)
-		}
+	// 	content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
+	// 	if err != nil {
+	// 		log.Printf("failed to open media: %v", err)
+	// 	}
 
-		c.Data(200, mimetype.Detect(content).String(), content)
-	})
+	// 	c.Data(200, mimetype.Detect(content).String(), content)
+	// })
+
+	clusters := []Cluster{}
+	db.Model(&Cluster{}).Scan(&clusters)
+	for _, i := range clusters {
+		r.Static(fmt.Sprintf("/%d/media", i.Id), fmt.Sprintf("media/%d", i.Id))
+	}
 
 	// TODO
 	r.DELETE("/:cluster/media/:id", func(c *gin.Context) {
