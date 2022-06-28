@@ -19,23 +19,25 @@
 
     (async () => {
         console.log("Updating media...")
-        try {
-            let output: Array<Medium> = []
+        if (cluster.id && group.id) {
+            try {
+                let output: Array<Medium> = []
 
-            const addToOutput = async (g: Group) => {
-                const res = await fetch(`http://localhost:8080/${cluster.id}/${g.id}/media`)
-                output = [ ...output, ...await res.json() ]
+                const addToOutput = async (g: Group) => {
+                    const res = await fetch(`https://stash.hera.lan/${cluster.id}/${g.id}/media`)
+                    output = [ ...output, ...await res.json() ]
 
-                if (traverse)
-                    for (const i in g.children)
-                        await addToOutput(g.children[i])
+                    if (traverse)
+                        for (const i in g.children)
+                            await addToOutput(g.children[i])
+                }
+                await addToOutput(group)
+
+                media = output.sort((a: Medium, b: Medium) => b.date - a.date)
+                mediaCount = media.length - 1
+            } catch (err) {
+                console.error("failed to update media", err)
             }
-            await addToOutput(group)
-
-            media = output.sort((a: Medium, b: Medium) => b.date - a.date)
-            mediaCount = media.length - 1
-        } catch (err) {
-            console.error("failed to update media", err)
         }
     })()
 
@@ -69,7 +71,7 @@
         {#if includesActiveTags(medium, tags)}
             <div on:click={() => { visibleMedium = medium; mediaIndex = i }}>
                 <img
-                    src={`http://localhost:8080/${cluster.id}/media/${medium.id}/thumbnail`}
+                    src={`https://stash.hera.lan/${cluster.id}/media/${medium.id}/thumbnail`}
                     alt={medium.name}
                 >
             </div>

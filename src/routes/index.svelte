@@ -23,7 +23,7 @@
     ;(async () => {
         console.log("Updating clusters...")
         try {
-            const res = await fetch(`http://localhost:8080/clusters`)
+            const res = await fetch(`https://stash.hera.lan/clusters`)
             clusters = await res.json()
             cluster = clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || clusters[0]
         } catch (err) {
@@ -39,7 +39,7 @@
         console.log("Updating groups...")
         try {
 
-            const res = await fetch(`http://localhost:8080/${cluster.id}/groups`)
+            const res = await fetch(`https://stash.hera.lan/${cluster.id}/groups`)
             groups = (await res.json()).map((c: Group) => {
 
                 if (c.id == -1) c.icon = mdiArchive
@@ -69,10 +69,10 @@
             console.error("failed to update groups", err)
         }
     }
-    $: cluster && updateGroups()
+    $: cluster && cluster.id && updateGroups()
 
     const createGroup = () => {
-        fetch(`http://localhost:8080/${cluster.id}/groups`,{
+        fetch(`https://stash.hera.lan/${cluster.id}/groups`,{
             method: "POST",
             body: JSON.stringify({
                 Cluster: cluster.id,
@@ -92,14 +92,14 @@
         console.log("Updating tags...")
         try {
 
-            const res = await fetch(`http://localhost:8080/${cluster.id}/${group.id}/tags`)
+            const res = await fetch(`https://stash.hera.lan/${cluster.id}/${group.id}/tags`)
             tags = (await res.json()).map((t: any) => { t.active = false; return t })
             
         } catch (err) {
-            console.error("failed to update tags", err)
+            console.warn("failed to update tags", err)
         }
     }
-    $: cluster.id && group && updateTags()
+    $: cluster && group && cluster.id && group.id && updateTags()
 
     const clearTagSelection = () => tags = tags.map(t => { t.active = false; return t })
     $: if($page.url) clearTagSelection()
@@ -129,7 +129,7 @@
             data.append('file', files[i])
             data.append('user', 'hubot')
 
-            await fetch(`http://localhost:8080/${cluster.id}/${group.id}/media`, {
+            await fetch(`https://stash.hera.lan/${cluster.id}/${group.id}/media`, {
                 method: 'POST',
                 body: data
             }).catch(console.error)
@@ -169,9 +169,9 @@
     <section style={isFullscreen ? 'display: none' : ''}>
 
         <SidebarSection justify>
-            <select bind:value={cluster}>
+            <select value={cluster}>
                 {#each clusters as cluster}
-                    <option value={cluster}>{cluster.name}</option>
+                    <option value={cluster}  on:select={() => window.location.href = `?c=${cluster.id}`}>{cluster.name}</option>
                 {/each}
             </select>
 
@@ -262,10 +262,10 @@
             
             <div class="media">
                 {#if visibleMedium.type.startsWith("image")}
-                    <img src={`http://localhost:8080/${cluster.id}/media/${visibleMedium.id}`} alt={visibleMedium.name}/>
+                    <img src={`https://stash.hera.lan/${cluster.id}/media/${visibleMedium.id}`} alt={visibleMedium.name}/>
                 {:else if visibleMedium.type.startsWith("video")}
                     <video
-                        src={`http://localhost:8080/${cluster.id}/media/${visibleMedium.id}`}
+                        src={`https://stash.hera.lan/${cluster.id}/media/${visibleMedium.id}`}
                         alt={visibleMedium.name}
                         controls
                         autoplay
@@ -283,7 +283,7 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: 200px minmax(200px, 450px) minmax(350px, 1fr);
+        grid-template-columns: 200px minmax(200px, 600px) minmax(350px, 1fr);
 
         height: 100%;
         width: 100%;

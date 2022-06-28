@@ -15,6 +15,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
+
+	// TODO: replace
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -195,7 +197,7 @@ func main() {
 			Count int    `json:"count"`
 		}
 
-		var tags []Tag_json
+		tags := []Tag_json{}
 		db.Raw(`
 			SELECT tags.Id, tags.Name, COUNT(*) as Count
 			FROM tags
@@ -341,7 +343,7 @@ func main() {
 			FROM media
 		` + whereClause).Scan(&media)
 
-		var result []Media_json
+		result := []Media_json{}
 		for _, i := range media {
 			result = append(result, Media_json{
 				Id:   i.Id,
@@ -389,20 +391,26 @@ func main() {
 		c.Status(200)
 	})
 
-	r.GET("/:cluster/media/:id", func(c *gin.Context) {
-		cluster, err := getClusterString(c, db)
-		if err != nil {
-			return
-		}
-		id := c.Param("id")
+	// r.GET("/:cluster/media/:id", func(c *gin.Context) {
+	// 	cluster, err := getClusterString(c, db)
+	// 	if err != nil {
+	// 		return
+	// 	}
+	// 	id := c.Param("id")
 
-		content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
-		if err != nil {
-			log.Printf("failed to open image: %v", err)
-		}
+	// 	content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
+	// 	if err != nil {
+	// 		log.Printf("failed to open media: %v", err)
+	// 	}
 
-		c.Data(200, mimetype.Detect(content).String(), content)
-	})
+	// 	c.Data(200, mimetype.Detect(content).String(), content)
+	// })
+
+	clusters := []Cluster{}
+	db.Model(&Cluster{}).Scan(&clusters)
+	for _, i := range clusters {
+		r.Static(fmt.Sprintf("/%d/media", i.Id), fmt.Sprintf("media/%d", i.Id))
+	}
 
 	// TODO
 	r.DELETE("/:cluster/media/:id", func(c *gin.Context) {
@@ -518,5 +526,5 @@ func main() {
 		c.JSON(200, jsonParsed.Data())
 	})
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":80")
 }
