@@ -197,7 +197,7 @@ func main() {
 			Count int    `json:"count"`
 		}
 
-		var tags []Tag_json
+		tags := []Tag_json{}
 		db.Raw(`
 			SELECT tags.Id, tags.Name, COUNT(*) as Count
 			FROM tags
@@ -343,7 +343,7 @@ func main() {
 			FROM media
 		` + whereClause).Scan(&media)
 
-		var result []Media_json
+		result := []Media_json{}
 		for _, i := range media {
 			result = append(result, Media_json{
 				Id:   i.Id,

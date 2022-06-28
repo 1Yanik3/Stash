@@ -12,7 +12,7 @@
         const value: string = (e.target as any).value
         if (e.key == "Enter" && value) {
 
-            fetch(`http://localhost:8080/${cluster.id}/media/${visibleMedium?.id}/tag`, {
+            fetch(`https://stash.hera.lan/${cluster.id}/media/${visibleMedium?.id}/tag`, {
                 method: "PUT",
                 body: JSON.stringify({
                     Name: value
@@ -50,7 +50,7 @@
 
     <section>
 
-        <div on:click={() => window.open(`http://localhost:8080/${cluster.id}/media/${visibleMedium?.id}`, "_blank")}>
+        <div on:click={() => window.open(`https://stash.hera.lan/${cluster.id}/media/${visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>

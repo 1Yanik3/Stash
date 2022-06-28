@@ -1,5 +1,15 @@
+pages:
+  needs: []
+  script:
+    - npm install
+    - npm run build
+  after_script:
+    - mv build public
+  artifacts:
+    paths:
+      - public
+
 compile:
-  stage: build
   image: golang:latest
   script:
     - cd _server
