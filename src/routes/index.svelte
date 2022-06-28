@@ -339,9 +339,9 @@
                     background: #202020;
 
                     img, video {
-                        max-width: 100%;
-                        // TODO: Make more elegant
-                        max-height: calc(100vh - 40.25px);
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
                     }
                 }
 
