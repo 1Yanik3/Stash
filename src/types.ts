@@ -20,7 +20,6 @@ export interface Medium {
     id:     number
     type:   "video" | "image"
     name:   string
-    width:  number
-    height: number
     date:   number
+    tags:   Array<string>
 }

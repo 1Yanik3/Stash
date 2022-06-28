@@ -8,6 +8,7 @@
     // export let tags: Array<Tag>
     export let visibleMedium: Medium | null
     export let traverse: boolean
+    export let tags: Array<Tag>
 
     let media: Array<Medium> = []
 
@@ -38,6 +39,19 @@
         }
     })()
 
+    const includesActiveTags = (medium: Medium, tags: Array<Tag>) => {
+        const activeTags = (tags || []).filter(t => t.active)
+
+        if (!activeTags.length) return true
+
+        for (const i in activeTags)
+            for (const j in medium.tags)
+                if (activeTags[i].name.toLowerCase() == medium.tags[j].toLowerCase())
+                    return true
+
+        return false
+    }
+
 </script>
 
 {#key !visibleMedium}
@@ -52,12 +66,14 @@
 >
 
     {#each media as medium, i}
-        <div on:click={() => { visibleMedium = medium; mediaIndex = i }}>
-            <img
-                src={`http://localhost:8080/${cluster.id}/media/${medium.id}/thumbnail`}
-                alt={medium.name}
-            >
-        </div>
+        {#if includesActiveTags(medium, tags)}
+            <div on:click={() => { visibleMedium = medium; mediaIndex = i }}>
+                <img
+                    src={`http://localhost:8080/${cluster.id}/media/${medium.id}/thumbnail`}
+                    alt={medium.name}
+                >
+            </div>
+        {/if}
     {/each}
 
 </JustifiedGrid>

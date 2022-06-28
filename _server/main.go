@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -44,6 +45,11 @@ type Media struct {
 	Date    int64  `gorm:"autoCreateTime"`
 	Cluster int
 	Group   int
+}
+
+type TagMediaLink struct {
+	TagId   int
+	MediaId int
 }
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -123,6 +129,18 @@ func convertStringArrayToIntArray(input []string) []int {
 	return output
 }
 
+func filterStringArray(input []string) []string {
+	var output = []string{}
+
+	for _, i := range input {
+		if i != "" {
+			output = append(output, i)
+		}
+	}
+
+	return output
+}
+
 func isInArray(query string, array []string) bool {
 	var result bool = false
 	for _, x := range array {
@@ -147,6 +165,7 @@ func main() {
 	db.AutoMigrate(&Tag{})
 	db.AutoMigrate(&Group{})
 	db.AutoMigrate(&Media{})
+	db.AutoMigrate(&TagMediaLink{})
 
 	r.GET("/clusters", func(c *gin.Context) {
 
@@ -156,8 +175,9 @@ func main() {
 		c.JSON(200, clusters)
 	})
 
+	// TODO: make group based (as some groups might not include the same amount of tags)
 	r.GET("/:cluster/tags", func(c *gin.Context) {
-		cluster, err := getCluster(c, db)
+		cluster, err := getClusterString(c, db)
 		if err != nil {
 			return
 		}
@@ -169,8 +189,9 @@ func main() {
 			Count int    `json:"count"`
 		}
 
-		var tags []Tag
-		db.Model(&Tag{}).Where(&Tag{Cluster: cluster}).Scan(&tags)
+		var tags []Tag_json
+		db.Raw("SELECT Id, Name, (SELECT COUNT(*) FROM `tag_media_links` WHERE tag_media_links.tag_id IS tags.id) as Count FROM tags WHERE tags.cluster = ?", cluster).Scan(&tags)
+		// db.Model(&Tag{}).Where(&Tag{Cluster: cluster}).Scan(&tags)
 
 		c.JSON(200, tags)
 	})
@@ -226,6 +247,11 @@ func main() {
 			Name:     "Trash",
 			Children: []Group_json{},
 		})
+		output = append(output, Group_json{
+			Id:       -3,
+			Name:     "Everything",
+			Children: []Group_json{},
+		})
 
 		for _, i := range primaryGroups {
 			output = append(output, newGroup(i.Id))
@@ -260,16 +286,60 @@ func main() {
 	})
 
 	r.GET("/:cluster/:group/media", func(c *gin.Context) {
+		cluster, _ := strconv.Atoi(c.Param("cluster"))
 		group, _ := strconv.Atoi(c.Param("group"))
 
-		var media []Media
-		if group != -1 {
-			db.Model(&Media{}).Where(&Media{Group: group}).Scan(&media)
-		} else {
-			db.Model(&Media{}).Where("`group` IS NULL").Scan(&media)
+		// TODO: optimize
+		type Media_result struct {
+			Id   int
+			Type string
+			Name string
+			Date int64
+			Tags string
 		}
 
-		c.JSON(200, media)
+		type Media_json struct {
+			Id   int      `json:"id"`
+			Type string   `json:"type"`
+			Name string   `json:"name"`
+			Date int64    `json:"date"`
+			Tags []string `json:"tags"`
+		}
+
+		whereClause := fmt.Sprintf("AND `group` = %d", group)
+		if group == -1 {
+			whereClause = "AND `group` IS NULL"
+		}
+		if group == -3 {
+			whereClause = ""
+		}
+		whereClause = fmt.Sprintf("WHERE `cluster` = %d ", cluster) + whereClause
+
+		var media []Media_result
+		db.Raw(`
+			SELECT media.Id, media.Type, media.Name, Date,
+			IFNULL((
+				SELECT group_concat(tags.name)
+				FROM tags
+				INNER JOIN tag_media_links
+				ON tags.id = tag_id
+				WHERE media_id = media.id
+			), '') as Tags
+			FROM media
+		` + whereClause).Scan(&media)
+
+		var result []Media_json
+		for _, i := range media {
+			result = append(result, Media_json{
+				Id:   i.Id,
+				Type: i.Type,
+				Name: i.Name,
+				Date: i.Date,
+				Tags: filterStringArray(strings.Split(i.Tags, ",")),
+			})
+		}
+
+		c.JSON(200, result)
 	})
 
 	r.POST("/:cluster/:group/media", func(c *gin.Context) {
@@ -321,6 +391,57 @@ func main() {
 		c.Data(200, mimetype.Detect(content).String(), content)
 	})
 
+	// TODO
+	r.DELETE("/:cluster/media/:id", func(c *gin.Context) {
+		// if is already in deleted group
+		// => delete permanently
+
+		// if is not already in deleted group
+		// => move to deleted group
+	})
+
+	// TODO
+	r.PUT("/:cluster/media/:id/tag", func(c *gin.Context) {
+		cluster, clusterErr := getCluster(c, db)
+		if clusterErr != nil {
+			return
+		}
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		if c.Request.Body == nil {
+			c.String(400, "Please send a request body")
+			return
+		}
+
+		var g struct {
+			Name string
+		}
+
+		err := json.NewDecoder(c.Request.Body).Decode(&g)
+		if err != nil {
+			c.String(400, "Could not decode body")
+			return
+		}
+
+		var tag Tag
+		db.Find(&Tag{}).Where(&Tag{Name: g.Name, Cluster: cluster}).Find(&tag)
+
+		// tag does not exist yet
+		if tag.Id == 0 {
+			tag = Tag{Name: g.Name, Cluster: cluster}
+			db.Create(&tag)
+		}
+
+		// link
+		db.Create(&TagMediaLink{TagId: tag.Id, MediaId: id})
+
+	})
+
+	// TODO
+	r.DELETE("/:cluster/media/:id/tag/:tag", func(c *gin.Context) {
+
+	})
+
 	r.GET("/:cluster/media/:id/thumbnail", func(c *gin.Context) {
 		cluster, clusterError := getClusterString(c, db)
 		if clusterError != nil {
@@ -352,6 +473,8 @@ func main() {
 			}
 
 			original = buf.Bytes()
+
+			ioutil.WriteFile(thumbnailPath, original, 0750)
 
 		}
 

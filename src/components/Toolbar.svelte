@@ -2,15 +2,34 @@
     import type { Cluster, Medium } from 'src/types';
 
     import Icon from 'mdi-svelte'
-    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiPencil } from '@mdi/js'
+    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js'
 
     export let visibleMedium: Medium | null
     export let isFullscreen: boolean 
     export let cluster: Cluster
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+        const value: string = (e.target as any).value
+        if (e.key == "Enter" && value) {
+
+            fetch(`http://localhost:8080/${cluster.id}/media/${visibleMedium?.id}/tag`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    Name: value
+                })
+            })
+            .then(() => {
+                visibleMedium?.tags.push(value)
+                visibleMedium = visibleMedium
+            })
+            .catch(console.error)
+
+        }
+    }
 </script>
 
-<main>
-    <div>
+<main style="min-width: calc(100% - 4em)">
+    <section>
 
         <div on:click={() => visibleMedium = null}>
             <Icon path={mdiClose}/>
@@ -19,11 +38,17 @@
             <Icon path={mdiFullscreen}/>
         </div>
 
+    </section>
+
+    <!-- <span>{visibleMedium?.name}</span> -->
+    <div style="overflow: scroll">
+        {#each visibleMedium?.tags || [] as tag}
+            <span class="tag">{tag}</span>
+        {/each}
+        <input type="text" on:keydown={handleKeyDown}>
     </div>
 
-    <span>{visibleMedium?.name}</span>
-
-    <div>
+    <section>
 
         <div on:click={() => window.open(`http://localhost:8080/${cluster.id}/media/${visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
@@ -32,10 +57,10 @@
             <Icon path={mdiInformationOutline} size={0.8}/>
         </div>
         <div>
-            <Icon path={mdiPencil} size={0.8}/>
+            <Icon path={mdiTrashCanOutline} size={0.8}/>
         </div>
 
-    </div>
+    </section>
 
 </main>
 
@@ -50,8 +75,34 @@
 
         & > div {
             display: flex;
-            align-items: center;
+            .tag {
+                background: rgb(104, 104, 1);
+                padding: 0.15em 0.4em;
+                margin: 0.15em;
+                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+                border-radius: 3px;
 
+                margin-right: 0.25em;
+
+                cursor: pointer;
+            }
+            input {
+                margin-left: 0.25em;
+                width: 2em;
+
+                transition: width 200ms;
+
+                &:focus {
+                    width: 7em;
+                }
+            }
+        }
+
+        section {
+
+            display: flex;
+            align-items: center;
+            
             div {
                 height: 30px;
                 width: 30px;
@@ -62,6 +113,7 @@
 
                 cursor: pointer;
             }
+
         }
     }
 </style>

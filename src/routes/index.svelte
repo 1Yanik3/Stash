@@ -2,7 +2,7 @@
     import type { Group, Cluster, Tag, Medium } from 'src/types'
 
     import { page } from '$app/stores'
-    import { mdiArchive, mdiCog, mdiFileUpload, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
+    import { mdiArchive, mdiBookshelf, mdiFileUpload, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     import SidebarButton from "../components/SidebarButton.svelte"
@@ -99,7 +99,7 @@
             console.error("failed to update tags", err)
         }
     }
-    $: cluster && updateTags()
+    $: cluster.id && updateTags()
 
     const clearTagSelection = () => tags = tags.map(t => { t.active = false; return t })
     $: if($page.url) clearTagSelection()
@@ -176,8 +176,8 @@
             </select>
 
             <div style="display: flex; align-items: center">
-                
-                <div on:click={() => traverse = !traverse} style="cursor: pointer; margin-right: 0.25em">
+
+                <div on:click={() => traverse = !traverse} style="cursor: pointer; margin-right: 0.35em">
                     {#if traverse}
                         <Icon path={mdiHook} size={0.8}/>
                     {:else}
@@ -185,12 +185,14 @@
                     {/if}
                 </div>
 
-                <Icon path={mdiCog} size={0.8}/>
             </div>
         </SidebarSection>
 
         <!-- Statics -->
         <SidebarSection>
+            <SidebarButton target={groups[2]} bind:group icon={mdiBookshelf}>
+                All
+            </SidebarButton>
             <SidebarButton target={groups[0]} bind:group icon={mdiArchive}>
                 Unsorted
             </SidebarButton>
@@ -244,7 +246,7 @@
             {:else}
 
                 {#key  [ group, traverse ]}
-                    <ImageGrid {cluster} {group} bind:visibleMedium {traverse} bind:mediaIndex bind:mediaCount />
+                    <ImageGrid {cluster} {group} bind:visibleMedium {traverse} bind:mediaIndex bind:mediaCount {tags} />
                 {/key}
 
             {/if}
