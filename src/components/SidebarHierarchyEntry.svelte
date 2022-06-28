@@ -4,7 +4,6 @@
     import SidebarButton from '../components/SidebarButton.svelte'
     import { mdiFolder } from '@mdi/js'
 
-    export let cluster: Cluster
     export let group: Group
     export let target: Group
     export let indent: number = 0
@@ -18,7 +17,7 @@
 </SidebarButton>
 
 {#if target.children}
-    {#each target.children as child}
+    {#each target.children.sort((a, b) => a.name.localeCompare(b.name)) as child}
         <svelte:self target={child} bind:group indent={indent + 1}/>
     {/each}
 {/if}

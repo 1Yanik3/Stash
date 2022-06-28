@@ -110,6 +110,10 @@ func getGroup(c *gin.Context, db *gorm.DB) (int, error) {
 
 	return groupId, nil
 }
+func getGroupString(c *gin.Context, db *gorm.DB) (string, error) {
+	groupId, err := getGroup(c, db)
+	return strconv.Itoa(groupId), err
+}
 
 func convertStringArrayToIntArray(input []string) []int {
 	var output = []int{}
@@ -176,9 +180,11 @@ func main() {
 	})
 
 	// TODO: make group based (as some groups might not include the same amount of tags)
-	r.GET("/:cluster/tags", func(c *gin.Context) {
-		cluster, err := getClusterString(c, db)
-		if err != nil {
+	r.GET("/:cluster/:group/tags", func(c *gin.Context) {
+		cluster, clusterErr := getClusterString(c, db)
+		group, groupErr := getGroupString(c, db)
+
+		if clusterErr != nil || groupErr != nil {
 			return
 		}
 
@@ -190,8 +196,16 @@ func main() {
 		}
 
 		var tags []Tag_json
-		db.Raw("SELECT Id, Name, (SELECT COUNT(*) FROM `tag_media_links` WHERE tag_media_links.tag_id IS tags.id) as Count FROM tags WHERE tags.cluster = ?", cluster).Scan(&tags)
-		// db.Model(&Tag{}).Where(&Tag{Cluster: cluster}).Scan(&tags)
+		db.Raw(`
+			SELECT tags.Id, tags.Name, COUNT(*) as Count
+			FROM tags
+			LEFT JOIN tag_media_links
+			ON tag_media_links.tag_id == tags.id
+			LEFT JOIN media
+			ON media.id == tag_media_links.media_id
+			WHERE tags.cluster = ? AND media.'group' = ?
+			GROUP BY tags.Id`,
+			cluster, group).Scan(&tags)
 
 		c.JSON(200, tags)
 	})
@@ -215,11 +229,10 @@ func main() {
 				Children string
 				Icon     string
 			}
-			db.Raw("SELECT Name, Icon, (select group_concat(id) FROM groups as g WHERE g.parent == groups.id) as Children FROM groups WHERE id = ?", Id).Scan(&result)
+			db.Raw("SELECT Name, Icon, (select group_concat(id) FROM groups as g WHERE g.parent == groups.id) as Children FROM groups WHERE id = ? ORDER BY Name ASC", Id).Scan(&result)
 
 			group.Name = result.Name
 			group.Icon = result.Icon
-			group.Children = []Group_json{}
 
 			group.Children = []Group_json{}
 			for _, i := range convertStringArrayToIntArray(strings.Split(result.Children, ",")) {

@@ -92,14 +92,14 @@
         console.log("Updating tags...")
         try {
 
-            const res = await fetch(`http://localhost:8080/${cluster.id}/tags`)
+            const res = await fetch(`http://localhost:8080/${cluster.id}/${group.id}/tags`)
             tags = (await res.json()).map((t: any) => { t.active = false; return t })
             
         } catch (err) {
             console.error("failed to update tags", err)
         }
     }
-    $: cluster.id && updateTags()
+    $: cluster.id && group && updateTags()
 
     const clearTagSelection = () => tags = tags.map(t => { t.active = false; return t })
     $: if($page.url) clearTagSelection()
@@ -205,7 +205,7 @@
         <SidebarSection title="Folders" action={createGroup}>
             
             {#each groups.filter(({ id }) => id > 0) as target}
-                <SidebarHierarchyEntry {target} bind:group bind:cluster={cluster} />
+                <SidebarHierarchyEntry {target} bind:group/>
             {/each}
             
         </SidebarSection>
