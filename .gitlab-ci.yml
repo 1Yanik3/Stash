@@ -1,6 +1,8 @@
 pages:
   image: node:latest
   needs: []
+  before_script:
+    - export NODE_ENV=production
   script:
     - npm install
     - npm run build
