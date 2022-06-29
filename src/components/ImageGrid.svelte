@@ -5,10 +5,11 @@
 
     export let cluster: Cluster
     export let group: Group
-    // export let tags: Array<Tag>
+    export let tags: Array<Tag>
+
     export let visibleMedium: Medium | null
     export let traverse: boolean
-    export let tags: Array<Tag>
+    export let activeSortingMethod: { icon: string, method: ( a: Medium, b: Medium ) => number }
 
     let media: Array<Medium> = []
 
@@ -33,7 +34,7 @@
                 }
                 await addToOutput(group)
 
-                media = output.sort((a: Medium, b: Medium) => b.date - a.date)
+                media = output.sort(activeSortingMethod.method)
                 mediaCount = media.length - 1
             } catch (err) {
                 console.error("failed to update media", err)

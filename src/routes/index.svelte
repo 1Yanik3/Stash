@@ -2,7 +2,9 @@
     import type { Group, Cluster, Tag, Medium } from 'src/types'
 
     import { page } from '$app/stores'
-    import { mdiArchive, mdiBookshelf, mdiFileUpload, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
+    import { onMount } from 'svelte'
+
+    import { mdiArchive, mdiBookshelf, mdiFileUpload, mdiHook, mdiHookOff, mdiImage, mdiSort, mdiSortAlphabeticalAscending, mdiSortAlphabeticalDescending, mdiSortCalendarAscending, mdiSortCalendarDescending, mdiTrashCan, mdiVideo } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     import SidebarButton from "../components/SidebarButton.svelte"
@@ -110,6 +112,9 @@
     let isFullscreen: boolean
     $: if (!visibleMedium) isFullscreen = false
     let traverse: boolean = false
+    onMount(() => {
+        traverse = localStorage.getItem('traverse') == "true"
+    })
 
     //#region Uploader
 
@@ -164,7 +169,36 @@
 
     }
 
-    //#endregion    
+    //#endregion   
+    
+    
+    //#region Sorting
+
+    const sortingMethods = [
+        {
+            icon: mdiSortAlphabeticalAscending,
+            method: (a: Medium, b: Medium) => a.name.localeCompare(b.name)
+        },
+        {
+            icon: mdiSortAlphabeticalDescending,
+            method: (a: Medium, b: Medium) => b.name.localeCompare(a.name)
+        },
+        {
+            icon: mdiSortCalendarAscending,
+            method: (a: Medium, b: Medium) => a.date - b.date
+        },
+        {
+            icon: mdiSortCalendarDescending,
+            method: (a: Medium, b: Medium) => b.date - a.date
+        },
+        {
+            icon: mdiSort,
+            method: (a: Medium, b: Medium) => 0.5 - Math.random()
+        }
+    ]
+    let activeSortingMethod = sortingMethods[3]
+
+    //#endregion
 
 </script>
 
@@ -183,7 +217,22 @@
 
             <div style="display: flex; align-items: center">
 
-                <div on:click={() => traverse = !traverse} style="cursor: pointer; margin-right: 0.35em">
+                <div
+                    on:click={() =>
+                        activeSortingMethod = sortingMethods[(sortingMethods.indexOf(activeSortingMethod) + 1) % sortingMethods.length]
+                    } 
+                    on:contextmenu|preventDefault={() =>
+                        activeSortingMethod = activeSortingMethod
+                    }
+                    style="cursor: pointer; margin-right: 0.35em"
+                >
+                    <Icon path={activeSortingMethod.icon} size={0.8}/>
+                </div>
+
+                <div on:click={() => {
+                    traverse = !traverse
+                    localStorage.setItem('traverse', traverse.toString())
+                }} style="cursor: pointer; margin-right: 0.35em">
                     {#if traverse}
                         <Icon path={mdiHook} size={0.8}/>
                     {:else}
@@ -251,8 +300,8 @@
 
             {:else}
 
-                {#key  [ group, traverse ]}
-                    <ImageGrid {cluster} {group} bind:visibleMedium {traverse} bind:mediaIndex bind:mediaCount {tags} />
+                {#key  [ group, traverse, activeSortingMethod ]}
+                    <ImageGrid {cluster} {group} bind:visibleMedium {traverse} bind:mediaIndex bind:mediaCount {tags} {activeSortingMethod} />
                 {/key}
 
             {/if}
