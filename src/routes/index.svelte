@@ -129,10 +129,16 @@
             data.append('file', files[i])
             data.append('user', 'hubot')
 
-            await fetch(`https://stash.hera.lan/${cluster.id}/${group.id}/media`, {
+            const request = fetch(`https://stash.hera.lan/${cluster.id}/${group.id}/media`, {
                 method: 'POST',
                 body: data
-            }).catch(console.error)
+            })
+
+            request.catch(console.error)
+
+            console.log(request)
+
+            await request
 
         }
     
