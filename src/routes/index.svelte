@@ -53,7 +53,7 @@
 
                 return c
 
-            })
+            }).sort((a: Group, b: Group) => a.name.localeCompare(b.name))
 
             const flattentedGroups: Array<Group> = []
             const flatten = (input: Group) => {
