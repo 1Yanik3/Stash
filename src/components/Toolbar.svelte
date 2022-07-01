@@ -1,26 +1,26 @@
 <script lang="ts">
-    import type { Cluster, Medium } from 'src/types';
+    import type { Cluster, Medium } from 'src/types'
+
+    import { cluster, visibleMedium } from '../stores'
 
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js'
 
-    export let visibleMedium: Medium | null
     export let isFullscreen: boolean 
-    export let cluster: Cluster
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
         if (e.key == "Enter" && value) {
 
-            fetch(`https://stash.hera.lan/${cluster.id}/media/${visibleMedium?.id}/tag`, {
+            fetch(`https://stash.hera.lan/${$cluster.id}/media/${$visibleMedium?.id}/tag`, {
                 method: "PUT",
                 body: JSON.stringify({
                     Name: value
                 })
             })
             .then(() => {
-                visibleMedium?.tags.push(value)
-                visibleMedium = visibleMedium
+                $visibleMedium?.tags.push(value)
+                // visibleMedium.set(visibleMedium)
             })
             .catch(console.error)
 
@@ -31,7 +31,7 @@
 <main style="min-width: calc(100% - 4em)">
     <section>
 
-        <div on:click={() => visibleMedium = null}>
+        <div on:click={() => visibleMedium.set(null)}>
             <Icon path={mdiClose}/>
         </div>
         <div on:click={() => isFullscreen = !isFullscreen}>
@@ -42,7 +42,7 @@
 
     <!-- <span>{visibleMedium?.name}</span> -->
     <div style="overflow: scroll">
-        {#each visibleMedium?.tags || [] as tag}
+        {#each $visibleMedium?.tags || [] as tag}
             <span class="tag">{tag}</span>
         {/each}
         <input type="text" on:keydown={handleKeyDown}>
@@ -50,7 +50,7 @@
 
     <section>
 
-        <div on:click={() => window.open(`https://stash.hera.lan/${cluster.id}/file/${visibleMedium?.id}`, "_blank")}>
+        <div on:click={() => window.open(`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>

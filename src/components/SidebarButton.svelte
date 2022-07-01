@@ -1,5 +1,7 @@
 <script lang="ts">
     import type { Cluster, Group } from 'src/types'
+    
+    import { group } from '../stores'
 
     import { mdiPound } from '@mdi/js'
     import Icon from 'mdi-svelte'
@@ -7,7 +9,6 @@
     import { page } from '$app/stores'
 
     export let cluster: Cluster | null = null
-    export let group: Group | null = null
     export let target: Group | null = null
 
     export let icon: string = mdiPound
@@ -45,9 +46,10 @@
 {id}
 href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class={active || (group && target && group.id == target.id) ? "active" : ""}
+class={active || (group && target && $group.id == target.id) ? "active" : ""}
 
 on:click={() => {
+    if (!target) return
 
     if (active != null) {
         // is a tag button
@@ -55,7 +57,8 @@ on:click={() => {
     }
     else {
         // is a group button
-        group = target
+        if ($group != target)
+            group.set(target)
     }
 
 }}
@@ -76,7 +79,6 @@ on:dblclick|stopPropagation={() => {
         method: "PATCH"
     })
     target.collapsed = !!target.children.length && !target.collapsed
-    target = target
 
 }}
 >

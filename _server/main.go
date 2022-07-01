@@ -516,7 +516,13 @@ func main() {
 		original, err = ioutil.ReadFile(thumbnailPath)
 		if err != nil {
 
-			log.Printf("Thumbnail not found, creating new one: %v", err)
+			log.Printf("Thumbnail not found: %v", err)
+
+			// if not exist
+			if _, err := os.Stat("media/" + cluster + "/" + id); errors.Is(err, os.ErrNotExist) {
+				c.Status(404)
+				return
+			}
 
 			buf := bytes.NewBuffer(nil)
 

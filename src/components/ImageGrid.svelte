@@ -1,40 +1,35 @@
 <script lang="ts">
-    import type { Cluster, Group, Tag, Medium } from "src/types";
+    import type { Group, Tag, Medium } from "src/types"
 
     import { JustifiedGrid } from "@egjs/svelte-grid"
 
-    export let cluster: Cluster
-    export let group: Group
-    export let tags: Array<Tag>
-
-    export let visibleMedium: Medium | null = null
-    export let traverse: boolean
-    export let activeSortingMethod: { icon: string, method: ( a: Medium, b: Medium ) => number }
+    import { cluster, group, tags, visibleMedium, traverse, activeSortingMethod } from "../stores"
 
     let media: Array<Medium> = []
 
-    const setVisibleMedium = (i: number) => visibleMedium = media[i]
+    const setVisibleMedium = (i: number) => visibleMedium.set(media[i])
     export let mediaIndex: number
     export let mediaCount: number
+
     $: setVisibleMedium(mediaIndex);
 
     (async () => {
         console.log("Updating media...")
-        if (cluster.id && group.id) {
+        if ($cluster.id && $group.id) {
             try {
                 let output: Array<Medium> = []
 
                 const addToOutput = async (g: Group) => {
-                    const res = await fetch(`https://stash.hera.lan/${cluster.id}/${g.id}/media`)
+                    const res = await fetch(`https://stash.hera.lan/${$cluster.id}/${g.id}/media`)
                     output = [ ...output, ...await res.json() ]
 
-                    if (traverse)
+                    if ($traverse)
                         for (const i in g.children)
                             await addToOutput(g.children[i])
                 }
-                await addToOutput(group)
+                await addToOutput($group)
 
-                media = output.sort(activeSortingMethod.method)
+                media = output.sort($activeSortingMethod.method)
                 mediaCount = media.length - 1
             } catch (err) {
                 console.error("failed to update media", err)
@@ -69,10 +64,10 @@
 >
 
     {#each media as medium, i}
-        {#if includesActiveTags(medium, tags)}
-            <div on:click={() => { visibleMedium = medium; mediaIndex = i }}>
+        {#if includesActiveTags(medium, $tags)}
+            <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
                 <img
-                    src={`https://stash.hera.lan/${cluster.id}/media/${medium.id}/thumbnail`}
+                    src={`https://stash.hera.lan/${$cluster.id}/media/${medium.id}/thumbnail`}
                     alt={medium.name}
                 >
             </div>
