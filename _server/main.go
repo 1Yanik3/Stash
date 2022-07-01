@@ -526,6 +526,7 @@ func main() {
 
 			buf := bytes.NewBuffer(nil)
 
+			// TODO: Offset from start of video of 3 seconds
 			err := ffmpeg.
 				Input("media/"+cluster+"/"+id).
 				Filter("scale", ffmpeg.Args{"w=650:h=650:force_original_aspect_ratio=increase"}).

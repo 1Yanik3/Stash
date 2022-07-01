@@ -19,8 +19,11 @@
                 })
             })
             .then(() => {
-                $visibleMedium?.tags.push(value)
-                // visibleMedium.set(visibleMedium)
+                const tmp = $visibleMedium
+                tmp?.tags.push(value)
+                visibleMedium.set(tmp)
+
+                // TODO: increase count of tags in sidebar
             })
             .catch(console.error)
 
