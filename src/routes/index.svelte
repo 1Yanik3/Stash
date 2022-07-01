@@ -345,6 +345,9 @@
             &:nth-child(1),  &:nth-child(3) {
                 background: hsl(0, 0%, 16%);
             }
+            &:nth-child(1) {
+                overflow-y: auto;
+            }
             &:nth-child(2) {
                 padding: 1em;
 
