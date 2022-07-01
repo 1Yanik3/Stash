@@ -108,10 +108,8 @@
 
     <SidebarSection title="Tags">
 
-        {#each $tags as { name, count, active }}
-            <SidebarButton bind:active {count}>
-                {name}
-            </SidebarButton>
+        {#each $tags as tag}
+            <SidebarButton {tag}/>
         {/each}
 
     </SidebarSection>
