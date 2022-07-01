@@ -211,7 +211,10 @@
     <section style={isFullscreen ? 'display: none' : ''}>
 
         <SidebarSection justify>
-            <select bind:value={cluster} on:change={() => window.location.replace(`?c=${cluster.id}`)}>
+            <select
+                bind:value={cluster}
+                on:change={() => window.history.pushState(`?c=${cluster.id}`, document.title)}
+            >
                 {#each clusters as cluster}
                     <option value={cluster}>{cluster.name}</option>
                 {/each}
