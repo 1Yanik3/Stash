@@ -1,10 +1,8 @@
 <script lang="ts">
     import type { Cluster, Medium } from "src/types";
 
-
     export let visibleMedium: Medium
     export let cluster: Cluster
-
 
     let isZoomedIn = false
 </script>

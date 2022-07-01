@@ -32,11 +32,12 @@ type Tag struct {
 }
 
 type Group struct {
-	Id      int `gorm:"primaryKey;"`
-	Cluster int
-	Name    string
-	Parent  int
-	Icon    string
+	Id        int `gorm:"primaryKey;"`
+	Cluster   int
+	Name      string
+	Parent    int `gorm:"default:null"`
+	Icon      string
+	Collapsed bool
 }
 
 type Media struct {
@@ -219,10 +220,11 @@ func main() {
 		}
 
 		type Group_json struct {
-			Id       int          `json:"id"`
-			Name     string       `json:"name"`
-			Icon     string       `json:"icon"`
-			Children []Group_json `json:"children"`
+			Id        int          `json:"id"`
+			Name      string       `json:"name"`
+			Icon      string       `json:"icon"`
+			Collapsed bool         `json:"collapsed"`
+			Children  []Group_json `json:"children"`
 		}
 
 		var newGroup func(Id int) Group_json
@@ -231,20 +233,22 @@ func main() {
 			group.Id = Id
 
 			var result struct {
-				Name     string
-				Children string
-				Icon     string
+				Name      string
+				Children  string
+				Icon      string
+				Collapsed bool
 			}
 			db.Raw(`
 				SELECT Name, Icon, (
 					select array_to_string(array_agg(id), ',') FROM groups as g WHERE g.parent = groups.id
-				) as Children
+				) as Children, Collapsed
 				FROM groups
 				WHERE id = ? ORDER BY Name ASC
 			`, Id).Scan(&result)
 
 			group.Name = result.Name
 			group.Icon = result.Icon
+			group.Collapsed = result.Collapsed
 
 			group.Children = []Group_json{}
 			for _, i := range convertStringArrayToIntArray(strings.Split(result.Children, ",")) {
@@ -263,19 +267,22 @@ func main() {
 		var output = []Group_json{}
 
 		output = append(output, Group_json{
-			Id:       -1,
-			Name:     "Unsorted",
-			Children: []Group_json{},
+			Id:        -1,
+			Name:      "Unsorted",
+			Collapsed: false,
+			Children:  []Group_json{},
 		})
 		output = append(output, Group_json{
-			Id:       -2,
-			Name:     "Trash",
-			Children: []Group_json{},
+			Id:        -2,
+			Name:      "Trash",
+			Collapsed: false,
+			Children:  []Group_json{},
 		})
 		output = append(output, Group_json{
-			Id:       -3,
-			Name:     "Everything",
-			Children: []Group_json{},
+			Id:        -3,
+			Name:      "Everything",
+			Collapsed: false,
+			Children:  []Group_json{},
 		})
 
 		for _, i := range primaryGroups {
@@ -307,10 +314,25 @@ func main() {
 		if g.Parent < 0 {
 			db.Create(&Group{Cluster: cluster, Name: g.Name})
 		} else {
-			db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: g.Parent})
+			db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: g.Parent, Collapsed: false})
 		}
 
 		c.Status(200)
+
+	})
+
+	r.PATCH("/:cluster/:group/collapsed/:state", func(c *gin.Context) {
+		cluster, clusterErr := getCluster(c, db)
+		group, groupErr := getGroup(c, db)
+		if clusterErr != nil || groupErr != nil {
+			return
+		}
+
+		log.Print(c.Param("state") == "true")
+
+		db.Model(&Group{}).
+			Where(&Group{Id: group, Cluster: cluster}).
+			Update("collapsed", c.Param("state") == "true")
 
 	})
 

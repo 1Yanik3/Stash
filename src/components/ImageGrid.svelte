@@ -7,7 +7,7 @@
     export let group: Group
     export let tags: Array<Tag>
 
-    export let visibleMedium: Medium | null
+    export let visibleMedium: Medium | null = null
     export let traverse: boolean
     export let activeSortingMethod: { icon: string, method: ( a: Medium, b: Medium ) => number }
 

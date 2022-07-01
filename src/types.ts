@@ -3,6 +3,7 @@ export interface Group {
     name:       string
     icon?:      string
     children:   Array<Group>
+    collapsed:     boolean
 }
 
 export interface Cluster {

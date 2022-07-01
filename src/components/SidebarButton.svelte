@@ -1,11 +1,12 @@
 <script lang="ts">
-    import type { Group } from 'src/types'
+    import type { Cluster, Group } from 'src/types'
 
     import { mdiPound } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     import { page } from '$app/stores'
 
+    export let cluster: Cluster | null = null
     export let group: Group | null = null
     export let target: Group | null = null
 
@@ -65,6 +66,17 @@ on:contextmenu|preventDefault={e => {
         x: e.clientX,
         y: e.clientY
     }
+
+}}
+
+on:dblclick|stopPropagation={() => {
+    if (!target || !cluster) return
+
+    fetch(`https://stash.hera.lan/${cluster.id}/${target.id}/collapsed/${!target.collapsed}`, {
+        method: "PATCH"
+    })
+    target.collapsed = !target.collapsed
+    target = target
 
 }}
 >

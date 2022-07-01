@@ -15,15 +15,13 @@
     import DropFile from '../components/DropFile.svelte'
     import MediaViewer from '../components/MediaViewer.svelte'
     
-    let rendered = false
-
     //#region Clusters and Groups
 
     let clusters: Array<Cluster> = []
     let cluster: Cluster = { id: 0, name: "Loading..." }
 
     let groups: Array<Group> = []
-    let group: Group = { id: 0, name: "Loading...", children: [] }
+    let group: Group = { id: 0, name: "Loading...", children: [], collapsed: false }
 
     ;(async () => {
         console.log("Updating clusters...")
@@ -105,7 +103,7 @@
             console.warn("failed to update tags", err)
         }
     }
-    $: cluster && group && cluster.id && group.id && updateTags()
+    $: cluster && group && cluster.id && group.id > 0 && updateTags()
 
     const clearTagSelection = () => tags = tags.map(t => { t.active = false; return t })
     $: if($page.url) clearTagSelection()
@@ -249,13 +247,13 @@
 
         <!-- Statics -->
         <SidebarSection>
-            <SidebarButton target={groups[2]} bind:group icon={mdiBookshelf}>
+            <SidebarButton target={groups.find(g => g.id == -3)} bind:group icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton target={groups[0]} bind:group icon={mdiArchive}>
+            <SidebarButton target={groups.find(g => g.id == -1)} bind:group icon={mdiArchive}>
                 Unsorted
             </SidebarButton>
-            <SidebarButton target={groups[1]} bind:group icon={mdiTrashCan}>
+            <SidebarButton target={groups.find(g => g.id == -2)} bind:group icon={mdiTrashCan}>
                 Trash
             </SidebarButton>
         </SidebarSection>
@@ -264,7 +262,7 @@
         <SidebarSection title="Folders" action={createGroup}>
             
             {#each groups.filter(({ id }) => id > 0) as target}
-                <SidebarHierarchyEntry {target} bind:group/>
+                <SidebarHierarchyEntry {target} {cluster} bind:group/>
             {/each}
             
         </SidebarSection>
