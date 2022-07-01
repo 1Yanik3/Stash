@@ -163,7 +163,10 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	dsn := "host=100.89.255.87 user=postgres password=gorm123 dbname=postgres port=23077 sslmode=disable TimeZone=Europe/Zurich"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
+	})
 	if err != nil {
 		panic("failed to connect database")
 	}

@@ -75,15 +75,19 @@
     $: cluster && cluster.id && updateGroups()
 
     const createGroup = async () => {
-        await fetch(`https://stash.hera.lan/${cluster.id}/groups`,{
-            method: "POST",
-            body: JSON.stringify({
-                Cluster: cluster.id,
-                Name: window.prompt("Enter a name for the new collection"),
-                Parent: group.id != -1 ? group.id : ""
+        const name = window.prompt("Enter a name for the new collection")
+
+        if (name) {
+            await fetch(`https://stash.hera.lan/${cluster.id}/groups`,{
+                method: "POST",
+                body: JSON.stringify({
+                    Cluster: cluster.id,
+                    Name: name,
+                    Parent: group.id != -1 ? group.id : ""
+                })
             })
-        })
-        updateGroups()
+            updateGroups()
+        }
     }
 
     //#endregion
