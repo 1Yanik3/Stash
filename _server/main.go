@@ -205,7 +205,7 @@ func main() {
 			ON tag_media_links.tag_id == tags.id
 			LEFT JOIN media
 			ON media.id == tag_media_links.media_id
-			WHERE tags.cluster = ? AND media.'group' = ?
+			WHERE tags.cluster = ? AND media."group" = ?
 			GROUP BY tags.Id`,
 			cluster, group).Scan(&tags)
 
