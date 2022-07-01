@@ -16,8 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 
-	// TODO: replace
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -162,7 +161,8 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	dsn := "host=100.89.255.87 user=postgres password=gorm123 dbname=postgres port=23077 sslmode=disable TimeZone=Europe/Zurich"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -190,13 +190,13 @@ func main() {
 			return
 		}
 
-		// TODO: Re-add count
 		type Tag_json struct {
 			Id    int    `json:"id"`
 			Name  string `json:"name"`
 			Count int    `json:"count"`
 		}
 
+		// TODO: Exception for -3 and -1
 		tags := []Tag_json{}
 		db.Raw(`
 			SELECT tags.Id, tags.Name, COUNT(*) as Count
@@ -213,6 +213,10 @@ func main() {
 	})
 
 	r.GET("/:cluster/groups", func(c *gin.Context) {
+		cluster, clusterErr := getCluster(c, db)
+		if clusterErr != nil {
+			return
+		}
 
 		type Group_json struct {
 			Id       int          `json:"id"`
@@ -231,7 +235,13 @@ func main() {
 				Children string
 				Icon     string
 			}
-			db.Raw("SELECT Name, Icon, (select group_concat(id) FROM groups as g WHERE g.parent == groups.id) as Children FROM groups WHERE id = ? ORDER BY Name ASC", Id).Scan(&result)
+			db.Raw(`
+				SELECT Name, Icon, (
+					select array_to_string(array_agg(id), ',') FROM groups as g WHERE g.parent = groups.id
+				) as Children
+				FROM groups
+				WHERE id = ? ORDER BY Name ASC
+			`, Id).Scan(&result)
 
 			group.Name = result.Name
 			group.Icon = result.Icon
@@ -248,7 +258,7 @@ func main() {
 			Id   int    `json:"id"`
 			Name string `json:"name"`
 		}
-		db.Raw("SELECT id, name FROM groups WHERE parent IS false AND cluster IS ?", c.Param("cluster")).Scan(&primaryGroups)
+		db.Raw("SELECT id, name FROM groups WHERE parent IS NULL AND cluster = ?", cluster).Scan(&primaryGroups)
 
 		var output = []Group_json{}
 
@@ -321,20 +331,20 @@ func main() {
 			Tags []string `json:"tags"`
 		}
 
-		whereClause := fmt.Sprintf("AND `group` = %d", group)
+		whereClause := fmt.Sprintf(`AND "group" = %d`, group)
 		if group == -1 {
-			whereClause = "AND `group` IS NULL"
+			whereClause = `AND "group" IS NULL`
 		}
 		if group == -3 {
 			whereClause = ""
 		}
-		whereClause = fmt.Sprintf("WHERE `cluster` = %d ", cluster) + whereClause
+		whereClause = fmt.Sprintf(`WHERE "cluster" = %d `, cluster) + whereClause
 
 		var media []Media_result
 		db.Raw(`
 			SELECT media.Id, media.Type, media.Name, Date,
-			IFNULL((
-				SELECT group_concat(tags.name)
+			coalesce((
+				SELECT array_to_string(array_agg(tags.name), ',')
 				FROM tags
 				INNER JOIN tag_media_links
 				ON tags.id = tag_id

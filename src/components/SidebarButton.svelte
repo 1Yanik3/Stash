@@ -13,11 +13,39 @@
     export let active: boolean | null = null
     export let count: number | null = null
     export let indent: number = 0
+
+    //#region Context Menu
+
+    let pos: { x: number, y: number } | null
+
+    const id = Math.random().toString(16).substring(2, 16)
+
+    const processBodyRightClick = (e: MouseEvent) => {
+        if ((e.target as HTMLElement).closest("a")?.id != id)
+            pos = null
+    }
+
+    //#endregion
+    
 </script>
 
-<a href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
+{#if pos}
+
+    <main style={`left: ${pos.x}px; top: ${pos.y}px`}>
+        <span>Rename</span>
+        <span>Delete</span>
+    </main>
+    
+{/if}
+
+<svelte:body on:click={() => pos = null} on:contextmenu|preventDefault={processBodyRightClick} />
+
+<a
+{id}
+href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
 class={active || (group && target && group.id == target.id) ? "active" : ""}
+
 on:click={() => {
 
     if (active != null) {
@@ -27,6 +55,15 @@ on:click={() => {
     else {
         // is a group button
         group = target
+    }
+
+}}
+
+on:contextmenu|preventDefault={e => {
+
+    pos = {
+        x: e.clientX,
+        y: e.clientY
     }
 
 }}
@@ -81,4 +118,25 @@ on:click={() => {
             span { font-weight: 200 }
         }
     }
+
+    main {
+		position: absolute;
+
+        background: #202020;
+        box-shadow: inset 0.7px 0.7px 0.7px rgba($color: #fff, $alpha: 0.15);
+        border-radius: 3px;
+
+		display: grid;
+
+        span {
+            cursor: pointer;
+            transition: background 150ms;
+            padding: 0.5em;
+
+            &:hover {
+                background: #333;
+            }
+        }
+
+	}
 </style>

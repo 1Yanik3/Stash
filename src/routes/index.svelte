@@ -13,6 +13,7 @@
     import ImageGrid from '../components/ImageGrid.svelte'
     import Toolbar from '../components/Toolbar.svelte'
     import DropFile from '../components/DropFile.svelte'
+    import MediaViewer from '../components/MediaViewer.svelte'
     
     //#region Clusters and Groups
 
@@ -315,20 +316,7 @@
 
             <Toolbar bind:visibleMedium bind:isFullscreen {cluster} />
             
-            <div class="media">
-                {#if visibleMedium.type.startsWith("image")}
-                    <img src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`} alt={visibleMedium.name}/>
-                {:else if visibleMedium.type.startsWith("video")}
-                    <video
-                        src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`}
-                        alt={visibleMedium.name}
-                        controls
-                        autoplay
-                    ><track kind="captions"/></video>
-                {:else}
-                    <span>{visibleMedium.name}</span>
-                {/if}
-            </div>
+            <MediaViewer {visibleMedium} {cluster} />
 
         </section>
     {/if}
@@ -382,23 +370,6 @@
 
                 display: grid;
                 grid-template-rows: auto 1fr;
-
-                .media {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-
-                    // TODO: Make more elegant
-                    height: calc(100vh - 40.5px);
-
-                    background: #202020;
-
-                    img, video {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
-                    }
-                }
 
             }
 
