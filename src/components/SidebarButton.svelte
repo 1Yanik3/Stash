@@ -72,10 +72,10 @@ on:contextmenu|preventDefault={e => {
 on:dblclick|stopPropagation={() => {
     if (!target || !cluster) return
 
-    fetch(`https://stash.hera.lan/${cluster.id}/${target.id}/collapsed/${!target.collapsed}`, {
+    fetch(`https://stash.hera.lan/${cluster.id}/${target.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
         method: "PATCH"
     })
-    target.collapsed = !target.collapsed
+    target.collapsed = !!target.children.length && !target.collapsed
     target = target
 
 }}
