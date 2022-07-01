@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { Cluster, Group } from 'src/types'
-    
-    import { group, cluster } from '../stores'
-
     import SidebarButton from '../components/SidebarButton.svelte'
     import { mdiFolder, mdiFolderHidden } from '@mdi/js'
+
+    import type { Group } from 'src/types'
+    import { cluster } from '../stores'
 
     export let target: Group
     export let indent: number = 0

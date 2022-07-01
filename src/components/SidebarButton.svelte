@@ -46,7 +46,7 @@
 {id}
 href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class={active || (group && target && $group.id == target.id) ? "active" : ""}
+class:active={active || (group && target && $group.id == target.id)}
 
 on:click={() => {
     if (!target) return
@@ -60,16 +60,13 @@ on:click={() => {
         if ($group != target)
             group.set(target)
     }
-
 }}
 
 on:contextmenu|preventDefault={e => {
-
     pos = {
         x: e.clientX,
         y: e.clientY
     }
-
 }}
 
 on:dblclick|stopPropagation={() => {
