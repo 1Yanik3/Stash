@@ -15,6 +15,8 @@
     import DropFile from '../components/DropFile.svelte'
     import MediaViewer from '../components/MediaViewer.svelte'
     
+    let rendered = false
+
     //#region Clusters and Groups
 
     let clusters: Array<Cluster> = []
@@ -211,9 +213,9 @@
     <section style={isFullscreen ? 'display: none' : ''}>
 
         <SidebarSection justify>
-            <select value={cluster}>
+            <select bind:value={cluster} on:change={() => window.location.replace(`?c=${cluster.id}`)}>
                 {#each clusters as cluster}
-                    <option value={cluster}  on:select={() => window.location.href = `?c=${cluster.id}`}>{cluster.name}</option>
+                    <option value={cluster}>{cluster.name}</option>
                 {/each}
             </select>
 

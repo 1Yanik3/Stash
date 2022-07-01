@@ -295,7 +295,7 @@ func main() {
 
 		var g struct {
 			Name   string
-			Parent int
+			Parent *int
 		}
 
 		err := json.NewDecoder(c.Request.Body).Decode(&g)
@@ -304,7 +304,11 @@ func main() {
 			return
 		}
 
-		db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: g.Parent})
+		if *g.Parent < 0 {
+			g.Parent = nil
+		}
+
+		db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: *g.Parent})
 
 		c.Status(200)
 
