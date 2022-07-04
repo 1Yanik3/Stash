@@ -1,10 +1,9 @@
-FROM ubuntu
+FROM --platform=linux/amd64 alpine
 
 COPY main /main
 RUN chmod +x /main
 
-RUN apt-get update
-RUN apt-get install -y ffmpeg
+RUN apk add --no-cache ffmpeg
 
 ENV GIN_MODE=release
 EXPOSE 80

@@ -1,5 +1,7 @@
 <script lang="ts">
-    import type { Cluster, Group } from 'src/types'
+    import type { Cluster, Group, Tag } from '../types'
+    
+    import { group, tags } from '../stores'
 
     import { mdiPound } from '@mdi/js'
     import Icon from 'mdi-svelte'
@@ -7,12 +9,9 @@
     import { page } from '$app/stores'
 
     export let cluster: Cluster | null = null
-    export let group: Group | null = null
     export let target: Group | null = null
 
     export let icon: string = mdiPound
-    export let active: boolean | null = null
-    export let count: number | null = null
     export let indent: number = 0
 
     //#region Context Menu
@@ -27,7 +26,9 @@
     }
 
     //#endregion
-    
+
+    export let tag: Tag | null = null
+
 </script>
 
 {#if pos}
@@ -45,28 +46,35 @@
 {id}
 href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class={active || (group && target && group.id == target.id) ? "active" : ""}
+class:active={tag?.active || (group && target && $group.id == target.id)}
 
 on:click={() => {
 
-    if (active != null) {
+    if (tag) {
+
         // is a tag button
-        active = !active
+        const tmp = $tags.find(t => t == tag)
+        if (tmp)
+            tmp.active = !tag.active
+        tags.set($tags)
+
     }
     else {
-        // is a group button
-        group = target
-    }
+        if (!target) return
 
+        // is a group button
+        if ($group != target)
+            group.set(target)
+
+
+    }
 }}
 
 on:contextmenu|preventDefault={e => {
-
     pos = {
         x: e.clientX,
         y: e.clientY
     }
-
 }}
 
 on:dblclick|stopPropagation={() => {
@@ -76,7 +84,6 @@ on:dblclick|stopPropagation={() => {
         method: "PATCH"
     })
     target.collapsed = !!target.children.length && !target.collapsed
-    target = target
 
 }}
 >
@@ -85,14 +92,20 @@ on:dblclick|stopPropagation={() => {
 
         <!-- @ts-ignore -->
         <div class="spacer"><Icon path={icon} size={"1.25em"}/></div>
-        <span><slot/></span>
+        <span>
+            {#if tag}
+                {tag.name}
+            {:else}
+                <slot/>
+            {/if}
+        </span>
 
     </div>
 
-    {#if count != null}
+    {#if tag}
         <div class="section" style="filter: opacity(0.6)">
 
-            <span>{count}</span>
+            <span>{tag.count}</span>
 
         </div>
     {/if}

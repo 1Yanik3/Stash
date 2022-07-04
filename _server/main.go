@@ -516,10 +516,17 @@ func main() {
 		original, err = ioutil.ReadFile(thumbnailPath)
 		if err != nil {
 
-			log.Printf("Thumbnail not found, creating new one: %v", err)
+			log.Printf("Thumbnail not found: %v", err)
+
+			// if not exist
+			if _, err := os.Stat("media/" + cluster + "/" + id); errors.Is(err, os.ErrNotExist) {
+				c.Status(404)
+				return
+			}
 
 			buf := bytes.NewBuffer(nil)
 
+			// TODO: Offset from start of video of 3 seconds
 			err := ffmpeg.
 				Input("media/"+cluster+"/"+id).
 				Filter("scale", ffmpeg.Args{"w=650:h=650:force_original_aspect_ratio=increase"}).

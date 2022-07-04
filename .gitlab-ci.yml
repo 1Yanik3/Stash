@@ -13,7 +13,7 @@ pages:
       - public
 
 compile:
-  image: golang:latest
+  image: golang:alpine
   script:
     - cd _server
     - go build main.go

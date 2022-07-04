@@ -1,36 +1,34 @@
 <script lang="ts">
-    import type { Cluster, Medium } from "src/types";
-
-    export let visibleMedium: Medium
-    export let cluster: Cluster
+    import { cluster, visibleMedium } from "../stores"
 
     let isZoomedIn = false
 </script>
 
-
+{#if $visibleMedium}
 <div class="media">
-    {#if visibleMedium.type.startsWith("image")}
+    {#if $visibleMedium.type.startsWith("image")}
 
         <img
-            src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`}
-            alt={visibleMedium.name}
+            src={`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium.id}`}
+            alt={$visibleMedium.name}
             class={isZoomedIn ? "zoomed" : ""}
             on:click={e => isZoomedIn = !isZoomedIn}
         >
 
-    {:else if visibleMedium.type.startsWith("video")}
+    {:else if $visibleMedium.type.startsWith("video")}
 
         <video
-            src={`https://stash.hera.lan/${cluster.id}/file/${visibleMedium.id}`}
-            alt={visibleMedium.name}
+            src={`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium.id}`}
+            alt={$visibleMedium.name}
             controls
             autoplay
         ><track kind="captions"/></video>
 
     {:else}
-        <span>{visibleMedium.name}</span>
+        <span>{$visibleMedium.name}</span>
     {/if}
 </div>
+{/if}
 
 <style lang="scss">
 
