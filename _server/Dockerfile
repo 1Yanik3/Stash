@@ -1,4 +1,4 @@
-FROM alpine --platform=linux/amd64
+FROM --platform=linux/amd64 alpine
 
 COPY main /main
 RUN chmod +x /main
