@@ -11,48 +11,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Jeffail/gabs"
+	gabs "github.com/Jeffail/gabs/v2"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 
+	"ant.ms/stash/config"
+	"ant.ms/stash/utilities"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-type Cluster struct {
-	Id   int    `json:"id" gorm:"primaryKey;"`
-	Name string `json:"name"`
-}
-
-type Tag struct {
-	Id      int    `json:"id" gorm:"primaryKey;"`
-	Name    string `json:"name"`
-	Cluster int
-}
-
-type Group struct {
-	Id        int `gorm:"primaryKey;"`
-	Cluster   int
-	Name      string
-	Parent    int `gorm:"default:null"`
-	Icon      string
-	Collapsed bool
-}
-
-type Media struct {
-	Id      int    `json:"id" gorm:"primaryKey"`
-	Type    string `json:"type"`
-	Name    string `json:"name"`
-	Date    int64  `gorm:"autoCreateTime"`
-	Cluster int
-	Group   int
-}
-
-type TagMediaLink struct {
-	TagId   int
-	MediaId int
-}
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -71,93 +40,6 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func getCluster(c *gin.Context, db *gorm.DB) (int, error) {
-	clusterId, _ := strconv.Atoi(c.Param("cluster"))
-
-	var count int64
-	db.Model(&Cluster{}).Where(&Cluster{Id: clusterId}).Count(&count)
-
-	if count < 1 {
-		c.String(404, "Cluster not found")
-		return -1, errors.New("Cluster not found")
-	}
-
-	return clusterId, nil
-}
-func getClusterString(c *gin.Context, db *gorm.DB) (string, error) {
-	clusterId, _ := strconv.Atoi(c.Param("cluster"))
-
-	var count int64
-	db.Model(&Cluster{}).Where(&Cluster{Id: clusterId}).Count(&count)
-
-	if count < 1 {
-		c.String(404, "Cluster not found")
-		return "-1", errors.New("Cluster not found")
-	}
-
-	return strconv.Itoa(clusterId), nil
-}
-
-func getGroup(c *gin.Context, db *gorm.DB) (int, error) {
-	clusterId, _ := getCluster(c, db)
-	groupId, _ := strconv.Atoi(c.Param("group"))
-
-	var count int64
-	db.Model(&Group{}).Where(&Group{Id: groupId, Cluster: clusterId}).Count(&count)
-
-	if count < 1 {
-		c.String(404, "Group not Group")
-		return -1, errors.New("Cluster not found")
-	}
-
-	return groupId, nil
-}
-func getGroupString(c *gin.Context, db *gorm.DB) (string, error) {
-	groupId, err := getGroup(c, db)
-	return strconv.Itoa(groupId), err
-}
-
-func convertStringArrayToIntArray(input []string) []int {
-	var output = []int{}
-
-	for _, i := range input {
-		if i != "" {
-
-			j, err := strconv.Atoi(i)
-			if err != nil {
-				panic(err)
-			}
-			output = append(output, j)
-
-		}
-	}
-
-	return output
-}
-
-func filterStringArray(input []string) []string {
-	var output = []string{}
-
-	for _, i := range input {
-		if i != "" {
-			output = append(output, i)
-		}
-	}
-
-	return output
-}
-
-func isInArray(query string, array []string) bool {
-	var result bool = false
-	for _, x := range array {
-		if x == query {
-			result = true
-			break
-		}
-	}
-	return result
-}
-
 func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
@@ -171,24 +53,28 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&Cluster{})
-	db.AutoMigrate(&Tag{})
-	db.AutoMigrate(&Group{})
-	db.AutoMigrate(&Media{})
-	db.AutoMigrate(&TagMediaLink{})
+	db.AutoMigrate(&config.Cluster{})
+	db.AutoMigrate(&config.Tag{})
+	db.AutoMigrate(&config.Group{})
+	db.AutoMigrate(&config.Media{})
+	db.AutoMigrate(&config.TagMediaLink{})
 
 	r.GET("/clusters", func(c *gin.Context) {
 
-		var clusters []Cluster
+		var clusters []config.Cluster
 		db.Find(&clusters)
 
 		c.JSON(200, clusters)
 	})
 
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(307, "https://confusedant.gitlab.io/stash")
+	})
+
 	// TODO: make group based (as some groups might not include the same amount of tags)
 	r.GET("/:cluster/:group/tags", func(c *gin.Context) {
-		cluster, clusterErr := getClusterString(c, db)
-		group, groupErr := getGroupString(c, db)
+		cluster, clusterErr := utilities.GetClusterString(c, db)
+		group, groupErr := utilities.GetGroupString(c, db)
 
 		if clusterErr != nil || groupErr != nil {
 			return
@@ -217,7 +103,7 @@ func main() {
 	})
 
 	r.GET("/:cluster/groups", func(c *gin.Context) {
-		cluster, clusterErr := getCluster(c, db)
+		cluster, clusterErr := utilities.GetCluster(c, db)
 		if clusterErr != nil {
 			return
 		}
@@ -254,7 +140,7 @@ func main() {
 			group.Collapsed = result.Collapsed
 
 			group.Children = []Group_json{}
-			for _, i := range convertStringArrayToIntArray(strings.Split(result.Children, ",")) {
+			for _, i := range utilities.ConvertStringArrayToIntArray(strings.Split(result.Children, ",")) {
 				group.Children = append(group.Children, newGroup(i))
 			}
 
@@ -296,7 +182,7 @@ func main() {
 	})
 
 	r.POST("/:cluster/groups", func(c *gin.Context) {
-		cluster, _ := getCluster(c, db)
+		cluster, _ := utilities.GetCluster(c, db)
 
 		if c.Request.Body == nil {
 			c.String(400, "Please send a request body")
@@ -315,9 +201,9 @@ func main() {
 		}
 
 		if g.Parent < 0 {
-			db.Create(&Group{Cluster: cluster, Name: g.Name})
+			db.Create(&config.Group{Cluster: cluster, Name: g.Name})
 		} else {
-			db.Create(&Group{Cluster: cluster, Name: g.Name, Parent: g.Parent, Collapsed: false})
+			db.Create(&config.Group{Cluster: cluster, Name: g.Name, Parent: g.Parent, Collapsed: false})
 		}
 
 		c.Status(200)
@@ -325,16 +211,16 @@ func main() {
 	})
 
 	r.PATCH("/:cluster/:group/collapsed/:state", func(c *gin.Context) {
-		cluster, clusterErr := getCluster(c, db)
-		group, groupErr := getGroup(c, db)
+		cluster, clusterErr := utilities.GetCluster(c, db)
+		group, groupErr := utilities.GetGroup(c, db)
 		if clusterErr != nil || groupErr != nil {
 			return
 		}
 
 		log.Print(c.Param("state") == "true")
 
-		db.Model(&Group{}).
-			Where(&Group{Id: group, Cluster: cluster}).
+		db.Model(&config.Group{}).
+			Where(&config.Group{Id: group, Cluster: cluster}).
 			Update("collapsed", c.Param("state") == "true")
 
 	})
@@ -389,7 +275,7 @@ func main() {
 				Type: i.Type,
 				Name: i.Name,
 				Date: i.Date,
-				Tags: filterStringArray(strings.Split(i.Tags, ",")),
+				Tags: utilities.FilterStringArray(strings.Split(i.Tags, ",")),
 			})
 		}
 
@@ -397,12 +283,12 @@ func main() {
 	})
 
 	r.POST("/:cluster/:group/media", func(c *gin.Context) {
-		cluster, err := getCluster(c, db)
+		cluster, err := utilities.GetCluster(c, db)
 		if err != nil {
 			return
 		}
 		// move into -1 instead of failing
-		group, err := getGroup(c, db)
+		group, err := utilities.GetGroup(c, db)
 		if err != nil {
 			return
 		}
@@ -422,7 +308,7 @@ func main() {
 			return
 		}
 
-		media := &Media{Type: media_type.String(), Name: file.Filename, Cluster: cluster, Group: group}
+		media := &config.Media{Type: media_type.String(), Name: file.Filename, Cluster: cluster, Group: group}
 		db.Create(&media)
 
 		c.SaveUploadedFile(file, "media/"+strconv.Itoa(cluster)+"/"+strconv.Itoa(media.Id))
@@ -431,7 +317,7 @@ func main() {
 	})
 
 	// r.GET("/:cluster/media/:id", func(c *gin.Context) {
-	// 	cluster, err := getClusterString(c, db)
+	// 	cluster, err := GetClusterString(c, db)
 	// 	if err != nil {
 	// 		return
 	// 	}
@@ -445,8 +331,8 @@ func main() {
 	// 	c.Data(200, mimetype.Detect(content).String(), content)
 	// })
 
-	clusters := []Cluster{}
-	db.Model(&Cluster{}).Scan(&clusters)
+	clusters := []config.Cluster{}
+	db.Model(&config.Cluster{}).Scan(&clusters)
 	for _, i := range clusters {
 		r.Static(fmt.Sprintf("/%d/file", i.Id), fmt.Sprintf("media/%d", i.Id))
 	}
@@ -462,7 +348,7 @@ func main() {
 
 	// TODO
 	r.PUT("/:cluster/media/:id/tag", func(c *gin.Context) {
-		cluster, clusterErr := getCluster(c, db)
+		cluster, clusterErr := utilities.GetCluster(c, db)
 		if clusterErr != nil {
 			return
 		}
@@ -483,17 +369,17 @@ func main() {
 			return
 		}
 
-		var tag Tag
-		db.Find(&Tag{}).Where(&Tag{Name: g.Name, Cluster: cluster}).Find(&tag)
+		var tag config.Tag
+		db.Find(&config.Tag{}).Where(&config.Tag{Name: g.Name, Cluster: cluster}).Find(&tag)
 
 		// tag does not exist yet
 		if tag.Id == 0 {
-			tag = Tag{Name: g.Name, Cluster: cluster}
+			tag = config.Tag{Name: g.Name, Cluster: cluster}
 			db.Create(&tag)
 		}
 
 		// link
-		db.Create(&TagMediaLink{TagId: tag.Id, MediaId: id})
+		db.Create(&config.TagMediaLink{TagId: tag.Id, MediaId: id})
 
 	})
 
@@ -502,8 +388,57 @@ func main() {
 
 	})
 
+	r.GET("/:cluster/media/:id/placeholder", func(c *gin.Context) {
+		cluster, clusterError := utilities.GetClusterString(c, db)
+		if clusterError != nil {
+			return
+		}
+		id := c.Param("id")
+
+		information, err := ffmpeg.Probe("media/" + cluster + "/" + id)
+		if err != nil {
+			c.String(422, "Failed to get media information")
+			log.Print(err)
+			return
+		}
+
+		jsonParsed, err := gabs.ParseJSON([]byte(information))
+		if err != nil {
+			c.String(422, "Failed to parse media information")
+			log.Print(err)
+			return
+		}
+
+		getAttribute := func(attr string) float64 {
+			var value float64
+			var ok bool
+
+			for i := 0; !ok; i++ {
+				value, ok = jsonParsed.Search("streams", strconv.Itoa(i), attr).Data().(float64)
+			}
+
+			return value
+		}
+
+		width := getAttribute("width")
+		height := getAttribute("height")
+
+		var k float64
+		if width > height {
+			k = 650 / width
+		} else {
+			k = 650 / height
+		}
+
+		c.Data(200, "image/svg+xml", []byte(fmt.Sprintf(`
+			<svg viewBox="0 0 %[1]v %[2]v" xmlns="http://www.w3.org/2000/svg">
+				<rect width="%[1]v" height="%[2]v" x="0" y="0"/>
+			</svg>
+		`, width*k, height*k)))
+	})
+
 	r.GET("/:cluster/media/:id/thumbnail", func(c *gin.Context) {
-		cluster, clusterError := getClusterString(c, db)
+		cluster, clusterError := utilities.GetClusterString(c, db)
 		if clusterError != nil {
 			return
 		}
@@ -549,7 +484,7 @@ func main() {
 	})
 
 	r.GET("/:cluster/media/:id/info", func(c *gin.Context) {
-		cluster, err := getClusterString(c, db)
+		cluster, err := utilities.GetClusterString(c, db)
 		if err != nil {
 			return
 		}

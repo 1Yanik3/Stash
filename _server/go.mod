@@ -3,7 +3,7 @@ module ant.ms/stash
 go 1.18
 
 require (
-	github.com/Jeffail/gabs v1.4.0
+	github.com/Jeffail/gabs/v2 v2.6.1
 	github.com/gabriel-vasile/mimetype v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/u2takey/ffmpeg-go v0.4.1
