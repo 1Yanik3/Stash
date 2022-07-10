@@ -1,38 +1,21 @@
-# create-svelte
+# Stash
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+I used to use [Raindrop](raindrop.io) for managing a lot of files as it has good tag functionality, however I ran into limitations, a lack of polish of features I cared about, and a general slowness of the entire application (to be fair, I don't think it was designed for this).
 
-## Creating a project
+This prompted me to create my own solution, more tailored to my personal needs: So I came up with this.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Stash is my personal system for managing all kinds of media (currently made for images and video, might be expanded for audio and other things in the future).
 
-```bash
-# create a new project in the current directory
-npm init svelte
+This is a big project for me, but also one that is going to take a long long time to be finished (if it will ever be finished). Please note, that because of that I may open source this project, but if you want to setup this project yourself you will probably have to do some minor code changes (like changing some hard coded things, ...).
 
-# create a new project in my-app
-npm init svelte my-app
-```
+## TODO
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [ ] Allow to move other places
+  - incl. Trash
+- [ ] Bulk edit featues
+  - [ ] Tags
+  - [ ] Move
+- [ ] Allow replacing the media from the UI
+  - Maybe have an "AI upscale this" button?
+- [ ] Allow replacing thumbnail on videos by generating thumbnails at random positions and letting the user choose the one they prefer
+- [ ] Have info button show information about the media
