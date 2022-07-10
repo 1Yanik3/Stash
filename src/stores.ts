@@ -17,3 +17,5 @@ export let visibleMedium: Writable<Medium | null> = writable(null)
 export let traverse = writable(false)
 
 export let activeSortingMethod = writable(sortingMethods[3])
+
+export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")

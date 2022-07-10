@@ -301,7 +301,6 @@ func main() {
 		src, _ := file.Open()
 		defer src.Close()
 		media_type, _ := mimetype.DetectReader(src)
-		log.Println(media_type.String())
 
 		if !strings.HasPrefix(media_type.String(), "image") && !strings.HasPrefix(media_type.String(), "video") {
 			c.Status(415)
@@ -315,21 +314,6 @@ func main() {
 
 		c.Status(200)
 	})
-
-	// r.GET("/:cluster/media/:id", func(c *gin.Context) {
-	// 	cluster, err := GetClusterString(c, db)
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// 	id := c.Param("id")
-
-	// 	content, err := ioutil.ReadFile("media/" + cluster + "/" + id)
-	// 	if err != nil {
-	// 		log.Printf("failed to open media: %v", err)
-	// 	}
-
-	// 	c.Data(200, mimetype.Detect(content).String(), content)
-	// })
 
 	clusters := []config.Cluster{}
 	db.Model(&config.Cluster{}).Scan(&clusters)
@@ -444,11 +428,12 @@ func main() {
 		}
 		id := c.Param("id")
 
-		var thumbnailPath = "thumbnails/" + cluster + "/" + id + ".webp"
+		mediaPath := "media/" + cluster + "/" + id
+		thumbnailPath := "thumbnails/" + cluster + "/" + id + ".webp"
 
-		var original []byte
+		var thumbnail []byte
 		var err error
-		original, err = ioutil.ReadFile(thumbnailPath)
+		thumbnail, err = ioutil.ReadFile(thumbnailPath)
 		if err != nil {
 
 			log.Printf("Thumbnail not found: %v", err)
@@ -459,13 +444,17 @@ func main() {
 				return
 			}
 
-			buf := bytes.NewBuffer(nil)
+			media_type, _ := mimetype.DetectFile(mediaPath)
+			arguments := ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}
+			if strings.HasPrefix(media_type.String(), "video") {
+				arguments = ffmpeg.KwArgs{"vframes": 1, "ss": 3, "format": "image2", "vcodec": "libwebp"}
+			}
 
-			// TODO: Offset from start of video of 3 seconds
+			buf := bytes.NewBuffer(nil)
 			err := ffmpeg.
 				Input("media/"+cluster+"/"+id).
 				Filter("scale", ffmpeg.Args{"w=650:h=650:force_original_aspect_ratio=increase"}).
-				Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}).
+				Output("pipe:", arguments).
 				WithOutput(buf, os.Stdout).Run()
 
 			if err != nil {
@@ -474,13 +463,13 @@ func main() {
 				return
 			}
 
-			original = buf.Bytes()
+			thumbnail = buf.Bytes()
 
-			ioutil.WriteFile(thumbnailPath, original, 0750)
+			ioutil.WriteFile(thumbnailPath, thumbnail, 0750)
 
 		}
 
-		c.Data(200, "images/webp", original)
+		c.Data(200, "images/webp", thumbnail)
 	})
 
 	r.GET("/:cluster/media/:id/info", func(c *gin.Context) {

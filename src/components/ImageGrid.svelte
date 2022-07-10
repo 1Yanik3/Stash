@@ -3,7 +3,7 @@
 
     import { JustifiedGrid } from "@egjs/svelte-grid"
 
-    import { cluster, group, tags, visibleMedium, traverse, activeSortingMethod } from "../stores"
+    import { cluster, group, tags, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from "../stores"
 
     let media: Array<Medium> = []
 
@@ -29,7 +29,7 @@
                 }
                 await addToOutput($group)
 
-                media = output.sort($activeSortingMethod.method)
+                media = output.filter(d => d.type.startsWith($mediaTypeFilter)).sort($activeSortingMethod.method)
                 mediaCount = media.length - 1
             } catch (err) {
                 console.error("failed to update media", err)
@@ -59,8 +59,6 @@
     defaultDirection="start"
     gap={14}
     sizeRange={[150, 500]}
-
-    isCroppedSize={true}
 >
 
     {#each media as medium, i}

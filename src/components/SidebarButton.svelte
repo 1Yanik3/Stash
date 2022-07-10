@@ -3,6 +3,7 @@
     
     import { group, tags } from '../stores'
 
+    import { createEventDispatcher } from 'svelte'
     import { mdiPound } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
@@ -10,9 +11,11 @@
 
     export let cluster: Cluster | null = null
     export let target: Group | null = null
+    export let tag: Tag | null = null
 
     export let icon: string = mdiPound
     export let indent: number = 0
+    export let active: boolean = false
 
     //#region Context Menu
 
@@ -27,7 +30,7 @@
 
     //#endregion
 
-    export let tag: Tag | null = null
+    const dispatch = createEventDispatcher()
 
 </script>
 
@@ -46,9 +49,11 @@
 {id}
 href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class:active={tag?.active || (group && target && $group.id == target.id)}
+class:active={active || tag?.active || (group && target && $group.id == target.id)}
 
 on:click={() => {
+
+    dispatch('click')
 
     if (tag) {
 

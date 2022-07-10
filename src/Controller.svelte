@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import type { Group } from './types'
+    import type { Group, Tag } from './types'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 
     import { clusters, cluster, groups, group, tags, traverse } from './stores'
@@ -65,10 +65,19 @@
         console.log("Updating tags...")
         try {
 
-            const res = await fetch(`https://stash.hera.lan/${$cluster.id}/${$group.id}/tags`)
-            tags.set(
-                (await res.json()).map((t: any) => { t.active = false; return t })
-            )
+            let output: Array<Tag> = []
+
+            const addToOutput = async (g: Group) => {
+                const res = await fetch(`https://stash.hera.lan/${$cluster.id}/${g.id}/tags`)
+                output = [ ...output, ...(await res.json()).map((t: any) => { t.active = false; return t }) ]
+
+                if ($traverse)
+                    for (const i in g.children)
+                        await addToOutput(g.children[i])
+            }
+            await addToOutput($group)
+
+            tags.set(output)
             
         } catch (err) {
             console.warn("failed to update tags", err)
@@ -83,6 +92,7 @@
     updateClusters()
     cluster.subscribe(updateGroups)
     group.subscribe(g => g.id > 0 && updateTags())
+    traverse.subscribe(() => $traverse != undefined && updateTags())
 
     onMount(() => {
         traverse.set(localStorage.getItem('traverse') == "true")

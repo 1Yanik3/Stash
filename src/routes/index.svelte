@@ -9,13 +9,9 @@
     import Toolbar from '../components/Toolbar.svelte'
     import DropFile from '../components/DropFile.svelte'
     import MediaViewer from '../components/MediaViewer.svelte'
-    import Navibationbar from '../components/Navigationbar.svelte'
+    import Navigationbar from '../components/Navigationbar.svelte'
     
-    //#region Clusters and Groups
-
-    import { cluster, group, visibleMedium, traverse, activeSortingMethod } from '../stores'
-
-    //#endregion
+    import { cluster, group, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from '../stores'
 
     let isFullscreen: boolean
     // $: if (!visibleMedium) isFullscreen = false
@@ -83,7 +79,7 @@
 <main>
     
     <section style={isFullscreen ? 'display: none' : ''}>
-        <Navibationbar {controller}/>
+        <Navigationbar {controller}/>
     </section>
 
     <section style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${isFullscreen ? 'display: none' : ''}`}>
@@ -107,7 +103,7 @@
 
             {:else}
 
-                {#key  [ $group, $traverse, $activeSortingMethod ]}
+                {#key [ $group, $traverse, $activeSortingMethod, $mediaTypeFilter ]}
                     <ImageGrid bind:mediaIndex bind:mediaCount/>
                 {/key}
 

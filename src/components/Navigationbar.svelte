@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiArchive, mdiBookshelf, mdiHook, mdiHookOff, mdiTrashCan } from '@mdi/js'
+    import { mdiArchive, mdiBookshelf, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
     import Icon from 'mdi-svelte'
     import { sortingMethods } from '../types'
     
@@ -7,7 +7,7 @@
     import SidebarSection from "../components/SidebarSection.svelte"
     import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
 
-    import { cluster, clusters, traverse, group, groups, tags, activeSortingMethod } from '../stores'
+    import { cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
 
     export let controller: any
 
@@ -41,8 +41,8 @@
 <SidebarSection justify>
     {#key $clusters}
         <select on:change={changeCluster} >
-            {#each $clusters as cluster}
-                <option value={cluster.id}>{cluster.name}</option>
+            {#each $clusters as c}
+                <option value={c.id} selected={c.id == $cluster.id}>{c.name}</option>
             {/each}
         </select>
     {/key}
@@ -115,3 +115,26 @@
     </SidebarSection>
 
 {/if}
+
+<!-- Type -->
+<SidebarSection title="Media Type">
+
+    <SidebarButton icon={mdiImage} on:click={() => {
+        if ($mediaTypeFilter == "image")
+            mediaTypeFilter.set("")
+        else
+            mediaTypeFilter.set("image")
+    }} active={$mediaTypeFilter == "image"}>
+        Image
+    </SidebarButton>
+    
+    <SidebarButton icon={mdiVideo} on:click={() => {
+        if ($mediaTypeFilter == "video")
+            mediaTypeFilter.set("")
+        else
+            mediaTypeFilter.set("video")
+    }} active={$mediaTypeFilter == "video"}>
+        Video
+    </SidebarButton>
+
+</SidebarSection>
