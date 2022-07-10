@@ -447,7 +447,7 @@ func main() {
 			media_type, _ := mimetype.DetectFile(mediaPath)
 			arguments := ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}
 			if strings.HasPrefix(media_type.String(), "video") {
-				arguments = ffmpeg.KwArgs{"vframes": 1, "ss": 3, "format": "image2", "vcodec": "libwebp"}
+				arguments = ffmpeg.KwArgs{"vframes": 1, "ss": 7, "format": "image2", "vcodec": "libwebp"}
 			}
 
 			buf := bytes.NewBuffer(nil)
