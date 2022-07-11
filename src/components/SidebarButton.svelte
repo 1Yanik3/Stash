@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Cluster, Group, Tag } from '../types'
-    
-    import { group, tags } from '../stores'
+    import { serverURL, group, tags } from '../stores'
 
     import { createEventDispatcher } from 'svelte'
     import { mdiPound } from '@mdi/js'
@@ -85,7 +84,7 @@ on:contextmenu|preventDefault={e => {
 on:dblclick|stopPropagation={() => {
     if (!target || !cluster) return
 
-    fetch(`https://stash.hera.lan/${cluster.id}/${target.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
+    fetch(`/${cluster.id}/${target.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
         method: "PATCH"
     })
     target.collapsed = !!target.children.length && !target.collapsed

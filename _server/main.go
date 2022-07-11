@@ -29,7 +29,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
+		c.Header("Access-Control-Allow-Methods", "POST, HEAD, PATCH, OPTIONS, GET, PUT, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
@@ -73,10 +73,8 @@ func main() {
 
 	// TODO: make group based (as some groups might not include the same amount of tags)
 	r.GET("/:cluster/:group/tags", func(c *gin.Context) {
-		cluster, clusterErr := utilities.GetClusterString(c, db)
 		group, groupErr := utilities.GetGroupString(c, db)
-
-		if clusterErr != nil || groupErr != nil {
+		if groupErr != nil {
 			return
 		}
 
@@ -95,9 +93,8 @@ func main() {
 			ON tag_media_links.tag_id = tags.id
 			LEFT JOIN media
 			ON media.id = tag_media_links.media_id
-			WHERE tags.cluster = ? AND media."group" = ?
-			GROUP BY tags.Id`,
-			cluster, group).Scan(&tags)
+			WHERE media."group" = ?
+			GROUP BY tags.Id`, group).Scan(&tags)
 
 		c.JSON(200, tags)
 	})
@@ -343,12 +340,7 @@ func main() {
 		// => move to deleted group
 	})
 
-	// TODO
 	r.PUT("/:cluster/media/:id/tag", func(c *gin.Context) {
-		cluster, clusterErr := utilities.GetCluster(c, db)
-		if clusterErr != nil {
-			return
-		}
 		id, _ := strconv.Atoi(c.Param("id"))
 
 		if c.Request.Body == nil {
@@ -367,11 +359,11 @@ func main() {
 		}
 
 		var tag config.Tag
-		db.Find(&config.Tag{}).Where(&config.Tag{Name: g.Name, Cluster: cluster}).Find(&tag)
+		db.Find(&config.Tag{}).Where(&config.Tag{Name: g.Name}).Find(&tag)
 
 		// tag does not exist yet
 		if tag.Id == 0 {
-			tag = config.Tag{Name: g.Name, Cluster: cluster}
+			tag = config.Tag{Name: g.Name}
 			db.Create(&tag)
 		}
 
@@ -380,9 +372,22 @@ func main() {
 
 	})
 
-	// TODO
 	r.DELETE("/:cluster/media/:id/tag/:tag", func(c *gin.Context) {
+		media, mediaError := utilities.GetMedia(c, db)
+		if mediaError != nil {
+			return
+		}
+		tag, tagError := utilities.GetTagId(c, db)
+		if tagError != nil {
+			return
+		}
 
+		db.Where(&config.TagMediaLink{
+			TagId:   tag,
+			MediaId: media,
+		}).Delete(&config.TagMediaLink{})
+
+		c.Status(200)
 	})
 
 	r.GET("/:cluster/media/:id/placeholder", func(c *gin.Context) {
@@ -448,7 +453,6 @@ func main() {
 		var err error
 		thumbnail, err = ioutil.ReadFile(thumbnailPath)
 		if err != nil {
-
 			log.Printf("Thumbnail not found: %v", err)
 
 			// if not exist
@@ -457,10 +461,40 @@ func main() {
 				return
 			}
 
+			rawProbe, probeError := ffmpeg.Probe("media/" + cluster + "/" + id)
+			if probeError != nil {
+				c.Status(404)
+				return
+			}
+
+			probe, parseError := gabs.ParseJSON([]byte(rawProbe))
+			if parseError != nil {
+				c.String(422, "Failed to parse media information")
+				log.Print(err)
+				return
+			}
+
+			getAttribute := func(attr string) float64 {
+				var value float64
+				var ok bool
+
+				for i := 0; !ok; i++ {
+					value, ok = probe.Search("streams", strconv.Itoa(i), attr).Data().(float64)
+				}
+
+				return value
+			}
+
 			media_type, _ := mimetype.DetectFile(mediaPath)
 			arguments := ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}
 			if strings.HasPrefix(media_type.String(), "video") {
-				arguments = ffmpeg.KwArgs{"vframes": 1, "ss": 7, "format": "image2", "vcodec": "libwebp"}
+				duration := getAttribute("duration")
+				timestamp := 7
+				if duration < 7 {
+					timestamp = int(duration / 2)
+				}
+
+				arguments = ffmpeg.KwArgs{"vframes": 1, "ss": timestamp, "format": "image2", "vcodec": "libwebp"}
 			}
 
 			buf := bytes.NewBuffer(nil)

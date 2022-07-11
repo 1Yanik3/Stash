@@ -66,17 +66,8 @@ func GetCluster(c *gin.Context, db *gorm.DB) (int, error) {
 	return clusterId, nil
 }
 func GetClusterString(c *gin.Context, db *gorm.DB) (string, error) {
-	clusterId, _ := strconv.Atoi(c.Param("cluster"))
-
-	var count int64
-	db.Model(&config.Cluster{}).Where(&config.Cluster{Id: clusterId}).Count(&count)
-
-	if count < 1 {
-		c.String(404, "Cluster not found")
-		return "-1", errors.New("Cluster not found")
-	}
-
-	return strconv.Itoa(clusterId), nil
+	groupId, err := GetCluster(c, db)
+	return strconv.Itoa(groupId), err
 }
 
 func GetGroup(c *gin.Context, db *gorm.DB) (int, error) {
@@ -87,7 +78,7 @@ func GetGroup(c *gin.Context, db *gorm.DB) (int, error) {
 	db.Model(&config.Group{}).Where(&config.Group{Id: groupId, Cluster: clusterId}).Count(&count)
 
 	if count < 1 {
-		c.String(404, "Group not Group")
+		c.String(404, "Group not found")
 		return -1, errors.New("Cluster not found")
 	}
 
@@ -96,4 +87,33 @@ func GetGroup(c *gin.Context, db *gorm.DB) (int, error) {
 func GetGroupString(c *gin.Context, db *gorm.DB) (string, error) {
 	groupId, err := GetGroup(c, db)
 	return strconv.Itoa(groupId), err
+}
+
+func GetMedia(c *gin.Context, db *gorm.DB) (int, error) {
+	clusterId, _ := GetCluster(c, db)
+	mediaId, _ := strconv.Atoi(c.Param("id"))
+
+	var count int64
+	db.Model(&config.Media{}).Where(&config.Media{Id: mediaId, Cluster: clusterId}).Count(&count)
+
+	if count < 1 {
+		c.String(404, "Media not found")
+		return -1, errors.New("Media not found")
+	}
+
+	return mediaId, nil
+}
+
+func GetTagId(c *gin.Context, db *gorm.DB) (int, error) {
+	name := c.Param("tag")
+
+	var tagId int
+	db.Model(&config.Tag{}).Select("id").Where(&config.Tag{Name: name}).Scan(&tagId)
+
+	if tagId < 1 {
+		c.String(404, "Tag not found")
+		return -1, errors.New("Tag not found")
+	}
+
+	return tagId, nil
 }

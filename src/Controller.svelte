@@ -3,14 +3,14 @@
     import type { Group, Tag } from './types'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 
-    import { clusters, cluster, groups, group, tags, traverse } from './stores'
+    import { serverURL, clusters, cluster, groups, group, tags, traverse } from './stores'
     import { page } from '$app/stores'
     import { onMount } from 'svelte'
 
     export const updateClusters = async () => {
         console.log("Updating clusters...")
         try {
-            const res = await fetch(`https://stash.hera.lan/clusters`)
+            const res = await fetch(`${serverURL}/clusters`)
             clusters.set(await res.json())
             cluster.set(
                 $clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || $clusters[0]
@@ -24,7 +24,7 @@
         console.log("Updating groups...")
         try {
 
-            const res = await fetch(`https://stash.hera.lan/${$cluster.id}/groups`)
+            const res = await fetch(`${serverURL}/${$cluster.id}/groups`)
             groups.set(
 
                 (await res.json()).map((c: Group) => {
@@ -68,7 +68,7 @@
             let output: Array<Tag> = []
 
             const addToOutput = async (g: Group) => {
-                const res = await fetch(`https://stash.hera.lan/${$cluster.id}/${g.id}/tags`)
+                const res = await fetch(`${serverURL}/${$cluster.id}/${g.id}/tags`)
                 output = [ ...output, ...(await res.json()).map((t: any) => { t.active = false; return t }) ]
 
                 if ($traverse)

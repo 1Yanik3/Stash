@@ -8,9 +8,8 @@ type Cluster struct {
 //#region test
 
 type Tag struct {
-	Id      int    `json:"id" gorm:"primaryKey;"`
-	Name    string `json:"name"`
-	Cluster int
+	Id   int    `json:"id" gorm:"primaryKey;"`
+	Name string `json:"name"`
 }
 
 type Group struct {

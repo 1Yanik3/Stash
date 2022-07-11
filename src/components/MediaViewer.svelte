@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cluster, visibleMedium } from "../stores"
+    import { serverURL, cluster, visibleMedium } from "../stores"
 
     let isZoomedIn = false
 </script>
@@ -9,7 +9,7 @@
     {#if $visibleMedium.type.startsWith("image")}
 
         <img
-            src={`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium.id}`}
+            src={`/${$cluster.id}/file/${$visibleMedium.id}`}
             alt={$visibleMedium.name}
             class={isZoomedIn ? "zoomed" : ""}
             on:click={e => isZoomedIn = !isZoomedIn}
@@ -18,7 +18,7 @@
     {:else if $visibleMedium.type.startsWith("video")}
 
         <video
-            src={`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium.id}`}
+            src={`/${$cluster.id}/file/${$visibleMedium.id}`}
             alt={$visibleMedium.name}
             controls
             autoplay

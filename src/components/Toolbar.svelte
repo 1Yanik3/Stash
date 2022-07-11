@@ -1,7 +1,5 @@
 <script lang="ts">
-    import type { Cluster, Medium } from 'src/types'
-
-    import { cluster, visibleMedium } from '../stores'
+    import { serverURL, cluster, visibleMedium } from '../stores'
 
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js'
@@ -12,7 +10,7 @@
         const value: string = (e.target as any).value
         if (e.key == "Enter" && value) {
 
-            fetch(`https://stash.hera.lan/${$cluster.id}/media/${$visibleMedium?.id}/tag`, {
+            fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/tag`, {
                 method: "PUT",
                 body: JSON.stringify({
                     Name: value
@@ -28,6 +26,21 @@
             .catch(console.error)
 
         }
+    }
+    
+    const removeTagFromMedia = (tag: string) => {
+        
+        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/tag/${tag}`, {
+            method: "DELETE"
+        })
+        .then(() => {
+
+            if (!$visibleMedium) return
+            const tmp = $visibleMedium
+            tmp.tags = tmp.tags.filter(t => t != tag)
+            visibleMedium.set(tmp)
+
+        })
     }
 </script>
 
@@ -46,14 +59,19 @@
     <!-- <span>{visibleMedium?.name}</span> -->
     <div style="overflow: scroll">
         {#each $visibleMedium?.tags || [] as tag}
-            <span class="tag">{tag}</span>
+            <span
+                class="tag"
+                on:contextmenu|preventDefault={() => {
+                    removeTagFromMedia(tag)
+                }}
+            >{tag}</span>
         {/each}
         <input type="text" on:keydown={handleKeyDown}>
     </div>
 
     <section>
 
-        <div on:click={() => window.open(`https://stash.hera.lan/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
+        <div on:click={() => window.open(`/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>

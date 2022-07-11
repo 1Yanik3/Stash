@@ -3,7 +3,7 @@
 
     import { JustifiedGrid } from "@egjs/svelte-grid"
 
-    import { cluster, group, tags, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from "../stores"
+    import { serverURL, cluster, group, tags, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from "../stores"
 
     let media: Array<Medium> = []
 
@@ -20,7 +20,7 @@
                 let output: Array<Medium> = []
 
                 const addToOutput = async (g: Group) => {
-                    const res = await fetch(`https://stash.hera.lan/${$cluster.id}/${g.id}/media`)
+                    const res = await fetch(`${serverURL}/${$cluster.id}/${g.id}/media`)
                     output = [ ...output, ...await res.json() ]
 
                     if ($traverse)
@@ -65,7 +65,7 @@
         {#if includesActiveTags(medium, $tags)}
             <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
                 <img
-                    src={`https://stash.hera.lan/${$cluster.id}/media/${medium.id}/thumbnail`}
+                    src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
                     alt={medium.name}
                 >
             </div>

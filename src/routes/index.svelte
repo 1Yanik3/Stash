@@ -11,10 +11,9 @@
     import MediaViewer from '../components/MediaViewer.svelte'
     import Navigationbar from '../components/Navigationbar.svelte'
     
-    import { cluster, group, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from '../stores'
+    import { serverURL, cluster, group, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from '../stores'
 
-    let isFullscreen: boolean
-    // $: if (!visibleMedium) isFullscreen = false
+    let isFullscreen: boolean = false
 
     //#region Uploader
 
@@ -34,7 +33,7 @@
             data.append('file', files[i])
             data.append('user', 'hubot')
 
-            const request = fetch(`https://stash.hera.lan/${$cluster.id}/${$group.id}/media`, {
+            const request = fetch(`${serverURL}/${$cluster.id}/${$group.id}/media`, {
                 method: 'POST',
                 body: data
             })
