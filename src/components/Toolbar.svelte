@@ -71,7 +71,7 @@
 
     <section>
 
-        <div on:click={() => window.open(`/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
+        <div on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
         <div>
