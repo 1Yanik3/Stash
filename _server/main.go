@@ -456,12 +456,12 @@ func main() {
 			log.Printf("Thumbnail not found: %v", err)
 
 			// if not exist
-			if _, err := os.Stat("media/" + cluster + "/" + id); errors.Is(err, os.ErrNotExist) {
+			if _, err := os.Stat(mediaPath); errors.Is(err, os.ErrNotExist) {
 				c.Status(404)
 				return
 			}
 
-			rawProbe, probeError := ffmpeg.Probe("media/" + cluster + "/" + id)
+			rawProbe, probeError := ffmpeg.Probe(mediaPath)
 			if probeError != nil {
 				c.Status(404)
 				return
@@ -474,21 +474,10 @@ func main() {
 				return
 			}
 
-			getAttribute := func(attr string) float64 {
-				var value float64
-				var ok bool
-
-				for i := 0; !ok; i++ {
-					value, ok = probe.Search("streams", strconv.Itoa(i), attr).Data().(float64)
-				}
-
-				return value
-			}
-
 			media_type, _ := mimetype.DetectFile(mediaPath)
 			arguments := ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "libwebp"}
 			if strings.HasPrefix(media_type.String(), "video") {
-				duration := getAttribute("duration")
+				duration, _ := probe.Search("format", "duration").Data().(float64)
 				timestamp := 7
 				if duration < 7 {
 					timestamp = int(duration / 2)
@@ -499,7 +488,7 @@ func main() {
 
 			buf := bytes.NewBuffer(nil)
 			err := ffmpeg.
-				Input("media/"+cluster+"/"+id).
+				Input(mediaPath).
 				Filter("scale", ffmpeg.Args{"w=650:h=650:force_original_aspect_ratio=increase"}).
 				Output("pipe:", arguments).
 				WithOutput(buf, os.Stdout).Run()
