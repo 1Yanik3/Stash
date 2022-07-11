@@ -9,7 +9,7 @@
     {#if $visibleMedium.type.startsWith("image")}
 
         <img
-            src={`/${$cluster.id}/file/${$visibleMedium.id}`}
+            src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
             alt={$visibleMedium.name}
             class={isZoomedIn ? "zoomed" : ""}
             on:click={e => isZoomedIn = !isZoomedIn}
@@ -18,7 +18,7 @@
     {:else if $visibleMedium.type.startsWith("video")}
 
         <video
-            src={`/${$cluster.id}/file/${$visibleMedium.id}`}
+            src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
             alt={$visibleMedium.name}
             controls
             autoplay
