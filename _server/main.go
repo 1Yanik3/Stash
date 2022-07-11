@@ -287,7 +287,8 @@ func main() {
 		if err != nil {
 			return
 		}
-		// move into -1 instead of failing
+
+		// TODO: move into -1 instead of failing
 		group, err := utilities.GetGroup(c, db)
 		if err != nil {
 			return
@@ -295,10 +296,17 @@ func main() {
 
 		file, err := c.FormFile("file")
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Failed to get file", err)
+			c.Status(500)
+			return
 		}
 
-		src, _ := file.Open()
+		src, err := file.Open()
+		if err != nil {
+			log.Fatal("Failed to open file", err)
+			c.Status(500)
+			return
+		}
 		defer src.Close()
 		media_type, _ := mimetype.DetectReader(src)
 
@@ -310,7 +318,12 @@ func main() {
 		media := &config.Media{Type: media_type.String(), Name: file.Filename, Cluster: cluster, Group: group}
 		db.Create(&media)
 
-		c.SaveUploadedFile(file, "media/"+strconv.Itoa(cluster)+"/"+strconv.Itoa(media.Id))
+		err = c.SaveUploadedFile(file, "media/"+strconv.Itoa(cluster)+"/"+strconv.Itoa(media.Id))
+		if err != nil {
+			log.Fatal("failed to save file", err)
+			c.Status(500)
+			return
+		}
 
 		c.Status(200)
 	})
