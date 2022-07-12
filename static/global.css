@@ -12,10 +12,10 @@ body {
 }
 
 select, button, input {
-    background: #333;
-    border: 1px solid #444;
+    background: hsl(0, 0%, 26%);
+    border: none;
     border-radius: 3px;
-    padding: 0.25em;
+    padding: 0.35em;
     -webkit-appearance: none;
 }
 input {

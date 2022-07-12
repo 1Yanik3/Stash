@@ -7,7 +7,7 @@
     import SidebarSection from "../components/SidebarSection.svelte"
     import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
 
-    import { serverURL, cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
+    import { cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
 
     export let controller: any
 
@@ -42,7 +42,13 @@
     {#key $clusters}
         <select on:change={changeCluster} >
             {#each $clusters as c}
-                <option value={c.id} selected={c.id == $cluster.id}>{c.name}</option>
+                <option value={c.id} selected={c.id == $cluster.id}>
+                    {c.name} 
+                    <!-- {#if c.id == $cluster.id}
+                        ▼
+                        ▽
+                    {/if} -->
+                </option>
             {/each}
         </select>
     {/key}
