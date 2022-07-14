@@ -1,5 +1,6 @@
 <script lang="ts">
     import { serverURL, cluster, visibleMedium } from '../stores'
+    import { browser } from '$app/env'
 
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
@@ -52,6 +53,8 @@
 
     // TODO: Make nicer
     const startUpscale = () => {
+        if (!browser) return
+
         upscalePopup_open = true
         upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
 
