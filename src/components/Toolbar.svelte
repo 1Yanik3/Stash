@@ -46,57 +46,57 @@
         })
     }
 
-    let upscalePopup_open = false
-    let upscalePopup_url_old = ""
-    let upscalePopup_url_new = ""
-    let upscalePopup_keepNewFunction = () => alert("Image not loaded yet")
+    // let upscalePopup_open = false
+    // let upscalePopup_url_old = ""
+    // let upscalePopup_url_new = ""
+    // let upscalePopup_keepNewFunction = () => alert("Image not loaded yet")
 
-    // TODO: Make nicer
-    const startUpscale = () => {
-        if (!browser) return
+    // // TODO: Make nicer
+    // const startUpscale = () => {
+    //     if (!browser) return
 
-        upscalePopup_open = true
-        upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
+    //     upscalePopup_open = true
+    //     upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
 
-        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/upscale`, {
-            method: "POST"
-        })
-        .then(res => res.json())
-        .then(response => {
+    //     fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/upscale`, {
+    //         method: "POST"
+    //     })
+    //     .then(res => res.json())
+    //     .then(response => {
 
-            const { output_url } = response
-            upscalePopup_url_new = output_url
+    //         const { output_url } = response
+    //         upscalePopup_url_new = output_url
 
-            upscalePopup_keepNewFunction = async () => {
+    //         upscalePopup_keepNewFunction = async () => {
 
-                // get image
-                const response = await fetch(upscalePopup_url_new)
-                const image = await response.blob()
+    //             // get image
+    //             const response = await fetch(upscalePopup_url_new)
+    //             const image = await response.blob()
 
-                const data = new FormData()
-                data.append('file', new File([image], $visibleMedium?.name || "newImage.jpg", {
-                    type: 'image/jpg'
-                }))
+    //             const data = new FormData()
+    //             data.append('file', new File([image], $visibleMedium?.name || "newImage.jpg", {
+    //                 type: 'image/jpg'
+    //             }))
 
-                fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
-                    method: "PUT",
-                    body: data
-                })
-                .then(async () => {
+    //             fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
+    //                 method: "PUT",
+    //                 body: data
+    //             })
+    //             .then(async () => {
 
-                    window.location.reload()
+    //                 window.location.reload()
 
-                })
+    //             })
 
-            }
+    //         }
 
-        })
+    //     })
 
-    }
+    // }
     
 
 </script>
-
+<!-- 
 {#if upscalePopup_open}
     <Popup>
     <div class="popupContent">
@@ -127,7 +127,7 @@
     
     </div>
     </Popup>
-{/if}
+{/if} -->
 
 <main style="min-width: calc(100% - 4em)">
     <section>
