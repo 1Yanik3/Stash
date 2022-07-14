@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -338,6 +340,103 @@ func main() {
 
 		// if is not already in deleted group
 		// => move to deleted group
+	})
+
+	r.POST("/:cluster/media/:id/upscale", func(c *gin.Context) {
+		// cluster, clusterError := utilities.GetClusterString(c, db)
+		// if clusterError != nil {
+		// 	log.Fatal(err)
+		// 	return
+		// }
+		// id := c.Param("id")
+
+		// mediaPath := "media/" + cluster + "/" + id
+		mediaPath := "test.webp"
+
+		buffer := new(bytes.Buffer)
+		writer := multipart.NewWriter(buffer)
+
+		part, _ := writer.CreateFormFile("image", "input.jpg")
+
+		// read file
+		file, _ := os.ReadFile(mediaPath)
+		part.Write(file)
+
+		writer.Close()
+
+		req, err := http.NewRequest("POST", "https://api.deepai.org/api/torch-srgan", buffer)
+		if err != nil {
+			log.Fatal(err)
+		}
+		req.Header.Add("api-key", "84ff9126-dd63-49bb-87a2-2304165beede")
+		req.Header.Add("Content-Type", writer.FormDataContentType())
+
+		response, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer response.Body.Close()
+
+		log.Print("Return response...")
+
+		var result map[string]interface{}
+		json.NewDecoder(response.Body).Decode(&result)
+		c.JSON(200, result)
+
+	})
+
+	r.PUT("/:cluster/media/:id/replace", func(c *gin.Context) {
+		clusterString, clusterStringError := utilities.GetClusterString(c, db)
+		if clusterStringError != nil {
+			return
+		}
+		id := c.Param("id")
+
+		// mediaPath := "media/" + clusterString + "/" + id
+		mediaPath := "test.webp"
+		thumbnailPath := "thumbnails/" + clusterString + "/" + id + ".webp"
+
+		// move file
+		err = os.Rename(mediaPath, mediaPath+"."+utilities.RandomString(10))
+		if err != nil {
+			return
+		}
+		err = os.Remove(thumbnailPath)
+		if err != nil {
+			return
+		}
+
+		// save new file
+		file, err := c.FormFile("file")
+		if err != nil {
+			log.Fatal("Failed to get file", err)
+			c.Status(500)
+			return
+		}
+
+		src, err := file.Open()
+		if err != nil {
+			log.Fatal("Failed to open file", err)
+			c.Status(500)
+			return
+		}
+		defer src.Close()
+		media_type, _ := mimetype.DetectReader(src)
+
+		if !strings.HasPrefix(media_type.String(), "image") && !strings.HasPrefix(media_type.String(), "video") {
+			c.Status(415)
+			return
+		}
+
+		err = c.SaveUploadedFile(file, mediaPath)
+		if err != nil {
+			log.Fatal("failed to save file", err)
+			c.Status(500)
+			return
+		}
+
+		c.Status(200)
+
 	})
 
 	r.PUT("/:cluster/media/:id/tag", func(c *gin.Context) {

@@ -2,6 +2,7 @@ package utilities
 
 import (
 	"errors"
+	"math/rand"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -116,4 +117,14 @@ func GetTagId(c *gin.Context, db *gorm.DB) (int, error) {
 	}
 
 	return tagId, nil
+}
+
+func RandomString(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(s)
 }

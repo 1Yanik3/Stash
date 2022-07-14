@@ -31,7 +31,6 @@
 
             const data = new FormData()
             data.append('file', files[i])
-            data.append('user', 'hubot')
 
             const request = fetch(`${serverURL}/${$cluster.id}/${$group.id}/media`, {
                 method: 'POST',

@@ -2,7 +2,9 @@
     import { serverURL, cluster, visibleMedium } from '../stores'
 
     import Icon from 'mdi-svelte'
-    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js'
+    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
+
+    import Popup from '../components/Popup.svelte'
 
     export let isFullscreen: boolean 
 
@@ -42,7 +44,84 @@
 
         })
     }
+
+    let upscalePopup_open = true
+    let upscalePopup_url = ""
+    let upscalePopup_keepNewFunction = () => alert("Image not loaded yet")
+
+    const startUpscale = () => {
+        upscalePopup_open = true
+
+        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/upscale`, {
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(response => {
+
+            const { output_url } = response
+            upscalePopup_url = output_url
+
+            upscalePopup_keepNewFunction = async () => {
+
+                // get image
+                const response = await fetch(upscalePopup_url)
+                const image = await response.blob()
+
+                const data = new FormData()
+                data.append('file', new File([image], $visibleMedium?.name || "newImage.jpg", {
+                    type: 'image/jpg'
+                }))
+
+                fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
+                    method: "PUT",
+                    body: data
+                })
+                .then(async () => {
+
+                    window.location.reload()
+
+                })
+
+            }
+
+        })
+
+    }
+    
+
 </script>
+
+{#if upscalePopup_open}
+    <Popup>
+    <div class="popupContent">
+    
+        <div>
+    
+            <h1>Original</h1>
+    
+            <img src={`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`} alt=""/>
+    
+            <button on:click={() => upscalePopup_open = false}>
+                Keep Old
+            </button>
+    
+        </div>
+    
+        <div>
+    
+            <h1>New</h1>
+    
+            <img src={upscalePopup_url} alt=""/>
+        
+            <button on:click={upscalePopup_keepNewFunction}>
+                Keep New
+            </button>
+    
+        </div>
+    
+    </div>
+    </Popup>
+{/if}
 
 <main style="min-width: calc(100% - 4em)">
     <section>
@@ -50,8 +129,13 @@
         <div on:click={() => visibleMedium.set(null)}>
             <Icon path={mdiClose}/>
         </div>
+
         <div on:click={() => isFullscreen = !isFullscreen}>
             <Icon path={mdiFullscreen}/>
+        </div>
+
+        <div>
+            <Icon path={mdiInformationOutline} size={0.8}/>
         </div>
 
     </section>
@@ -74,9 +158,11 @@
         <div on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
-        <div>
-            <Icon path={mdiInformationOutline} size={0.8}/>
+
+        <div on:click={startUpscale}>
+            <Icon path={mdiResize} size={0.8}/>
         </div>
+
         <div>
             <Icon path={mdiTrashCanOutline} size={0.8}/>
         </div>
@@ -135,6 +221,16 @@
                 cursor: pointer;
             }
 
+        }
+    }
+
+    .popupContent {
+        display: grid;
+        gap: 2em;
+        grid-template-columns: 1fr 1fr;
+
+        img {
+            width: 100%;
         }
     }
 </style>
