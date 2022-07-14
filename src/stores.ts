@@ -20,5 +20,6 @@ export let activeSortingMethod = writable(sortingMethods[3])
 
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 
+// TODO: Make automatic
 // export const serverURL = "http://localhost"
 export const serverURL = "https://stash.hera.lan"

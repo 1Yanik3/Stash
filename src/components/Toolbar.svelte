@@ -45,10 +45,11 @@
         })
     }
 
-    let upscalePopup_open = true
+    let upscalePopup_open = false
     let upscalePopup_url = ""
     let upscalePopup_keepNewFunction = () => alert("Image not loaded yet")
 
+    // TODO: Make nicer
     const startUpscale = () => {
         upscalePopup_open = true
 
