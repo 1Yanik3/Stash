@@ -96,7 +96,7 @@
     
 
 </script>
-<!-- 
+
 {#if upscalePopup_open}
     <Popup>
     <div class="popupContent">
@@ -127,7 +127,7 @@
     
     </div>
     </Popup>
-{/if} -->
+{/if}
 
 <main style="min-width: calc(100% - 4em)">
     <section>
