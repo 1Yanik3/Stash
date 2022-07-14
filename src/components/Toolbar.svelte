@@ -46,12 +46,14 @@
     }
 
     let upscalePopup_open = false
-    let upscalePopup_url = ""
+    let upscalePopup_url_old = ""
+    let upscalePopup_url_new = ""
     let upscalePopup_keepNewFunction = () => alert("Image not loaded yet")
 
     // TODO: Make nicer
     const startUpscale = () => {
         upscalePopup_open = true
+        upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
 
         fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/upscale`, {
             method: "POST"
@@ -60,12 +62,12 @@
         .then(response => {
 
             const { output_url } = response
-            upscalePopup_url = output_url
+            upscalePopup_url_new = output_url
 
             upscalePopup_keepNewFunction = async () => {
 
                 // get image
-                const response = await fetch(upscalePopup_url)
+                const response = await fetch(upscalePopup_url_new)
                 const image = await response.blob()
 
                 const data = new FormData()
@@ -100,7 +102,7 @@
     
             <h1>Original</h1>
     
-            <img src={`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`} alt=""/>
+            <img src={upscalePopup_url_old} alt=""/>
     
             <button on:click={() => upscalePopup_open = false}>
                 Keep Old
@@ -112,7 +114,7 @@
     
             <h1>New</h1>
     
-            <img src={upscalePopup_url} alt=""/>
+            <img src={upscalePopup_url_new} alt=""/>
         
             <button on:click={upscalePopup_keepNewFunction}>
                 Keep New

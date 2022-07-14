@@ -343,15 +343,14 @@ func main() {
 	})
 
 	r.POST("/:cluster/media/:id/upscale", func(c *gin.Context) {
-		// cluster, clusterError := utilities.GetClusterString(c, db)
-		// if clusterError != nil {
-		// 	log.Fatal(err)
-		// 	return
-		// }
-		// id := c.Param("id")
+		cluster, clusterError := utilities.GetClusterString(c, db)
+		if clusterError != nil {
+			log.Fatal(err)
+			return
+		}
+		id := c.Param("id")
 
-		// mediaPath := "media/" + cluster + "/" + id
-		mediaPath := "test.webp"
+		mediaPath := "media/" + cluster + "/" + id
 
 		buffer := new(bytes.Buffer)
 		writer := multipart.NewWriter(buffer)
@@ -392,8 +391,7 @@ func main() {
 		}
 		id := c.Param("id")
 
-		// mediaPath := "media/" + clusterString + "/" + id
-		mediaPath := "test.webp"
+		mediaPath := "media/" + clusterString + "/" + id
 		thumbnailPath := "thumbnails/" + clusterString + "/" + id + ".webp"
 
 		// move file
