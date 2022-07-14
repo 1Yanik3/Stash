@@ -363,7 +363,9 @@ func main() {
 
 		writer.Close()
 
-		req, err := http.NewRequest("POST", "https://api.deepai.org/api/torch-srgan", buffer)
+		// TODO: Do both and then allow user to choose which is better
+		// req, err := http.NewRequest("POST", "https://api.deepai.org/api/torch-srgan", buffer)
+		req, err := http.NewRequest("POST", "https://api.deepai.org/api/waifu2x", buffer)
 		if err != nil {
 			log.Fatal(err)
 		}
