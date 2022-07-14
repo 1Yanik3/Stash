@@ -5,9 +5,12 @@
 
     import { serverURL, clusters, cluster, groups, group, tags, traverse } from './stores'
     import { page } from '$app/stores'
+    import { browser } from '$app/env'
     import { onMount } from 'svelte'
 
     export const updateClusters = async () => {
+        if (!browser) return
+
         console.log("Updating clusters...")
         try {
             const res = await fetch(`${serverURL}/clusters`)
@@ -21,6 +24,8 @@
     }
 
     export const updateGroups = async () => {
+        if (!browser) return
+
         console.log("Updating groups...")
         try {
 
@@ -62,6 +67,8 @@
     }
 
     const updateTags = async () => {
+        if (!browser) return
+        
         console.log("Updating tags...")
         try {
 
