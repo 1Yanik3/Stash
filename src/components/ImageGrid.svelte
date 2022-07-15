@@ -78,6 +78,7 @@
                 <div
                     on:click={() => { visibleMedium.set(medium); mediaIndex = i }}
                 >
+                    <!-- TODO: Find out how I can keep showing the placeholder until the image has finished loading -->
                     {#if intersecting && finishedLoading}
                         
                         <img
@@ -86,7 +87,6 @@
                         >
                         
                     {:else}
-
 
                         <!-- <img
                             src={`data:image/svg+xml,${encodeURIComponent(`

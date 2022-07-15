@@ -148,7 +148,7 @@
     </section>
 
     <!-- <span>{visibleMedium?.name}</span> -->
-    <div style="overflow: scroll">
+    <div>
         {#each $visibleMedium?.tags || [] as tag}
             <span
                 class="tag"
@@ -238,7 +238,7 @@
 
         img {
             width: 100%;
-            height: 50%;
+            height: 500px;
             object-fit: contain;
         }
     }

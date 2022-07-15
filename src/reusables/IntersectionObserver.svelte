@@ -11,6 +11,7 @@
   let intersecting = false;
   let container: any;
 
+  // TODO: Figure out of it cane be triggered earlier
   onMount(() => {
     if (typeof IntersectionObserver !== 'undefined') {
       const rootMargin = `${bottom}px ${left}px ${top}px ${right}px`;
