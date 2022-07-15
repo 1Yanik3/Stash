@@ -530,7 +530,10 @@ func main() {
 
 		width := jsonParsed.Search("streams", "*", "width").Index(0).Data().(float64)
 		height := jsonParsed.Search("streams", "*", "height").Index(0).Data().(float64)
-		rotation := jsonParsed.Search("streams", "*", "side_data_list", "*", "rotation").Index(0).Index(0).Data().(float64)
+		rotation, ok := jsonParsed.Search("streams", "*", "side_data_list", "*", "rotation").Index(0).Index(0).Data().(float64)
+		if !ok {
+			rotation = 0
+		}
 
 		if rotation == 90 || rotation == -90 {
 			tmp := width
