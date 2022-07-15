@@ -73,7 +73,7 @@
                     <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
                         <img
                             src={
-                                intersecting && loaded >= media.length + 1
+                                intersecting && loaded >= media.length
                                 ? `${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`
                                 : `${serverURL}/${$cluster.id}/media/${medium.id}/placeholder`
                             }
