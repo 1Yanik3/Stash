@@ -528,19 +528,15 @@ func main() {
 			return
 		}
 
-		getAttribute := func(attr string) float64 {
-			var value float64
-			var ok bool
+		width := jsonParsed.Search("streams", "*", "width").Index(0).Data().(float64)
+		height := jsonParsed.Search("streams", "*", "height").Index(0).Data().(float64)
+		rotation := jsonParsed.Search("streams", "*", "side_data_list", "*", "rotation").Index(0).Index(0).Data().(float64)
 
-			for i := 0; !ok; i++ {
-				value, ok = jsonParsed.Search("streams", strconv.Itoa(i), attr).Data().(float64)
-			}
-
-			return value
+		if rotation == 90 || rotation == -90 {
+			tmp := width
+			width = height
+			height = tmp
 		}
-
-		width := getAttribute("width")
-		height := getAttribute("height")
 
 		var k float64
 		if width > height {

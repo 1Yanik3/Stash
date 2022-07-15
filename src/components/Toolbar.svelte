@@ -5,7 +5,7 @@
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
 
-    import Popup from '../components/Popup.svelte'
+    import Popup from '../reusables/Popup.svelte'
 
     export let isFullscreen: boolean 
 

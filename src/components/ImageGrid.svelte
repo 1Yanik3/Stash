@@ -5,11 +5,14 @@
 
     import { serverURL, cluster, group, tags, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from "../stores"
 
+    import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
+
     let media: Array<Medium> = []
 
     const setVisibleMedium = (i: number) => visibleMedium.set(media[i])
     export let mediaIndex: number
     export let mediaCount: number
+    let loaded = 0
 
     $: setVisibleMedium(mediaIndex);
 
@@ -53,26 +56,37 @@
 </script>
 
 {#key !visibleMedium}
-<JustifiedGrid
-    autoResize={true}
-    useResizeObserver={true}
-    defaultDirection="start"
-    gap={14}
-    sizeRange={[150, 500]}
->
+    <JustifiedGrid
+        autoResize={true}
+        useResizeObserver={true}
+        defaultDirection="start"
+        gap={14}
+        sizeRange={[150, 500]}
+        useTransform={true}
+    >
 
-    {#each media as medium, i}
-        {#if includesActiveTags(medium, $tags)}
-            <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
-                <img
-                    src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
-                    alt={medium.name}
-                >
-            </div>
-        {/if}
-    {/each}
+        {#each media as medium, i}
+            {#if includesActiveTags(medium, $tags)}
+                <IntersectionObserver once={true} let:intersecting={intersecting}
 
-</JustifiedGrid>
+                    on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
+                    <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
+                        <img
+                            src={
+                                intersecting && loaded >= media.length + 1
+                                ? `${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`
+                                : `${serverURL}/${$cluster.id}/media/${medium.id}/placeholder`
+                            }
+                            alt={medium.name}
+                            on:load={() => loaded += 1}
+                        >
+                    </div>
+
+            </IntersectionObserver>
+            {/if}
+        {/each}
+
+    </JustifiedGrid>
 {/key}
 
 <style lang="scss">
