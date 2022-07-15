@@ -84,6 +84,7 @@
                 })
                 .then(async () => {
 
+                    // This seems to ignore the history pushes
                     window.location.reload()
 
                 })

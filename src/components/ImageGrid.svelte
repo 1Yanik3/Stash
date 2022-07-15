@@ -71,15 +71,23 @@
 
                     on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
                     <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
-                        <img
-                            src={
-                                intersecting && loaded >= media.length
-                                ? `${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`
-                                : `${serverURL}/misc/placeholder/${medium.width}/${medium.height}`
-                            }
-                            alt={medium.name}
-                            on:load={() => loaded += 1}
-                        >
+                        {#if intersecting && loaded >= media.length}
+                            
+                            <img
+                                src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
+                                alt={medium.name}
+                            >
+                        {:else}
+
+                            <svg
+                                viewBox={`0 0 ${medium.width} ${medium.height}`}
+                                xmlns="http://www.w3.org/2000/svg" 
+                                on:load={() => loaded += 1}
+                            >
+                                <rect width={medium.width} height={medium.height} x="0" y="0"/>
+                            </svg>
+
+                        {/if}
                     </div>
 
             </IntersectionObserver>
@@ -92,7 +100,7 @@
 <style lang="scss">
     div {
 
-        img {
+        img, svg {
             width: 100%;
             height: 100%;
             cursor: pointer;
