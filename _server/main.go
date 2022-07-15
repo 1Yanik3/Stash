@@ -73,6 +73,37 @@ func main() {
 		c.Redirect(307, "https://confusedant.gitlab.io/stash")
 	})
 
+	r.GET("/misc/placeholder/:width/:height", func(c *gin.Context) {
+
+		widthInt, widthErr := strconv.Atoi(c.Param("width"))
+		if widthErr != nil {
+			c.Status(400)
+			return
+		}
+		heightInt, heightErr := strconv.Atoi(c.Param("height"))
+		if heightErr != nil {
+			c.Status(400)
+			return
+		}
+
+		width := float64(widthInt)
+		height := float64(heightInt)
+
+		var k float64
+		if width > height {
+			k = 650 / width
+		} else {
+			k = 650 / height
+		}
+
+		c.Data(200, "image/svg+xml", []byte(fmt.Sprintf(`
+			<svg viewBox="0 0 %[1]v %[2]v" xmlns="http://www.w3.org/2000/svg">
+				<rect width="%[1]v" height="%[2]v" x="0" y="0"/>
+			</svg>
+		`, width*k, height*k)))
+
+	})
+
 	//#region Group
 
 	// TODO: make group based (as some groups might not include the same amount of tags)

@@ -160,22 +160,15 @@ func UpdateMediaInformation(db *gorm.DB, cluster int, mediaId int) (int, int) {
 		height = tmp
 	}
 
-	var k float64
-	if width > height {
-		k = 650 / width
-	} else {
-		k = 650 / height
-	}
-
 	db.
 		Where(&config.Media{
 			Id: mediaId,
 		}).
 		Updates(&config.Media{
-			Width:  int(width * k),
-			Height: int(height * k),
+			Width:  int(width),
+			Height: int(height),
 		})
 
-	return int(width * k), int(height * k)
+	return int(width), int(height)
 
 }
