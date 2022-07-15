@@ -30,6 +30,8 @@ type Media struct {
 	Date    int64  `gorm:"autoCreateTime"`
 	Cluster int
 	Group   int
+	Height  int
+	Width   int
 }
 
 type TagMediaLink struct {

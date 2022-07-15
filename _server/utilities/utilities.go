@@ -2,13 +2,16 @@ package utilities
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"math/rand"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-
 	"ant.ms/stash/config"
 
+	gabs "github.com/Jeffail/gabs/v2"
+	"github.com/gin-gonic/gin"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"gorm.io/gorm"
 )
 
@@ -127,4 +130,52 @@ func RandomString(n int) string {
 		s[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(s)
+}
+
+func UpdateMediaInformation(db *gorm.DB, cluster int, mediaId int) (int, int) {
+	log.Print("Updating media information...")
+
+	information, err := ffmpeg.Probe(fmt.Sprintf("media/%d/%d", cluster, mediaId))
+	if err != nil {
+		log.Print(err)
+		return -1, -1
+	}
+
+	jsonParsed, err := gabs.ParseJSON([]byte(information))
+	if err != nil {
+		log.Print(err)
+		return -1, -1
+	}
+
+	width := jsonParsed.Search("streams", "*", "width").Index(0).Data().(float64)
+	height := jsonParsed.Search("streams", "*", "height").Index(0).Data().(float64)
+	rotation, ok := jsonParsed.Search("streams", "*", "side_data_list", "*", "rotation").Index(0).Index(0).Data().(float64)
+	if !ok {
+		rotation = 0
+	}
+
+	if rotation == 90 || rotation == -90 {
+		tmp := width
+		width = height
+		height = tmp
+	}
+
+	var k float64
+	if width > height {
+		k = 650 / width
+	} else {
+		k = 650 / height
+	}
+
+	db.
+		Where(&config.Media{
+			Id: mediaId,
+		}).
+		Updates(&config.Media{
+			Width:  int(width * k),
+			Height: int(height * k),
+		})
+
+	return int(width * k), int(height * k)
+
 }

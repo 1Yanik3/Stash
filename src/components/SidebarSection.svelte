@@ -8,7 +8,7 @@
     import Icon from 'mdi-svelte'
 </script>
 
-<div style={justify ? "display: flex; justify-content: space-between; margin: 0.5em" : ""}>
+<div class:justified={justify}>
     {#if title || action}
         <div style="display: flex;justify-content: space-between">
 
@@ -34,6 +34,11 @@
 </div>
 
 <style>
+    div.justified {
+        display: flex;
+        justify-content: space-between;
+        margin: 0.5em;
+    }
     span {
         display: block;
         margin: 0.5em 0.75em;

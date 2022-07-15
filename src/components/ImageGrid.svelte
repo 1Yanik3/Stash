@@ -2,6 +2,7 @@
     import type { Group, Tag, Medium } from "src/types"
 
     import { JustifiedGrid } from "@egjs/svelte-grid"
+    import { Base64 } from 'js-base64'
 
     import { serverURL, cluster, group, tags, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from "../stores"
 
@@ -75,7 +76,15 @@
                             src={
                                 intersecting && loaded >= media.length
                                 ? `${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`
-                                : `${serverURL}/${$cluster.id}/media/${medium.id}/placeholder`
+                                : `data:image/svg+xml;base64,${
+
+                                    Base64.encode(`
+                                        <svg viewBox="0 0 ${medium.width} ${medium.height}" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="${medium.width}" height="${medium.height}" x="0" y="0" fill="black"/>
+                                        </svg>
+                                    `)
+
+                                }`
                             }
                             alt={medium.name}
                             on:load={() => loaded += 1}

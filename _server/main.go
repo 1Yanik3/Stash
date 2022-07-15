@@ -232,19 +232,23 @@ func main() {
 
 		// TODO: optimize
 		type Media_result struct {
-			Id   int
-			Type string
-			Name string
-			Date int64
-			Tags string
+			Id     int
+			Type   string
+			Name   string
+			Date   int64
+			Tags   string
+			Width  int
+			Height int
 		}
 
 		type Media_json struct {
-			Id   int      `json:"id"`
-			Type string   `json:"type"`
-			Name string   `json:"name"`
-			Date int64    `json:"date"`
-			Tags []string `json:"tags"`
+			Id     int      `json:"id"`
+			Type   string   `json:"type"`
+			Name   string   `json:"name"`
+			Date   int64    `json:"date"`
+			Tags   []string `json:"tags"`
+			Width  int      `json:"width"`
+			Height int      `json:"height"`
 		}
 
 		whereClause := fmt.Sprintf(`AND "group" = %d`, group)
@@ -265,18 +269,24 @@ func main() {
 				INNER JOIN tag_media_links
 				ON tags.id = tag_id
 				WHERE media_id = media.id
-			), '') as Tags
+			), '') as Tags, media.Width, media.Height
 			FROM media
 		` + whereClause).Scan(&media)
 
 		result := []Media_json{}
 		for _, i := range media {
+			if i.Width < 1 || i.Height < 1 {
+				i.Width, i.Height = utilities.UpdateMediaInformation(db, cluster, i.Id)
+			}
+
 			result = append(result, Media_json{
-				Id:   i.Id,
-				Type: i.Type,
-				Name: i.Name,
-				Date: i.Date,
-				Tags: utilities.FilterStringArray(strings.Split(i.Tags, ",")),
+				Id:     i.Id,
+				Type:   i.Type,
+				Name:   i.Name,
+				Date:   i.Date,
+				Tags:   utilities.FilterStringArray(strings.Split(i.Tags, ",")),
+				Width:  i.Width,
+				Height: i.Height,
 			})
 		}
 
@@ -337,6 +347,9 @@ func main() {
 			c.Status(500)
 			return
 		}
+
+		log.Print("Update height and width of image...")
+		utilities.UpdateMediaInformation(db, cluster, media.Id)
 
 		c.Status(200)
 	})
@@ -406,7 +419,8 @@ func main() {
 
 	r.PUT("/:cluster/media/:id/replace", func(c *gin.Context) {
 		clusterString, clusterStringError := utilities.GetClusterString(c, db)
-		if clusterStringError != nil {
+		cluster, clusterError := utilities.GetCluster(c, db)
+		if clusterStringError != nil || clusterError != nil {
 			return
 		}
 		id := c.Param("id")
@@ -452,6 +466,9 @@ func main() {
 			c.Status(500)
 			return
 		}
+
+		mediaId, _ := strconv.Atoi(id)
+		utilities.UpdateMediaInformation(db, cluster, mediaId)
 
 		c.Status(200)
 
@@ -505,54 +522,6 @@ func main() {
 		}).Delete(&config.TagMediaLink{})
 
 		c.Status(200)
-	})
-
-	r.GET("/:cluster/media/:id/placeholder", func(c *gin.Context) {
-		cluster, clusterError := utilities.GetClusterString(c, db)
-		if clusterError != nil {
-			return
-		}
-		id := c.Param("id")
-
-		information, err := ffmpeg.Probe("media/" + cluster + "/" + id)
-		if err != nil {
-			c.String(422, "Failed to get media information")
-			log.Print(err)
-			return
-		}
-
-		jsonParsed, err := gabs.ParseJSON([]byte(information))
-		if err != nil {
-			c.String(422, "Failed to parse media information")
-			log.Print(err)
-			return
-		}
-
-		width := jsonParsed.Search("streams", "*", "width").Index(0).Data().(float64)
-		height := jsonParsed.Search("streams", "*", "height").Index(0).Data().(float64)
-		rotation, ok := jsonParsed.Search("streams", "*", "side_data_list", "*", "rotation").Index(0).Index(0).Data().(float64)
-		if !ok {
-			rotation = 0
-		}
-
-		if rotation == 90 || rotation == -90 {
-			tmp := width
-			width = height
-			height = tmp
-		}
-
-		var k float64
-		if width > height {
-			k = 650 / width
-		} else {
-			k = 650 / height
-		}
-
-		c.Data(200, "image/svg+xml", []byte(fmt.Sprintf(`
-			<svg viewBox="0 0 %[1]v %[2]v" xmlns="http://www.w3.org/2000/svg">
-				<rect width="%[1]v" height="%[2]v" x="0" y="0"/>
-			</svg>
-		`, width*k, height*k)))
 	})
 
 	r.GET("/:cluster/media/:id/thumbnail", func(c *gin.Context) {

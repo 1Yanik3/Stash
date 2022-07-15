@@ -11,7 +11,7 @@
         <img
             src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
             alt={$visibleMedium.name}
-            class={isZoomedIn ? "zoomed" : ""}
+            class:isZoomedIn
             on:click={e => isZoomedIn = !isZoomedIn}
         >
 
@@ -52,7 +52,7 @@
             object-fit: contain;
         }
 
-        img.zoomed {
+        img.isZoomedIn {
             scale: 3;
             cursor: zoom-out;
         }

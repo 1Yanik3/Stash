@@ -23,6 +23,8 @@ export interface Medium {
     name:   string
     date:   number
     tags:   Array<string>
+    width:  number
+    height: number
 }
 
 import { mdiSort, mdiSortAlphabeticalAscending, mdiSortAlphabeticalDescending, mdiSortCalendarAscending, mdiSortCalendarDescending } from '@mdi/js'
