@@ -338,6 +338,7 @@ func main() {
 			return
 		}
 
+		// TODO: this is where it sometimes gets stuck
 		log.Print("Get file...")
 
 		file, err := c.FormFile("file")

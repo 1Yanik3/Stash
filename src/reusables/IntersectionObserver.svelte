@@ -32,6 +32,7 @@
     function handler() {
       const bcr = container.getBoundingClientRect();
 
+      // TODO: Make it, so some images above and below are also loaded (for smoother scrolling)
       intersecting = (
         (bcr.bottom + bottom) > 0 &&
         (bcr.right + right) > 0 &&

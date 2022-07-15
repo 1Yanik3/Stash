@@ -37,11 +37,11 @@
                 body: data
             })
 
-            request.catch(console.error)
-
             console.log(request)
 
             await request
+
+            console.log(request)
 
         }
     
