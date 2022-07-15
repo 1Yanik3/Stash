@@ -7,7 +7,7 @@
     import SidebarSection from "../components/SidebarSection.svelte"
     import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
 
-    import { cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
+    import { serverURL, cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
 
     export let controller: any
 
@@ -23,7 +23,7 @@
         const name = window.prompt("Enter a name for the new collection")
 
         if (name) {
-            await fetch(`/${$cluster.id}/groups`,{
+            await fetch(`${serverURL}/${$cluster.id}/groups`,{
                 method: "POST",
                 body: JSON.stringify({
                     Cluster: $cluster.id,
