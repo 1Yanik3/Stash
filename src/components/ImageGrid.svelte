@@ -12,7 +12,6 @@
     const setVisibleMedium = (i: number) => visibleMedium.set(media[i])
     export let mediaIndex: number
     export let mediaCount: number
-    let loaded = 0
 
     $: setVisibleMedium(mediaIndex);
 
@@ -71,18 +70,18 @@
 
                     on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
                     <div on:click={() => { visibleMedium.set(medium); mediaIndex = i }}>
-                        {#if intersecting && loaded >= media.length}
+                        {#if intersecting}
                             
                             <img
                                 src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
                                 alt={medium.name}
                             >
+                            
                         {:else}
 
                             <svg
                                 viewBox={`0 0 ${medium.width} ${medium.height}`}
                                 xmlns="http://www.w3.org/2000/svg" 
-                                on:load={() => loaded += 1}
                             >
                                 <rect width={medium.width} height={medium.height} x="0" y="0"/>
                             </svg>
