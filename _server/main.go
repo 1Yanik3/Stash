@@ -73,6 +73,8 @@ func main() {
 		c.Redirect(307, "https://confusedant.gitlab.io/stash")
 	})
 
+	//#region Group
+
 	// TODO: make group based (as some groups might not include the same amount of tags)
 	r.GET("/:cluster/:group/tags", func(c *gin.Context) {
 		group, groupErr := utilities.GetGroupString(c, db)
@@ -282,6 +284,8 @@ func main() {
 	})
 
 	r.POST("/:cluster/:group/media", func(c *gin.Context) {
+		log.Print("Request start...")
+
 		cluster, err := utilities.GetCluster(c, db)
 		if err != nil {
 			return
@@ -293,12 +297,16 @@ func main() {
 			return
 		}
 
+		log.Print("Get file...")
+
 		file, err := c.FormFile("file")
 		if err != nil {
 			log.Fatal("Failed to get file", err)
 			c.Status(500)
 			return
 		}
+
+		log.Print("Open file...")
 
 		src, err := file.Open()
 		if err != nil {
@@ -307,6 +315,8 @@ func main() {
 			return
 		}
 		defer src.Close()
+
+		log.Print("Detect mimetype...")
 		media_type, _ := mimetype.DetectReader(src)
 
 		if !strings.HasPrefix(media_type.String(), "image") && !strings.HasPrefix(media_type.String(), "video") {
@@ -314,8 +324,12 @@ func main() {
 			return
 		}
 
+		log.Print("Add to DB...")
+
 		media := &config.Media{Type: media_type.String(), Name: file.Filename, Cluster: cluster, Group: group}
 		db.Create(&media)
+
+		log.Print("Save file...")
 
 		err = c.SaveUploadedFile(file, "media/"+strconv.Itoa(cluster)+"/"+strconv.Itoa(media.Id))
 		if err != nil {
@@ -326,6 +340,10 @@ func main() {
 
 		c.Status(200)
 	})
+
+	//#endregion
+
+	//#region Medium
 
 	clusters := []config.Cluster{}
 	db.Model(&config.Cluster{}).Scan(&clusters)
@@ -630,6 +648,8 @@ func main() {
 
 		c.JSON(200, jsonParsed.Data())
 	})
+
+	//#endregion
 
 	r.Run(":80")
 }
