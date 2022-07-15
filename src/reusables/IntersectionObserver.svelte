@@ -28,26 +28,32 @@
       return () => observer.unobserve(container);
     }
 
-    // The following is a fallback for older browsers
-    function handler() {
-      const bcr = container.getBoundingClientRect();
+    // // The following is a fallback for older browsers
+    // function handler() {
+    //   if (intersecting && once) {
+    //     return
+    //   }
 
-      // TODO: Make it, so some images above and below are also loaded (for smoother scrolling)
-      intersecting = (
-        (bcr.bottom + bottom) > 0 &&
-        (bcr.right + right) > 0 &&
-        (bcr.top - top) < window.innerHeight &&
-        (bcr.left - left) < window.innerWidth
-      );
+    //   const bcr = container.getBoundingClientRect();
 
-      if (intersecting && once) {
-        window.removeEventListener('scroll', handler);
-      }
-    }
+    //   // TODO: Make it, so some images above and below are also loaded (for smoother scrolling)
+    //   intersecting = (
+    //     (bcr.bottom + bottom) > 0 &&
+    //     (bcr.right + right) > 0 &&
+    //     (bcr.top - top) < window.innerHeight &&
+    //     (bcr.left - left) < window.innerWidth
+    //   );
 
-    window.addEventListener('scroll', handler);
-    return () => window.removeEventListener('scroll', handler);
+    //   if (intersecting && once) {
+    //     window.removeEventListener('scroll', handler);
+    //   }
+    // }
+
+    // setInterval(handler, 50)
+    // window.addEventListener('scroll', handler)
+    // return () => window.removeEventListener('scroll', handler)
   });
+
 </script>
 
   
