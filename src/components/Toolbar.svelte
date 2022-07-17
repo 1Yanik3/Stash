@@ -1,9 +1,11 @@
 <script lang="ts">
+
     import { serverURL, cluster, visibleMedium } from '../stores'
     import { browser } from '$app/env'
 
     import Icon from 'mdi-svelte'
-    import { mdiClose, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
+    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
+    import selectFiles from 'select-files'
 
     import Popup from '../reusables/Popup.svelte'
 
@@ -46,6 +48,25 @@
         })
     }
 
+    const replaceMedia = (newMedia: Blob, type: string = ($visibleMedium?.type || "undefined")) => {
+        const data = new FormData()
+        data.append('file', new File([newMedia], $visibleMedium?.name || "newImage.jpg", {
+            type: 'image/jpg'
+        }))
+
+        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
+            method: "PUT",
+            body: data
+        })
+        .then(async () => {
+
+            // visibleMedium.update()
+            // // This seems to ignore the history pushes
+            // window.location.reload()
+
+        })
+    }
+
     let upscalePopup_open = false
     let upscalePopup_url_old = ""
     let upscalePopup_url_new = ""
@@ -72,26 +93,20 @@
                 // get image
                 const response = await fetch(upscalePopup_url_new)
                 const image = await response.blob()
-
-                const data = new FormData()
-                data.append('file', new File([image], $visibleMedium?.name || "newImage.jpg", {
-                    type: 'image/jpg'
-                }))
-
-                fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
-                    method: "PUT",
-                    body: data
-                })
-                .then(async () => {
-
-                    // This seems to ignore the history pushes
-                    window.location.reload()
-
-                })
+                replaceMedia(image, 'image/jpg')
 
             }
 
         })
+    }
+
+    const replaceWithLocalMedia = () => {
+        if (!browser) return
+
+        selectFiles({ }).then(files => {
+            if (files && files[0])
+                replaceMedia(files[0])
+        });
 
     }
     
@@ -162,16 +177,20 @@
 
     <section>
 
-        <div on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
-            <Icon path={mdiOpenInNew} size={0.8}/>
+        <div>
+            <Icon path={mdiTrashCanOutline} size={0.8}/>
+        </div>
+
+        <div on:click={replaceWithLocalMedia}>
+            <Icon path={mdiFileReplaceOutline} size={0.8}/>
         </div>
 
         <div on:click={startUpscale}>
             <Icon path={mdiResize} size={0.8}/>
         </div>
 
-        <div>
-            <Icon path={mdiTrashCanOutline} size={0.8}/>
+        <div on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
+            <Icon path={mdiOpenInNew} size={0.8}/>
         </div>
 
     </section>

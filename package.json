@@ -28,6 +28,7 @@
     "@egjs/svelte-grid": "^1.10.2",
     "@mdi/js": "^6.7.96",
     "mdi-svelte": "^1.1.2",
+    "select-files": "^1.0.1",
     "svelte-dropzone": "^1.0.6"
   }
 }
