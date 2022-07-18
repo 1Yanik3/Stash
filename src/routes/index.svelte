@@ -11,7 +11,7 @@
     import MediaViewer from '../components/MediaViewer.svelte'
     import Navigationbar from '../components/Navigationbar.svelte'
     
-    import { serverURL, cluster, group, visibleMedium, traverse, activeSortingMethod, mediaTypeFilter } from '../stores'
+    import { serverURL, cluster, group, visibleMedium, media } from '../stores'
 
     let isFullscreen: boolean = false
 
@@ -53,18 +53,22 @@
 
     //#region Shortcuts
 
-    let mediaIndex = 0
-    let mediaCount = 0
-
     const keyDownEventListener = (e: KeyboardEvent) => {
+        if (!$visibleMedium) return
 
-        if (visibleMedium && e.key == "ArrowLeft")
+        const mediaIndex = $media.indexOf($visibleMedium)
+
+        if (visibleMedium && e.key == ",")
             if (mediaIndex > 0)
-                mediaIndex -= 1
-        if (visibleMedium && e.key == "ArrowRight")
-            if (mediaIndex < mediaCount)
-                mediaIndex += 1
-
+                visibleMedium.set(
+                    $media[mediaIndex - 1]
+                )
+        if (visibleMedium && e.key == ".")
+            if (mediaIndex < $media.length - 1)
+                visibleMedium.set(
+                    $media[mediaIndex + 1]
+                )
+                    
     }
 
     //#endregion   
@@ -101,9 +105,7 @@
 
             {:else}
 
-                {#key [ $group, $traverse, $activeSortingMethod, $mediaTypeFilter ]}
-                    <ImageGrid bind:mediaIndex bind:mediaCount/>
-                {/key}
+                <ImageGrid />
 
             {/if}
             

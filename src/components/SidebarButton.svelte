@@ -46,9 +46,9 @@
 
 <a
 {id}
-href={group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
+href={$group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class:active={active || tag?.active || (group && target && $group.id == target.id)}
+class:active={active || tag?.active || ($group && target && $group.id == target.id)}
 
 on:click={() => {
 
@@ -69,7 +69,6 @@ on:click={() => {
         // is a group button
         if ($group != target)
             group.set(target)
-
 
     }
 }}

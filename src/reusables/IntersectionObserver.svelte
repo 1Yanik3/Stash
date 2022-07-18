@@ -11,6 +11,8 @@
   let intersecting = false;
   let container: any;
 
+  $: if(intersecting) dispatch('intersecting')
+
   // TODO: Figure out of it cane be triggered earlier
   onMount(() => {
     if (typeof IntersectionObserver !== 'undefined') {
@@ -58,6 +60,9 @@
 </script>
 
   
-<div bind:this={container} on:click={() => dispatch("click")}>
+<div
+  bind:this={container}
+  on:click={() => dispatch("click")}
+>
   <slot {intersecting}></slot>
 </div>

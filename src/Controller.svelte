@@ -1,9 +1,9 @@
 <script lang="ts">
 
-    import type { Group, Tag } from './types'
+    import type { Group, Tag, Medium } from './types'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 
-    import { serverURL, clusters, cluster, groups, group, tags, traverse } from './stores'
+    import { serverURL, clusters, cluster, groups, group, tags, traverse, mediaTypeFilter, activeSortingMethod, media, visibleMedium } from './stores'
     import { page } from '$app/stores'
     import { browser } from '$app/env'
     import { onMount } from 'svelte'
@@ -91,6 +91,33 @@
         }
     }
 
+    const updateMedia = async () => {
+        console.log("Updating media...")
+        if ($cluster.id && $group.id) {
+            try {
+
+                let output: Array<Medium> = []
+
+                const addToOutput = async (g: Group) => {
+                    const res = await fetch(`${serverURL}/${$cluster.id}/${g.id}/media`)
+                    output = [ ...output, ...await res.json() ]
+
+                    if ($traverse)
+                        for (const i in g.children)
+                            await addToOutput(g.children[i])
+                }
+                await addToOutput($group)
+
+                media.set(
+                    output.filter(d => d.type.startsWith($mediaTypeFilter)).sort($activeSortingMethod.method)
+                )                
+                
+            } catch (err) {
+                console.error("failed to update media", err)
+            }
+        }
+    }
+
     const clearTagSelection = () => tags.set(
         $tags.map(t => { t.active = false; return t })
     )
@@ -98,7 +125,11 @@
 
     updateClusters()
     cluster.subscribe(updateGroups)
+
+    group.subscribe(g => updateMedia())
+    group.subscribe(g => visibleMedium.set(null))
     group.subscribe(g => g.id > 0 && updateTags())
+
     traverse.subscribe(() => $traverse != undefined && updateTags())
 
     onMount(() => {

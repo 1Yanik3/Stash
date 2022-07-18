@@ -12,6 +12,7 @@ export let group: Writable<Group> = writable({ id: 0, name: "Loading...", childr
 
 export let tags: Writable<Array<Tag>> = writable([])
 
+export let media: Writable<Array<Medium>> = writable([])
 export let visibleMedium: Writable<Medium | null> = writable(null)
 
 export let traverse = writable(false)
