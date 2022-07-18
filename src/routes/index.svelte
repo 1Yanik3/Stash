@@ -47,6 +47,8 @@
     
         fileOver = false
         uploadProgress = null
+
+        controller.updateMedia()
     }
 
     //#endregion

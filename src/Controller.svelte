@@ -66,7 +66,7 @@
         }
     }
 
-    const updateTags = async () => {
+    export const updateTags = async () => {
         if (!browser) return
         
         console.log("Updating tags...")
@@ -91,7 +91,7 @@
         }
     }
 
-    const updateMedia = async () => {
+    export const updateMedia = async () => {
         console.log("Updating media...")
         if ($cluster.id && $group.id) {
             try {
