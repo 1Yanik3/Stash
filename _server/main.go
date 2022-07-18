@@ -434,10 +434,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		err = os.Remove(thumbnailPath)
-		if err != nil {
-			return
-		}
+		os.Remove(thumbnailPath)
 
 		// save new file
 		file, err := c.FormFile("file")

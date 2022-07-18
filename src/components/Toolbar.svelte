@@ -48,10 +48,10 @@
         })
     }
 
-    const replaceMedia = (newMedia: Blob, type: string = ($visibleMedium?.type || "undefined")) => {
+    const replaceMedia = (newMedia: Blob) => {
         const data = new FormData()
         data.append('file', new File([newMedia], $visibleMedium?.name || "newImage.jpg", {
-            type: 'image/jpg'
+            type: newMedia.type
         }))
 
         fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
@@ -93,7 +93,7 @@
                 // get image
                 const response = await fetch(upscalePopup_url_new)
                 const image = await response.blob()
-                replaceMedia(image, 'image/jpg')
+                replaceMedia(image)
 
             }
 
