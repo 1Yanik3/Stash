@@ -504,6 +504,27 @@ func main() {
 
 	})
 
+	r.PUT("/:cluster/media/:id/group", func(c *gin.Context) {
+		id, _ := strconv.Atoi(c.Param("id"))
+
+		if c.Request.Body == nil {
+			c.String(400, "Please send a request body")
+			return
+		}
+
+		var g struct {
+			GroupId int
+		}
+
+		err := json.NewDecoder(c.Request.Body).Decode(&g)
+		if err != nil {
+			c.String(400, "Could not decode body")
+			return
+		}
+
+		db.Where(&config.Media{Id: id}).Updates(&config.Media{Group: g.GroupId})
+	})
+
 	r.DELETE("/:cluster/media/:id/tag/:tag", func(c *gin.Context) {
 		media, mediaError := utilities.GetMedia(c, db)
 		if mediaError != nil {

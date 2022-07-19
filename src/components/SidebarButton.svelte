@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { Cluster, Group, Tag } from '../types'
-    import { serverURL, group, tags } from '../stores'
+    import type { Group, Tag } from '../types'
+    import { serverURL, group, tags, cluster, media } from '../stores'
 
     import { createEventDispatcher } from 'svelte'
     import { mdiPound } from '@mdi/js'
@@ -8,7 +8,8 @@
 
     import { page } from '$app/stores'
 
-    export let cluster: Cluster | null = null
+    let isDraggingOver = false
+
     export let target: Group | null = null
     export let tag: Tag | null = null
 
@@ -30,6 +31,51 @@
     //#endregion
 
     const dispatch = createEventDispatcher()
+
+    //#region Handle Drag (for moving media)
+
+    const isFileTransfer = (e: DragEvent) => e.dataTransfer?.types.includes("Files")
+
+    const handleDrop = (e: DragEvent) => {
+        const items = e.dataTransfer?.items
+        if (!items) return
+
+        for (const i in items) {
+            const item = items[i]
+            if (item.type == "text/plain") item.getAsString(async mediaId => {
+
+                if (mediaId.startsWith("mediaId_")) {
+
+                    mediaId = mediaId.replace("mediaId_", "")
+
+                    await fetch(`${serverURL}/${$cluster.id}/media/${mediaId}/group`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            GroupId: target?.id
+                        })
+                    })
+
+                    media.set(
+                        $media.filter(m => m.id.toString() != mediaId)
+                    )
+                    
+                }
+
+            })
+        }
+        
+        isDraggingOver = false
+    }
+    const handleEnter = (e: DragEvent) => {
+        if (isFileTransfer(e)) return
+
+        isDraggingOver = true
+    }
+    const handleLeave = (e: DragEvent) => {
+        isDraggingOver = false
+    }
+
+    //#endregion
 
 </script>
 
@@ -81,14 +127,20 @@ on:contextmenu|preventDefault={e => {
 }}
 
 on:dblclick|stopPropagation={() => {
-    if (!target || !cluster) return
+    if (!target || !$cluster) return
 
-    fetch(`/${cluster.id}/${target.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
+    fetch(`/${$cluster.id}/${target.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
         method: "PATCH"
     })
     target.collapsed = !!target.children.length && !target.collapsed
 
 }}
+
+on:drop|preventDefault|stopPropagation={handleDrop}
+on:dragover|preventDefault={() => {}}
+on:dragenter={handleEnter}
+on:dragleave={handleLeave}
+class:isDraggingOver
 >
 
     <div class="section">
@@ -130,12 +182,19 @@ on:dblclick|stopPropagation={() => {
         margin-right: 1px;
 
         transition: background 150ms;
+        border: 1px solid transparent;
+
 
         &:hover {
             background: hsl(0, 0%, 22%);
         }
         &.active {
             background: hsl(0, 0%, 26%);
+        }
+
+        &.isDraggingOver {
+            background: hsl(0, 0%, 30%);
+            border: 1px solid hsl(0, 0%, 45%);
         }
 
         .section {

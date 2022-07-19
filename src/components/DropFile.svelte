@@ -2,29 +2,39 @@
     export let onDrop: any
     export let onEnter: Function | null = null
     export let onLeave: Function | null = null
+    export let accept: "files" = "files"
 
-    let isOver = false
     let input: any
 
-    const handleEnter = () => {
-        isOver = true
-        if (onEnter) { onEnter() }
+    const isFileTransfer = (e: DragEvent) => e.dataTransfer?.types.includes("Files")
+
+    const handleEnter = (e: DragEvent) => {
+        if (!onEnter) return
+
+        // console.log(e.dataTransfer?.types, isFileTransfer(e));
+
+        if (accept == "files" && isFileTransfer(e))
+            onEnter()
+
     }
 
     const handleLeave = () => {
-        isOver = false
         if (onLeave) { onLeave() }
     }
 
-    const handleDrop = (e: any) => {
-        e.preventDefault()
-        const items = Array.from(e.dataTransfer.items)
-        onDrop(items.map((d: any) => d.getAsFile()))
-        isOver = false
-    }
+    const handleDrop = (e: DragEvent) => {
+        
+        if (accept == "files") {
 
-    const handleDragOver = (e: any) => {
-        e.preventDefault()
+            if (!isFileTransfer(e)) {
+                return
+            }
+
+            const items = Array.from(e.dataTransfer?.items || [])
+            onDrop(items.map((d: any) => d.getAsFile()))
+
+        }
+
     }
 
     const handleChange = (e: any) => {
@@ -35,8 +45,8 @@
   
 <div
     id="zone"
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
+    on:drop|preventDefault|stopPropagation={handleDrop}
+    on:dragover|preventDefault={() => {}}
     on:dragenter={handleEnter}
     on:dragleave={handleLeave}
   >

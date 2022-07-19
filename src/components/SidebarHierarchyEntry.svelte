@@ -10,7 +10,7 @@
 </script>
 
 <SidebarButton
-    bind:target {indent} cluster={$cluster}
+    bind:target {indent}
     icon={target.icon || target.collapsed ? mdiFolderHidden : mdiFolder}
 >
     {target.name}

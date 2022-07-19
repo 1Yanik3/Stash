@@ -12,7 +12,9 @@
 
     let thumbnailLoadedCompletely = false
 
-    console.log(123)
+    const dragStartHandler = (e: DragEvent) => {
+        e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
+    }
 </script>
 
 <IntersectionObserver
@@ -21,7 +23,11 @@
     top={500}
     let:intersecting
 >
-    <div on:click={() => { visibleMedium.set(medium) }} transition:fade="{{duration: 120}}">
+    <div
+        on:click={() => { visibleMedium.set(medium) }}
+        transition:fade="{{duration: 120}}"
+        on:dragstart|stopPropagation={dragStartHandler}
+    >
 
         {#if (intersecting && finishedLoading) || i < 50}
 

@@ -13,7 +13,6 @@
 
     const changeCluster = ((e: any) => {
         const { target }: { target: HTMLInputElement} = e
-        console.log("123")
         window.history.pushState({}, '', `?c=${target.value}`)
         cluster.set($clusters.find(c => c.id == (target.value as any as number)) || $clusters[0])
         controller.updateGroups()
