@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import type { Group, Tag, Medium } from './types'
+    import { type Group, type Tag, type Medium, sortingMethods } from './types'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 
     import { serverURL, clusters, cluster, groups, group, tags, traverse, mediaTypeFilter, activeSortingMethod, media, visibleMedium } from './stores'
@@ -130,7 +130,10 @@
     group.subscribe(g => visibleMedium.set(null))
     group.subscribe(g => g.id > 0 && updateTags())
 
+    traverse.subscribe(() => $traverse != undefined && updateMedia())
     traverse.subscribe(() => $traverse != undefined && updateTags())
+
+    activeSortingMethod.subscribe(g => updateMedia())
 
     onMount(() => {
         traverse.set(localStorage.getItem('traverse') == "true")
