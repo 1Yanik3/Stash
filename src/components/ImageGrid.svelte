@@ -27,7 +27,7 @@
 
 </script>
 
-{#key $media}
+{#key [ $media, $tags ]}
 <JustifiedGrid
     autoResize={true}
     useResizeObserver={true}
