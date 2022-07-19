@@ -522,7 +522,18 @@ func main() {
 			return
 		}
 
-		db.Where(&config.Media{Id: id}).Updates(&config.Media{Group: g.GroupId})
+		if g.GroupId < 0 && g.GroupId != -2 {
+			log.Print(g.GroupId)
+			// will be set to null
+			err := db.Model(&config.Media{}).Where(&config.Media{Id: id}).Update("group", nil)
+			log.Print(err)
+			// db.Raw(`Update media SET "group" = NULL WHERE id = ?`, id)
+		} else {
+			log.Print("test")
+			// anything else
+			db.Where(&config.Media{Id: id}).Updates(&config.Media{Group: g.GroupId})
+		}
+
 	})
 
 	r.DELETE("/:cluster/media/:id/tag/:tag", func(c *gin.Context) {
