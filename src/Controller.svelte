@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import { type Group, type Tag, type Medium, sortingMethods } from './types'
+    import type { Group, Tag, Medium } from './types'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 
     import { serverURL, clusters, cluster, groups, group, tags, traverse, mediaTypeFilter, activeSortingMethod, media, visibleMedium } from './stores'
