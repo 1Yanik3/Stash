@@ -365,15 +365,6 @@ func main() {
 		r.Static(fmt.Sprintf("/%d/file", i.Id), fmt.Sprintf("media/%d", i.Id))
 	}
 
-	// TODO
-	r.DELETE("/:cluster/media/:id", func(c *gin.Context) {
-		// if is already in deleted group
-		// => delete permanently
-
-		// if is not already in deleted group
-		// => move to deleted group
-	})
-
 	r.POST("/:cluster/media/:id/upscale", func(c *gin.Context) {
 		cluster, clusterError := utilities.GetClusterString(c, db)
 		if clusterError != nil {

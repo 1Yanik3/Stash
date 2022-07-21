@@ -86,7 +86,10 @@
         <Navigationbar {controller}/>
     </section>
 
-    <section style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${isFullscreen ? 'display: none' : ''}`}>
+    <section
+        id="imageGallerySection"
+        style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${isFullscreen ? 'display: none' : ''}`}
+    >
 
         <DropFile
             onDrop={onDrop}
