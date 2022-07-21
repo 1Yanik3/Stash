@@ -142,7 +142,7 @@
             box-shadow: inset -0.7px 0 0 rgba($color: #fff, $alpha: 0.15);
 
             &:nth-child(1),  &:nth-child(3) {
-                background: hsl(0, 0%, 16%);
+                background: hsl(0, 0%, 13%);
             }
             &:nth-child(1) {
                 overflow-y: auto;
