@@ -65,10 +65,11 @@
         border-radius: 3px;
         box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
 
-        transition: filter 200ms;
+        transition: filter 200ms, transform 200ms;
 
         &:hover {
             filter: brightness(0.85);
+            transform: scale(1.03);
         }
     }
 

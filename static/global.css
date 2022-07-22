@@ -17,6 +17,12 @@ select, button, input {
     border-radius: 3px;
     padding: 0.35em;
     -webkit-appearance: none;
+
+    transition: background 150ms;
+}
+/* TODO: Move to SCSS */
+select:hover, button:hover {
+    background: hsl(0, 0%, 22%);
 }
 input {
     background: #1d1d1d;

@@ -18,7 +18,6 @@
       const rootMargin = `${bottom}px ${left}px ${top}px ${right}px`;
 
       const observer = new IntersectionObserver(entries => {
-        console.log(entries)
         intersecting = entries[0].isIntersecting;
         if (intersecting && once) {
           observer.unobserve(container);

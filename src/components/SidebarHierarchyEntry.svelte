@@ -1,9 +1,8 @@
 <script lang="ts">
     import SidebarButton from '../components/SidebarButton.svelte'
-    import { mdiFolder, mdiFolderHidden } from '@mdi/js'
+    import { mdiFolder, mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
 
     import type { Group } from 'src/types'
-    import { cluster } from '../stores'
 
     export let target: Group
     export let indent: number = 0
@@ -11,7 +10,7 @@
 
 <SidebarButton
     bind:target {indent}
-    icon={target.icon || target.collapsed ? mdiFolderHidden : mdiFolder}
+    icon={target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline}
 >
     {target.name}
 </SidebarButton>

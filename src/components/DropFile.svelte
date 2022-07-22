@@ -11,8 +11,6 @@
     const handleEnter = (e: DragEvent) => {
         if (!onEnter) return
 
-        // console.log(e.dataTransfer?.types, isFileTransfer(e));
-
         if (accept == "files" && isFileTransfer(e))
             onEnter()
 

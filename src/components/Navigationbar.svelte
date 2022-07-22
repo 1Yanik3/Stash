@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiArchive, mdiBookshelf, mdiHook, mdiHookOff, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
+    import { mdiArchive, mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFileHidden, mdiFolderHidden, mdiHook, mdiHookOff, mdiImage, mdiImageOutline, mdiPen, mdiPencil, mdiPencilOutline, mdiPlus, mdiTrashCan, mdiTrashCanOutline, mdiVideo, mdiVideoOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
     import { sortingMethods } from '../types'
     
@@ -8,6 +8,7 @@
     import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
 
     import { serverURL, cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
+import { children } from 'svelte/internal'
 
     export let controller: any
 
@@ -54,7 +55,7 @@
 
     <div style="display: flex; align-items: center">
 
-        <div
+        <div class="actionButton"
             on:click={() =>
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
@@ -63,15 +64,16 @@
             on:contextmenu|preventDefault={() =>
                 activeSortingMethod.set($activeSortingMethod)
             }
-            style="cursor: pointer; margin-right: 0.35em"
         >
             <Icon path={$activeSortingMethod.icon} size={0.8}/>
         </div>
 
-        <div on:click={() => {
-            traverse.set(!$traverse)
-            localStorage.setItem('traverse', $traverse.toString())
-        }} style="cursor: pointer; margin-right: 0.35em">
+        <div class="actionButton"
+            on:click={() => {
+                traverse.set(!$traverse)
+                localStorage.setItem('traverse', $traverse.toString())
+            }}
+        >
             {#if $traverse}
                 <Icon path={mdiHook} size={0.8}/>
             {:else}
@@ -87,17 +89,45 @@
     <SidebarButton target={$groups.find(g => g.id == -3)} icon={mdiBookshelf}>
         All
     </SidebarButton>
-    <SidebarButton target={$groups.find(g => g.id == -1)} icon={mdiArchive}>
+    <SidebarButton target={$groups.find(g => g.id == -1)} icon={mdiArchiveOutline}>
         Unsorted
     </SidebarButton>
-    <SidebarButton target={$groups.find(g => g.id == -2)} icon={mdiTrashCan}>
+    <SidebarButton target={$groups.find(g => g.id == -2)} icon={mdiTrashCanOutline}>
         Trash
     </SidebarButton>
 </SidebarSection>
 
 <!-- Folders -->
-<SidebarSection title="Folders" action={createGroup}>
-
+<SidebarSection title="Folders" actions={[
+    {
+        action: () => {
+            fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!$group.children.length && !$group.collapsed}`, {
+                method: "PATCH"
+            })
+            groups.set(
+                $groups.map(g => {
+                    if (g == $group && g.children.length) {
+                        g.collapsed = !g.collapsed
+                    }
+                    return g
+                })
+            )
+        },
+        name: "Toggle Hidden",
+        icon: mdiFolderHidden,
+        disabled: !$group.children.length
+    },
+    {
+        action: createGroup,
+        name: "Create New",
+        icon: mdiPlus
+    },
+    {
+        action: () => {},
+        name: "Rename",
+        icon: mdiPencilOutline
+    }
+]}>
     {#key $groups}
         
         {#each $groups.filter(({ id }) => id > 0) as target}
@@ -105,26 +135,23 @@
         {/each}
 
     {/key}
-    
 </SidebarSection>
 
 <!-- Tags -->
 {#if $tags.length}
-
     <SidebarSection title="Tags">
 
-        {#each $tags as tag}
+        {#each $tags.sort((a, b) => b.count - a.count) as tag}
             <SidebarButton {tag}/>
         {/each}
 
     </SidebarSection>
-
 {/if}
 
 <!-- Type -->
 <SidebarSection title="Media Type">
 
-    <SidebarButton icon={mdiImage} on:click={() => {
+    <SidebarButton icon={mdiImageOutline} on:click={() => {
         if ($mediaTypeFilter == "image")
             mediaTypeFilter.set("")
         else
@@ -133,7 +160,7 @@
         Image
     </SidebarButton>
     
-    <SidebarButton icon={mdiVideo} on:click={() => {
+    <SidebarButton icon={mdiVideoOutline} on:click={() => {
         if ($mediaTypeFilter == "video")
             mediaTypeFilter.set("")
         else
@@ -143,3 +170,15 @@
     </SidebarButton>
 
 </SidebarSection>
+
+<style lang="scss">
+    .actionButton {
+        cursor: pointer;
+        margin-right: 0.35em;
+
+        transition: filter 100ms;
+        &:hover {
+            filter: brightness(0.75);
+        }
+    }
+</style>
