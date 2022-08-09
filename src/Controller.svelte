@@ -134,6 +134,7 @@
     traverse.subscribe(() => $traverse != undefined && updateTags())
 
     activeSortingMethod.subscribe(g => updateMedia())
+    mediaTypeFilter.subscribe(g => updateMedia())
 
     onMount(() => {
         traverse.set(localStorage.getItem('traverse') == "true")

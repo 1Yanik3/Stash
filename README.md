@@ -10,9 +10,9 @@ This is a big project for me, but also one that is going to take a long long tim
 
 ## TODO
 
-- [ ] Allow to move other places
+- [x] Allow to move other places
   - incl. Trash
-- [ ] Bulk edit featues
+- [ ] Bulk edit features
   - [ ] Tags
   - [ ] Move
 - [ ] Allow replacing the media from the UI
