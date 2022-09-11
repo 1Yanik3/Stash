@@ -67,7 +67,7 @@
 </script>
 
 <a
-href={$group && target ? `?c=${(new URL($page.url)).searchParams.get("c") || 1}&g=${target.id}` : ""}
+href={$group && target ? `?c=${$cluster.id || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || ($group && target && $group.id == target.id)}
 

@@ -1,12 +1,37 @@
 <script lang="ts">
 
-    import type { Group, Tag, Medium } from './types'
-    import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
-
-    import { serverURL, clusters, cluster, groups, group, tags, traverse, mediaTypeFilter, activeSortingMethod, media, visibleMedium } from './stores'
     import { page } from '$app/stores'
     import { browser } from '$app/env'
     import { onMount } from 'svelte'
+    import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
+
+    import type { Group, Tag, Medium } from './types'
+    import { serverURL, clusters, cluster, groups, group, tags, traverse, mediaTypeFilter, activeSortingMethod, media, visibleMedium } from './stores'
+
+    import Shortcut from './reusables/Shortcut.svelte'
+
+    const flattenGroups = () => {
+
+        const flattentedGroups: Array<Group> = [
+            $groups.find(g => g.id == -3) as Group,
+            $groups.find(g => g.id == -1) as Group,
+            $groups.find(g => g.id == -2) as Group
+        ]
+
+        const flatten = (input: Group) => {
+
+            flattentedGroups.push(input)
+
+            if (input.children.length)
+                input.children.forEach(g => flatten(g))
+
+        }
+        $groups
+        .filter(g => g.id > 0)
+        .forEach(g => flatten(g))
+
+        return(flattentedGroups)
+    }
 
     export const updateClusters = async () => {
         if (!browser) return
@@ -58,7 +83,7 @@
             $groups.forEach(g => flatten(g))
 
             group.set(
-                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups[1]
+                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups.find(g => g.id == -3) || $groups[0]
             )
 
         } catch (err) {
@@ -140,4 +165,34 @@
         traverse.set(localStorage.getItem('traverse') == "true")
     })
 
+    const shift = true, control = true, alt = true, opt = true, meta = true
+
 </script>
+
+<svelte:window on:keydown={e => console.log(e.key)}/>
+
+<!-- Go up by a group -->
+<Shortcut keys={{ meta, key: "ArrowUp" }} action={() => {
+    const flattenedGroups = flattenGroups()
+
+    // @ts-ignore
+    const currentGroupIndex = flattenedGroups.findIndex(g => g.id == $group.id)
+
+    if (currentGroupIndex == 0)
+        return
+
+    $group = flattenedGroups[currentGroupIndex - 1]
+}} />
+
+<!-- Go down by a group -->
+<Shortcut keys={{ meta, key: "ArrowDown" }} action={() => {
+    const flattenedGroups = flattenGroups()
+
+    // @ts-ignore
+    const currentGroupIndex = flattenedGroups.findIndex(g => g.id == $group.id)
+
+    if (currentGroupIndex >= flattenedGroups.length - 1)
+        return
+
+    $group = flattenedGroups[currentGroupIndex + 1]
+}} />

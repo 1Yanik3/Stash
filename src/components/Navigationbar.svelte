@@ -1,23 +1,16 @@
 <script lang="ts">
-    import { mdiArchive, mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFileHidden, mdiFolderHidden, mdiHook, mdiHookOff, mdiImage, mdiImageOutline, mdiPen, mdiPencil, mdiPencilOutline, mdiPlus, mdiTrashCan, mdiTrashCanOutline, mdiVideo, mdiVideoOutline } from '@mdi/js'
+    import { mdiArchiveOutline, mdiBookshelf, mdiFolderHidden, mdiHook, mdiHookOff, mdiImageOutline, mdiPencilOutline, mdiPlus, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
-    import { sortingMethods } from '../types'
     
-    import SidebarButton from "../components/SidebarButton.svelte"
-    import SidebarSection from "../components/SidebarSection.svelte"
-    import SidebarHierarchyEntry from "../components/SidebarHierarchyEntry.svelte"
+    import Navigationbar_ClusterDropdown from "./Navigationbar_ClusterDropdown.svelte"
+    import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
+    import SidebarSection from "./SidebarSection.svelte"
+    import SidebarButton from "./SidebarButton.svelte"
 
-    import { serverURL, cluster, clusters, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
-import { children } from 'svelte/internal'
+    import { sortingMethods } from '../types'
+    import { serverURL, cluster, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../stores'
 
     export let controller: any
-
-    const changeCluster = ((e: any) => {
-        const { target }: { target: HTMLInputElement} = e
-        window.history.pushState({}, '', `?c=${target.value}`)
-        cluster.set($clusters.find(c => c.id == (target.value as any as number)) || $clusters[0])
-        controller.updateGroups()
-    })
 
     const createGroup = async () => {
         const name = window.prompt("Enter a name for the new collection")
@@ -35,23 +28,17 @@ import { children } from 'svelte/internal'
         }
     }
 
-
+    let clusterDropdownVisible = false
 </script>
 
+<svelte:window on:mouseup={() => clusterDropdownVisible = false} />
+
+{#if clusterDropdownVisible}
+    <Navigationbar_ClusterDropdown {controller}/>
+{/if}
+
 <SidebarSection justify>
-    {#key $clusters}
-        <select on:change={changeCluster} >
-            {#each $clusters as c}
-                <option value={c.id} selected={c.id == $cluster.id}>
-                    {c.name} 
-                    <!-- {#if c.id == $cluster.id}
-                        ▼
-                        ▽
-                    {/if} -->
-                </option>
-            {/each}
-        </select>
-    {/key}
+    <button on:click={() => clusterDropdownVisible = true}>{$cluster.name}</button>
 
     <div style="display: flex; align-items: center">
 

@@ -177,9 +177,9 @@
 
     <section>
 
-        <div>
+        <!-- <div>
             <Icon path={mdiTrashCanOutline} size={0.8}/>
-        </div>
+        </div> -->
 
         <div on:click={replaceWithLocalMedia}>
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
