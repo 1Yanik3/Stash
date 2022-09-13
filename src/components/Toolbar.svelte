@@ -1,10 +1,10 @@
 <script lang="ts">
 
-    import { serverURL, cluster, visibleMedium } from '../stores'
+    import { serverURL, cluster, visibleMedium, detailsVisible } from '../stores'
     import { browser } from '$app/env'
 
     import Icon from 'mdi-svelte'
-    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize, mdiTrashCanOutline } from '@mdi/js'
+    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js'
     import selectFiles from 'select-files'
 
     import Popup from '../reusables/Popup.svelte'
@@ -156,7 +156,7 @@
             <Icon path={mdiFullscreen}/>
         </div>
 
-        <div>
+        <div on:click={() => detailsVisible.set(!$detailsVisible)}>
             <Icon path={mdiInformationOutline} size={0.8}/>
         </div>
 

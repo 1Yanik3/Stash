@@ -175,11 +175,7 @@
 
             // Image viewer
             &:nth-child(3) {
-
-                max-height: 50vh;
-
-                display: grid;
-                grid-template-rows: auto 1fr;
+                max-height: 100vh;
 
             }
 
