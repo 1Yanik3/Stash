@@ -9,7 +9,7 @@
     import Toolbar from '../components/Toolbar.svelte'
     import DropFile from '../components/DropFile.svelte'
     import MediaViewer from '../components/MediaViewer.svelte'
-    import Navigationbar from '../components/Navigationbar.svelte'
+    import Navigationbar from '../components/Navigationbar/index.svelte'
     
     import { serverURL, cluster, group, visibleMedium, media } from '../stores'
 
@@ -133,7 +133,7 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: 220px minmax(200px, 600px) minmax(350px, 1fr);
+        grid-template-columns: 300px minmax(200px, 600px) minmax(350px, 1fr);
 
         height: 100%;
         width: 100%;

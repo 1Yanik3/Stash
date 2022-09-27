@@ -6,8 +6,6 @@
     import { mdiPound } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
-    import { page } from '$app/stores'
-
     let isDraggingOver = false
 
     export let target: Group | null = null
@@ -16,6 +14,9 @@
     export let icon: string = mdiPound
     export let indent: number = 0
     export let active: boolean = false
+
+    export let hidden = false
+    export let right = false
 
     const dispatch = createEventDispatcher()
 
@@ -70,10 +71,11 @@
 href={$group && target ? `?c=${$cluster.id || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || ($group && target && $group.id == target.id)}
+class:hidden
+class:right
+on:click={e => {
 
-on:click={() => {
-
-    dispatch('click')
+    dispatch('click', e)
 
     if (tag) {
 
@@ -137,6 +139,8 @@ class:isDraggingOver
         justify-content: space-between;
 
         padding: 0.5em 0.75em;
+        margin: 0.15em 0.5em;
+        border-radius: 0.35em;
 
         transition: background 100ms, border 100ms;
         border: 1px solid transparent;
@@ -146,24 +150,43 @@ class:isDraggingOver
             border: 1px solid hsl(0, 0%, 24%);
         }
         &.active {
-            background: hsl(0, 0%, 26%);
-            border: 1px solid hsl(0, 0%, 29%);
+            background: hsl(0, 0%, 24%);
+            border: 1px solid hsl(0, 0%, 33%);
         }
 
         &.isDraggingOver {
             background: hsl(0, 0%, 30%);
             border: 1px solid hsl(0, 0%, 45%);
         }
-
-        border-left: none !important;
-        border-right: none !important;
-
         .section {
-            display: flex;
+            display: grid;
+            grid-auto-flow: column;
             align-items: center;
 
             .spacer { margin-right: 0.35em }
-            span { font-weight: 200 }
+            span {
+                font-weight: 200;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        &.hidden {
+            justify-content: center;
+            align-items: center;
+            .section {
+                .spacer { margin-right: unset }
+            }
+            span {
+                display: none;
+            }
+        }
+
+        &.right {
+            &, .section {
+                flex-direction: row-reverse;
+            }
         }
     }
 </style>
