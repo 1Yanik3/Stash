@@ -148,21 +148,27 @@
 <main style="min-width: calc(100% - 4em)">
     <section>
 
-        <div on:click={() => visibleMedium.set(null)}>
-            <Icon path={mdiClose}/>
-        </div>
+        <button on:click={() => visibleMedium.set(null)}>
+            <Icon path={mdiClose} size={0.8}/>
+        </button>
 
-        <div on:click={() => isFullscreen = !isFullscreen}>
-            <Icon path={mdiFullscreen}/>
-        </div>
+        <button on:click={() => {
+            isFullscreen = !isFullscreen
+            if (isFullscreen) {
+                document.documentElement.requestFullscreen()
+            } else {
+                document.exitFullscreen()
+            }
+        }}>
+            <Icon path={mdiFullscreen} size={0.8}/>
+        </button>
 
-        <div on:click={() => detailsVisible.set(!$detailsVisible)}>
+        <button on:click={() => detailsVisible.set(!$detailsVisible)}>
             <Icon path={mdiInformationOutline} size={0.8}/>
-        </div>
+        </button>
 
     </section>
 
-    <!-- <span>{visibleMedium?.name}</span> -->
     <div>
         {#each $visibleMedium?.tags || [] as tag}
             <span
@@ -177,21 +183,17 @@
 
     <section>
 
-        <!-- <div>
-            <Icon path={mdiTrashCanOutline} size={0.8}/>
-        </div> -->
-
-        <div on:click={replaceWithLocalMedia}>
+        <button on:click={replaceWithLocalMedia}>
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
-        </div>
+        </button>
 
-        <div on:click={startUpscale}>
+        <button on:click={startUpscale}>
             <Icon path={mdiResize} size={0.8}/>
-        </div>
+        </button>
 
-        <div on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
+        <button on:click={() => window.open(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
-        </div>
+        </button>
 
     </section>
 
@@ -206,11 +208,11 @@
         justify-content: space-between;
         align-items: center;
 
-        & > div {
+        div {
             display: flex;
             .tag {
-                background: rgb(104, 104, 1);
-                padding: 0.15em 0.4em;
+                background: hsl(0, 0%, 25%);
+                padding: 0.3em 0.5em;
                 margin: 0.15em;
                 box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
                 border-radius: 3px;

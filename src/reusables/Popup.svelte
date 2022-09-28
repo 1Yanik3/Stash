@@ -1,26 +1,81 @@
+<script lang="ts">
+	import { slide, fade, scale } from 'svelte/transition';
+    import { mdiClose } from "@mdi/js";
+    import Icon from "mdi-svelte";
 
+    export let visible = true
 
-<main>
-    <slot/>
+    const onKeyDown = (e: KeyboardEvent) => {
+        console.log(e.key)
+        if (e.key != "Escape") return
+
+        e.preventDefault()
+        visible = false
+    }
+</script>
+
+<svelte:window on:keydown={onKeyDown}/>
+
+{#if visible}
+<main transition:fade>
+    <section transition:scale={{ start: 1.1 }}>
+        <div id="header">
+
+            <h2>Settings</h2>
+            
+            <button on:click={() => visible = false}>
+                <Icon path={mdiClose}/>
+            </button>
+
+        </div>
+        <div id="content">
+            <slot/>
+        </div>
+    </section>
 </main>
+{/if}
 
 <style lang="scss">
+
     main {
         position: fixed;
+        z-index: 99;
 
-        $margin: 5em;
-        $padding: 3em;
-
-        width: calc(100% - #{$margin * 2} - #{$padding * 2});
-        height: calc(100% - #{$margin * 2} - #{$padding * 2});
-        margin: $margin;
-        padding: $padding;
-
-
-        left: 0;
+        width: 100vw;
+        height: 100vh;
         top: 0;
+        left: 0;
 
-        background: hsl(0, 0%, 13%);
-        border: 1px solid hsl(0, 0%, 50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: hsla(0, 0%, 0%, 30%);
+
+        section {
+            min-width: 320px;
+            max-width: 90%;
+            max-height: 90%;
+
+            background: hsl(0, 0%, 13%);
+            border: 1px solid hsl(0, 0%, 30%);
+            border-radius: 0.5em;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 9px 0px, rgba(0, 0, 0, 0.24) 0px 2px 4px 0px;
+
+            #header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5em;
+
+                h2 { margin: 0 0.2em }
+
+                box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+            }
+
+            #content {
+                padding: 0.5em;
+            }
+        }
     }
 </style>

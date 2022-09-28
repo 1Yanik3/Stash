@@ -169,10 +169,8 @@
 
 </script>
 
-<svelte:window on:keydown={e => console.log(e.key)}/>
-
 <!-- Go up by a group -->
-<Shortcut keys={{ meta, key: "ArrowUp" }} action={() => {
+<Shortcut opt key="ArrowUp" action={() => {
     const flattenedGroups = flattenGroups()
 
     // @ts-ignore
@@ -185,7 +183,7 @@
 }} />
 
 <!-- Go down by a group -->
-<Shortcut keys={{ meta, key: "ArrowDown" }} action={() => {
+<Shortcut opt key="ArrowDown" action={() => {
     const flattenedGroups = flattenGroups()
 
     // @ts-ignore

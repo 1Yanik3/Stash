@@ -1,1 +1,27 @@
-/* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
+button {
+    font-weight: 200;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.3em 0.5em;
+    // margin: 0.1em 0.3em;
+    border-radius: 0.35em;
+
+    background: transparent;
+    transition: background 100ms, border 100ms;
+    border: 1px solid transparent;
+
+    &:hover {
+        background: hsl(0, 0%, 22%);
+        border: 1px solid hsl(0, 0%, 24%);
+    }
+    &.active {
+        background: hsl(0, 0%, 24%);
+        border: 1px solid hsl(0, 0%, 33%);
+    }
+}

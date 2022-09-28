@@ -1,35 +1,32 @@
 <script lang="ts">
-    export let keys: {
-        alt?: boolean
-        opt?: boolean
+    export let alt = false
+    export let opt = false
+    export let meta = false
+    export let control = false
+    export let shift = false
 
-        meta?: boolean
-        control?: boolean
-
-        shift?: boolean
-        key: string
-    }
+    export let key: string
 
     export let action: Function
 
     let handler = (e: KeyboardEvent) => {
 
         if (
-            (keys.alt || keys.opt) &&
+            (alt || opt) &&
             !e.altKey
         ) return
 
         if (
-            keys.shift &&
+            shift &&
             !e.shiftKey
         ) return
 
         if (
-            (keys.control || keys.meta) &&
+            (control || meta) &&
             !(e.metaKey || e.ctrlKey)
         ) return
 
-        if (keys.key != e.key)
+        if (key != e.key)
             return
 
         e.preventDefault()

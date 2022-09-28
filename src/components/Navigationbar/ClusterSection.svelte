@@ -6,6 +6,8 @@
 
     import { cluster, clusters, traverse, activeSortingMethod } from '../../stores'
     import { sortingMethods } from '../../types'
+    import Popup from '../../reusables/Popup.svelte'
+    import Shortcut from '../../reusables/Shortcut.svelte'
 
     const changeCluster = (id: number) => {
         console.log(id)
@@ -21,8 +23,14 @@
     }
     const getIcon = (name: string) => (icons as any)[name.toLowerCase()] || icons["unknown"]
 
-    import { tooltip } from '../../reusables/tooltip'
+    let isSettingsVisible = false
 </script>
+
+
+<Shortcut meta key="," action={() => isSettingsVisible = true} />
+<Popup bind:visible={isSettingsVisible}>
+    <h1>Test</h1>
+</Popup>
 
 <main>
 
@@ -69,7 +77,7 @@
     </section>
 
     <section>
-        <span>
+        <span on:click={() => isSettingsVisible = true}>
             <Icon path={mdiCog} size={0.8} />
         </span>
     </section>
