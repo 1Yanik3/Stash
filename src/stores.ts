@@ -26,3 +26,4 @@ export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 export const serverURL = "https://stash.hera.lan"
 
 export let detailsVisible: Writable<boolean> = writable(false)
+export let isFullscreen: Writable<boolean> = writable(false)

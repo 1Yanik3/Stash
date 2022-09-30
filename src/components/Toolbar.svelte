@@ -1,15 +1,14 @@
 <script lang="ts">
 
-    import { serverURL, cluster, visibleMedium, detailsVisible } from '../stores'
+    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '../stores'
     import { browser } from '$app/env'
 
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js'
     import selectFiles from 'select-files'
 
-    import Popup from '../reusables/Popup.svelte'
-
-    export let isFullscreen: boolean 
+    import Popup from '../reusables/Popup.svelte' 
+    import Shortcut from '../reusables/Shortcut.svelte';
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
@@ -145,6 +144,11 @@
     </Popup>
 {/if}
 
+<!-- Toggle Fullscreen -->
+<Shortcut key="f" action={() => {
+    isFullscreen.set(!$isFullscreen)
+}} />
+
 <main style="min-width: calc(100% - 4em)">
     <section>
 
@@ -153,8 +157,8 @@
         </button>
 
         <button on:click={() => {
-            isFullscreen = !isFullscreen
-            if (isFullscreen) {
+            isFullscreen.set(!$isFullscreen)
+            if ($isFullscreen) {
                 document.documentElement.requestFullscreen()
             } else {
                 document.exitFullscreen()

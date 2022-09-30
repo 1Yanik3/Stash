@@ -2,12 +2,13 @@
     export let controller: any
 
     import Icon from 'mdi-svelte'
-    import { mdiAccountOutline, mdiCog, mdiPackageVariant, mdiSafe, mdiHook, mdiHookOff } from '@mdi/js'
+    import { mdiAccountOutline, mdiCog, mdiPackageVariant, mdiSafe, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
 
     import { cluster, clusters, traverse, activeSortingMethod } from '../../stores'
     import { sortingMethods } from '../../types'
     import Popup from '../../reusables/Popup.svelte'
     import Shortcut from '../../reusables/Shortcut.svelte'
+    import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
 
     const changeCluster = (id: number) => {
         console.log(id)
@@ -24,6 +25,7 @@
     const getIcon = (name: string) => (icons as any)[name.toLowerCase()] || icons["unknown"]
 
     let isSettingsVisible = false
+    let isShortcutsVisible = false
 </script>
 
 
@@ -31,6 +33,8 @@
 <Popup bind:visible={isSettingsVisible}>
     <h1>Test</h1>
 </Popup>
+
+<ShortcutPopup bind:isShortcutsVisible/>
 
 <main>
 
@@ -77,6 +81,9 @@
     </section>
 
     <section>
+        <span on:click={() => isShortcutsVisible = true}>
+            <Icon path={mdiKeyboard} size={0.8} />
+        </span>
         <span on:click={() => isSettingsVisible = true}>
             <Icon path={mdiCog} size={0.8} />
         </span>

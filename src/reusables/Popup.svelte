@@ -4,6 +4,7 @@
     import Icon from "mdi-svelte";
 
     export let visible = true
+    export let title = ""
 
     const onKeyDown = (e: KeyboardEvent) => {
         console.log(e.key)
@@ -17,11 +18,11 @@
 <svelte:window on:keydown={onKeyDown}/>
 
 {#if visible}
-<main transition:fade>
-    <section transition:scale={{ start: 1.1 }}>
+<main transition:fade={{ duration: 100 }}>
+    <section transition:scale={{ start: 1.1, duration: 100 }}>
         <div id="header">
 
-            <h2>Settings</h2>
+            <h2>{title}</h2>
             
             <button on:click={() => visible = false}>
                 <Icon path={mdiClose}/>

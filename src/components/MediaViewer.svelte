@@ -4,7 +4,26 @@
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
 
+    let mediaElement: HTMLElement
+    let imageElement: HTMLElement
     let isZoomedIn = false
+    $: if (mediaElement && imageElement &&
+            (isZoomedIn || !isZoomedIn)
+        ) {
+        console.log(123)
+        if (isZoomedIn) {
+            mediaElement.style.marginLeft = `${imageElement.getBoundingClientRect().width / 2}px`
+            mediaElement.style.marginTop = `${imageElement.getBoundingClientRect().height / 2}px`
+
+            mediaElement.parentElement?.scrollTo(
+                imageElement.getBoundingClientRect().width,
+                imageElement.getBoundingClientRect().height
+            )
+        } else {
+            mediaElement.style.marginLeft = `0`
+            mediaElement.style.marginTop = `0`
+        }
+    }
 
     const request = (url: string): Promise<any> => new Promise((resolve, reject) => 
         fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/info`)
@@ -49,10 +68,11 @@
         </div>
     {/if}
     
-    <div id="media">
+    <div id="media" bind:this={mediaElement}>
         {#if $visibleMedium.type.startsWith("image")}
     
             <img
+                bind:this={imageElement}
                 src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
                 alt={$visibleMedium.name}
                 class:isZoomedIn
@@ -102,32 +122,41 @@
         &.detailsVisible {
             grid-template-rows: auto 1fr;
         }
+        overflow: scroll;
     }
 
     #media {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        position: relative;
 
         background: #202020;
 
-        overflow: scroll;
-        max-width: 100%;
+        width: 100%;
+        height: calc(100vh - 40.5px);
 
+        display: flex;
 
-        img, video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
+            
         img {
             cursor: zoom-in;
         }
+        
+        img, video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
 
-        img.isZoomedIn {
-            scale: 3;
-            cursor: zoom-out;
+            position: absolute;
+            margin: auto;
+
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            &.isZoomedIn {
+                cursor: zoom-out;
+                max-width: 200%;
+                max-height: 200%;
+            }
         }
     }
 

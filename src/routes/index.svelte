@@ -11,9 +11,7 @@
     import MediaViewer from '../components/MediaViewer.svelte'
     import Navigationbar from '../components/Navigationbar/index.svelte'
     
-    import { serverURL, cluster, group, visibleMedium, media } from '../stores'
-
-    let isFullscreen: boolean = false
+    import { serverURL, cluster, group, visibleMedium, media, isFullscreen } from '../stores'
 
     //#region Uploader
 
@@ -82,13 +80,13 @@
 
 <main>
     
-    <section style={isFullscreen ? 'display: none' : ''}>
+    <section style={$isFullscreen ? 'display: none' : ''}>
         <Navigationbar {controller}/>
     </section>
 
     <section
         id="imageGallerySection"
-        style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${isFullscreen ? 'display: none' : ''}`}
+        style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${$isFullscreen ? 'display: none' : ''}`}
     >
 
         <DropFile
@@ -119,9 +117,9 @@
     </section>
     
     {#if $visibleMedium}
-        <section style={isFullscreen ? 'grid-column: 1 / span 3' : ''}>
+        <section style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
 
-            <Toolbar bind:isFullscreen />
+            <Toolbar />
             
             <MediaViewer />
 
