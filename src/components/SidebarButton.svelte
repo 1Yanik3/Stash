@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Group, Tag } from '../types'
-    import { serverURL, group, tags, cluster, media } from '../stores'
+    import { serverURL, group, tags, cluster, media, groups } from '../stores'
 
     import { createEventDispatcher } from 'svelte'
     import { mdiPound } from '@mdi/js'
@@ -94,6 +94,22 @@ on:click={e => {
             group.set(target)
 
     }
+}}
+
+on:dblclick={() => {
+    if (!target) return
+    fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
+        method: "PATCH"
+    })
+    groups.set(
+        $groups.map(g => {
+            if (g == target && g.children.length) {
+                // @ts-ignore
+                g.collapsed = !g.collapsed
+            }
+            return g
+        })
+    )
 }}
 
 on:drop|preventDefault|stopPropagation={handleDrop}
