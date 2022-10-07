@@ -7,6 +7,7 @@
 
     import { serverURL, cluster, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../../stores'
     import { slide } from 'svelte/transition';
+    import Shortcut from '../../reusables/Shortcut.svelte';
 
     export let controller: any
 
@@ -41,6 +42,9 @@
         )
     }
 </script>
+
+<!-- Create Group -->
+<Shortcut control={true} key="n" action={createGroup} />
 
 <main>
     <div>
