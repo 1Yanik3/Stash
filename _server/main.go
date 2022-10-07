@@ -226,6 +226,31 @@ func main() {
 
 	})
 
+	r.GET("/:cluster/index", func(c *gin.Context) {
+		cluster, _ := strconv.Atoi(c.Param("cluster"))
+
+		type result struct {
+			Id     	int      `json:"id"`
+			Name   	string   `json:"name"`
+			MediaId int      `json:"mediaId"`
+		}
+
+		var output []result
+		db.Raw(`
+			SELECT g1.id, g1.name, (
+				SELECT media.id FROM "groups" as g2
+				LEFT JOIN media ON media.group = g2.id
+				WHERE g2.parent = g1.id
+				LIMIT 1
+			) as mediaId
+			FROM "groups" as g1
+			WHERE g1."cluster" = ` + strconv.Itoa(cluster) + ` AND g1."parent" IS NULL
+		`).Scan(&output)
+
+		c.JSON(200, output)
+
+	})
+	
 	r.GET("/:cluster/:group/media", func(c *gin.Context) {
 		cluster, _ := strconv.Atoi(c.Param("cluster"))
 		group, _ := strconv.Atoi(c.Param("group"))
