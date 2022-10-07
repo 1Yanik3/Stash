@@ -15,7 +15,7 @@ This is a big project for me, but also one that is going to take a long long tim
 - [ ] Bulk edit features
   - [ ] Tags
   - [ ] Move
-- [ ] Allow replacing the media from the UI
+- [x] Allow replacing the media from the UI
   - Maybe have an "AI upscale this" button?
 - [ ] Allow replacing thumbnail on videos by generating thumbnails at random positions and letting the user choose the one they prefer
-- [ ] Have info button show information about the media
+- [x] Have info button show information about the media

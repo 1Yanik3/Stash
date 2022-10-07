@@ -3,6 +3,8 @@ package config
 type Cluster struct {
 	Id   int    `json:"id" gorm:"primaryKey;"`
 	Name string `json:"name"`
+	Icon string `json:"icon"`
+	Type string `json:"type"`
 }
 
 //#region test
