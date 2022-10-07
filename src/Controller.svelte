@@ -39,6 +39,7 @@
         console.log("Updating clusters...")
         try {
             const res = await fetch(`${serverURL}/clusters`)
+
             clusters.set(await res.json())
             cluster.set(
                 $clusters.find(c => c.id == Number((new URL($page.url)).searchParams.get("c"))) || $clusters[0]
@@ -67,7 +68,7 @@
 
                     return c
 
-                }).sort((a: Group, b: Group) => a.name.localeCompare(b.name))
+                }).sort((a: Group, b: Group) => $cluster.type == "collection" ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name))
 
             )
 
@@ -133,9 +134,17 @@
                 }
                 await addToOutput($group)
 
-                media.set(
-                    output.filter(d => d.type.startsWith($mediaTypeFilter)).sort($activeSortingMethod.method)
-                )                
+                // todo: make better
+                if ($cluster.type == "collection" && $group.id != -3) {
+                    media.set(
+                        output.filter(d => d.type.startsWith($mediaTypeFilter)).sort((a, b) => a.name.localeCompare(b.name))
+                    )        
+                } else {
+                    media.set(
+                        output.filter(d => d.type.startsWith($mediaTypeFilter)).sort($activeSortingMethod.method)
+                    )        
+                }
+        
                 
             } catch (err) {
                 console.error("failed to update media", err)
@@ -150,6 +159,7 @@
 
     updateClusters()
     cluster.subscribe(updateGroups)
+    cluster.subscribe(console.log)
 
     group.subscribe(g => updateMedia())
     group.subscribe(g => visibleMedium.set(null))

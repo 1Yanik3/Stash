@@ -7,7 +7,6 @@
     export let title = ""
 
     const onKeyDown = (e: KeyboardEvent) => {
-        console.log(e.key)
         if (e.key != "Escape") return
 
         e.preventDefault()

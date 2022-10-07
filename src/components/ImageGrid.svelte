@@ -3,9 +3,10 @@
 
     import { JustifiedGrid } from "@egjs/svelte-grid"
 
-    import { tags, media } from "../stores"
+    import { tags, media, cluster, group } from "../stores"
 
     import GridThumbnail from '../components/GridThumbnail.svelte'
+    import ImageGridCollection from './ImageGrid_Collection.svelte'
 
     let finishedLoading = false
 
@@ -27,6 +28,11 @@
 
 </script>
 
+
+
+{#if $cluster.type == "collection" && $group.id == -3}
+<ImageGridCollection/>
+{:else}
 {#key [ $media, $tags ]}
 <JustifiedGrid
     autoResize={true}
@@ -45,3 +51,4 @@
 
 </JustifiedGrid>
 {/key}
+{/if}

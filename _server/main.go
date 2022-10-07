@@ -237,7 +237,21 @@ func main() {
 
 		var output []result
 		db.Raw(`
-			SELECT g1.id, g1.name, (
+			SELECT g1.name, 
+			CASE WHEN (
+				SELECT g2.id FROM "groups" as g2
+				LEFT JOIN media ON media.group = g2.id
+				WHERE g2.parent = g1.id
+				LIMIT 1
+			) IS NULL
+			THEN g1.id
+			ELSE (
+				SELECT g2.id FROM "groups" as g2
+				LEFT JOIN media ON media.group = g2.id
+				WHERE g2.parent = g1.id
+				LIMIT 1
+			)
+			END id, (
 				SELECT media.id FROM "groups" as g2
 				LEFT JOIN media ON media.group = g2.id
 				WHERE g2.parent = g1.id

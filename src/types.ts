@@ -8,7 +8,9 @@ export interface Group {
 
 export interface Cluster {
     id:     number,
-    name:   string
+    name:   string,
+    icon:   string,
+    type:   "" | "collection"
 }
 
 export interface Tag {

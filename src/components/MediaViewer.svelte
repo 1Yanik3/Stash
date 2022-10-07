@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
+    import { mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
     import { serverURL, cluster, visibleMedium, detailsVisible } from "../stores"
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
@@ -47,6 +47,10 @@
                     <span style="height: 24px"></span>
                 {:then details} 
         
+                    <span>
+                        <Icon path={mdiFormTextbox}/>
+                        <span>{$visibleMedium.name}</span>
+                    </span>
                     <span>
                         <Icon path={mdiMoveResize}/>
                         <span>{find(details.streams, "height")}x{find(details.streams, "width")}</span>

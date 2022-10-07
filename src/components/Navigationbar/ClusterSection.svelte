@@ -2,7 +2,8 @@
     export let controller: any
 
     import Icon from 'mdi-svelte'
-    import { mdiAccountOutline, mdiCog, mdiPackageVariant, mdiSafe, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
+    import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
+    import * as Icons from '@mdi/js'
 
     import { cluster, clusters, traverse, activeSortingMethod } from '../../stores'
     import { sortingMethods } from '../../types'
@@ -17,12 +18,7 @@
         controller.updateGroups()
     }
 
-    const icons = {
-        people: mdiAccountOutline,
-        secret: mdiSafe,
-        unknown: mdiPackageVariant
-    }
-    const getIcon = (name: string) => (icons as any)[name.toLowerCase()] || icons["unknown"]
+    const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
     let isSettingsVisible = false
     let isShortcutsVisible = false
@@ -40,6 +36,7 @@
 
     <section>
         <span
+            class:disabled={$cluster.type == "collection"}
             on:click={() =>
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
@@ -69,13 +66,13 @@
     </section>
 
     <section>
-        {#each $clusters as c}
+        {#each $clusters.sort((a, b) => a.id - b.id) as c}
             <span
             on:mousedown={() => changeCluster(c.id)}
             title={c.name}
             class:active={$cluster.id == c.id}
             >
-                <Icon path={getIcon(c.name)} size={0.8} />
+                <Icon path={getIcon(c.icon)} size={0.8} />
             </span>
         {/each}
     </section>
@@ -124,13 +121,18 @@
             transition: background 100ms, border 100ms;
             border: 1px solid transparent;
 
-            &:hover {
+            &:not(.disabled):hover {
                 background: hsl(0, 0%, 22%);
                 border: 1px solid hsl(0, 0%, 24%);
             }
             &.active {
                 background: hsl(0, 0%, 24%);
                 border: 1px solid hsl(0, 0%, 33%);
+            }
+
+            &.disabled {
+                pointer-events: none;
+                filter: opacity(0.5);
             }
         }
     }
