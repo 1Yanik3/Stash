@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte"
+    import { children, identity } from "svelte/internal";
     import { media, cluster, group, serverURL, groups } from "../stores"
     
     let data: {
@@ -20,7 +21,25 @@
     {#each data as d}
         <!-- <a href="/?c={$cluster.id}&g={d.id}"> -->
         <a on:click={() => {
-            const target = $groups.find(g => g.id == d.id)
+            let target
+            
+            $groups.find(g => {
+
+                // @ts-ignore
+                const recursion = (g) => {
+
+                    if (g.id == d.id)
+                        target = g
+                    else
+                        g.children.forEach(recursion)
+
+                }
+                return recursion(g)
+
+            })
+
+
+            console.log(target)
             if (!target) return
             group.set(target)
         }}
