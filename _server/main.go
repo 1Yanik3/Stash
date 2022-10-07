@@ -242,7 +242,7 @@ func main() {
 				LEFT JOIN media ON media.group = g2.id
 				WHERE g2.parent = g1.id
 				LIMIT 1
-			) as mediaId
+			) as MediaId
 			FROM "groups" as g1
 			WHERE g1."cluster" = ` + strconv.Itoa(cluster) + ` AND g1."parent" IS NULL
 		`).Scan(&output)
