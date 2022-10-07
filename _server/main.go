@@ -232,7 +232,7 @@ func main() {
 		type result struct {
 			Id     	int      `json:"id"`
 			Name   	string   `json:"name"`
-			MediaId int      `json:"mediaId"`
+			Media int      	 `json:"mediaId"`
 		}
 
 		var output []result
@@ -242,7 +242,7 @@ func main() {
 				LEFT JOIN media ON media.group = g2.id
 				WHERE g2.parent = g1.id
 				LIMIT 1
-			) as MediaId
+			) as media
 			FROM "groups" as g1
 			WHERE g1."cluster" = ` + strconv.Itoa(cluster) + ` AND g1."parent" IS NULL
 		`).Scan(&output)
