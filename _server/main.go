@@ -238,6 +238,7 @@ func main() {
 		var output []result
 		db.Raw(`
 			SELECT g1.name, 
+
 			CASE WHEN (
 				SELECT g2.id FROM "groups" as g2
 				LEFT JOIN media ON media.group = g2.id
@@ -251,12 +252,24 @@ func main() {
 				WHERE g2.parent = g1.id
 				LIMIT 1
 			)
-			END id, (
-				SELECT media.id FROM "groups" as g2
-				LEFT JOIN media ON media.group = g2.id
-				WHERE g2.parent = g1.id
-				LIMIT 1
-			) as media
+			END id,
+			
+			CASE WHEN (
+				SELECT MIN(media.id) FROM "media"
+				WHERE media.group = g1.id
+			) IS NULL
+			THEN (
+			  SELECT media.id FROM "groups" as g2
+			  LEFT JOIN media ON media.group = g2.id
+			  WHERE g2.parent = g1.id
+			  LIMIT 1
+			)
+			ELSE (
+				SELECT MIN(media.id) FROM "media"
+				WHERE media.group = g1.id
+			)
+			
+			END media
 			FROM "groups" as g1
 			WHERE g1."cluster" = ` + strconv.Itoa(cluster) + ` AND g1."parent" IS NULL
 		`).Scan(&output)
