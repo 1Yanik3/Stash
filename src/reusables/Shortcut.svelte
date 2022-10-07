@@ -12,18 +12,21 @@
     let handler = (e: KeyboardEvent) => {
 
         if (
-            (alt || opt) &&
-            !e.altKey
+            (alt || opt)
+            ? !e.altKey
+            : e.altKey
         ) return
 
         if (
-            shift &&
-            !e.shiftKey
+            shift
+            ? !e.shiftKey
+            : e.shiftKey
         ) return
 
         if (
-            (control || meta) &&
-            !(e.metaKey || e.ctrlKey)
+            (control || meta)
+            ? !(e.metaKey || e.ctrlKey)
+            : e.metaKey
         ) return
 
         if (key != e.key)

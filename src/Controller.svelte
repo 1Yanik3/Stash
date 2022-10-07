@@ -185,10 +185,8 @@
 
     // @ts-ignore
     const currentGroupIndex = flattenedGroups.findIndex(g => g.id == $group.id)
-
     if (currentGroupIndex == 0)
         return
-
     $group = flattenedGroups[currentGroupIndex - 1]
 }} />
 
@@ -198,9 +196,25 @@
 
     // @ts-ignore
     const currentGroupIndex = flattenedGroups.findIndex(g => g.id == $group.id)
-
     if (currentGroupIndex >= flattenedGroups.length - 1)
         return
-
     $group = flattenedGroups[currentGroupIndex + 1]
+}} />
+
+<!-- Go up by a cluster -->
+<Shortcut shift opt key="ArrowUp" action={() => {
+    // @ts-ignore
+    const currentClusterIndex = $clusters.findIndex(c => c.id == $cluster.id)
+    if (currentClusterIndex == 0)
+        return
+    cluster.set($clusters[currentClusterIndex - 1])
+}} />
+
+<!-- Go down by a cluster -->
+<Shortcut shift opt key="ArrowDown" action={() => {
+    // @ts-ignore
+    const currentClusterIndex = $clusters.findIndex(c => c.id == $cluster.id)
+    if (currentClusterIndex >= $clusters.length - 1)
+        return
+    cluster.set($clusters[currentClusterIndex + 1])
 }} />
