@@ -5,7 +5,7 @@ import type { Writable } from "svelte/store"
 import { writable } from "svelte/store"
 
 export let clusters: Writable<Array<Cluster>> = writable([])
-export let cluster: Writable<Cluster> = writable({ id: 0, name: "Loading..." })
+export let cluster: Writable<Cluster> = writable({ id: 0, name: "Loading...", icon: "", type: "" })
 
 export let groups: Writable<Array<Group>> = writable([])
 export let group: Writable<Group> = writable({ id: 0, name: "Loading...", children: [], collapsed: false })

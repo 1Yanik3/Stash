@@ -61,16 +61,18 @@ func main() {
 	db.AutoMigrate(&config.Media{})
 	db.AutoMigrate(&config.TagMediaLink{})
 
+	r.Static("/_app", "./build/_app")
+	r.Static("/icons", "./build/icons")
+	r.StaticFile("/favicon.png", "./build/favicon.png")
+	r.StaticFile("/global.css", "./build/global.css")
+	r.StaticFile("/", "./build/index.html")
+
 	r.GET("/clusters", func(c *gin.Context) {
 
 		var clusters []config.Cluster
 		db.Find(&clusters)
 
 		c.JSON(200, clusters)
-	})
-
-	r.GET("/", func(c *gin.Context) {
-		c.Redirect(307, "https://confusedant.gitlab.io/stash")
 	})
 
 	//#region Group
@@ -230,9 +232,9 @@ func main() {
 		cluster, _ := strconv.Atoi(c.Param("cluster"))
 
 		type result struct {
-			Id     	int      `json:"id"`
-			Name   	string   `json:"name"`
-			Media int      	 `json:"mediaId"`
+			Id    int    `json:"id"`
+			Name  string `json:"name"`
+			Media int    `json:"mediaId"`
 		}
 
 		var output []result
@@ -277,7 +279,7 @@ func main() {
 		c.JSON(200, output)
 
 	})
-	
+
 	r.GET("/:cluster/:group/media", func(c *gin.Context) {
 		cluster, _ := strconv.Atoi(c.Param("cluster"))
 		group, _ := strconv.Atoi(c.Param("group"))
