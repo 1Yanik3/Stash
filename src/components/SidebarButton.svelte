@@ -101,15 +101,21 @@ on:dblclick={() => {
     fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
         method: "PATCH"
     })
-    groups.set(
-        $groups.map(g => {
+    
+    $groups.find(g => {
+        // @ts-ignore
+        const recursion = (g) => {
             if (g == target && g.children.length) {
                 // @ts-ignore
                 g.collapsed = !g.collapsed
             }
-            return g
-        })
-    )
+            else
+                g.children.forEach(recursion)
+        }
+        return recursion(g)
+    })
+
+    groups.set($groups)
 }}
 
 on:drop|preventDefault|stopPropagation={handleDrop}

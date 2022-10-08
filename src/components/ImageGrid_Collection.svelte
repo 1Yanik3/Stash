@@ -63,15 +63,14 @@
 <style lang="scss">
 
     main {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         margin: -0.5em;
     }
 
     a {
         display: grid;
         grid-template-rows: 300px 1.8em;
-        grid-template-columns: 200px;
         gap: 0.5em;
         align-items: center;
         justify-content: center;
@@ -98,6 +97,7 @@
         img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
             border-top-left-radius: 0.4em;
             border-top-right-radius: 0.4em;
         }
