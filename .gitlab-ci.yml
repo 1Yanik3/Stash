@@ -12,23 +12,26 @@ frontend:
 
 compile:
   image: golang:alpine
+  needs:
+    - job: frontend
+  before_script:
+    - mv build _server/
   script:
     - cd _server
     - go build main.go
   artifacts:
     paths:
       - _server/main
+      - _server/build
 
 docker-build:
   image: docker:latest
   needs:
     - job: compile
-    - job: frontend
   services:
     - docker:dind
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - mv build _server/
   # Default branch leaves tag empty (= latest tag)
   # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
