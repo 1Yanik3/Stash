@@ -90,6 +90,8 @@
             {/key}
         </SidebarSection>
 
+        {#if $cluster.type != "collection"}
+
         <!-- Tags -->
         {#if $tags.length}
             <SidebarSection title="Tags">
@@ -123,6 +125,8 @@
             </SidebarButton>
 
         </SidebarSection>
+        
+        {/if}
     </div>
 </main>
 
@@ -135,6 +139,7 @@
             overflow: scroll;
             scrollbar-width: none;
             height: calc(100% - 60px);
+            scroll-padding: 38px;
         }
     }
 </style>

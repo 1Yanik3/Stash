@@ -164,6 +164,7 @@
     group.subscribe(g => updateMedia())
     group.subscribe(g => visibleMedium.set(null))
     group.subscribe(g => g.id > 0 && updateTags())
+    onMount(() => group.subscribe(g => history.pushState({}, "", `/?c=${$cluster.id}&g=${g.id}`)))
 
     traverse.subscribe(() => $traverse != undefined && updateMedia())
     traverse.subscribe(() => $traverse != undefined && updateTags())
@@ -176,7 +177,6 @@
     })
 
     const shift = true, control = true, alt = true, opt = true, meta = true
-
 </script>
 
 <!-- Go up by a group -->

@@ -8,6 +8,8 @@
 
     let isDraggingOver = false
 
+    // @ts-ignore
+    export let element: HTMLAnchorElement = null
     export let target: Group | null = null
     export let tag: Tag | null = null
 
@@ -67,7 +69,9 @@
 
 </script>
 
+<!-- TODO: Maybe we can get rid of the href? -->
 <a
+bind:this={element}
 href={$group && target ? `?c=${$cluster.id || 1}&g=${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || ($group && target && $group.id == target.id)}
