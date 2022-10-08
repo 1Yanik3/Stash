@@ -3,6 +3,8 @@
     import { serverURL, cluster, visibleMedium, detailsVisible } from "../stores"
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
+    import { slide } from "svelte/transition"
+    import { onMount } from "svelte";
 
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
@@ -40,7 +42,7 @@
 
 <main class:detailsVisible={$detailsVisible}>
     {#if $detailsVisible}
-        <div id="details">
+        <div id="details" transition:slide>
             {#key $visibleMedium}
         
                 {#await request(`${serverURL}/${$cluster.id}/media/${$visibleMedium.id}/info`)}

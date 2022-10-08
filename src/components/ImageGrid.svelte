@@ -28,8 +28,6 @@
 
 </script>
 
-
-
 {#if $cluster.type == "collection" && $group.id == -3}
 <ImageGridCollection/>
 {:else}

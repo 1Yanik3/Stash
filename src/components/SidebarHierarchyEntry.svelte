@@ -1,11 +1,10 @@
 <script lang="ts">
     import SidebarButton from '../components/SidebarButton.svelte'
-    import { mdiFolder, mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
+    import { mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
 
     import type { Group } from 'src/types'
     import { onMount } from 'svelte'
     import { group } from '../stores';
-    import { fade, slide } from 'svelte/transition';
 
     export let target: Group
     export let indent: number = 0
@@ -33,7 +32,6 @@
     })
 </script>
 
-<div transition:fade>
 <SidebarButton
     bind:element
     bind:target {indent}
@@ -41,8 +39,6 @@
 >
     {target.name}
 </SidebarButton>
-
-</div>
 
 {#if target.children && !target.collapsed}
     {#each target.children.sort((a, b) => a.name.localeCompare(b.name)) as child}

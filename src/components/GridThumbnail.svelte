@@ -15,6 +15,22 @@
     const dragStartHandler = (e: DragEvent) => {
         e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
     }
+
+    let element: HTMLDivElement
+    visibleMedium.subscribe(async () => {
+        if (!element) return
+
+        const r = element.getBoundingClientRect()
+        if ($visibleMedium == medium && !(
+            r.top >= 210 &&
+            r.bottom <= (window.innerHeight - 210)
+        )) {
+            element.scrollIntoView({
+                block: "nearest",
+                behavior: "smooth"
+            })
+        }
+    })
 </script>
 
 <IntersectionObserver
@@ -27,6 +43,7 @@
         on:click={() => { visibleMedium.set(medium) }}
         transition:fade="{{duration: 120}}"
         on:dragstart|stopPropagation={dragStartHandler}
+        bind:this={element}
     >
 
         {#if (intersecting && finishedLoading) || i < 50}
@@ -35,6 +52,7 @@
                 src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
                 alt={medium.name}
                 class:hidden={!thumbnailLoadedCompletely}
+                class:active={$visibleMedium == medium}
                 on:load={() => thumbnailLoadedCompletely = true}
             >
             
@@ -53,6 +71,10 @@
 
 <style lang="scss">
 
+    div {
+        scroll-margin: 11px;
+    }
+
     .hidden {
         display: none;
     }
@@ -69,7 +91,10 @@
 
         &:hover {
             filter: brightness(0.85);
-            transform: scale(1.03);
+            transform: scale(1.04);
+        }
+        &.active {
+            transform: scale(1.04);
         }
     }
 

@@ -174,7 +174,6 @@
             // Image viewer
             &:nth-child(3) {
                 max-height: 100vh;
-
             }
 
         }
