@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 alpine
 
 COPY main /main
 RUN chmod +x /main
-COPY build /
+COPY build /build
 
 RUN apk add --no-cache ffmpeg
 
