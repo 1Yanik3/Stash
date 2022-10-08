@@ -18,7 +18,7 @@
 
 <main>
     
-    {#each data as d}
+    {#each data.sort((a, b) => b.name.localeCompare(a.name)) as d}
         <!-- <a href="/?c={$cluster.id}&g={d.id}"> -->
         <a on:click={() => {
             let target
