@@ -263,7 +263,7 @@ func main() {
 			THEN (
 			  SELECT media.id FROM "groups" as g2
 			  LEFT JOIN media ON media.group = g2.id
-			  WHERE g2.parent = g1.id
+			  WHERE g2.parent = g1.id AND g2.name != 'transparent'
 			  LIMIT 1
 			)
 			ELSE (
