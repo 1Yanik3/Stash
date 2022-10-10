@@ -213,6 +213,19 @@ func main() {
 
 	})
 
+	r.PATCH("/:cluster/:group/name/:name", func(c *gin.Context) {
+		group, groupErr := utilities.GetGroup(c, db)
+		name := c.Param("name")
+		if groupErr != nil {
+			return
+		}
+
+		log.Print(group, name)
+
+		db.Model(&config.Group{}).Where("id = ?", group).Update("name", name)
+
+	})
+
 	r.PATCH("/:cluster/:group/collapsed/:state", func(c *gin.Context) {
 		cluster, clusterErr := utilities.GetCluster(c, db)
 		group, groupErr := utilities.GetGroup(c, db)

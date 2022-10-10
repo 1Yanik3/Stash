@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiPlus, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
+    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiPlus, mdiRenameBox, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
     
     import SidebarHierarchyEntry from "../SidebarHierarchyEntry.svelte"
     import SidebarSection from "../SidebarSection.svelte"
@@ -28,6 +28,18 @@
             controller.updateGroups()
         }
     }
+
+    const renameGroup = async () => {
+        const name = window.prompt("Enter a name for the group", $group.name)
+
+        if (name) {
+            await fetch(`http://localhost/${$cluster.id}/${$group.id}/name/${name}`,{
+                method: "PATCH"
+            })
+            controller.updateGroups()
+        }
+    }
+    
     const toggleHidden = () => {
         fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!$group.children.length && !$group.collapsed}`, {
             method: "PATCH"
@@ -69,6 +81,9 @@
             <SidebarSection>
                 <SidebarButton right on:click={toggleHidden} icon={mdiFolderHidden}>
                     Toggle Hidden
+                </SidebarButton>
+                <SidebarButton right on:click={renameGroup} icon={mdiRenameBox}>
+                    Rename Group
                 </SidebarButton>
                 <SidebarButton right on:click={createGroup} icon={mdiPlus}>
                     Create Group
