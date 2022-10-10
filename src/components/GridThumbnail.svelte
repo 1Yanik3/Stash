@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { Medium } from "src/types"
-    import { fade } from 'svelte/transition'
 
     import { serverURL, cluster, visibleMedium } from "../stores"
     
@@ -38,15 +37,16 @@
     once={true}
     top={500}
     let:intersecting
+    delay={150}
 >
+    <!-- transition:fade="{{duration: 120}}" -->
     <div
         on:click={() => { visibleMedium.set(medium) }}
-        transition:fade="{{duration: 120}}"
         on:dragstart|stopPropagation={dragStartHandler}
         bind:this={element}
     >
 
-        {#if (intersecting && finishedLoading) || i < 50}
+        {#if (intersecting && finishedLoading) || i == 0}
 
             <img
                 src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}

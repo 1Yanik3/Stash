@@ -182,7 +182,7 @@
                 }}
             >{tag}</span>
         {/each}
-        <input type="text" on:keydown={handleKeyDown}>
+        <input type="text" on:keydown|stopPropagation={handleKeyDown}>
     </div>
 
     <section>

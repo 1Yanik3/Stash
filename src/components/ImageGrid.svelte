@@ -1,52 +1,38 @@
 <script lang="ts">
-    import type { Tag, Medium } from "src/types"
-
-    import { JustifiedGrid } from "@egjs/svelte-grid"
 
     import { tags, media, cluster, group } from "../stores"
 
-    import GridThumbnail from '../components/GridThumbnail.svelte'
     import ImageGridCollection from './ImageGrid_Collection.svelte'
+    import ImageGridPage from './ImageGrid_Page.svelte'
+    import { fade } from "svelte/transition"
 
-    let finishedLoading = false
-
-    // TODO: find out if there is a way to get rid of this
-    media.subscribe(() => setTimeout(() => finishedLoading = true, 100))
-
-    const includesActiveTags = (medium: Medium, tags: Array<Tag>) => {
-        const activeTags = (tags || []).filter(t => t.active)
-
-        if (!activeTags.length) return true
-
-        for (const i in activeTags)
-            for (const j in medium.tags)
-                if (activeTags[i].name.toLowerCase() == medium.tags[j].toLowerCase())
-                    return true
-
-        return false
-    }
+    const pageSize = 50
 
 </script>
 
 {#if $cluster.type == "collection" && $group.id == -3}
-<ImageGridCollection/>
+
+    <ImageGridCollection/>
+
 {:else}
-{#key [ $media, $tags ]}
-<JustifiedGrid
-    autoResize={true}
-    useResizeObserver={true}
-    defaultDirection="start"
-    gap={14}
-    sizeRange={[150, 500]}
-    useTransform={true}
->
 
-    {#each $media as medium, i}
-        {#if includesActiveTags(medium, $tags)}
-            <GridThumbnail {medium} {i} {finishedLoading} />
-        {/if}
-    {/each}
+    {#key [ $media, $tags ]}
+    <div transition:fade={{ duration: 120 }}>
 
-</JustifiedGrid>
-{/key}
+        {#each (new Array(Math.ceil($media.length / pageSize))) as _, i}
+            <ImageGridPage media={$media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+        {/each}
+        
+    </div>
+    {/key}
+
 {/if}
+
+<style lang="scss">
+    
+    div {
+        display: grid;
+        gap: 14px;
+    }
+
+</style>

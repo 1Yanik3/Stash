@@ -83,8 +83,9 @@
             }
             $groups.forEach(g => flatten(g))
 
+            console.log((new URL($page.url)).searchParams.get("g"))
             group.set(
-                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups.find(g => g.id == -3) || $groups[0]
+                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups.find(g => g.id == -1) || $groups[0]
             )
 
         } catch (err) {
@@ -93,7 +94,7 @@
     }
 
     export const updateTags = async () => {
-        if (!browser) return
+        if (!browser || !$cluster.id || !$group.id || $traverse == undefined) return
         
         console.log("Updating tags...")
         try {
@@ -118,8 +119,8 @@
     }
 
     export const updateMedia = async () => {
-        console.log("Updating media...")
         if ($cluster.id && $group.id) {
+            console.log("Updating media...")
             try {
 
                 let output: Array<Medium> = []
@@ -158,16 +159,15 @@
     $: if($page.url) clearTagSelection()
 
     updateClusters()
-    cluster.subscribe(updateGroups)
-    cluster.subscribe(console.log)
+    cluster.subscribe(c => $cluster.id > 0 && updateGroups())
 
     group.subscribe(g => updateMedia())
     group.subscribe(g => visibleMedium.set(null))
     group.subscribe(g => g.id > 0 && updateTags())
     onMount(() => group.subscribe(g => history.pushState({}, "", `/?c=${$cluster.id}&g=${g.id}`)))
 
-    traverse.subscribe(() => $traverse != undefined && updateMedia())
-    traverse.subscribe(() => $traverse != undefined && updateTags())
+    traverse.subscribe(updateMedia)
+    traverse.subscribe(updateTags)
 
     activeSortingMethod.subscribe(g => updateMedia())
     mediaTypeFilter.subscribe(g => updateMedia())

@@ -7,13 +7,16 @@
   export let bottom = 0;
   export let left = 0;
   export let right = 0;
+  export let delay = 0;
 
   let intersecting = false;
-  let container: any;
+  let container: Element;
 
   $: if(intersecting) dispatch('intersecting')
 
-  onMount(() => {
+  onMount(async () => {
+    if (delay) await new Promise(resolve => setTimeout(resolve, delay))
+
     if (typeof IntersectionObserver != 'undefined') {
       const rootMargin = `${bottom}px ${left}px ${top}px ${right}px`;
 

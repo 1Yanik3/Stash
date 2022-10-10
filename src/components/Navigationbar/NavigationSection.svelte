@@ -56,7 +56,8 @@
 </script>
 
 <!-- Create Group -->
-<Shortcut control={true} key="n" action={createGroup} />
+<Shortcut key="c" action={createGroup} />
+<Shortcut key="r" action={renameGroup} />
 
 <main>
     <div>
