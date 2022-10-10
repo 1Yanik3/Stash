@@ -33,7 +33,7 @@
         const name = window.prompt("Enter a name for the group", $group.name)
 
         if (name) {
-            await fetch(`http://localhost/${$cluster.id}/${$group.id}/name/${name}`,{
+            await fetch(`${serverURL}/${$cluster.id}/${$group.id}/name/${name}`,{
                 method: "PATCH"
             })
             controller.updateGroups()
