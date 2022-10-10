@@ -12,7 +12,6 @@
     $: if (mediaElement && imageElement &&
             (isZoomedIn || !isZoomedIn)
         ) {
-        console.log(123)
         if (isZoomedIn) {
             mediaElement.style.marginLeft = `${imageElement.getBoundingClientRect().width / 2}px`
             mediaElement.style.marginTop = `${imageElement.getBoundingClientRect().height / 2}px`
@@ -33,6 +32,8 @@
         .then(resolve)
         .catch(reject)
     )
+
+    let video: HTMLVideoElement
 
     // @ts-ignore
     const find = (array: [], filter: string, property?: string) => array.find(a => a[filter])[property || filter] || array[0]
@@ -92,6 +93,11 @@
                 alt={$visibleMedium.name}
                 controls
                 autoplay
+                bind:this={video}
+                on:playing={() => {
+                    if (video.duration <= 3)
+                        video.loop = true
+                }}
             ><track kind="captions"/></video>
     
         {:else}
