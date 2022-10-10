@@ -180,6 +180,7 @@ class:card
         &.card {
             background: hsl(0, 0%, 13%);
             border: 1px solid hsl(0, 0%, 24%);
+            margin: 0.25em;
         }
 
         &:hover {

@@ -52,10 +52,6 @@
 
     </JustifiedGrid>
 
-    {:else}
-
-    <div>Loading...</div>
-        
     {/if}
 
 </IntersectionObserver>

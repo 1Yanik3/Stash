@@ -1,5 +1,4 @@
 <script lang="ts">
-
     import { tags, media, cluster, group, groups } from "../stores"
 
     import ImageGridCollection from './ImageGrid_Collection.svelte'
@@ -33,7 +32,7 @@
 
     {#if $cluster.type == "collection"}
         {@const parent = flattentedGroups.find(g => g.children.includes($group))}
-        <div id="collectionGroups">
+        <div id="collectionGroups" transition:fade={{ duration: 150 }}>
             {#if parent}
                 <SidebarButton card target={parent} icon={mdiFolderArrowUpOutline}>
                     {parent.name}
@@ -48,7 +47,7 @@
     {/if}
 
     {#key [ $media, $tags ]}
-    <section transition:fade={{ duration: 120 }}>
+    <section transition:fade={{ duration: 150 }}>
 
         {#each (new Array(Math.ceil($media.length / pageSize))) as _, i}
             <ImageGridPage media={$media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
@@ -68,7 +67,6 @@
 
     #collectionGroups {
         display: grid;
-        gap: 0.35em;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         margin-top: -0.5em;
         margin-left: -0.5em;

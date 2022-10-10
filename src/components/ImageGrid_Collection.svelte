@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
-    import { children, identity } from "svelte/internal";
-    import { media, cluster, group, serverURL, groups } from "../stores"
+    import { fade } from "svelte/transition";
+    import { cluster, group, serverURL, groups } from "../stores"
     
     let data: {
         id:      number,
@@ -17,7 +17,7 @@
     const collator = new Intl.Collator([], {numeric: true})
 </script>
 
-<main>
+<main transition:fade={{ duration: 150 }}>
     
     {#each data.sort((a, b) => collator.compare(a.name, b.name)) as d}
         <a on:click={() => {
