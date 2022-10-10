@@ -10,6 +10,22 @@
 <Shortcut meta key="/" action={() => isShortcutsVisible = true} />
 <Popup title="Shortcuts" bind:visible={isShortcutsVisible}>
     <main>
+        <b>Groups</b>
+        <div>
+            <span>Rename group</span>
+            <Key key="r" />
+        </div>
+        <div>
+            <span>Create group</span>
+            <Key key="c" />
+        </div>
+
+        <b>Media Viewer</b>
+        <div>
+            <span>Toggle Fullscreen</span>
+            <Key key="f" />
+        </div>
+
         <b>Navigation</b>
         <div>
             <span>Previous Group</span>
@@ -21,11 +37,17 @@
             <Key key="option" />
             <Key key="arrowDown" />
         </div>
-
-        <b>Media Viewer</b>
         <div>
-            <span>Toggle Fullscreen</span>
-            <Key key="f" />
+            <span>Previous Cluster</span>
+            <Key key="shift" />
+            <Key key="option" />
+            <Key key="arrowUp" />
+        </div>
+        <div>
+            <span>Next Cluster</span>
+            <Key key="shift" />
+            <Key key="option" />
+            <Key key="arrowDown" />
         </div>
 
         <b>Global</b>

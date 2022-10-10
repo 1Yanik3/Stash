@@ -3,7 +3,7 @@
     import { serverURL, group, tags, cluster, media, groups } from '../stores'
 
     import { createEventDispatcher } from 'svelte'
-    import { mdiPound } from '@mdi/js'
+    import { mdiPound, mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     let isDraggingOver = false
@@ -13,12 +13,13 @@
     export let target: Group | null = null
     export let tag: Tag | null = null
 
-    export let icon: string = mdiPound
+    export let icon: string = ""
     export let indent: number = 0
     export let active: boolean = false
 
     export let hidden = false
     export let right = false
+    export let card = false
 
     const dispatch = createEventDispatcher()
 
@@ -127,12 +128,17 @@ on:dragover|preventDefault={() => {}}
 on:dragenter={handleEnter}
 on:dragleave={handleLeave}
 class:isDraggingOver
+class:card
 >
 
     <div class="section">
 
         <!-- @ts-ignore -->
-        <div class="spacer"><Icon path={icon} size={"1.25em"}/></div>
+        <div class="spacer"><Icon path={icon || (
+            target
+            ? target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline
+            : mdiPound)
+        } size={"1.25em"}/></div>
         <span>
             {#if tag}
                 {tag.name}
@@ -170,6 +176,11 @@ class:isDraggingOver
 
         transition: background 100ms, border 100ms;
         border: 1px solid transparent;
+
+        &.card {
+            background: hsl(0, 0%, 13%);
+            border: 1px solid hsl(0, 0%, 24%);
+        }
 
         &:hover {
             background: hsl(0, 0%, 22%);

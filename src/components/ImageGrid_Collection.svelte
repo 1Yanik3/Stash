@@ -20,7 +20,6 @@
 <main>
     
     {#each data.sort((a, b) => collator.compare(a.name, b.name)) as d}
-        <!-- <a href="/?c={$cluster.id}&g={d.id}"> -->
         <a on:click={() => {
             let target
             
@@ -56,7 +55,6 @@
 
             <span style={d.mediaId == 0 ? "grid-row: 1 / span 2; padding: 0" : ""}>{d.name}</span>
         </a>
-        <!-- </a> -->
     {/each}
 
 </main>

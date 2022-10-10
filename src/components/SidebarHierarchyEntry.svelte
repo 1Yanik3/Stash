@@ -1,6 +1,5 @@
 <script lang="ts">
     import SidebarButton from '../components/SidebarButton.svelte'
-    import { mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
 
     import type { Group } from 'src/types'
     import { onMount } from 'svelte'
@@ -36,8 +35,8 @@
 
 <SidebarButton
     bind:element
-    bind:target {indent}
-    icon={target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline}
+    bind:target
+    {indent}
 >
     {target.name}
 </SidebarButton>
