@@ -5,7 +5,7 @@
     import SidebarSection from "../SidebarSection.svelte"
     import SidebarButton from "../SidebarButton.svelte"
 
-    import { serverURL, cluster, traverse, group, groups, tags, activeSortingMethod, mediaTypeFilter } from '../../stores'
+    import { serverURL, cluster, group, groups, tags, mediaTypeFilter } from '../../stores'
     import { slide } from 'svelte/transition';
     import Shortcut from '../../reusables/Shortcut.svelte';
 

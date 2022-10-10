@@ -135,10 +135,11 @@
                 }
                 await addToOutput($group)
 
+                const collator = new Intl.Collator([], {numeric: true})
                 // todo: make better
                 if ($cluster.type == "collection" && $group.id != -3) {
                     media.set(
-                        output.filter(d => d.type.startsWith($mediaTypeFilter)).sort((a, b) => a.name.localeCompare(b.name))
+                        output.filter(d => d.type.startsWith($mediaTypeFilter)).sort((a, b) => collator.compare(a.name, b.name))
                     )        
                 } else {
                     media.set(

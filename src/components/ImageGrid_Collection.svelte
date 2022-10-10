@@ -19,7 +19,7 @@
 
 <main transition:fade={{ duration: 150 }}>
     
-    {#each data.sort((a, b) => collator.compare(a.name, b.name)) as d}
+    {#each data.sort((a, b) => collator.compare(b.name, a.name)) as d}
         <a on:click={() => {
             let target
             
