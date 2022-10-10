@@ -30,6 +30,8 @@
                 block: "center"
             })
     })
+
+    const collator = new Intl.Collator([], {numeric: true})
 </script>
 
 <SidebarButton
@@ -41,7 +43,7 @@
 </SidebarButton>
 
 {#if target.children && !target.collapsed}
-    {#each target.children.sort((a, b) => a.name.localeCompare(b.name)) as child}
+    {#each target.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
         <svelte:self bind:target={child} indent={indent + 1}/>
     {/each}
 {/if}
