@@ -14,11 +14,12 @@
         data = await res.json()
     })
 
+    const collator = new Intl.Collator([], {numeric: true})
 </script>
 
 <main>
     
-    {#each data.sort((a, b) => b.name.localeCompare(a.name)) as d}
+    {#each data.sort((a, b) => collator.compare(a.name, b.name)) as d}
         <!-- <a href="/?c={$cluster.id}&g={d.id}"> -->
         <a on:click={() => {
             let target
