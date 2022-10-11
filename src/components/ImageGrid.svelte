@@ -22,6 +22,8 @@
         .filter(g => g.id > 0)
         .forEach(g => flatten(g))
     })
+
+    const collator = new Intl.Collator([], {numeric: true})
 </script>
 
 {#if $cluster.type == "collection" && $group.id == -3}
@@ -38,7 +40,7 @@
                     {parent.name}
                 </SidebarButton>
             {/if}
-            {#each $group.children as child}
+            {#each $group.children.sort((a, b) => collator.compare(b.name, a.name)) as child}
                 <SidebarButton card target={child}>
                     {child.name}
                 </SidebarButton>
