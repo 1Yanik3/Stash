@@ -40,7 +40,7 @@
                     {parent.name}
                 </SidebarButton>
             {/if}
-            {#each $group.children.sort((a, b) => collator.compare(b.name, a.name)) as child}
+            {#each $group.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
                 <SidebarButton card target={child}>
                     {child.name}
                 </SidebarButton>
