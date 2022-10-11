@@ -182,7 +182,9 @@
                 }}
             >{tag}</span>
         {/each}
-        <input type="text" on:keydown|stopPropagation={handleKeyDown}>
+        {#if $cluster.type != "collection"}
+            <input type="text" on:keydown|stopPropagation={handleKeyDown}>
+        {/if}
     </div>
 
     <section>
