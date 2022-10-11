@@ -69,33 +69,45 @@
     let upscalePopup_open = false
     let upscalePopup_url_old = ""
     let upscalePopup_url_new = ""
-    let upscalePopup_keepNewFunction = () => {}
+    let upscalePopup_blob_new: Blob
 
+    let upscalePopup_keepNewFunction = () => {}
     // TODO: Make nicer
-    const startUpscale = () => {
+    const startUpscale = async () => {
         if (!browser) return
 
         upscalePopup_open = true
         upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
 
-        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/upscale`, {
-            method: "POST"
-        })
-        .then(res => res.json())
-        .then(response => {
+        async function blobToBase64(blob: Blob):Promise<string> {
+            return new Promise((resolve, _) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result as string)
+                reader.readAsDataURL(blob)
+            })
+        }
 
-            const { output_url } = response
-            upscalePopup_url_new = output_url
+        const blob = await fetch(upscalePopup_url_old).then(res => res.blob())
+        const image = (await blobToBase64(blob)).split(",", 2)[1]
+
+        fetch(`https://upscale.hera.lan/`, {
+            method: "POST",
+            body: JSON.stringify({
+                extension: $visibleMedium?.type.split("/")[1],
+                type: "normal", // could be anime
+                image
+            }),
+            headers: { "content-type": "application/json" }
+        })
+        .then(async res => {
+            upscalePopup_blob_new = await res.blob()
+            const image = await blobToBase64(upscalePopup_blob_new)
+            upscalePopup_url_new = image
 
             upscalePopup_keepNewFunction = async () => {
-
-                // get image
-                const response = await fetch(upscalePopup_url_new)
-                const image = await response.blob()
-                replaceMedia(image)
-
+                replaceMedia(upscalePopup_blob_new)
+                upscalePopup_open = false
             }
-
         })
     }
 
