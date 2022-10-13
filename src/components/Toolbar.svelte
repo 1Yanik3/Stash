@@ -1,3 +1,7 @@
+<script>
+    import { visibleMedium } from "../stores";
+
+</script>
 <script lang="ts">
 
     import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '../stores'
@@ -85,9 +89,9 @@
     isFullscreen.set(!$isFullscreen)
 }} />
 
-{#if upscalePopup_open}
+{#key $visibleMedium}
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
-{/if}
+{/key}
 
 <main style="min-width: calc(100% - 4em)">
     <section>
