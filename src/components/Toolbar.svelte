@@ -85,7 +85,9 @@
     isFullscreen.set(!$isFullscreen)
 }} />
 
-<UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
+{#if upscalePopup_open}
+    <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
+{/if}
 
 <main style="min-width: calc(100% - 4em)">
     <section>
