@@ -7,8 +7,8 @@
     import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js'
     import selectFiles from 'select-files'
 
-    import Popup from '../reusables/Popup.svelte' 
     import Shortcut from '../reusables/Shortcut.svelte';
+    import UpscalePopup from './Popups/UpscalePopup.svelte';
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
@@ -67,49 +67,6 @@
     }
 
     let upscalePopup_open = false
-    let upscalePopup_url_old = ""
-    let upscalePopup_url_new = ""
-    let upscalePopup_blob_new: Blob
-
-    let upscalePopup_keepNewFunction = () => {}
-    // TODO: Make nicer
-    const startUpscale = async () => {
-        if (!browser) return
-
-        upscalePopup_open = true
-        upscalePopup_url_old = `${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`
-
-        async function blobToBase64(blob: Blob):Promise<string> {
-            return new Promise((resolve, _) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result as string)
-                reader.readAsDataURL(blob)
-            })
-        }
-
-        const blob = await fetch(upscalePopup_url_old).then(res => res.blob())
-        const image = (await blobToBase64(blob)).split(",", 2)[1]
-
-        fetch(`https://upscale.hera.lan/`, {
-            method: "POST",
-            body: JSON.stringify({
-                extension: $visibleMedium?.type.split("/")[1],
-                type: "normal", // could be anime
-                image
-            }),
-            headers: { "content-type": "application/json" }
-        })
-        .then(async res => {
-            upscalePopup_blob_new = await res.blob()
-            const image = await blobToBase64(upscalePopup_blob_new)
-            upscalePopup_url_new = image
-
-            upscalePopup_keepNewFunction = async () => {
-                replaceMedia(upscalePopup_blob_new)
-                upscalePopup_open = false
-            }
-        })
-    }
 
     const replaceWithLocalMedia = () => {
         if (!browser) return
@@ -121,45 +78,14 @@
 
     }
     
-
 </script>
-
-{#if upscalePopup_open}
-    <Popup>
-    <div class="popupContent">
-    
-        <div>
-    
-            <h1>Original</h1>
-    
-            <img src={upscalePopup_url_old} alt=""/>
-    
-            <button on:click={() => upscalePopup_open = false}>
-                Keep Old
-            </button>
-    
-        </div>
-    
-        <div>
-    
-            <h1>New</h1>
-    
-            <img src={upscalePopup_url_new} alt=""/>
-        
-            <button on:click={upscalePopup_keepNewFunction}>
-                Keep New
-            </button>
-    
-        </div>
-    
-    </div>
-    </Popup>
-{/if}
 
 <!-- Toggle Fullscreen -->
 <Shortcut key="f" action={() => {
     isFullscreen.set(!$isFullscreen)
 }} />
+
+<UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
 
 <main style="min-width: calc(100% - 4em)">
     <section>
@@ -205,7 +131,7 @@
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
         </button>
 
-        <button on:click={startUpscale}>
+        <button on:click={() => upscalePopup_open = true}>
             <Icon path={mdiResize} size={0.8}/>
         </button>
 
@@ -267,18 +193,6 @@
                 cursor: pointer;
             }
 
-        }
-    }
-
-    .popupContent {
-        display: grid;
-        gap: 2em;
-        grid-template-columns: 1fr 1fr;
-
-        img {
-            width: 100%;
-            height: 500px;
-            object-fit: contain;
         }
     }
 </style>
