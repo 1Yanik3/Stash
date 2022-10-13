@@ -1,9 +1,4 @@
-<script>
-    import { visibleMedium } from "../stores";
-
-</script>
 <script lang="ts">
-
     import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '../stores'
     import { browser } from '$app/env'
 
