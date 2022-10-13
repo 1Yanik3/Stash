@@ -10,6 +10,7 @@
     import Popup from '../../reusables/Popup.svelte'
     import Shortcut from '../../reusables/Shortcut.svelte'
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
+    import { browser } from '$app/env';
 
     const changeCluster = (id: number) => {
         console.log(id)
@@ -28,6 +29,12 @@
 <Shortcut meta key="," action={() => isSettingsVisible = true} />
 <Popup bind:visible={isSettingsVisible}>
     <h1>Test</h1>
+    <button on:click={() => { browser && localStorage.setItem("desktopSpacer", "yes"); window.location.reload() }}>
+        Enable Window-controls spacer
+    </button>
+    <button on:click={() => { browser && localStorage.setItem("desktopSpacer", "no"); window.location.reload() }}>
+        Disable Window-controls spacer
+    </button>
 </Popup>
 
 <ShortcutPopup bind:isShortcutsVisible/>
@@ -35,6 +42,9 @@
 <main>
 
     <section>
+        {#if browser && localStorage.getItem("desktopSpacer") == "yes"}
+            <span style="height: 0.5em; pointer-events: none"></span>
+        {/if}
         <span
             class:disabled={$cluster.type == "collection"}
             on:click={() =>

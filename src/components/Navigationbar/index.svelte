@@ -1,18 +1,19 @@
 <script lang="ts">
+    import { browser } from '$app/env';
+
     export let controller: any
 
     import ClusterSection from './ClusterSection.svelte'
     import NavigationSection from './NavigationSection.svelte'
 </script>
 
-<main>
+<main style={browser && localStorage.getItem("desktopSpacer") == "yes" ? "grid-template-columns: 68px 1fr" : ""} >
 
     <ClusterSection {controller}/>
 
     <NavigationSection {controller}/>
 
 </main>
-
 
 <style lang="scss">
     main {
