@@ -3,7 +3,6 @@
     import Icon from 'mdi-svelte'
 
     import Controller from '../Controller.svelte'
-    let controller: Controller
 
     import ImageGrid from '../components/ImageGrid.svelte'
     import Toolbar from '../components/Toolbar.svelte'
@@ -11,7 +10,7 @@
     import MediaViewer from '../components/MediaViewer.svelte'
     import Navigationbar from '../components/Navigationbar/index.svelte'
     
-    import { serverURL, cluster, group, visibleMedium, media, isFullscreen } from '../stores'
+    import { serverURL, cluster, group, visibleMedium, controller, isFullscreen } from '../stores'
 
     //#region Uploader
 
@@ -46,42 +45,19 @@
         fileOver = false
         uploadProgress = null
 
-        controller.updateMedia()
+        $controller.updateMedia()
     }
 
-    //#endregion
-
-    //#region Shortcuts
-
-    const keyDownEventListener = (e: KeyboardEvent) => {
-        if (!$visibleMedium) return
-
-        const mediaIndex = $media.indexOf($visibleMedium)
-
-        if (visibleMedium && e.key == ",")
-            if (mediaIndex > 0)
-                visibleMedium.set(
-                    $media[mediaIndex - 1]
-                )
-        if (visibleMedium && e.key == ".")
-            if (mediaIndex < $media.length - 1)
-                visibleMedium.set(
-                    $media[mediaIndex + 1]
-                )
-                    
-    }
-
-    //#endregion   
+    //#endregion  
 
 </script>
 
-<Controller bind:this={controller}/>
-<svelte:window on:keydown={keyDownEventListener}/>
+<Controller bind:this={$controller}/>
 
 <main>
     
     <section style={$isFullscreen ? 'display: none' : ''}>
-        <Navigationbar {controller}/>
+        <Navigationbar/>
     </section>
 
     <section

@@ -1,17 +1,15 @@
 <script lang="ts">
     import { settings } from '../../stores'
 
-    export let controller: any
-
     import ClusterSection from './ClusterSection.svelte'
     import NavigationSection from './NavigationSection.svelte'
 </script>
 
 <main style={$settings.windowControlsSpacer ? "grid-template-columns: 68px 1fr" : ""} >
 
-    <ClusterSection {controller}/>
+    <ClusterSection/>
 
-    <NavigationSection {controller}/>
+    <NavigationSection/>
 
 </main>
 

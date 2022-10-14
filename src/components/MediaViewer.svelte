@@ -1,10 +1,9 @@
 <script lang="ts">
     import { mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
-    import { serverURL, cluster, visibleMedium, detailsVisible } from "../stores"
+    import { serverURL, cluster, visibleMedium, detailsVisible, settings, controller } from "../stores"
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
     import { slide } from "svelte/transition"
-    import { onMount } from "svelte";
 
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
@@ -83,7 +82,19 @@
                 src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
                 alt={$visibleMedium.name}
                 class:isZoomedIn
-                on:click={e => isZoomedIn = !isZoomedIn}
+                on:click={e => {
+                    if ($settings.mobileNavigationButtons) {
+                        const { width } = imageElement.getBoundingClientRect()
+                        
+                        if (e.offsetX < width/2)
+                            $controller.goToPreviousMedia()
+                        if (e.offsetX > width/2)
+                            $controller.goToNextMedia()
+
+                    } else {
+                        isZoomedIn = !isZoomedIn
+                    }
+                }}
             >
     
         {:else if $visibleMedium.type.startsWith("video")}

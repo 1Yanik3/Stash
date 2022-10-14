@@ -1,13 +1,10 @@
 <script lang="ts">
-    export let controller: any
-
     import Icon from 'mdi-svelte'
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { cluster, clusters, traverse, activeSortingMethod, settings } from '../../stores'
+    import { cluster, clusters, traverse, activeSortingMethod, settings, controller } from '../../stores'
     import { sortingMethods } from '../../types'
-    import { browser } from '$app/environment'
     
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
     import SettingsPopup from '../Popups/SettingsPopup.svelte';
@@ -16,7 +13,7 @@
         console.log(id)
         window.history.pushState({}, '', `?c=${id}`)
         cluster.set($clusters.find(c => c.id == id) || $clusters[0])
-        controller.updateGroups()
+        $controller.updateGroups()
     }
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant

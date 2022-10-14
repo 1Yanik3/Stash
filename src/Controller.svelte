@@ -1,5 +1,4 @@
 <script lang="ts">
-
     import { page } from '$app/stores'
     import { browser } from '$app/environment'
     import { onMount } from 'svelte'
@@ -178,7 +177,32 @@
     })
 
     const shift = true, control = true, alt = true, opt = true, meta = true
+
+    export const goToPreviousMedia = () => {
+        if (!$visibleMedium) return
+
+        const mediaIndex = $media.indexOf($visibleMedium)
+
+        if (mediaIndex > 0)
+            visibleMedium.set(
+                $media[mediaIndex - 1]
+            )
+    }
+    export const goToNextMedia = () => {
+        if (!$visibleMedium) return
+
+        const mediaIndex = $media.indexOf($visibleMedium)
+
+        if (mediaIndex < $media.length - 1)
+            visibleMedium.set(
+                $media[mediaIndex + 1]
+            )
+    }
 </script>
+
+<!-- Media Navigation -->
+<Shortcut key="," action={goToPreviousMedia} />
+<Shortcut key="." action={goToNextMedia} />
 
 <!-- Go up by a group -->
 <Shortcut opt key="ArrowUp" action={() => {

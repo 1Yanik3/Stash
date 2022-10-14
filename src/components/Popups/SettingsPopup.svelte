@@ -12,6 +12,15 @@
 <Popup title="Settings" bind:visible={isSettingsVisible}>
     <main>
 
+        <span>Mobile Navigation Touch areas</span>
+        <SettingsPopupToggle
+            state={$settings.mobileNavigationButtons}
+            on:toggle={e => settings.update(s => { 
+                s.mobileNavigationButtons = e.detail
+                return s
+            })}
+        />
+
         <span>Window-Controls spacing</span>
         <SettingsPopupToggle
             state={$settings.windowControlsSpacer}

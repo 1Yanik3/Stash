@@ -5,11 +5,9 @@
     import SidebarSection from "../SidebarSection.svelte"
     import SidebarButton from "../SidebarButton.svelte"
 
-    import { serverURL, cluster, group, groups, tags, mediaTypeFilter } from '../../stores'
-    import { slide } from 'svelte/transition';
-    import Shortcut from '../../reusables/Shortcut.svelte';
-
-    export let controller: any
+    import { serverURL, cluster, group, groups, tags, mediaTypeFilter, controller } from '../../stores'
+    import { slide } from 'svelte/transition'
+    import Shortcut from '../../reusables/Shortcut.svelte'
 
     // TODO: Move into other section
     let showOptions = false
@@ -25,7 +23,7 @@
                     Parent: $group.id != -1 ? $group.id : ""
                 })
             })
-            controller.updateGroups()
+            $controller.updateGroups()
         }
     }
 
@@ -36,7 +34,7 @@
             await fetch(`${serverURL}/${$cluster.id}/${$group.id}/name/${name}`,{
                 method: "PATCH"
             })
-            controller.updateGroups()
+            $controller.updateGroups()
         }
     }
     
