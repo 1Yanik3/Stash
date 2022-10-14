@@ -1,6 +1,6 @@
 <script lang="ts">
     import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '../stores'
-    import { browser } from '$app/env'
+    import { browser } from '$app/environment'
 
     import Icon from 'mdi-svelte'
     import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js'

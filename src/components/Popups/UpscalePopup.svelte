@@ -2,8 +2,8 @@
     import Popup from "../../reusables/Popup.svelte"
 
     import { serverURL, cluster, visibleMedium } from '../../stores'
-    import SidebarButton from "../SidebarButton.svelte";
-    import { mdiBicyclePennyFarthing, mdiBrushVariant } from "@mdi/js";
+    import SidebarButton from "../SidebarButton.svelte"
+    import { mdiBicyclePennyFarthing, mdiBrushVariant } from "@mdi/js"
 
     export let isVisible = true
     export let replaceMedia: (newMedia: Blob) => void

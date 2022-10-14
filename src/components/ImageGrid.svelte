@@ -4,9 +4,9 @@
     import ImageGridCollection from './ImageGrid_Collection.svelte'
     import ImageGridPage from './ImageGrid_Page.svelte'
     import { fade } from "svelte/transition"
-    import SidebarButton from "./SidebarButton.svelte";
-    import type { Group } from "../types";
-    import { mdiFolderArrowUpOutline } from "@mdi/js";
+    import SidebarButton from "./SidebarButton.svelte"
+    import type { Group } from "../types"
+    import { mdiFolderArrowUpOutline } from "@mdi/js"
 
     const pageSize = 50
 

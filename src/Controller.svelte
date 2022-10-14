@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import { page } from '$app/stores'
-    import { browser } from '$app/env'
+    import { browser } from '$app/environment'
     import { onMount } from 'svelte'
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from '@mdi/js'
 

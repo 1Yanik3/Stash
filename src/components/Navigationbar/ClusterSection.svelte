@@ -5,12 +5,12 @@
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { cluster, clusters, traverse, activeSortingMethod } from '../../stores'
+    import { cluster, clusters, traverse, activeSortingMethod, settings } from '../../stores'
     import { sortingMethods } from '../../types'
-    import Popup from '../../reusables/Popup.svelte'
-    import Shortcut from '../../reusables/Shortcut.svelte'
+    import { browser } from '$app/environment'
+    
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
-    import { browser } from '$app/env';
+    import SettingsPopup from '../Popups/SettingsPopup.svelte';
 
     const changeCluster = (id: number) => {
         console.log(id)
@@ -25,24 +25,13 @@
     let isShortcutsVisible = false
 </script>
 
-
-<Shortcut meta key="," action={() => isSettingsVisible = true} />
-<Popup bind:visible={isSettingsVisible}>
-    <h1>Test</h1>
-    <button on:click={() => { browser && localStorage.setItem("desktopSpacer", "yes"); window.location.reload() }}>
-        Enable Window-controls spacer
-    </button>
-    <button on:click={() => { browser && localStorage.setItem("desktopSpacer", "no"); window.location.reload() }}>
-        Disable Window-controls spacer
-    </button>
-</Popup>
-
+<SettingsPopup bind:isSettingsVisible/>
 <ShortcutPopup bind:isShortcutsVisible/>
 
 <main>
 
     <section>
-        {#if browser && localStorage.getItem("desktopSpacer") == "yes"}
+        {#if $settings.windowControlsSpacer}
             <span style="height: 0.5em; pointer-events: none"></span>
         {/if}
         <span

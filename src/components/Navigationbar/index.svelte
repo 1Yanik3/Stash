@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { browser } from '$app/env';
+    import { settings } from '../../stores'
 
     export let controller: any
 
@@ -7,7 +7,7 @@
     import NavigationSection from './NavigationSection.svelte'
 </script>
 
-<main style={browser && localStorage.getItem("desktopSpacer") == "yes" ? "grid-template-columns: 68px 1fr" : ""} >
+<main style={$settings.windowControlsSpacer ? "grid-template-columns: 68px 1fr" : ""} >
 
     <ClusterSection {controller}/>
 

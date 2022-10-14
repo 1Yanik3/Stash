@@ -2,11 +2,8 @@
   "name": "stash",
   "version": "0.0.1",
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
-    "prepare": "svelte-kit sync",
+    "dev": "vite dev",
+    "build": "vite build",
     "check": "svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
     "lint": "eslint ."
@@ -25,11 +22,13 @@
   },
   "type": "module",
   "dependencies": {
-    "@egjs/svelte-grid": "^1.10.2",
+    "@egjs/svelte-grid": "^1.11.1",
     "@mdi/js": "^6.7.96",
     "mdi-svelte": "^1.1.2",
     "pretty-bytes": "^6.0.0",
     "select-files": "^1.0.1",
-    "svelte-dropzone": "^1.0.6"
+    "svelte-dropzone": "^1.0.6",
+    "svelte-local-storage-store": "^0.3.1",
+    "vite": "^3.1.8"
   }
 }

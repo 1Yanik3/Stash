@@ -163,12 +163,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-
-            &.isZoomedIn {
-                cursor: zoom-out;
-                max-width: 200%;
-                max-height: 200%;
-            }
+        }
+        
+        img.isZoomedIn {
+            cursor: zoom-out;
+            max-width: 200%;
+            max-height: 200%;
         }
     }
 
