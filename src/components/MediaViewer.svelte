@@ -74,7 +74,18 @@
         </div>
     {/if}
     
-    <div id="media" bind:this={mediaElement}>
+    <div id="media" bind:this={mediaElement}
+        on:click={e => {
+            if ($settings.mobileNavigationButtons) {
+                const { width } = imageElement.getBoundingClientRect()
+                
+                if (e.offsetX < width/2)
+                    $controller.goToPreviousMedia()
+                if (e.offsetX > width/2)
+                    $controller.goToNextMedia()
+            }
+        }}
+    >
         {#if $visibleMedium.type.startsWith("image")}
     
             <img
@@ -83,17 +94,8 @@
                 alt={$visibleMedium.name}
                 class:isZoomedIn
                 on:click={e => {
-                    if ($settings.mobileNavigationButtons) {
-                        const { width } = imageElement.getBoundingClientRect()
-                        
-                        if (e.offsetX < width/2)
-                            $controller.goToPreviousMedia()
-                        if (e.offsetX > width/2)
-                            $controller.goToNextMedia()
-
-                    } else {
+                    if (!$settings.mobileNavigationButtons)
                         isZoomedIn = !isZoomedIn
-                    }
                 }}
             >
     
