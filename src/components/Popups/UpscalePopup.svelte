@@ -3,7 +3,9 @@
 
     import { serverURL, cluster, visibleMedium } from '../../stores'
     import SidebarButton from "../SidebarButton.svelte"
-    import { mdiBicyclePennyFarthing, mdiBrushVariant } from "@mdi/js"
+    import { mdiBicyclePennyFarthing, mdiBrushVariant, mdiCancel, mdiFloppyVariant } from "@mdi/js"
+    import ImageCompare from "../../reusables/ImageCompare.svelte"
+    import { Stretch } from 'svelte-loading-spinners'
 
     export let isVisible = true
     export let replaceMedia: (newMedia: Blob) => void
@@ -54,53 +56,57 @@
 
 <Popup title="Shortcuts" bind:visible={isVisible}>
     <main>
-
-        <section>
-    
-            <h1>Original</h1>
-    
-            <img src={`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`} alt=""/>
-
-            <button on:click={() => isVisible = false}>
-                Keep Old
-            </button>
-    
-        </section>
-    
-        <section>
-    
-            <h1>New</h1>
-    
-            {#if isLoading}
-
-                <div id="action">
-                    <span>Loading...</span>
-                </div>
-
-            {:else if upscalePopup_url_new}
-
-                <img src={upscalePopup_url_new} alt=""/>
-
-            {:else}
-
-                <div id="action">
-                    <div>
-                        <SidebarButton card on:click={() => startUpscale("normal")} icon={mdiBicyclePennyFarthing}>
-                            Normal Upscale
-                        </SidebarButton>
-                        <SidebarButton card on:click={() => startUpscale("anime")} icon={mdiBrushVariant}>
-                            Anime Upscale
-                        </SidebarButton>
-                    </div>
-                </div>
-
-            {/if}
         
-            <button on:click={upscalePopup_keepNewFunction}>
-                Keep New
-            </button>
-    
-        </section>
+        {#if isLoading}
+
+            <div class="centered">
+                <Stretch color="#ccc" />
+            </div>
+
+        {:else if upscalePopup_url_new}
+
+            <section>
+
+                <div class="side">
+                    <span>Before</span>
+
+                    <SidebarButton card on:click={() => isVisible = false} icon={mdiCancel}>
+                        Keep Old
+                    </SidebarButton>
+                </div>
+
+
+                <ImageCompare
+                    before={`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`}
+                    after={upscalePopup_url_new}
+                    contain={true}
+                />
+
+                <div class="side">
+                    <span style="text-align: right">After</span>
+
+                    <SidebarButton card on:click={upscalePopup_keepNewFunction} icon={mdiFloppyVariant}>
+                        Keep New
+                    </SidebarButton>
+                </div>
+
+            </section>
+
+
+        {:else}
+
+            <div class="centered">
+                <div>
+                    <SidebarButton card on:click={() => startUpscale("normal")} icon={mdiBicyclePennyFarthing}>
+                        Normal Upscale
+                    </SidebarButton>
+                    <SidebarButton card on:click={() => startUpscale("anime")} icon={mdiBrushVariant}>
+                        Anime Upscale
+                    </SidebarButton>
+                </div>
+            </div>
+
+        {/if}
 
     </main>
 </Popup>
@@ -108,30 +114,29 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5em;
         padding: 0.5em;
 
-        h1 { margin: 0 0 0.5em 0 }
+        height: 80vh;
+        width: 80vw;
+
+        .centered {
+            display: grid;
+            gap: 1em;
+            justify-content: center;
+            align-items: center;
+        }
 
         section {
-            width: 100%;
+            display: grid;
+            grid-template-columns: 8.5em 1fr 8.5em;
 
-            img, #action {
-                width: 100%;
-                height: 450px;
-                object-fit: contain;
-
-            }
-            #action {
+            .side {
                 display: flex;
-                justify-content: center;
-                align-items: center;
-
-                div {
-                    display: grid;
-                }
+                flex-direction: column;
+                justify-content: space-between;
+                height: 100%;
             }
         }
+
     }
 </style>

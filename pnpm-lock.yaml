@@ -15,6 +15,7 @@ specifiers:
   svelte: ^3.44.0
   svelte-check: ^2.7.1
   svelte-dropzone: ^1.0.6
+  svelte-loading-spinners: ^0.3.4
   svelte-local-storage-store: ^0.3.1
   svelte-preprocess: ^4.10.5
   typescript: ^4.7.2
@@ -31,7 +32,7 @@ dependencies:
   vite: 3.1.8_sass@1.55.0
 
 devDependencies:
-  '@sveltejs/adapter-auto': 1.0.0-next.83
+  '@sveltejs/adapter-auto': 1.0.0-next.84
   '@sveltejs/adapter-static': 1.0.0-next.43
   '@sveltejs/kit': 1.0.0-next.516_svelte@3.50.1+vite@3.1.8
   eslint: 8.24.0
@@ -39,6 +40,7 @@ devDependencies:
   sass: 1.55.0
   svelte: 3.50.1
   svelte-check: 2.9.1_sass@1.55.0+svelte@3.50.1
+  svelte-loading-spinners: 0.3.4
   svelte-preprocess: 4.10.7_hfbjjxm4ggy2hdppiwxlv6aafa
   typescript: 4.8.4
 
@@ -214,12 +216,12 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@sveltejs/adapter-auto/1.0.0-next.83:
-    resolution: {integrity: sha512-6Km4x792PjHaN0H0odsy7JOj3jdDZqN1tA58B1b96xWUUUj87tw6XYC7VWRBjwo2wZqWkRat94IegrtAAhYVaA==}
+  /@sveltejs/adapter-auto/1.0.0-next.84:
+    resolution: {integrity: sha512-95NI5dZ3ZNd4vs1/N5knTcArBlWL9pBw2IANCBAcGzwVMoGPjKyyMKZt1gEX74LVwCN6RSRPZ36+6Z6HEb/ojQ==}
     dependencies:
       '@sveltejs/adapter-cloudflare': 1.0.0-next.39
       '@sveltejs/adapter-netlify': 1.0.0-next.81
-      '@sveltejs/adapter-vercel': 1.0.0-next.79
+      '@sveltejs/adapter-vercel': 1.0.0-next.80
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -245,8 +247,8 @@ packages:
     resolution: {integrity: sha512-PAgSp1GA8HkYE4p30/sBvJme2nefhcTBJafqQdMNoUksWZF2WzuL8OEO8wa9ndE6cghcGk3j6Ve0Oskg/wtTOw==}
     dev: true
 
-  /@sveltejs/adapter-vercel/1.0.0-next.79:
-    resolution: {integrity: sha512-Mitw34vS+wR/qxZm6qOUltf910N8gcekYZHaEVxO6HaE/9LyEZ/O03e9rRKwo4LAWrHXOkHMdUxvv1VcS9BqmQ==}
+  /@sveltejs/adapter-vercel/1.0.0-next.80:
+    resolution: {integrity: sha512-a1ibKgN5RsNw6HPzhNKrPuEndgYRXCYlGIioVzfKpt/tEr4RuV5o/bST2FBgjCIWCqajKhWg1QLZmN2DZfPy6Q==}
     dependencies:
       '@vercel/nft': 0.22.1
       esbuild: 0.15.9
@@ -1742,6 +1744,10 @@ packages:
       svelte: '>=3.19.0'
     dependencies:
       svelte: 3.50.1
+    dev: true
+
+  /svelte-loading-spinners/0.3.4:
+    resolution: {integrity: sha512-vKaW71QMCBcTNijAGc0mUl8k3DQ66iYmp6MB8BMGCXyWk82bTrcLy8FOnSm9fE+8q6TwzD6PLUoYFHt0II93Xw==}
     dev: true
 
   /svelte-local-storage-store/0.3.1_svelte@3.50.1:
