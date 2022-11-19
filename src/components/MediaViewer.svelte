@@ -8,16 +8,16 @@
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
     let isZoomedIn = false
-    $: if (mediaElement && imageElement &&
+    $: if (mediaElement && (imageElement || video) &&
             (isZoomedIn || !isZoomedIn)
         ) {
         if (isZoomedIn) {
-            mediaElement.style.marginLeft = `${imageElement.getBoundingClientRect().width / 2}px`
-            mediaElement.style.marginTop = `${imageElement.getBoundingClientRect().height / 2}px`
+            mediaElement.style.marginLeft = `${(imageElement || video).getBoundingClientRect().width / 2}px`
+            mediaElement.style.marginTop = `${(imageElement || video).getBoundingClientRect().height / 2}px`
 
             mediaElement.parentElement?.scrollTo(
-                imageElement.getBoundingClientRect().width,
-                imageElement.getBoundingClientRect().height
+                (imageElement || video).getBoundingClientRect().width,
+                (imageElement || video).getBoundingClientRect().height
             )
         } else {
             mediaElement.style.marginLeft = `0`
@@ -77,7 +77,7 @@
     <div id="media" bind:this={mediaElement}
         on:click={e => {
             if ($settings.mobileNavigationButtons) {
-                const { width } = imageElement.getBoundingClientRect()
+                const { width } = (imageElement || video).getBoundingClientRect()
                 
                 if (e.offsetX < width/2)
                     $controller.goToPreviousMedia()
