@@ -25,6 +25,9 @@
   "dependencies": {
     "@egjs/svelte-grid": "^1.11.1",
     "@mdi/js": "^6.7.96",
+    "@simplewebauthn/browser": "^6.2.2",
+    "@simplewebauthn/server": "^6.2.2",
+    "jsonwebtoken": "^8.5.1",
     "mdi-svelte": "^1.1.2",
     "pretty-bytes": "^6.0.0",
     "select-files": "^1.0.1",
