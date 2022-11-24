@@ -4,13 +4,14 @@ WORKDIR /app
 COPY . .
 
 # Setup project
-RUN npm i
+RUN curl -fsSL "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" -o /bin/pnpm; chmod +x /bin/pnpm;
+RUN pnpm i
 RUN npx prisma generate
-RUN npm run build
+RUN pnpm run build
 RUN apk add ffmpeg
 
 # Setup nginx
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
-CMD nginx && npm start
+CMD nginx && pnpm start
