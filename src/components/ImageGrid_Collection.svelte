@@ -10,7 +10,7 @@
     }[] = []
 
     onMount(async () => {
-        const res = await fetch(`${serverURL}/${$cluster.id}/index`)
+        const res = await fetch(`/api/cluster/${$cluster.id}/index`)
         data = await res.json()
     })
 

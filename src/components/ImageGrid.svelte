@@ -14,6 +14,11 @@
     groups.subscribe(() => {
         const flatten = (input: Group) => {
             flattentedGroups.push(input)
+
+            if (!input?.children) {
+                console.error("no children found for ", input)
+            }
+
             if (input.children.length)
                 input.children.forEach(g => flatten(g))
         }

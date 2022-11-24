@@ -90,7 +90,7 @@
     
             <img
                 bind:this={imageElement}
-                src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
+                src={`${serverURL}/file/${$visibleMedium.id}`}
                 alt={$visibleMedium.name}
                 class:isZoomedIn
                 on:click={e => {
@@ -102,7 +102,7 @@
         {:else if $visibleMedium.type.startsWith("video")}
     
             <video
-                src={`${serverURL}/${$cluster.id}/file/${$visibleMedium.id}`}
+                src={`${serverURL}/file/${$visibleMedium.id}`}
                 alt={$visibleMedium.name}
                 controls
                 autoplay

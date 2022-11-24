@@ -47,7 +47,7 @@ model Groups {
   media Media[]
 
   clusterId Int
-  parentId  Int
+  parentId  Int?
 }
 
 model Media {

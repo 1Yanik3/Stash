@@ -49,7 +49,7 @@
         {#if (intersecting && finishedLoading) || i == 0}
 
             <img
-                src={`${serverURL}/${$cluster.id}/media/${medium.id}/thumbnail`}
+                src={`${serverURL}/api/media/${medium.id}/thumbnail`}
                 alt={medium.name}
                 class:hidden={!thumbnailLoadedCompletely}
                 class:active={$visibleMedium == medium}

@@ -29,7 +29,7 @@
             const data = new FormData()
             data.append('file', files[i])
 
-            const request = fetch(`${serverURL}/${$cluster.id}/${$group.id}/media`, {
+            const request = fetch(`${serverURL}/api/group/${$group.id}/media`, {
                 method: 'POST',
                 body: data
             })
@@ -73,14 +73,14 @@
 
             {#if fileOver || uploadProgress != null}
                 
-                    <div class="dropZone">
-                        <Icon path={mdiFileUpload} size={3}/>
-                        {#if uploadProgress}
-                            <span>uploading {uploadProgress?.done} out of {uploadProgress?.from}</span>
-                        {:else}
-                            <span>Drop to upload</span>
-                        {/if}
-                    </div>
+                <div class="dropZone">
+                    <Icon path={mdiFileUpload} size={3}/>
+                    {#if uploadProgress}
+                        <span>uploading {uploadProgress?.done} out of {uploadProgress?.from}</span>
+                    {:else}
+                        <span>Drop to upload</span>
+                    {/if}
+                </div>
 
             {:else}
 

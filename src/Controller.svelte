@@ -37,7 +37,7 @@
 
         console.log("Updating clusters...")
         try {
-            const res = await fetch(`${serverURL}/clusters`)
+            const res = await fetch(`/api/cluster`)
 
             clusters.set(await res.json())
             cluster.set(
@@ -54,7 +54,7 @@
         console.log("Updating groups...")
         try {
 
-            const res = await fetch(`${serverURL}/${$cluster.id}/groups`)
+            const res = await fetch(`/api/cluster/${$cluster.id}/group`)
             groups.set(
 
                 (await res.json()).map((c: Group) => {
@@ -71,16 +71,28 @@
 
             )
 
+            console.log("groups", {groups})
+
             const flattentedGroups: Array<Group> = []
             const flatten = (input: Group) => {
 
-                if (input.children.length)
-                    input.children.forEach(g => flatten(g))
+                try {
 
-                flattentedGroups.push(input)
+                    if (input.children.length)
+                        input.children.forEach(g => flatten(g))
+
+                    flattentedGroups.push(input)
+
+                } catch (e) {
+                    console.error("failed to flatten", input, e)
+                }
+            
 
             }
+
             $groups.forEach(g => flatten(g))
+
+            console.log("flattened", {groups})
 
             console.log((new URL($page.url)).searchParams.get("g"))
             group.set(
@@ -101,7 +113,7 @@
             let output: Array<Tag> = []
 
             const addToOutput = async (g: Group) => {
-                const res = await fetch(`${serverURL}/${$cluster.id}/${g.id}/tags`)
+                const res = await fetch(`/api/group/${g.id}/tags`)
                 output = [ ...output, ...(await res.json()).map((t: any) => { t.active = false; return t }) ]
 
                 if ($traverse)
@@ -125,7 +137,7 @@
                 let output: Array<Medium> = []
 
                 const addToOutput = async (g: Group) => {
-                    const res = await fetch(`${serverURL}/${$cluster.id}/${g.id}/media`)
+                    const res = await fetch(`/api/group/${g.id}/media`)
                     output = [ ...output, ...await res.json() ]
 
                     if ($traverse)

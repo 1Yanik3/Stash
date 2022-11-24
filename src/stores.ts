@@ -23,7 +23,7 @@ export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 
 
 // TODO: Make automatic
-// export const serverURL = "http://localhost"
+// export const serverURL = "http://localhost:5173"
 export const serverURL = "https://stash.hera.lan"
 export let controller: Writable<Controller> = writable()
 

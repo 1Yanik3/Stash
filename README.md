@@ -19,3 +19,6 @@ This is a big project for me, but also one that is going to take a long long tim
   - Maybe have an "AI upscale this" button?
 - [ ] Allow replacing thumbnail on videos by generating thumbnails at random positions and letting the user choose the one they prefer
 - [x] Have info button show information about the media
+
+insert into "Media" ("date", "groupId", "height", "id", "name", "type", "width") values (to_timestamp(1656674404), '8', NULL, '2014', 'many.webp', 'image/webp', NULL);
+insert into "Media" ("date", "groupId", "height", "id", "name", "type", "width") values (to_timestamp(1657815990), NULL, '354', '2436', 'RDT_20220615_0046593560757627974622765.webp', 'image/webp', '640');
