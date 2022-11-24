@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { JustifiedGrid } from "@egjs/svelte-grid"
+    import { JustifiedGrid } from './Grid/Grids/JustifiedGrid'
+
     import { tags } from "../stores"
     import GridThumbnail from '../components/GridThumbnail.svelte'
     import type { Medium, Tag } from "../types"

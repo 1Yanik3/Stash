@@ -17,7 +17,7 @@
   onMount(async () => {
     if (delay) await new Promise(resolve => setTimeout(resolve, delay))
 
-    if (typeof IntersectionObserver != 'undefined') {
+    if (typeof IntersectionObserver != 'undefined' && container) {
       const rootMargin = `${bottom}px ${left}px ${top}px ${right}px`;
 
       const observer = new IntersectionObserver(entries => {

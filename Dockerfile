@@ -1,19 +1,16 @@
-FROM node:18-alpine
+FROM node:alpine
 
 WORKDIR /app
 COPY . .
 
-RUN apk add ffmpeg curl
-
 # Setup project
-RUN curl -fsSL "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" -o /bin/pnpm; chmod +x /bin/pnpm;
-RUN node --version
-RUN pnpm i
+RUN npm i
 RUN npx prisma generate
-RUN pnpm run build
+RUN npm run build
+RUN apk add ffmpeg
 
 # Setup nginx
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
-CMD nginx && pnpm start
+CMD nginx && npm start
