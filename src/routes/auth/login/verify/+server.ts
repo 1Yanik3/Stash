@@ -4,25 +4,16 @@ import fs from 'fs/promises'
 import { verifyAuthenticationResponse } from '@simplewebauthn/server'
 import jwt from 'jsonwebtoken'
 
-import { Client } from 'pg'
-const client = new Client({
-    host: '100.89.255.87',
-    user: 'postgres',
-    database: 'postgres',
-    password: 'gorm123',
-    port: 23077
-})
-await client.connect()
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
     console.log(1)
     const body = await request.json()
 
     const expectedChallenge: string = await fs.readFile("/tmp/authChallenge", { encoding: "utf-8" })
-
-    const userAuthenticators: { credential_id: Buffer, credential_public_key: Buffer, counter: number }[] = (await
-        client.query("SELECT * FROM credentials")
-    ).rows.filter(t => body.id == t.credential_id.toString('base64url'))
+    
+    const userAuthenticators = (await prisma.credentials.findMany()).filter(t => body.id == t.credentialID.toString('base64url'))
 
     if (userAuthenticators.length != 1)
         throw "Received wrong number of credentials"
@@ -35,8 +26,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             expectedOrigin: "http://localhost:5173",
             expectedRPID: "localhost",
             authenticator: {
-                credentialID: userAuthenticators[0].credential_id,
-                credentialPublicKey: userAuthenticators[0].credential_public_key,
+                credentialID: userAuthenticators[0].credentialID,
+                credentialPublicKey: userAuthenticators[0].credentialPublicKey,
                 counter: userAuthenticators[0].counter
             }
         })
@@ -49,7 +40,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     if (verified) {
         // update counter
-        await client.query("UPDATE credentials SET counter = $1", [ verification.authenticationInfo.newCounter ])
+        await prisma.credentials.update({
+            data: {
+                counter: verification.authenticationInfo.newCounter
+            },
+            where: {
+                credentialID: userAuthenticators[0].credentialID
+            }
+        })
     }
 
     cookies.set("session", jwt.sign("verified", "superSecretKey"), { expires: new Date(Date.now() + 2678400000), path: "/" })

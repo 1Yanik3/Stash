@@ -1,0 +1,70 @@
+// This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:gorm123@100.89.255.87:23078/postgres"
+}
+
+model Credentials {
+  credentialID        Bytes @unique
+  credentialPublicKey Bytes @unique
+  counter             Int   @default(0)
+}
+
+model InviteCodes {
+  code      String   @unique
+  createdAt DateTime @default(now())
+}
+
+enum ClusterType {
+  normal
+  collection
+}
+
+model Clusters {
+  id   Int         @id @default(autoincrement())
+  name String      @unique
+  icon String
+  type ClusterType
+
+  groups Groups[]
+}
+
+model Groups {
+  id        Int      @id @default(autoincrement())
+  cluster   Clusters @relation(fields: [clusterId], references: [id])
+  name      String
+  icon      String?
+  collapsed Boolean  @default(false)
+
+  children Groups[] @relation("group-hierarchy")
+  parent   Groups?  @relation("group-hierarchy", fields: [parentId], references: [id])
+
+  media Media[]
+
+  clusterId Int
+  parentId  Int
+}
+
+model Media {
+  id     Int      @id @default(autoincrement())
+  type   String
+  name   String
+  date   DateTime @default(now())
+  group  Groups   @relation(fields: [groupId], references: [id])
+  height Int
+  width  Int
+  tags   Tags[]
+
+  groupId Int
+}
+
+model Tags {
+  id    Int     @id @default(autoincrement())
+  name  String
+  media Media[]
+}

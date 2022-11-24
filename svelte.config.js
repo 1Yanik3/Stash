@@ -12,24 +12,7 @@ const config = {
   },
   
   kit: {
-    adapter: adapter(),
-
-    // prerender: {
-    //   default: true
-    // },
-
-    // vite: {
-    //   css: {
-    //     preprocessorOptions: {
-    //       scss: {
-    //         additionalData: '@use "src/variables.scss" as *;',
-    //       },
-    //     },
-    //   },
-    //   ssr: {
-    //     noExternal: ['@egjs/grid']
-    //   }
-    // },
+    adapter: adapter()
   },
 
   preprocess: [
