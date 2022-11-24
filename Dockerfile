@@ -7,6 +7,7 @@ COPY . .
 RUN npm i
 RUN npx prisma generate
 RUN npm run build
+RUN apk add ffmpeg
 
 # Setup nginx
 RUN apk add nginx
