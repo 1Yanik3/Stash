@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ params }) => {
     try {
         // thumbnail exists
         return new Response(
-            await fs.readFile(`./thumbnails/${params.media}`)
+            await fs.readFile(`./thumbnails/${params.media}.webp`)
         )
     }
     catch {
