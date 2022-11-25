@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, cookies, url }) => {
     console.log(1)
     const body = await request.json()
 
@@ -23,8 +23,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         verification = await verifyAuthenticationResponse({
             credential: body,
             expectedChallenge,
-            expectedOrigin: "http://localhost:5173",
-            expectedRPID: "localhost",
+            expectedOrigin: url.origin,
+            expectedRPID: url.hostname,
             authenticator: {
                 credentialID: userAuthenticators[0].credentialID,
                 credentialPublicKey: userAuthenticators[0].credentialPublicKey,

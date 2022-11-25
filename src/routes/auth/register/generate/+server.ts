@@ -3,10 +3,10 @@ import type { RequestHandler } from './$types'
 import { generateRegistrationOptions } from '@simplewebauthn/server'
 import fs from 'fs/promises'
 
-export const GET: RequestHandler = async ({  }) => {
+export const GET: RequestHandler = async ({ url }) => {
     const options = generateRegistrationOptions({
       rpName: "Stash",
-      rpID: "localhost",
+      rpID: url.hostname,
       userID: "Main user for Stash",
       userName: "Main user for Stash",
       // Don't prompt users for additional information about the authenticator

@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             credential: body,
             expectedChallenge,
             expectedOrigin: url.origin,
-            expectedRPID: "localhost",
+            expectedRPID: url.hostname
         })
     } catch (error) {
         console.error(error)
@@ -38,7 +38,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
             }
         })
     }
-
 
     return new Response(JSON.stringify(verified))
 }
