@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         verification = await verifyRegistrationResponse({
             credential: body,
             expectedChallenge,
-            expectedOrigin: url.origin.replace("https", "http"),
+            expectedOrigin: url.origin.replace("http", "https"),
             expectedRPID: url.hostname
         })
     } catch (error) {
