@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
         })
     }
 
-    cookies.set("session", jwt.sign("verified", "superSecretKey"), { expires: new Date(Date.now() + 2678400000), path: "/" })
+    cookies.set("session", jwt.sign({verified: true}, "superSecretKey"), { expires: new Date(Date.now() + 2678400000), path: "/" })
 
     return new Response(JSON.stringify(verified))
 }

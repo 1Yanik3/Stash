@@ -4,8 +4,9 @@ import { redirect } from '@sveltejs/kit'
 import jwt from 'jsonwebtoken'
 
 const isJwtValid = (token: string) => {
+  console.log(jwt.verify(token, "superSecretKey") )
   try {
-    return jwt.verify(token, "superSecretKey") == "verified"
+    return (jwt.verify(token, "superSecretKey") as any).verified == true
   } catch {
     return false
   }
