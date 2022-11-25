@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
         verification = await verifyAuthenticationResponse({
             credential: body,
             expectedChallenge,
-            expectedOrigin: url.origin,
+            expectedOrigin: url.origin.replace("https", "http"),
             expectedRPID: url.hostname,
             authenticator: {
                 credentialID: userAuthenticators[0].credentialID,
