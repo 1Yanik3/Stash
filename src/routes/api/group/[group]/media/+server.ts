@@ -21,18 +21,29 @@ export const GET: RequestHandler = async ({ params }) => {
     // return all media of a cluster if it's the everything group
     if (Number(params.group) == cluster.everythingGroupId)
         return new Response(JSON.stringify(
-            await prisma.media.findMany({
-                where: {
-                    group: {
-                        cluster
+            (
+                await prisma.media.findMany({
+                    where: {
+                        group: {
+                            cluster
+                        }
                     }
-                }
+                })
+            )
+            .map(d => {
+                d.date = d.date.getTime() as any
+                return d
             })
         ))
 
     return new Response(JSON.stringify(
-        await prisma.media.findMany({
-            where: { groupId: Number(params.group) }
+        (
+            await prisma.media.findMany({
+                where: { groupId: Number(params.group) },
+            })
+        ).map(d => {
+            d.date = d.date.getTime() as any
+            return d
         })
     ))
 }
