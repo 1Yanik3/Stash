@@ -5,7 +5,7 @@
     import ImageGridPage from './ImageGrid_Page.svelte'
     import { fade } from "svelte/transition"
     import SidebarButton from "./SidebarButton.svelte"
-    import type { Group } from "../types"
+    import type { Group, Medium, Tag } from "../types"
     import { mdiFolderArrowUpOutline } from "@mdi/js"
 
     const pageSize = 50
@@ -27,6 +27,19 @@
         .filter(g => g.id > 0)
         .forEach(g => flatten(g))
     })
+
+    const includesActiveTags = (medium: Medium) => {
+        const activeTags = ($tags || []).filter(t => t.active)
+
+        if (!activeTags.length) return true
+
+        for (const i in activeTags)
+            for (const j in medium.tags)
+                if (activeTags[i].name.toLowerCase() == medium.tags[j].toLowerCase())
+                    return true
+
+        return false
+    }
 
     const collator = new Intl.Collator([], {numeric: true})
 </script>
@@ -54,13 +67,16 @@
     {/if}
 
     {#key [ $media, $tags ]}
-    <section transition:fade={{ duration: 150 }}>
+        {#if true}
+            {@const activeMedia = $media.filter(includesActiveTags)}
+            <section transition:fade={{ duration: 150 }}>
 
-        {#each (new Array(Math.ceil($media.length / pageSize))) as _, i}
-            <ImageGridPage media={$media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
-        {/each}
-        
-    </section>
+                {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
+                    <ImageGridPage media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+                {/each}
+                
+            </section>
+        {/if}
     {/key}
 
 {/if}

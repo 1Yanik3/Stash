@@ -1,4 +1,7 @@
-FROM node:alpine
+# FROM node:alpine
+FROM ghcr.io/max-lt/nginx-jwt-module:latest
+
+RUN apk add nodejs-current npm
 
 WORKDIR /app
 COPY . .

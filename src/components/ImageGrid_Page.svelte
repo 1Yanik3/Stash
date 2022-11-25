@@ -5,20 +5,7 @@
     import GridThumbnail from '../components/GridThumbnail.svelte'
     import type { Medium, Tag } from "../types"
     import { onMount } from "svelte";
-    import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
-
-    const includesActiveTags = (medium: Medium, tags: Array<Tag>) => {
-        const activeTags = (tags || []).filter(t => t.active)
-
-        if (!activeTags.length) return true
-
-        for (const i in activeTags)
-            for (const j in medium.tags)
-                if (activeTags[i].name.toLowerCase() == medium.tags[j].toLowerCase())
-                    return true
-
-        return false
-    }
+    import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
@@ -46,9 +33,7 @@
     >
 
         {#each media as medium}
-            {#if includesActiveTags(medium, $tags)}
-                <GridThumbnail {medium} {i} {finishedLoading} />
-            {/if}
+            <GridThumbnail {medium} {i} {finishedLoading} />
         {/each}
 
     </JustifiedGrid>

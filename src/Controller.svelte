@@ -168,7 +168,7 @@
     const clearTagSelection = () => tags.set(
         $tags.map(t => { t.active = false; return t })
     )
-    $: if($page.url) clearTagSelection()
+    $: if($cluster && $group) clearTagSelection()
 
     updateClusters()
     cluster.subscribe(c => $cluster.id > 0 && updateGroups())
