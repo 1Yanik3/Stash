@@ -44,7 +44,7 @@
     const collator = new Intl.Collator([], {numeric: true})
 </script>
 
-{#if $cluster.type == "collection" && $group.id == -3}
+{#if $cluster.type == "collection" && $group.id < 0 && $group.name.includes("Everything")}
 
     <ImageGridCollection/>
 

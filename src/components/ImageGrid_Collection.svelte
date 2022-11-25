@@ -6,7 +6,7 @@
     let data: {
         id:      number,
         name:    string,
-        mediaId: number
+        Media: number
     }[] = []
 
     onMount(async () => {
@@ -38,7 +38,6 @@
 
             })
 
-
             console.log(target)
             if (!target) return
             group.set(target)
@@ -46,14 +45,14 @@
         href={`?c=${$cluster.id || 1}&g=${d.id}`}
         >
 
-            {#if d.mediaId}
+            {#if d.Media}
                 <img
-                src={`${serverURL}/${$cluster.id}/media/${d.mediaId}/thumbnail`}
+                src={`${serverURL}/api/media/${d.Media}/thumbnail`}
                 alt=""
                 >
             {/if}
 
-            <span style={d.mediaId == 0 ? "grid-row: 1 / span 2; padding: 0" : ""}>{d.name}</span>
+            <span style={d.Media == 0 ? "grid-row: 1 / span 2; padding: 0" : ""}>{d.name}</span>
         </a>
     {/each}
 

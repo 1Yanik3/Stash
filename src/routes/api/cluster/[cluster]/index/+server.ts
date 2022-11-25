@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ params }) => {
         
         END "Media"
         FROM "Groups" as g1
-        WHERE g1."clusterId" = ${Number(params.cluster)} AND g1."parentId" IS NULL
+        WHERE g1."clusterId" = ${Number(params.cluster)} AND g1."parentId" IS NULL AND g1."id" > 0
     `
 
     return new Response(JSON.stringify(data))
