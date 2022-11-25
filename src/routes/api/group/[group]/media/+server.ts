@@ -6,13 +6,19 @@ import ffmpeg from 'fluent-ffmpeg'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export const GET: RequestHandler = async ({ params }) => new Response(JSON.stringify(
-    await prisma.media.findMany({
-        where: {
-            groupId: Number(params.group)
-        }
-    })
-))
+export const GET: RequestHandler = async ({ params }) => {
+    let filter: {} = { groupId: Number(params.group) }
+
+    if (params.group == "-3") {
+        filter = {}
+    }
+
+    return new Response(JSON.stringify(
+        await prisma.media.findMany({
+            where: filter
+        })
+    ))
+}
 
 export const POST: RequestHandler = async ({ params, request }) => {
     const data = await request.formData()
