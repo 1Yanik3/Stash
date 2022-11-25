@@ -7,14 +7,14 @@ import jwt from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export const POST: RequestHandler = async ({ request, cookies, url }) => {
-    console.log(1)
+export const POST: RequestHandler = async ({ request, url, cookies }) => {
     const body = await request.json()
 
     const expectedChallenge: string = await fs.readFile("/tmp/authChallenge", { encoding: "utf-8" })
     
     const userAuthenticators = (await prisma.credentials.findMany()).filter(t => body.id == t.credentialID.toString('base64url'))
 
+    console.log({userAuthenticators})
     if (userAuthenticators.length != 1)
         throw "Received wrong number of credentials"
 
