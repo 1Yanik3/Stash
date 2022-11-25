@@ -7,15 +7,32 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async ({ params }) => {
-    let filter: {} = { groupId: Number(params.group) }
 
-    if (params.group == "-3") {
-        filter = {}
-    }
+    const cluster = await prisma.clusters.findFirstOrThrow({
+        where: {
+            groups: {
+                some: {
+                    id: Number(params.group)
+                }
+            }
+        }
+    })
+
+    // return all media of a cluster if it's the everything group
+    if (Number(params.group) == cluster.everythingGroupId)
+        return new Response(JSON.stringify(
+            await prisma.media.findMany({
+                where: {
+                    group: {
+                        cluster
+                    }
+                }
+            })
+        ))
 
     return new Response(JSON.stringify(
         await prisma.media.findMany({
-            where: filter
+            where: { groupId: Number(params.group) }
         })
     ))
 }

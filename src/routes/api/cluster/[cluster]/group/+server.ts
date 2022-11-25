@@ -54,8 +54,14 @@ export const GET: RequestHandler = async ({ params }) => {
         }
     })
 
+
+    const { everythingGroupId, unsortedGroupId, trashGroupId } = await prisma.clusters.findFirstOrThrow({
+        where: {
+            id: Number(params.cluster)
+        }
+    })
     groups.unshift({
-        id: -1,
+        id: unsortedGroupId || 0,
         name: "Unsorted",
         clusterId: Number(params.cluster),
         collapsed: false,
@@ -64,7 +70,7 @@ export const GET: RequestHandler = async ({ params }) => {
         children: []
     })
     groups.unshift({
-        id: -2,
+        id: trashGroupId || 0,
         name: "Trash",
         clusterId: Number(params.cluster),
         collapsed: false,
@@ -73,7 +79,7 @@ export const GET: RequestHandler = async ({ params }) => {
         children: []
     })
     groups.unshift({
-        id: -3,
+        id: everythingGroupId || 0,
         name: "Everything",
         clusterId: Number(params.cluster),
         collapsed: false,

@@ -31,6 +31,10 @@ model Clusters {
   icon String
   type ClusterType
 
+  everythingGroupId Int?
+  unsortedGroupId   Int?
+  trashGroupId      Int?
+
   groups Groups[]
 }
 

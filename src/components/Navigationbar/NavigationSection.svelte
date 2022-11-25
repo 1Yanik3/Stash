@@ -61,13 +61,13 @@
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
-            <SidebarButton hidden target={$groups.find(g => g.id == -3)} icon={mdiBookshelf}>
+            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Everything")} icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton hidden target={$groups.find(g => g.id == -1)} icon={mdiArchiveOutline}>
+            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Unsorted")} icon={mdiArchiveOutline}>
                 Unsorted
             </SidebarButton>
-            <SidebarButton hidden target={$groups.find(g => g.id == -2)} icon={mdiTrashCanOutline}>
+            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Trash")} icon={mdiTrashCanOutline}>
                 Trash
             </SidebarButton>
             <SidebarButton hidden on:click={e =>
