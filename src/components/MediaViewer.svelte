@@ -111,6 +111,7 @@
                     if (video.duration <= 3)
                         video.loop = true
                 }}
+                crossorigin="use-credentials"
             ><track kind="captions"/></video>
     
         {:else}

@@ -9,15 +9,42 @@ datasource db {
   url      = "postgresql://postgres:gorm123@100.89.255.87:23078/postgres"
 }
 
+enum CredentialsIcon {
+  UsbFlashDrive
+  Tablet
+  Cellphone
+  Laptop
+  DesktopClassic
+  Key
+  KeyWireless
+}
+
+model CredentialsMetadata {
+  id Int @id
+
+  icon CredentialsIcon
+  name String
+
+  Credentials Credentials[]
+  InviteCodes InviteCodes[]
+}
+
 model Credentials {
-  credentialID        Bytes @unique
-  credentialPublicKey Bytes @unique
-  counter             Int   @default(0)
+  credentialID        Bytes               @unique
+  credentialPublicKey Bytes               @unique
+  counter             Int                 @default(0)
+  Metadata            CredentialsMetadata @relation(fields: [credentialsMetadataId], references: [id])
+
+  credentialsMetadataId Int @default(0)
 }
 
 model InviteCodes {
-  code      String   @unique
-  createdAt DateTime @default(now())
+  code      String              @unique
+  createdAt DateTime            @default(now())
+  Metadata  CredentialsMetadata @relation(fields: [credentialsMetadataId], references: [id])
+  duration  Int
+
+  credentialsMetadataId Int
 }
 
 enum ClusterType {

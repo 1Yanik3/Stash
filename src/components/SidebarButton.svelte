@@ -39,16 +39,19 @@
 
                     mediaId = mediaId.replace("mediaId_", "")
 
-                    await fetch(`${serverURL}/${$cluster.id}/media/${mediaId}/group`, {
+                    const response = await fetch(`/api/media/${mediaId}/group`, {
                         method: 'PUT',
                         body: JSON.stringify({
-                            GroupId: target?.id
+                            groupId: target?.id
                         })
                     })
 
-                    media.set(
-                        $media.filter(m => m.id.toString() != mediaId)
-                    )
+                    if (response.ok)
+                        media.set(
+                            $media.filter(m => m.id.toString() != mediaId)
+                        )
+                    else
+                        window.alert("Something wen't wrong moving media")
                     
                 }
 

@@ -5,8 +5,6 @@ import ffmpeg from 'fluent-ffmpeg'
 
 export const GET: RequestHandler = async ({ params }) => {
 
-    let thumbnail: Buffer
-
     try {
         // thumbnail exists
         return new Response(
