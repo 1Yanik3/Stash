@@ -11,6 +11,10 @@ const isJwtValid = (token: string) => {
 }
 
 export const handle: Handle = (async ({ event, resolve }) => {
+    // TODO: get rid of
+    if (event.url.origin == "http://sveltekit-prerender")
+        return await resolve(event)
+
     const isValid = isJwtValid(event.cookies.get("session") || "")
 
     // api is forbidden without valid login
