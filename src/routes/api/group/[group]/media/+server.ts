@@ -78,14 +78,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // const information: any = await new Promise(resolve => ffmpeg.ffprobe(filePath, (_, d) => resolve(d)))
     // const { width, height } = information["streams"].find((d: any) => !!d['width'])
 
-    console.log(Data.tags)
+    const createdDateMatchFromFilename = file.name.match(/(20\d\d)([01]\d)([0123]\d)/)
 
     // get resolution of file
     await prisma.media.update({
         data: {
             width: Data.tags?.ExifImageWidth || Data.imageSize?.width,
             height: Data.tags?.ExifImageHeight || Data.imageSize?.height,
-            createdDate: new Date(Data.tags?.CreateDate || 0)
+            createdDate: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)) || (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)) || new Date(0)
         },
         where: { id: media.id }
     })
