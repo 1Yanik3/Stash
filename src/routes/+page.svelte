@@ -29,7 +29,7 @@
             const data = new FormData()
             data.append('file', files[i])
 
-            const request = fetch(`${serverURL}/api/group/${$group.id}/media`, {
+            const request = fetch(`/api/group/${$group.id}/media`, {
                 method: 'POST',
                 body: data
             })

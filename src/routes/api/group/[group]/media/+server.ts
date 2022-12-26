@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types'
 
 import fs from 'fs/promises'
-// import { ExifParserFactory } from "ts-exif-parser"
+import { ExifParserFactory } from "ts-exif-parser"
 
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
@@ -70,22 +70,25 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const filePath = `./media/${media.id}`
     await fs.writeFile(filePath, fileBuffer)
 
-    // // get resolution of file
-    // const Data = ExifParserFactory.create(fileBuffer).parse()
+    // get resolution of file
+    const Data = ExifParserFactory.create(fileBuffer).parse()
 
-    // // Temporarely disabled
-    // // // get resolution of file
-    // // const information: any = await new Promise(resolve => ffmpeg.ffprobe(filePath, (_, d) => resolve(d)))
-    // // const { width, height } = information["streams"].find((d: any) => !!d['width'])
-
+    // Temporarely disabled
     // // get resolution of file
-    // await prisma.media.update({
-    //     data: {
-    //         width: Data.imageSize?.width,
-    //         height: Data.imageSize?.height
-    //     },
-    //     where: { id: media.id }
-    // })
+    // const information: any = await new Promise(resolve => ffmpeg.ffprobe(filePath, (_, d) => resolve(d)))
+    // const { width, height } = information["streams"].find((d: any) => !!d['width'])
+
+    console.log(Data.tags)
+
+    // get resolution of file
+    await prisma.media.update({
+        data: {
+            width: Data.tags?.ExifImageWidth || Data.imageSize?.width,
+            height: Data.tags?.ExifImageHeight || Data.imageSize?.height,
+            createdDate: new Date(Data.tags?.CreateDate || 0)
+        },
+        where: { id: media.id }
+    })
 
     return new Response()
 }
