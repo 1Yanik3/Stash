@@ -5,7 +5,6 @@
     
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
 
-    export let i: number
     export let medium: Medium
     export let finishedLoading: boolean
 

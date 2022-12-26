@@ -30,10 +30,10 @@ export const GET: RequestHandler = async ({ params }) => {
                     }
                 })
             )
-            .map(d => {
-                d.date = d.date.getTime() as any
-                return d
-            })
+                .map(d => {
+                    d.date = d.date.getTime() as any
+                    return d
+                })
         ))
 
     return new Response(JSON.stringify(
@@ -79,13 +79,19 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // const { width, height } = information["streams"].find((d: any) => !!d['width'])
 
     const createdDateMatchFromFilename = file.name.match(/(20\d\d)([01]\d)([0123]\d)/)
+    console.log({
+        1: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)),
+        2: createdDateMatchFromFilename
+    })
 
     // get resolution of file
     await prisma.media.update({
         data: {
             width: Data.tags?.ExifImageWidth || Data.imageSize?.width,
             height: Data.tags?.ExifImageHeight || Data.imageSize?.height,
-            createdDate: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)) || (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)) || new Date(0)
+            createdDate: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)) ||
+                (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
+                || new Date(0)
         },
         where: { id: media.id }
     })

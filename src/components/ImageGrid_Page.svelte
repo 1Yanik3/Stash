@@ -33,7 +33,7 @@
     >
 
         {#each media as medium}
-            <GridThumbnail {medium} {i} {finishedLoading} />
+            <GridThumbnail {medium} {finishedLoading} />
         {/each}
 
     </JustifiedGrid>
