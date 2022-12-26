@@ -3,8 +3,6 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 import ffmpeg from 'fluent-ffmpeg'
 
-import { ExifParserFactory } from "ts-exif-parser"
-
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
@@ -22,7 +20,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
         // get resolution and duration of file
         const information: any = await new Promise(resolve => ffmpeg.ffprobe(`./media/${params.media}`, (_: any, d: any) => resolve(d)))
-        const { duration } = information["format"] || { duration: null }
+        const { duration } = (information && information["format"]) || { duration: null }
         const outputOptions = !isNaN(duration) ? [
             `-vframes 1`,
             `-ss ${duration > 7 ? 7 : (duration / 2).toFixed()}`
