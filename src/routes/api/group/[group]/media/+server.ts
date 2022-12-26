@@ -49,8 +49,11 @@ export const GET: RequestHandler = async ({ params }) => {
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {
+    console.time("media post request: formData")
     const data = await request.formData()
+    console.timeEnd("media post request: formData")
 
+    console.time("media post request: get file and create db entry")
     const file = data.get('file') as File
 
     const media = await prisma.media.create({
@@ -63,13 +66,20 @@ export const POST: RequestHandler = async ({ params, request }) => {
             groupId: Number(params.group)
         }
     })
+    console.timeEnd("media post request: get file and create db entry")
 
+
+    console.time("media post request: get buffer")
     const fileBuffer = Buffer.from(await file.arrayBuffer())
+    console.timeEnd("media post request: get buffer")
 
+    console.time("media post request: store file")
     // store file
     const filePath = `./media/${media.id}`
     await fs.writeFile(filePath, fileBuffer)
+    console.timeEnd("media post request: store file")
 
+    console.time("media post request: get metadata")
     // get resolution of file
     const Data = ExifParserFactory.create(fileBuffer).parse()
 
@@ -95,6 +105,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         },
         where: { id: media.id }
     })
+    console.timeEnd("media post request: get metadata")
 
     return new Response()
 }
