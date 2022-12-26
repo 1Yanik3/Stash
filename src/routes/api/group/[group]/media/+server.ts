@@ -53,9 +53,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const data = await request.formData()
     console.timeEnd("media post request: formData")
 
-    console.time("media post request: get file and create db entry")
+    console.time("media post request: get file")
     const file = data.get('file') as File
+    console.timeEnd("media post request: get file")
 
+    console.time("media post request: create db entry")
     const media = await prisma.media.create({
         data: {
             name: file.name,
@@ -66,7 +68,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             groupId: Number(params.group)
         }
     })
-    console.timeEnd("media post request: get file and create db entry")
+    console.timeEnd("media post request: create db entry")
 
 
     console.time("media post request: get buffer")
@@ -89,10 +91,6 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // const { width, height } = information["streams"].find((d: any) => !!d['width'])
 
     const createdDateMatchFromFilename = file.name.match(/(20\d\d)([01]\d)([0123]\d)/)
-    console.log({
-        1: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)),
-        2: createdDateMatchFromFilename
-    })
 
     // get resolution of file
     await prisma.media.update({
