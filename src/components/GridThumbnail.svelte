@@ -46,7 +46,7 @@
         bind:this={element}
     >
 
-        {#if (intersecting && finishedLoading) || i == 0}
+        <!-- {#if (intersecting && finishedLoading) || i == 0} -->
 
             <img
                 src={`${serverURL}/api/media/${medium.id}/thumbnail`}
@@ -57,7 +57,7 @@
                 crossorigin="use-credentials"
             >
             
-        {/if}
+        <!-- {/if}
 
         <svg
             class:hidden={thumbnailLoadedCompletely}
@@ -65,7 +65,7 @@
             xmlns="http://www.w3.org/2000/svg"
         >
             <rect width={medium.width} height={medium.height} x="0" y="0"/>
-        </svg>
+        </svg> -->
 
     </div>
 </IntersectionObserver>
