@@ -54,6 +54,7 @@
                 class:hidden={!thumbnailLoadedCompletely}
                 class:active={$visibleMedium == medium}
                 on:load={() => thumbnailLoadedCompletely = true}
+                crossorigin="use-credentials"
             >
             
         {/if}

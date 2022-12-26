@@ -3,6 +3,21 @@ import type { RequestHandler } from './$types'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+export const POST: RequestHandler = async ({ params, request }) => {
+
+    const { name, parentId } = await request.json()
+
+    await prisma.groups.create({
+        data: {
+            name,
+            parentId: parentId > 0 ? parentId : null,
+            clusterId: Number(params.cluster)
+        }
+    })
+
+    return new Response()
+}
+
 export const GET: RequestHandler = async ({ params }) => {
 
     const groups = await prisma.groups.findMany({

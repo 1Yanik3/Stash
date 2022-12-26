@@ -9,7 +9,7 @@ datasource db {
   url      = "postgresql://postgres:gorm123@100.89.255.87:23078/postgres"
 }
 
-enum CredentialsIconType {
+enum CredentialsIcon {
   UsbFlashDrive
   Tablet
   Cellphone
@@ -22,7 +22,7 @@ enum CredentialsIconType {
 model CredentialsMetadata {
   id Int @id @default(autoincrement())
 
-  icon CredentialsIconType
+  icon CredentialsIcon
   name String
 
   Credentials Credentials[]
@@ -52,6 +52,7 @@ model InviteCodes {
 enum ClusterType {
   normal
   collection
+  screenshots
 }
 
 model Clusters {
@@ -84,14 +85,15 @@ model Groups {
 }
 
 model Media {
-  id     Int      @id @default(autoincrement())
-  type   String
-  name   String
-  date   DateTime @default(now())
-  group  Groups   @relation(fields: [groupId], references: [id])
-  height Int
-  width  Int
-  tags   Tags[]
+  id          Int      @id @default(autoincrement())
+  type        String
+  name        String
+  date        DateTime @default(now())
+  createdDate DateTime @default(now())
+  group       Groups   @relation(fields: [groupId], references: [id])
+  height      Int
+  width       Int
+  tags        Tags[]
 
   groupId Int
 }

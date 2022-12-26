@@ -15,12 +15,11 @@
         const name = window.prompt("Enter a name for the new collection")
 
         if (name) {
-            await fetch(`${serverURL}/${$cluster.id}/groups`,{
+            await fetch(`/api/cluster/${$cluster.id}/group`,{
                 method: "POST",
                 body: JSON.stringify({
-                    Cluster: $cluster.id,
-                    Name: name,
-                    Parent: $group.id != -1 ? $group.id : ""
+                    name,
+                    parentId: $group.id != -1 ? $group.id : ""
                 })
             })
             $controller.updateGroups()

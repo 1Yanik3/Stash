@@ -13,7 +13,6 @@
         console.log(id)
         window.history.pushState({}, '', `?c=${id}`)
         cluster.set($clusters.find(c => c.id == id) || $clusters[0])
-        $controller.updateGroups()
     }
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant

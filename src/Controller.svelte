@@ -96,7 +96,7 @@
 
             console.log((new URL($page.url)).searchParams.get("g"))
             group.set(
-                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups.find(g => g.id == -3) || $groups[0]
+                flattentedGroups.find(g => g.id == Number((new URL($page.url)).searchParams.get("g"))) || $groups.find(g => g.name.includes("Everything")) || $groups[0]
             )
 
         } catch (err) {
