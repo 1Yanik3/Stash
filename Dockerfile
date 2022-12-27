@@ -16,4 +16,6 @@ RUN apk add ffmpeg
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
+ENV DATABASE_URL = "postgresql://postgres:gorm123@db:5432/postgres"
+
 CMD nginx && npm start
