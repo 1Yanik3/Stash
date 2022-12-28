@@ -16,8 +16,7 @@ FROM ghcr.io/max-lt/nginx-jwt-module:latest
 WORKDIR /app
 
 # Add dependencies
-RUN apk add nodejs-current
-RUN apk add ffmpeg
+RUN apk add nodejs-current npm ffmpeg
 
 # Setup nginx
 RUN apk add nginx
