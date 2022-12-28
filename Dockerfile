@@ -25,6 +25,7 @@ COPY ./nginx.conf /etc/nginx
 COPY --from=builder /app/build /app/build
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
+COPY ./prisma/schema.prisma /app/prisma/schema.prisma
 RUN npm ci --prod
 RUN npx prisma generate
 
