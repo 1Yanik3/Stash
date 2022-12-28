@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types'
 
 import fs from 'fs/promises'
+import { execSync } from 'child_process'
 import { ExifParserFactory } from "ts-exif-parser"
 
 import { PrismaClient } from '@prisma/client'
@@ -81,6 +82,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     await fs.writeFile(filePath, fileBuffer)
     console.timeEnd("media post request: store file")
 
+    // TODO: Run this in a seperate thread
     console.time("media post request: get metadata")
     // get resolution of file
     const Data = ExifParserFactory.create(fileBuffer).parse()
@@ -92,18 +94,28 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     const createdDateMatchFromFilename = file.name.match(/(20\d\d)([01]\d)([0123]\d)/)
 
+    // Get width and height
+    let width = Data.tags?.ExifImageWidth || Data.imageSize?.width
+    let height = Data.tags?.ExifImageWidth || Data.imageSize?.width
+    let [ffmpeg_width, ffmpeg_height, rotation] = [0, 0, 0]
+    if (!width || !height) {
+        [ffmpeg_width, ffmpeg_height, rotation] = execSync(`ffprobe -loglevel error  -select_streams v:0  -show_entries stream=width,height:side_data="rotation"  -of default=nw=1:nk=1 -i ${filePath}`).toString().split("\n") as any as number[]
+        height = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_width : +ffmpeg_height
+        width = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_height : +ffmpeg_width
+    }
+
     // get resolution of file
     await prisma.media.update({
         data: {
-            width: Data.tags?.ExifImageWidth || Data.imageSize?.width,
-            height: Data.tags?.ExifImageHeight || Data.imageSize?.height,
+            width,
+            height,
             createdDate: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)) ||
                 (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
                 || new Date(0)
         },
         where: { id: media.id }
     })
-    console.timeEnd("media post request: get metadata")
+    console.timeEnd("media post request: get and store metadata")
 
     return new Response()
 }
