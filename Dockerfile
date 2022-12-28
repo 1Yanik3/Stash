@@ -26,5 +26,6 @@ COPY --from=builder /app/build /app/build
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 RUN npm ci --prod
+RUN npx prisma generate
 
 CMD nginx && node build
