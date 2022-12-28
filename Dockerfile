@@ -1,21 +1,28 @@
 # FROM node:alpine
-FROM ghcr.io/max-lt/nginx-jwt-module:latest
-
-RUN apk add nodejs-current npm
+FROM node:latest as builder
 
 WORKDIR /app
 COPY . .
 
-# Setup project
+# Setup and build project
 RUN npm i
 RUN npx prisma generate
 RUN npm run build
+
+
+
+FROM ghcr.io/max-lt/nginx-jwt-module:latest
+
+WORKDIR /app
+
+# Add dependencies
+RUN apk add nodejs-current
 RUN apk add ffmpeg
 
 # Setup nginx
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
-ENV DATABASE_URL = "postgresql://postgres:gorm123@db:5432/postgres"
+COPY --from=builder /app/build /app/build
 
-CMD nginx && npm start
+CMD nginx && node build

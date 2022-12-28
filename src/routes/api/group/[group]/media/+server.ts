@@ -103,7 +103,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
         height = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_width : +ffmpeg_height
         width = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_height : +ffmpeg_width
     }
-
+    console.timeEnd("media post request: get metadata")
+    console.time("media post request: store metadata")
     // get resolution of file
     await prisma.media.update({
         data: {
@@ -115,7 +116,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         },
         where: { id: media.id }
     })
-    console.timeEnd("media post request: get and store metadata")
+    console.timeEnd("media post request: store metadata")
 
     return new Response()
 }
