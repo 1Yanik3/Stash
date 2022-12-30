@@ -85,18 +85,26 @@ export const POST: RequestHandler = async ({ params, request }) => {
     console.timeEnd("media post request: get file")
 
     console.time("media post request: create db entry")
+
     const mediaId = randomUUID()
-    await prisma.media.create({
-        data: {
-            id: mediaId,
-            name: file.name,
-            type: file.type,
-            date: new Date(),
-            height: 0,
-            width: 0,
-            groupId: Number(params.group),
-        }
-    })
+    const dates = (new Date()).toISOString().replace("T", " ").replace("Z", " UTC")
+
+    await prisma.$executeRaw`
+        INSERT INTO "public"."Media" ("id","type","name","date","createdDate","height","width","groupId")
+        VALUES (${mediaId},${file.type},${file.name},${dates},${dates},0,0,${Number(params.group)})
+    `
+    
+    // await prisma.media.create({
+    //     data: {
+    //         id: mediaId,
+    //         name: file.name,
+    //         type: file.type,
+    //         date: new Date(),
+    //         height: 0,
+    //         width: 0,
+    //         groupId: Number(params.group),
+    //     }
+    // })
     console.timeEnd("media post request: create db entry")
 
     console.time("media post request: get buffer")
