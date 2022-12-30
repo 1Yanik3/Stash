@@ -89,11 +89,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const mediaId = randomUUID()
 
     // TODO: Fix this (ERROR: column "date" is of type timestamp without time zone but expression is of type text HINT: You will need to rewrite or cast the expression.)
-    const dates = `TO_TIMESTAMP('${(new Date()).toISOString().replace("T", " ").replace("Z", "")}', 'YYYY-MM-DD HH:MI:SS.MS')`
+    const dates = (new Date()).toISOString().replace("T", " ").replace("Z", "")
 
     await prisma.$executeRaw`
         INSERT INTO "public"."Media" ("id","type","name","date","createdDate","height","width","groupId")
-        VALUES (${mediaId},${file.type},${file.name},${dates},${dates},0,0,${Number(params.group)})
+        VALUES (${mediaId},${file.type},${file.name},TO_TIMESTAMP(${dates}, 'YYYY-MM-DD HH:MI:SS.MS'),TO_TIMESTAMP(${dates}, 'YYYY-MM-DD HH:MI:SS.MS'),0,0,${Number(params.group)})
     `
 
     // await prisma.media.create({
