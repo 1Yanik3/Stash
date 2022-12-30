@@ -95,8 +95,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             height: 0,
             width: 0,
             groupId: Number(params.group),
-        },
-        select: {}
+        }
     })
     console.timeEnd("media post request: create db entry")
 
@@ -142,8 +141,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
                 (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
                 || new Date(0)
         },
-        where: { id: mediaId },
-        select: {}
+        where: { id: mediaId }
     })
     console.timeEnd("media post request: store metadata")
 
