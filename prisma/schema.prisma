@@ -85,7 +85,7 @@ model Groups {
 }
 
 model Media {
-  id          Int      @id @default(autoincrement())
+  id          String   @id
   type        String
   name        String
   date        DateTime @default(now())

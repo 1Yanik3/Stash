@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 import { execSync } from 'child_process'
 import { ExifParserFactory } from "ts-exif-parser"
+import { randomUUID } from 'crypto'
 
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient({
@@ -84,8 +85,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
     console.timeEnd("media post request: get file")
 
     console.time("media post request: create db entry")
-    const media = await prisma.media.create({
+    const mediaId = randomUUID()
+    await prisma.media.create({
         data: {
+            id: mediaId,
             name: file.name,
             type: file.type,
             date: new Date(),
@@ -93,9 +96,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             width: 0,
             groupId: Number(params.group),
         },
-        select: {
-            id: true
-        }
+        select: {}
     })
     console.timeEnd("media post request: create db entry")
 
@@ -105,7 +106,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     console.time("media post request: store file")
     // store file
-    const filePath = `./media/${media.id}`
+    const filePath = `./media/${mediaId}`
     await fs.writeFile(filePath, fileBuffer)
     console.timeEnd("media post request: store file")
 
@@ -141,7 +142,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
                 (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
                 || new Date(0)
         },
-        where: { id: media.id },
+        where: { id: mediaId },
         select: {}
     })
     console.timeEnd("media post request: store metadata")
