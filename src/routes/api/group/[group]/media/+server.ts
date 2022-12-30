@@ -5,7 +5,32 @@ import { execSync } from 'child_process'
 import { ExifParserFactory } from "ts-exif-parser"
 
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+    log: [
+        {
+            emit: 'event',
+            level: 'query',
+        },
+        {
+            emit: 'stdout',
+            level: 'error',
+        },
+        {
+            emit: 'stdout',
+            level: 'info',
+        },
+        {
+            emit: 'stdout',
+            level: 'warn',
+        },
+    ],
+})
+
+prisma.$on('query', (e) => {
+    console.log('Query: ' + e.query)
+    console.log('Params: ' + e.params)
+    console.log('Duration: ' + e.duration + 'ms')
+})
 
 export const GET: RequestHandler = async ({ params }) => {
 
@@ -66,11 +91,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
             date: new Date(),
             height: 0,
             width: 0,
-            groupId: Number(params.group)
+            groupId: Number(params.group),
+        },
+        select: {
+            id: true
         }
     })
     console.timeEnd("media post request: create db entry")
-
 
     console.time("media post request: get buffer")
     const fileBuffer = Buffer.from(await file.arrayBuffer())
@@ -114,7 +141,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
                 (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
                 || new Date(0)
         },
-        where: { id: media.id }
+        where: { id: media.id },
+        select: {}
     })
     console.timeEnd("media post request: store metadata")
 
