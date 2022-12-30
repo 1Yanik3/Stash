@@ -6,32 +6,33 @@ import { ExifParserFactory } from "ts-exif-parser"
 import { randomUUID } from 'crypto'
 
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient({
-    log: [
-        {
-            emit: 'event',
-            level: 'query',
-        },
-        {
-            emit: 'stdout',
-            level: 'error',
-        },
-        {
-            emit: 'stdout',
-            level: 'info',
-        },
-        {
-            emit: 'stdout',
-            level: 'warn',
-        },
-    ],
-})
+const prisma = new PrismaClient()
+// const prisma = new PrismaClient({
+//     log: [
+//         {
+//             emit: 'event',
+//             level: 'query',
+//         },
+//         {
+//             emit: 'stdout',
+//             level: 'error',
+//         },
+//         {
+//             emit: 'stdout',
+//             level: 'info',
+//         },
+//         {
+//             emit: 'stdout',
+//             level: 'warn',
+//         },
+//     ],
+// })
 
-prisma.$on('query', (e) => {
-    console.log('Query: ' + e.query)
-    console.log('Params: ' + e.params)
-    console.log('Duration: ' + e.duration + 'ms')
-})
+// prisma.$on('query', (e) => {
+//     console.log('Query: ' + e.query)
+//     console.log('Params: ' + e.params)
+//     console.log('Duration: ' + e.duration + 'ms')
+// })
 
 export const GET: RequestHandler = async ({ params }) => {
 
@@ -86,27 +87,16 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     console.time("media post request: create db entry")
 
-    const mediaId = randomUUID()
-
-    // TODO: Fix this (ERROR: column "date" is of type timestamp without time zone but expression is of type text HINT: You will need to rewrite or cast the expression.)
-    const dates = (new Date()).toISOString().replace("T", " ").replace("Z", "")
-
-    await prisma.$executeRaw`
-        INSERT INTO "public"."Media" ("id","type","name","date","createdDate","height","width","groupId")
-        VALUES (${mediaId},${file.type},${file.name},TO_TIMESTAMP(${dates}, 'YYYY-MM-DD HH:MI:SS.MS'),TO_TIMESTAMP(${dates}, 'YYYY-MM-DD HH:MI:SS.MS'),0,0,${Number(params.group)})
-    `
-
-    // await prisma.media.create({
-    //     data: {
-    //         id: mediaId,
-    //         name: file.name,
-    //         type: file.type,
-    //         date: new Date(),
-    //         height: 0,
-    //         width: 0,
-    //         groupId: Number(params.group),
-    //     }
-    // })
+    const { id: mediaId } = await prisma.media.create({
+        data: {
+            name: file.name,
+            type: file.type,
+            date: new Date(),
+            height: 0,
+            width: 0,
+            groupId: Number(params.group),
+        }
+    })
     console.timeEnd("media post request: create db entry")
 
     console.time("media post request: get buffer")

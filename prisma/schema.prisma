@@ -85,7 +85,7 @@ model Groups {
 }
 
 model Media {
-  id          String   @id
+  id          String   @id @default(uuid())
   type        String
   name        String
   date        DateTime @default(now())
@@ -96,6 +96,8 @@ model Media {
   tags        Tags[]
 
   groupId Int
+
+  @@index([id, groupId])
 }
 
 model Tags {
