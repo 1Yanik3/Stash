@@ -54,6 +54,8 @@
         .content {
             overflow: scroll;
             max-height: calc(100vh - 2em);
+            margin: -1em 0;
+            padding: 1em;
         }
     }
 </style>
