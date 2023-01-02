@@ -61,7 +61,7 @@
     </section>
 
     <section>
-        {#each $clusters.sort((a, b) => a.id - b.id) as c}
+        {#each $clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
             <span
             on:mousedown={() => changeCluster(c.id)}
             title={c.name}

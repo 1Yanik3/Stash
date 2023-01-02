@@ -5,7 +5,7 @@
     import SidebarSection from "../SidebarSection.svelte"
     import SidebarButton from "../SidebarButton.svelte"
 
-    import { serverURL, cluster, group, groups, tags, mediaTypeFilter, controller } from '../../stores'
+    import { serverURL, cluster, group, groups, stories, story, tags, mediaTypeFilter, controller } from '../../stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../reusables/Shortcut.svelte'
 
@@ -57,6 +57,18 @@
 <Shortcut key="r" action={renameGroup} />
 
 <main>
+    {#if $cluster.type == "stories"}
+    <div style="margin-top: 8px; margin-right: 2px">
+        <SidebarSection>
+            {#each $stories as s}
+                <SidebarButton icon={null} active={$story == s}>
+                    {s.title}
+                </SidebarButton>
+            {/each}
+            
+        </SidebarSection>
+    </div>
+    {:else}
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
@@ -141,6 +153,7 @@
         
         {/if}
     </div>
+    {/if}
 </main>
 
 <style lang="scss">

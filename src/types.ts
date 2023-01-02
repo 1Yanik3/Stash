@@ -6,13 +6,6 @@ export interface Group {
     collapsed:     boolean
 }
 
-export interface Cluster {
-    id:     number,
-    name:   string,
-    icon:   string,
-    type:   "" | "collection"
-}
-
 export interface Tag {
     name: string
     count: number

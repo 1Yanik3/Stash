@@ -53,6 +53,7 @@ enum ClusterType {
   normal
   collection
   screenshots
+  stories
 }
 
 model Clusters {
@@ -61,11 +62,14 @@ model Clusters {
   icon String
   type ClusterType
 
+  sortOrder Int @default(0)
+
   everythingGroupId Int?
   unsortedGroupId   Int?
   trashGroupId      Int?
 
-  groups Groups[]
+  groups  Groups[]
+  stories Story[]
 }
 
 model Groups {
@@ -104,4 +108,16 @@ model Tags {
   id    Int     @id @default(autoincrement())
   name  String
   media Media[]
+}
+
+model Story {
+  id      String   @id @default(uuid())
+  cluster Clusters @relation(fields: [clusterId], references: [id])
+  date    DateTime @default(now())
+
+  title   String
+  content String
+  source  String @default("Unknown")
+
+  clusterId Int
 }

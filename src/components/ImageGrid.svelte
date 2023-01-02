@@ -1,11 +1,13 @@
 <script lang="ts">
     import { tags, media, cluster, group, groups } from "../stores"
-
-    import ImageGridCollection from './ImageGrid_Collection.svelte'
+    
     import ImageGridPage from './ImageGrid_Page.svelte'
+    import ImageGridStories from "./ImageGrid_Stories.svelte"
+    import ImageGridCollection from './ImageGrid_Collection.svelte'
+
     import { fade } from "svelte/transition"
     import SidebarButton from "./SidebarButton.svelte"
-    import type { Group, Medium, Tag } from "../types"
+    import type { Group, Medium } from "../types"
     import { mdiFolderArrowUpOutline } from "@mdi/js"
 
     const pageSize = 50
@@ -47,6 +49,10 @@
 {#if $cluster.type == "collection" && $group.id < 0 && $group.name.includes("Everything")}
 
     <ImageGridCollection/>
+
+{:else if $cluster.type == "stories"}
+
+    <ImageGridStories/>
 
 {:else}
 

@@ -1,9 +1,8 @@
 <script lang="ts">
     import { JustifiedGrid } from './Grid/Grids/JustifiedGrid'
 
-    import { tags } from "../stores"
     import GridThumbnail from '../components/GridThumbnail.svelte'
-    import type { Medium, Tag } from "../types"
+    import type { Medium } from "../types"
     import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
 

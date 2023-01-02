@@ -25,3 +25,7 @@ button, select {
         border: 1px solid hsl(0, 0%, 33%);
     }
 }
+
+* {
+    scroll-behavior: smooth;
+}

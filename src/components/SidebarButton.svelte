@@ -13,7 +13,7 @@
     export let target: Group | null = null
     export let tag: Tag | null = null
 
-    export let icon: string = ""
+    export let icon: string | null = ""
     export let indent: number = 0
     export let active: boolean = false
 
@@ -136,12 +136,14 @@ class:card
 
     <div class="section">
 
-        <!-- @ts-ignore -->
-        <div class="spacer"><Icon path={icon || (
-            target
-            ? target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline
-            : mdiPound)
-        } size={"1.25em"}/></div>
+        {#if icon != null}
+            <!-- @ts-ignore -->
+            <div class="spacer"><Icon path={icon || (
+                target
+                ? target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline
+                : mdiPound)
+            } size={"1.25em"}/></div>
+        {/if}
         <span>
             {#if tag}
                 {tag.name}

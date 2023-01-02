@@ -1,16 +1,20 @@
-import type { Cluster, Group, Tag, Medium } from "./types"
+import type { Group, Tag, Medium } from "./types"
 import { sortingMethods } from "./types"
 import type { Writable } from "svelte/store"
 
 import { writable } from "svelte/store"
 import { writable as localStorageWritable } from 'svelte-local-storage-store'
 import type Controller from "./Controller.svelte"
+import type { Clusters, Story } from "@prisma/client"
 
-export let clusters: Writable<Array<Cluster>> = writable([])
-export let cluster: Writable<Cluster> = writable({ id: 0, name: "Loading...", icon: "", type: "" })
+export let clusters: Writable<Array<Clusters>> = writable([])
+export let cluster: Writable<Clusters> = writable({ id: 0, name: "Loading...", icon: "", type: "" } as any)
 
 export let groups: Writable<Array<Group>> = writable([])
 export let group: Writable<Group> = writable({ id: 0, name: "Loading...", children: [], collapsed: false })
+
+export let stories: Writable<Array<Story>> = writable([])
+export let story: Writable<Story> = writable({ id: "0", title: "Loading...", content: "", date: new Date(), clusterId: 0 })
 
 export let tags: Writable<Array<Tag>> = writable([])
 
