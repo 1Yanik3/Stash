@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '../stores'
+    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '$lib/stores'
     import { browser } from '$app/environment'
 
     import Icon from 'mdi-svelte'
@@ -8,20 +8,24 @@
 
     import Shortcut from '../reusables/Shortcut.svelte';
     import UpscalePopup from './Popups/UpscalePopup.svelte';
+    import type { Tags } from '@prisma/client';
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
         if (e.key == "Enter" && value) {
 
-            fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/tag`, {
+            fetch(`/api/media/${$visibleMedium?.id}/tag`, {
                 method: "PUT",
                 body: JSON.stringify({
-                    Name: value
+                    name: value
                 })
             })
             .then(() => {
                 const tmp = $visibleMedium
-                tmp?.tags.push(value)
+                tmp?.tags.push({
+                    id: -1,
+                    name: value
+                })
                 visibleMedium.set(tmp)
 
                 // TODO: increase count of tags in sidebar
@@ -31,16 +35,16 @@
         }
     }
     
-    const removeTagFromMedia = (tag: string) => {
+    const removeTagFromMedia = (tag: Tags) => {
         
-        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/tag/${tag}`, {
+        fetch(`/api/media/${$visibleMedium?.id}/tag/${tag.name}`, {
             method: "DELETE"
         })
         .then(() => {
 
             if (!$visibleMedium) return
             const tmp = $visibleMedium
-            tmp.tags = tmp.tags.filter(t => t != tag)
+            tmp.tags = tmp.tags.filter(t => t.name != tag.name)
             visibleMedium.set(tmp)
 
         })
@@ -76,6 +80,8 @@
         });
 
     }
+
+    $: console.log($visibleMedium)
     
 </script>
 
@@ -119,7 +125,7 @@
                 on:contextmenu|preventDefault={() => {
                     removeTagFromMedia(tag)
                 }}
-            >{tag}</span>
+            >{tag.name}</span>
         {/each}
         {#if $cluster.type != "collection"}
             <input type="text" on:keydown|stopPropagation={handleKeyDown}>

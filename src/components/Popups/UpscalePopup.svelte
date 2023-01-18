@@ -1,7 +1,7 @@
 <script lang="ts">
     import Popup from "../../reusables/Popup.svelte"
 
-    import { serverURL, cluster, visibleMedium } from '../../stores'
+    import { serverURL, cluster, visibleMedium } from '$lib/stores'
     import SidebarButton from "../SidebarButton.svelte"
     import { mdiBicyclePennyFarthing, mdiBrushVariant, mdiCancel, mdiFloppyVariant } from "@mdi/js"
     import ImageCompare from "../../reusables/ImageCompare.svelte"

@@ -1,12 +1,11 @@
 <script lang="ts">
-    import type { Medium } from "src/types"
-
-    import { serverURL, cluster, visibleMedium } from "../stores"
+    import { serverURL, visibleMedium } from "$lib/stores"
     
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
+    import type { Media, Tags } from "@prisma/client";
 
     export let i: number
-    export let medium: Medium
+    export let medium: Media & { tags: Tags[] }
     export let finishedLoading: boolean
 
     let thumbnailLoadedCompletely = false

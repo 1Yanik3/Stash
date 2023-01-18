@@ -8,7 +8,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
     await prisma.media.update({
         where: {
-            id: Number(params.media)
+            id: params.media
         },
         data: {
             groupId

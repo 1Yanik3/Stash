@@ -55,19 +55,32 @@ export const GET: RequestHandler = async ({ params }) => {
                         group: {
                             cluster
                         }
+                    },
+                    include: {
+                        tags: {
+                            select: {
+                                name: true
+                            }
+                        }
                     }
                 })
-            )
-                .map(d => {
-                    d.date = d.date.getTime() as any
-                    return d
-                })
+            ).map(d => {
+                d.date = d.date.getTime() as any
+                return d
+            })
         ))
 
     return new Response(JSON.stringify(
         (
             await prisma.media.findMany({
                 where: { groupId: Number(params.group) },
+                include: {
+                    tags: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
             })
         ).map(d => {
             d.date = d.date.getTime() as any

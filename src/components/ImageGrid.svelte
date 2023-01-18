@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { tags, media, cluster, group, groups } from "../stores"
+    import { tags, media, cluster, group, groups } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -7,8 +7,9 @@
 
     import { fade } from "svelte/transition"
     import SidebarButton from "./SidebarButton.svelte"
-    import type { Group, Medium } from "../types"
+    import type { Group } from "../types"
     import { mdiFolderArrowUpOutline } from "@mdi/js"
+    import type { Media, Tags } from "@prisma/client";
 
     const pageSize = 50
 
@@ -30,14 +31,14 @@
         .forEach(g => flatten(g))
     })
 
-    const includesActiveTags = (medium: Medium) => {
+    const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
         const activeTags = ($tags || []).filter(t => t.active)
 
         if (!activeTags.length) return true
 
         for (const i in activeTags)
             for (const j in medium.tags)
-                if (activeTags[i].name.toLowerCase() == medium.tags[j].toLowerCase())
+                if (activeTags[i].name.toLowerCase() == medium.tags[j].name.toLowerCase())
                     return true
 
         return false

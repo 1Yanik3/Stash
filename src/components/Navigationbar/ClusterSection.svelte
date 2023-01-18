@@ -3,11 +3,11 @@
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { cluster, clusters, traverse, activeSortingMethod, settings, controller } from '../../stores'
+    import { cluster, clusters, traverse, activeSortingMethod, settings } from '$lib/stores'
     import { sortingMethods } from '../../types'
     
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
-    import SettingsPopup from '../Popups/SettingsPopup.svelte';
+    import SettingsPopup from '../Popups/SettingsPopup/index.svelte';
 
     const changeCluster = (id: number) => {
         console.log(id)

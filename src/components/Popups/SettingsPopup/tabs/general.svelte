@@ -1,7 +1,7 @@
 <script lang="ts">
-    import SettingsPopupToggle from './SettingsPopup_Toggle.svelte'
+    import SettingsPopupToggle from '../components/Toggle.svelte'
 
-    import { settings } from '../../stores'
+    import { settings } from '$lib/stores'
 </script>
 
 <main>

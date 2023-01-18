@@ -3,7 +3,7 @@
 
     import type { Group } from 'src/types'
     import { onMount } from 'svelte'
-    import { group } from '../stores';
+    import { group } from '$lib/stores';
 
     export let target: Group
     export let indent: number = 0

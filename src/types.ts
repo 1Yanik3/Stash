@@ -12,36 +12,30 @@ export interface Tag {
     active: boolean
 }
 
-export interface Medium {
-    id:     number
-    type:   "video" | "image"
-    name:   string
-    date:   number
-    tags:   Array<string>
-    width:  number
-    height: number
-}
-
 import { mdiSort, mdiSortAlphabeticalAscending, mdiSortAlphabeticalDescending, mdiSortCalendarAscending, mdiSortCalendarDescending } from '@mdi/js'
+import type { Media as m } from '@prisma/client'
+
+type Media = m & { date: number }
+
 export const sortingMethods = [
     {
         icon: mdiSortAlphabeticalAscending,
-        method: (a: Medium, b: Medium) => a.name.localeCompare(b.name)
+        method: (a: Media, b: Media) => a.name.localeCompare(b.name)
     },
     {
         icon: mdiSortAlphabeticalDescending,
-        method: (a: Medium, b: Medium) => b.name.localeCompare(a.name)
+        method: (a: Media, b: Media) => b.name.localeCompare(a.name)
     },
     {
         icon: mdiSortCalendarAscending,
-        method: (a: Medium, b: Medium) => a.date - b.date
+        method: (a: Media, b: Media) => a.date - b.date
     },
     {
         icon: mdiSortCalendarDescending,
-        method: (a: Medium, b: Medium) => b.date - a.date
+        method: (a: Media, b: Media) => b.date - a.date
     },
     {
         icon: mdiSort,
-        method: (a: Medium, b: Medium) => 0.5 - Math.random()
+        method: (a: Media, b: Media) => 0.5 - Math.random()
     }
 ]

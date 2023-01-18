@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { story } from "../stores";
+    import { story } from "$lib/stores";
     import SvelteMarkdown from "svelte-markdown";
     import SidebarButton from "./SidebarButton.svelte";
 

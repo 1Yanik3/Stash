@@ -1,7 +1,14 @@
 import { sveltekit } from '@sveltejs/kit/vite';
+import path from "path";
 
 /** @type {import('vite').UserConfig} */
 const config = {
+    resolve: {
+        alias: {
+            $lib: path.resolve("./src/lib"),
+            $components: path.resolve("./src/components"),
+        }
+    },
     plugins: [sveltekit()],
     ssr: {
         noExternal: ['@egjs/*']

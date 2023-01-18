@@ -2,14 +2,14 @@
     import { JustifiedGrid } from './Grid/Grids/JustifiedGrid'
 
     import GridThumbnail from '../components/GridThumbnail.svelte'
-    import type { Medium } from "../types"
     import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
+    import type { Media, Tags } from '@prisma/client';
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
 
-    export let media: Array<Medium>
+    export let media: Array<Media & { tags: Tags[] }>
     export let i: number
 
 </script>

@@ -10,7 +10,7 @@
     import MediaViewer from '../components/MediaViewer.svelte'
     import Navigationbar from '../components/Navigationbar/index.svelte'
     
-    import { serverURL, cluster, group, visibleMedium, controller, isFullscreen } from '../stores'
+    import { group, visibleMedium, controller, isFullscreen } from '$lib/stores'
 
     //#region Uploader
 

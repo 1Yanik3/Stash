@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import { fade } from "svelte/transition";
-    import { cluster, group, serverURL, groups } from "../stores"
+    import { cluster, group, serverURL, groups } from "$lib/stores"
     
     let data: {
         id:      number,

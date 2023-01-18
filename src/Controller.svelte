@@ -4,7 +4,7 @@
     import { onMount } from "svelte";
     import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from "@mdi/js";
 
-    import type { Group, Tag, Medium } from "./types";
+    import type { Group, Tag } from "./types";
     import {
         stories,
         story,
@@ -18,9 +18,12 @@
         activeSortingMethod,
         media,
         visibleMedium,
-    } from "./stores";
+    } from "$lib/stores";
 
     import Shortcut from "./reusables/Shortcut.svelte";
+    import type { Media, Tags } from "@prisma/client";
+
+    $: console.log("media", $media)
 
     const flattenGroups = () => {
         const flattentedGroups: Array<Group> = [
@@ -167,7 +170,7 @@
         if ($cluster.id && $group.id) {
             console.log("Updating media...");
             try {
-                let output: Array<Medium> = [];
+                let output: (Media & { tags: Tags[] })[] = [];
 
                 const addToOutput = async (g: Group) => {
                     const res = await fetch(`/api/group/${g.id}/media`);
@@ -178,6 +181,8 @@
                             await addToOutput(g.children[i]);
                 };
                 await addToOutput($group);
+
+                console.log("out", output)
 
                 const collator = new Intl.Collator([], { numeric: true });
                 // todo: make better
@@ -191,6 +196,7 @@
                     media.set(
                         output
                             .filter((d) => d.type.startsWith($mediaTypeFilter))
+                            // @ts-ignore
                             .sort($activeSortingMethod.method)
                     );
                 }
@@ -221,7 +227,7 @@
 
     group.subscribe((g) => updateMedia());
     group.subscribe((g) => visibleMedium.set(null));
-    group.subscribe((g) => g.id > 0 && updateTags());
+    group.subscribe((g) => updateTags());
 
     onMount(() => {
         group.subscribe(() =>

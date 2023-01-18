@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { settings } from '../../stores'
+    import { settings } from '$lib/stores'
 
     import ClusterSection from './ClusterSection.svelte'
     import NavigationSection from './NavigationSection.svelte'

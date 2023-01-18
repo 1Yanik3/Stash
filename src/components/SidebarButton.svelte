@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Group, Tag } from '../types'
-    import { serverURL, group, tags, cluster, media, groups } from '../stores'
+    import { serverURL, group, tags, cluster, media, groups } from '$lib/stores'
 
     import { createEventDispatcher } from 'svelte'
     import { mdiPound, mdiFolderHidden, mdiFolderOutline } from '@mdi/js'

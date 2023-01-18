@@ -106,7 +106,7 @@ model Media {
 
 model Tags {
   id    Int     @id @default(autoincrement())
-  name  String
+  name  String  @unique
   media Media[]
 }
 
