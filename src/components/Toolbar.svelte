@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen } from '$lib/stores'
+    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter } from '$lib/stores'
     import { browser } from '$app/environment'
 
     import Icon from 'mdi-svelte'
@@ -50,6 +50,8 @@
         })
     }
 
+
+    (window as any).test = () => imageSuffixParameter.set(`?${Math.random().toString(16).substring(2, 8)}`);
     const replaceMedia = (newMedia: Blob) => {
         const data = new FormData()
         data.append('file', new File([newMedia], $visibleMedium?.name || "newImage.jpg", {
@@ -61,6 +63,9 @@
             body: data
         })
         .then(async () => {
+
+            // reload image in viewer
+            imageSuffixParameter.set(`?${Math.random().toString(16).substring(2, 8)}`);
 
             // visibleMedium.update()
             // // This seems to ignore the history pushes

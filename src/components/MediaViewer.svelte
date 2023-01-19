@@ -1,6 +1,6 @@
 <script lang="ts">
     import { mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
-    import { serverURL, cluster, visibleMedium, detailsVisible, settings, controller } from "$lib/stores"
+    import { serverURL, cluster, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter } from "$lib/stores"
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
     import { slide } from "svelte/transition"
@@ -90,7 +90,7 @@
     
             <img
                 bind:this={imageElement}
-                src={`${serverURL}/file/${$visibleMedium.id}`}
+                src={`${serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
                 alt={$visibleMedium.name}
                 class:isZoomedIn
                 on:click={e => {

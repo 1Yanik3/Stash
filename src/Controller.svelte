@@ -18,6 +18,7 @@
         activeSortingMethod,
         media,
         visibleMedium,
+        imageSuffixParameter,
     } from "$lib/stores";
 
     import Shortcut from "./reusables/Shortcut.svelte";
@@ -243,6 +244,8 @@
 
     activeSortingMethod.subscribe((g) => updateMedia());
     mediaTypeFilter.subscribe((g) => updateMedia());
+    
+    visibleMedium.subscribe(() => imageSuffixParameter.set(""))
 
     onMount(() => {
         traverse.set(localStorage.getItem("traverse") == "true");
