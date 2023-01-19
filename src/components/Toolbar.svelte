@@ -56,7 +56,7 @@
             type: newMedia.type
         }))
 
-        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/replace`, {
+        fetch(`/api/media/${$visibleMedium?.id}/replace`, {
             method: "PUT",
             body: data
         })

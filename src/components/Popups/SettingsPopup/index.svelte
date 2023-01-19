@@ -6,6 +6,8 @@
     import About from "./tabs/about.svelte";
     import General from "./tabs/general.svelte";
     import Credentials from "./tabs/credentials.svelte"
+    import Statistics from "./tabs/statistics.svelte";
+    import Jobs from "./tabs/jobs.svelte";
 
     export let isSettingsVisible = true
     
@@ -27,6 +29,14 @@
                 <Credentials/>
             {/if}
 
+            {#if activeTab == "jobs"}
+                <Jobs/>
+            {/if}
+
+            {#if activeTab == "statistics"}
+                <Statistics/>
+            {/if}
+
             {#if activeTab == "about"}
                 <About/>
             {/if}
@@ -38,8 +48,8 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: auto 25em;
-        grid-template-rows: 15em;
+        grid-template-columns: auto 30em;
+        grid-template-rows: 20em;
 
         section {
             gap: 2em;

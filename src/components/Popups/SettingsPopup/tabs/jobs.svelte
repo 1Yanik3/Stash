@@ -1,0 +1,62 @@
+<script lang="ts">
+    import { mdiScanner, mdiTrashCanOutline } from "@mdi/js";
+    import { onMount } from "svelte";
+
+    import SidebarButton from "../../../SidebarButton.svelte";
+    
+    onMount(async () => {
+        
+    });
+</script>
+
+<main>
+    
+    <div class="job">
+        <span class="title">Missing Date extraction</span>
+        <div class="action">
+            <SidebarButton card icon={mdiScanner}>Retry extraction</SidebarButton>
+        </div>
+
+        <span class="description">
+            There are 412 Media files with missing Metadata
+        </span>
+    </div>
+    
+    <div class="job">
+        <span class="title">Trash</span>
+        <div class="action">
+            <SidebarButton card icon={mdiTrashCanOutline}>Clear Trash</SidebarButton>
+        </div>
+
+        <span class="description">
+            Contains 121 Media files
+        </span>
+    </div>
+
+</main>
+
+<style lang="scss">
+    main {
+        display: grid;
+        gap: 1em;
+
+        .job {
+            display: grid;
+            grid-template-columns: 1fr auto;
+
+            padding: 0.65em;
+            background: hsl(0, 0%, 7%);
+            border-radius: 0.6em;
+            border: 1px solid hsl(0, 0%, 17%);
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 0px, rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+
+            .title {
+                font-weight: bold;
+            }
+
+            .action {
+                grid-row: span 2;
+            }
+        }
+    }
+</style>

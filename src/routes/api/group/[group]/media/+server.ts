@@ -3,7 +3,6 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 import { execSync } from 'child_process'
 import { ExifParserFactory } from "ts-exif-parser"
-import { randomUUID } from 'crypto'
 
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()

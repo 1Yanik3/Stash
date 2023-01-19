@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiCog, mdiInformation, mdiInformationOutline, mdiKeyChain } from "@mdi/js";
+    import { mdiChartBar, mdiCog, mdiInformation, mdiInformationOutline, mdiKeyChain, mdiSync } from "@mdi/js";
     import SidebarButton from "../../../SidebarButton.svelte";
 
     export let activeTab: string;
@@ -26,7 +26,27 @@
         </SidebarButton>
     </span>
 
+    <span>
+        <SidebarButton
+            on:click={() => activeTab = "jobs"}
+            active={activeTab == "jobs"}
+            icon={mdiSync}
+        >
+            Jobs
+        </SidebarButton>
+    </span>
+
     <div style="flex-grow: 1" />
+
+    <span>
+        <SidebarButton
+            on:click={() => activeTab = "statistics"}
+            active={activeTab == "statistics"}
+            icon={mdiChartBar}
+        >
+            Statistics
+        </SidebarButton>
+    </span>
 
     <span>
         <SidebarButton
