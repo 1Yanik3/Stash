@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     // Get width and height
     let width = Data.tags?.ExifImageWidth || Data.imageSize?.width
-    let height = Data.tags?.ExifImageWidth || Data.imageSize?.width
+    let height = Data.tags?.ExifImageHeight || Data.imageSize?.height
     let [ffmpeg_width, ffmpeg_height, rotation] = [0, 0, 0]
     if (!width || !height) {
         [ffmpeg_width, ffmpeg_height, rotation] = execSync(`ffprobe -loglevel error  -select_streams v:0  -show_entries stream=width,height:side_data="rotation"  -of default=nw=1:nk=1 -i ${filePath}`).toString().split("\n") as any as number[]
