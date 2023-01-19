@@ -27,7 +27,7 @@
             })
         }
 
-        const blob = await fetch(`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`).then(res => res.blob())
+        const blob = await fetch(`/file/${$visibleMedium?.id}`).then(res => res.blob())
         const image = (await blobToBase64(blob)).split(",", 2)[1]
 
         fetch(`https://upscale.hera.lan/`, {
@@ -77,7 +77,7 @@
 
 
                 <ImageCompare
-                    before={`${serverURL}/${$cluster.id}/file/${$visibleMedium?.id}`}
+                    before={`/file/${$visibleMedium?.id}`}
                     after={upscalePopup_url_new}
                     contain={true}
                 />
