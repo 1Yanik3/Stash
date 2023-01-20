@@ -26,7 +26,7 @@
     }
 
     const request = (url: string): Promise<any> => new Promise((resolve, reject) => 
-        fetch(`${serverURL}/${$cluster.id}/media/${$visibleMedium?.id}/info`)
+        fetch(url)
         .then(e => e.json())
         .then(resolve)
         .catch(reject)
@@ -45,6 +45,7 @@
         <div id="details" transition:slide>
             {#key $visibleMedium}
         
+                <!-- TODO -->
                 {#await request(`${serverURL}/${$cluster.id}/media/${$visibleMedium.id}/info`)}
                     <span style="height: 24px"></span>
                 {:then details} 
@@ -91,6 +92,7 @@
             <img
                 bind:this={imageElement}
                 src={`${serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
+                crossorigin="use-credentials"
                 alt={$visibleMedium.name}
                 class:isZoomedIn
                 on:click={e => {
@@ -103,7 +105,6 @@
     
             <video
                 src={`${serverURL}/file/${$visibleMedium.id}`}
-                alt={$visibleMedium.name}
                 controls
                 autoplay
                 bind:this={video}

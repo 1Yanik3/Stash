@@ -15,6 +15,9 @@ const config = {
     },
     rules: {
         "a11y-click-events-have-key-events": "off"
+    },
+    server: {
+        cors: false,
     }
 };
 
