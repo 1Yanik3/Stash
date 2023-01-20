@@ -22,12 +22,31 @@
     <div>
         <div class="chapters">
             {#each chapters as chapter, i}
-                <SidebarButton icon={null} on:click={() => {
-                    document.querySelector(`#${chapter.toLowerCase().replaceAll(" ", "-").replaceAll(/[’',]/g, "")}`)?.scrollIntoView()
-                }}>
-                    <div style="opacity: 0.5; display: grid; grid-template-columns: auto 1fr; gap: 0.5em">
+                <SidebarButton
+                    icon={null}
+                    on:click={(e) => {
+                        e.preventDefault();
+                        setTimeout(() => {
+                            const element = document.querySelector(
+                                `#${chapter
+                                    .toLowerCase()
+                                    .replaceAll(" ", "-")
+                                    .replaceAll(/[’',]/g, "")}`
+                            );
+                            element?.scrollIntoView({
+                                block: "start",
+                                behavior: "smooth",
+                            });
+                        }, 0);
+                    }}
+                >
+                    <div
+                        style="opacity: 0.5; display: grid; grid-template-columns: auto 1fr; gap: 0.5em"
+                    >
                         <span>{i + 1}</span>
-                        <span style="text-overflow: ellipsis; overflow: hidden">{chapter}</span>
+                        <span style="text-overflow: ellipsis; overflow: hidden"
+                            >{chapter}</span
+                        >
                     </div>
                 </SidebarButton>
             {/each}
@@ -43,7 +62,10 @@
 <style lang="scss">
     main {
         display: grid;
-        grid-template-columns: minmax(15em, 1fr) minmax(30em, 50em) minmax(15em, 1fr);
+        grid-template-columns: minmax(15em, 1fr) minmax(30em, 50em) minmax(
+                15em,
+                1fr
+            );
         gap: 3em;
 
         .chapters {
