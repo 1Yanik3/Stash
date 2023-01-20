@@ -1,11 +1,11 @@
 import type { RequestHandler } from './$types'
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import ffmpeg from 'fluent-ffmpeg'
 
 export const GET: RequestHandler = async ({ params }) => {
 
-    // TODO (for MediaViewer.svelte)
-    return new Response(JSON.stringify(0))
+    const information: any = await new Promise(resolve => ffmpeg.ffprobe(`./media/${params.media}`, (_, d) => resolve(d)))
+
+    return new Response(JSON.stringify(information))
     
 }

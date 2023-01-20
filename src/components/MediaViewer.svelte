@@ -45,8 +45,7 @@
         <div id="details" transition:slide>
             {#key $visibleMedium}
         
-                <!-- TODO -->
-                {#await request(`${serverURL}/${$cluster.id}/media/${$visibleMedium.id}/info`)}
+                {#await request(`${serverURL}/media/${$visibleMedium.id}/info`)}
                     <span style="height: 24px"></span>
                 {:then details} 
         

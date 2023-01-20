@@ -2,9 +2,10 @@
     import SettingsPopupToggle from '../components/Toggle.svelte'
 
     import { settings } from '$lib/stores'
+    import { fade } from 'svelte/transition';
 </script>
 
-<main>
+<main in:fade>
     <span>Mobile Navigation Touch areas</span>
     <SettingsPopupToggle
         state={$settings.mobileNavigationButtons}

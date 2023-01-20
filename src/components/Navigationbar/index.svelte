@@ -5,7 +5,7 @@
     import NavigationSection from './NavigationSection.svelte'
 </script>
 
-<main style={$settings.windowControlsSpacer ? "grid-template-columns: 68px 1fr" : ""} >
+<main style={$settings.windowControlsSpacer ? "grid-template-columns: 76px 1fr" : ""} >
 
     <ClusterSection/>
 

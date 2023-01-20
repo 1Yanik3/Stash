@@ -1,37 +1,37 @@
 <script lang="ts">
     import { mdiScanner, mdiTrashCanOutline } from "@mdi/js";
-    import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
     import SidebarButton from "../../../SidebarButton.svelte";
-    
-    onMount(async () => {
-        
-    });
 </script>
 
-<main>
-    
-    <div class="job">
-        <span class="title">Missing Date extraction</span>
-        <div class="action">
-            <SidebarButton card icon={mdiScanner}>Retry extraction</SidebarButton>
+<main in:fade>
+    {#await fetch(`/api/jobs/list`).then((res) => res.json()) then { missingDateExtraction, inTrash }} 
+
+        <div class="job">
+            <span class="title">Trash</span>
+            <div class="action">
+                <SidebarButton card icon={mdiTrashCanOutline}>Clear Trash</SidebarButton>
+            </div>
+
+            <span class="description">
+                Contains {inTrash} Media files
+            </span>
+        </div>
+        
+        <div class="job">
+            <span class="title">Missing Date extraction</span>
+            <div class="action">
+                <SidebarButton card icon={mdiScanner}>Retry extraction</SidebarButton>
+            </div>
+
+            <span class="description">
+                There are {missingDateExtraction} Media files with missing Metadata
+            </span>
         </div>
 
-        <span class="description">
-            There are 412 Media files with missing Metadata
-        </span>
-    </div>
+    {/await}
     
-    <div class="job">
-        <span class="title">Trash</span>
-        <div class="action">
-            <SidebarButton card icon={mdiTrashCanOutline}>Clear Trash</SidebarButton>
-        </div>
-
-        <span class="description">
-            Contains 121 Media files
-        </span>
-    </div>
 
 </main>
 
@@ -56,7 +56,15 @@
 
             .action {
                 grid-row: span 2;
+                margin-left: 0.25em;
             }
         }
+    }
+
+    .centered {
+        display: grid;
+        gap: 1em;
+        justify-content: center;
+        align-items: center;
     }
 </style>

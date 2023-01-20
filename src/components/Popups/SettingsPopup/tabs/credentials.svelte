@@ -4,6 +4,7 @@
     import Icon from "mdi-svelte";
     import * as icons from "@mdi/js";
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
     let credentials: (CredentialsMetadata & { InviteCodes: InviteCodes[]})[] = [];
     onMount(async () => {
@@ -36,7 +37,7 @@
     };
 </script>
 
-<main>
+<main in:fade>
     {#each credentials as credential}
         <div class="credential">
             <Icon path={icons[`mdi${credential.icon}`]} />

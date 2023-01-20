@@ -20,7 +20,7 @@
 
         <Sidebar bind:activeTab/>
 
-        <section>
+        <section >
             {#if activeTab == "general"}
                 <General/>
             {/if}
