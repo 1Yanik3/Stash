@@ -100,7 +100,13 @@
             flex-direction: column;
         }
 
+        // For desktop Electron app
+        -webkit-app-region: drag;
+
         span {
+            // For desktop Electron app
+            -webkit-app-region: no-drag;
+
             cursor: pointer;
 
             width: 45px;
