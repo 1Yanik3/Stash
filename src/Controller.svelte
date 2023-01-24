@@ -129,7 +129,7 @@
         try {
             const res = await fetch(`/api/cluster/${$cluster.id}/stories`);
             stories.set(await res.json());
-            story.set($stories[0]);
+            story.set($stories.find(s => s.id == new URL($page.url).searchParams.get("g")) || $stories[0]);
 
             console.log("stories", stories);
         } catch (err) {

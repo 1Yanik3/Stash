@@ -59,13 +59,16 @@
 <main>
     {#if $cluster.type == "stories"}
     <div style="margin-top: 8px; margin-right: 2px">
+        <!-- <SidebarButton icon={mdiPlus}>
+            Add
+        </SidebarButton> -->
+        <!-- <SidebarSection title="Stories"> -->
         <SidebarSection>
             {#each $stories as s}
-                <SidebarButton icon={null} active={$story == s}>
+                <SidebarButton icon={null} active={$story == s} on:click={() => story.set(s)}>
                     {s.title}
                 </SidebarButton>
             {/each}
-            
         </SidebarSection>
     </div>
     {:else}
