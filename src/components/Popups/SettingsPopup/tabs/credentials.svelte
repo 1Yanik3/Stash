@@ -1,12 +1,12 @@
 <script lang="ts">
-    import type { CredentialsMetadata, InviteCodes } from "@prisma/client";
+    import type { Credentials } from "@prisma/client";
 
     import Icon from "mdi-svelte";
     import * as icons from "@mdi/js";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
 
-    let credentials: (CredentialsMetadata & { InviteCodes: InviteCodes[]})[] = [];
+    let credentials: Credentials[] = [];
     onMount(async () => {
         credentials = await fetch(`/api/credentials`).then((res) => res.json());
     });
@@ -22,15 +22,19 @@
         "Key",
         "KeyWireless",
     ];
+
     let icon = 0;
-    let name: string = "";
-    const createKey = async () => {
+    let name = "";
+    const createLogin = async () => {
+        const token = `${window.alert(Math.random().toString(16).substring(2, 8))}-${window.alert(Math.random().toString(16).substring(2, 8))}`
+        
         await fetch(`/api/credentials`, {
             method: "POST",
             body: JSON.stringify({
                 icon: possibleIcons[icon % possibleIcons.length],
                 name,
-            }),
+                token
+            })
         });
 
         credentials = await fetch(`/api/credentials`).then((res) => res.json());
@@ -43,9 +47,9 @@
             <Icon path={icons[`mdi${credential.icon}`]} />
             <span>
                 {credential.name}
-                {#if credential.InviteCodes.length}
+                <!-- {#if credential.InviteCodes.length}
                     <span style="opacity: 0.5">({credential.InviteCodes[0].code})</span>
-                {/if}
+                {/if} -->
             </span>
             <span><Icon path={icons.mdiTrashCanOutline} size={0.8} /></span>
         </div>
@@ -59,7 +63,7 @@
             <Icon path={currentIcon} size={0.8} />
         </div>
         <input type="text" placeholder="Key name..." bind:value={name} />
-        <button on:click={createKey}>
+        <button on:click={createLogin}>
             <Icon path={icons.mdiPlus} size={0.8} />
         </button>
     </div>

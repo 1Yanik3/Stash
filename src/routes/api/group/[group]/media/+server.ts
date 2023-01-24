@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // const information: any = await new Promise(resolve => ffmpeg.ffprobe(filePath, (_, d) => resolve(d)))
     // const { width, height } = information["streams"].find((d: any) => !!d['width'])
 
-    const createdDateMatchFromFilename = file.name.match(/(20\d\d)([01]\d)([0123]\d)/)
+    const createdDateMatchFromFilename = file.name.match(/(20\d\d)-?([01]\d)-?([0123]\d)/)
 
     // Get width and height
     let width = Data.tags?.ExifImageWidth || Data.imageSize?.width

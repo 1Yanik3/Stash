@@ -19,34 +19,12 @@ enum CredentialsIcon {
   KeyWireless
 }
 
-model CredentialsMetadata {
-  id Int @id @default(autoincrement())
+model Credentials {
+  id         String @id @default(cuid())
+  credential String
 
   icon CredentialsIcon
   name String
-
-  Credentials Credentials[]
-  InviteCodes InviteCodes[]
-}
-
-model Credentials {
-  credentialID        Bytes               @unique
-  credentialPublicKey Bytes               @unique
-  counter             Int                 @default(0)
-  Metadata            CredentialsMetadata @relation(fields: [credentialsMetadataId], references: [id])
-
-  credentialsMetadataId Int @default(0)
-}
-
-model InviteCodes {
-  id Int @id @default(autoincrement())
-
-  code      String              @unique
-  createdAt DateTime            @default(now())
-  Metadata  CredentialsMetadata @relation(fields: [credentialsMetadataId], references: [id])
-  duration  Int
-
-  credentialsMetadataId Int
 }
 
 enum ClusterType {
