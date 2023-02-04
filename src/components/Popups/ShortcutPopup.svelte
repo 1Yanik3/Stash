@@ -25,6 +25,11 @@
             <span>Toggle Fullscreen</span>
             <Key key="f" />
         </div>
+        <div>
+            <span>Toggle Serif (Stories)</span>
+            <Key key="option" />
+            <Key key="s" />
+        </div>
 
         <b>Navigation</b>
         <div>

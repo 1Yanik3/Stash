@@ -28,9 +28,9 @@
 
     const flattenGroups = () => {
         const flattentedGroups: Array<Group> = [
-            $groups.find((g) => g.id == -3) as Group,
-            $groups.find((g) => g.id == -1) as Group,
-            $groups.find((g) => g.id == -2) as Group,
+            $groups.find((g) => g.id == $cluster.everythingGroupId) as Group,
+            $groups.find((g) => g.id == $cluster.unsortedGroupId) as Group,
+            $groups.find((g) => g.id == $cluster.trashGroupId) as Group,
         ];
 
         const flatten = (input: Group) => {

@@ -26,7 +26,7 @@
     let icon = 0;
     let name = "";
     const createLogin = async () => {
-        const token = `${window.alert(Math.random().toString(16).substring(2, 8))}-${window.alert(Math.random().toString(16).substring(2, 8))}`
+        const token = `${Math.random().toString(16).substring(2, 8)}-${Math.random().toString(16).substring(2, 8)}`
         
         await fetch(`/api/credentials`, {
             method: "POST",
@@ -36,6 +36,8 @@
                 token
             })
         });
+
+        window.alert(token)
 
         credentials = await fetch(`/api/credentials`).then((res) => res.json());
     };

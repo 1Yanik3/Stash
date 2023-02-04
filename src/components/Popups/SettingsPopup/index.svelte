@@ -49,11 +49,12 @@
     main {
         display: grid;
         grid-template-columns: auto 30em;
-        grid-template-rows: 20em;
+        grid-template-rows: 23em;
 
         section {
             gap: 2em;
             padding: 1em;
+            overflow: scroll;
         }
     }
 </style>

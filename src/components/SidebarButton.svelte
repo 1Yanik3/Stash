@@ -3,7 +3,7 @@
     import { serverURL, group, tags, cluster, media, groups } from '$lib/stores'
 
     import { createEventDispatcher } from 'svelte'
-    import { mdiPound, mdiFolderHidden, mdiFolderOutline } from '@mdi/js'
+    import { mdiPound, mdiHelp } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     let isDraggingOver = false
@@ -140,7 +140,7 @@ class:card
             <!-- @ts-ignore -->
             <div class="spacer"><Icon path={icon || (
                 target
-                ? target.icon || target.collapsed ? mdiFolderHidden : mdiFolderOutline
+                ? target.icon || mdiHelp
                 : mdiPound)
             } size={"1.25em"}/></div>
         {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
+    import { mdiCalendar, mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
     import { serverURL, cluster, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter } from "$lib/stores"
     import prettyBytes from "pretty-bytes"
     import Icon from "mdi-svelte"
@@ -25,17 +25,18 @@
         }
     }
 
-    const request = (url: string): Promise<any> => new Promise((resolve, reject) => 
-        fetch(url)
-        .then(e => e.json())
-        .then(resolve)
-        .catch(reject)
-    )
-
     let video: HTMLVideoElement
 
-    // @ts-ignore
-    const find = (array: [], filter: string, property?: string) => array.find(a => a[filter])[property || filter] || array[0]
+    function toIsoString(date: Date) {
+        const pad = (num: number) => (num < 10 ? '0' : '') + num;
+
+        return date.getFullYear() +
+            '-' + pad(date.getMonth() + 1) +
+            '-' + pad(date.getDate()) +
+            ' ' + pad(date.getHours()) +
+            ':' + pad(date.getMinutes()) +
+            ':' + pad(date.getSeconds())
+    }
 </script>
 
 {#if $visibleMedium}
@@ -44,31 +45,21 @@
     {#if $detailsVisible}
         <div id="details" transition:slide>
             {#key $visibleMedium}
-        
-                {#await request(`${serverURL}/media/${$visibleMedium.id}/info`)}
-                    <span style="height: 24px"></span>
-                {:then details} 
-        
-                    <span>
-                        <Icon path={mdiFormTextbox}/>
-                        <span>{$visibleMedium.name}</span>
-                    </span>
-                    <span>
-                        <Icon path={mdiMoveResize}/>
-                        <span>{find(details.streams, "height")}x{find(details.streams, "width")}</span>
-                    </span>
-                    <span>
-                        <Icon path={mdiInformationOutline}/>
-                        <span>{find(details.streams, "width", "codec_name")}</span>
-                    </span>
-                    <span>
-                        <Icon path={mdiHarddisk}/>
-                        <span>{prettyBytes(+details.format.size)}</span>
-                    </span>
-        
-                {:catch}
-                    <span>Something went wrong</span>        
-                {/await}
+
+                <span style="grid-column: span 2">
+                    <Icon path={mdiFormTextbox}/>
+                    <span>{$visibleMedium.name}</span>
+                </span>
+
+                <span>
+                    <Icon path={mdiMoveResize}/>
+                    <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
+                </span>
+
+                <span>
+                    <Icon path={mdiCalendar}/>
+                    <span>{toIsoString(new Date($visibleMedium.date))}</span>
+                </span>
         
             {/key}
         </div>
@@ -130,7 +121,8 @@
 
         display: grid;
         gap: 0.5em;
-        grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+        grid-template-columns: 1fr 1fr;
+        // grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
 
         & > span {
             display: flex;

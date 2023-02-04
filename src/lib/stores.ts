@@ -38,4 +38,7 @@ export let settings = localStorageWritable('settings', {
 })
 
 export let detailsVisible: Writable<boolean> = writable(false)
+
+// TODO: Change to a "mode"
 export let isFullscreen: Writable<boolean> = writable(false)
+export let isStoryFullScreen: Writable<boolean> = writable(false)

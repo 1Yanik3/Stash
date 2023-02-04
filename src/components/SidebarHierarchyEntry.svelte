@@ -4,6 +4,7 @@
     import type { Group } from 'src/types'
     import { onMount } from 'svelte'
     import { group } from '$lib/stores';
+    import * as Icons from '@mdi/js';
 
     export let target: Group
     export let indent: number = 0
@@ -31,12 +32,19 @@
     })
 
     const collator = new Intl.Collator([], {numeric: true})
+
+    console.log($group.icon)
 </script>
 
 <SidebarButton
     bind:element
     bind:target
     {indent}
+    icon={target.icon 
+        // @ts-ignore
+        ? Icons[`mdi${target.icon || ""}`]
+        : target.collapsed ? Icons.mdiFolderHidden : Icons.mdiFolderOutline
+    }
 >
     {target.name}
 </SidebarButton>
