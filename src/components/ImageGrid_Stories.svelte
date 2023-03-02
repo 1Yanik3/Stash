@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import SvelteMarkdown from "svelte-markdown";
     import Shortcut from "../reusables/Shortcut.svelte";
+    import CreateStoryPopup from "./Popups/CreateStoryPopup.svelte";
     import SidebarButton from "./SidebarButton.svelte";
 
     const extractHeaders = (markdown: string) => {
@@ -53,7 +54,15 @@
 
     })
 
+    let createStoryPopupOpen = false
 </script>
+
+{#if createStoryPopupOpen}
+    <CreateStoryPopup bind:visible={createStoryPopupOpen}/>
+{/if}
+
+<!-- Add new story -->
+<Shortcut key="c" action={() => createStoryPopupOpen = true} />
 
 <!-- Toggle Serif -->
 <Shortcut
@@ -134,7 +143,7 @@
             overflow: scroll;
             max-height: calc(100vh - 2em);
             margin: -1em 0;
-            padding: 1em;
+            padding: 1em 0;
 
             scrollbar-width: none;
 

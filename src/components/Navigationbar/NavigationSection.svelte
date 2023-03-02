@@ -53,7 +53,7 @@
 </script>
 
 <!-- Create Group -->
-<Shortcut key="c" action={createGroup} />
+<Shortcut key="c" action={() => $cluster.type != "stories" && createGroup()} />
 <Shortcut key="r" action={renameGroup} />
 
 <main>

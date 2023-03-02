@@ -12,7 +12,7 @@ body {
     width: 100vw;
     font-size: 15px;
 }
-input {
+input, textarea {
     background: hsl(0, 0%, 26%);
     border: none;
     border-radius: 3px;
