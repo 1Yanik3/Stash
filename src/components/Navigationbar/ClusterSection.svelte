@@ -31,7 +31,7 @@
             <span style="height: 0.5em; pointer-events: none"></span>
         {/if}
         <span
-            class:disabled={$cluster.type == "collection"}
+            class:disabled={$cluster.type == "collection" || $cluster.type == "stories"}
             on:click={() =>
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
@@ -45,6 +45,7 @@
         </span>
 
         <span
+            class:disabled={$cluster.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse)
                 localStorage.setItem('traverse', $traverse.toString())

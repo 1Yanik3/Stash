@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     // TODO: Run this in a seperate thread
     console.time("media post request: get metadata")
     // get resolution of file
-    const Data = ExifParserFactory.create(fileBuffer).parse()
+    // const Data = ExifParserFactory.create(fileBuffer).parse()
 
     // Temporarely disabled
     // // get resolution of file
@@ -133,15 +133,40 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     const createdDateMatchFromFilename = file.name.match(/(20\d\d)-?([01]\d)-?([0123]\d)/)
 
-    // Get width and height
-    let width = Data.tags?.ExifImageWidth || Data.imageSize?.width
-    let height = Data.tags?.ExifImageHeight || Data.imageSize?.height
-    let [ffmpeg_width, ffmpeg_height, rotation] = [0, 0, 0]
-    if (!width || !height) {
-        [ffmpeg_width, ffmpeg_height, rotation] = execSync(`ffprobe -loglevel error  -select_streams v:0  -show_entries stream=width,height:side_data="rotation"  -of default=nw=1:nk=1 -i ${filePath}`).toString().split("\n") as any as number[]
-        height = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_width : +ffmpeg_height
-        width = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_height : +ffmpeg_width
+    const [{ ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate }] = JSON.parse(
+        execSync(`exiftool -j ${filePath}`).toString()
+    )
+    const height = [90, 270, -90, -270].includes(Rotation) ? ImageWidth : ImageHeight
+    const width = [90, 270, -90, -270].includes(Rotation) ? ImageHeight : ImageWidth
+
+    console.log({ ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate, width, height })
+
+    // // Get width and height
+    // let width = Data.tags?.ExifImageWidth || Data.imageSize?.width
+    // let height = Data.tags?.ExifImageHeight || Data.imageSize?.height
+    // let [ffmpeg_width, ffmpeg_height, rotation] = [0, 0, 0]
+    // if (!width || !height) {
+    //     [ffmpeg_width, ffmpeg_height, rotation] = execSync(`ffprobe -loglevel error  -select_streams v:0  -show_entries stream=width,height:side_data="rotation"  -of default=nw=1:nk=1 -i ${filePath}`).toString().split("\n") as any as number[]
+    //     height = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_width : +ffmpeg_height
+    //     width = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_height : +ffmpeg_width
+    // }
+
+    const convertToDate = (input: string) => {
+        if (!input) return false
+        const date = new Date(input.replace(":", "-").replace(":", "-").replace(" ", "T"))
+        console.log(input, date)
+        if (date > new Date(0))
+            return date
+        else
+            return false
     }
+
+    console.log(convertToDate(CreateDate) || (
+        createdDateMatchFromFilename
+            ? new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)
+            : convertToDate(FileModifyDate) || new Date(0)
+        ))
+    
     console.timeEnd("media post request: get metadata")
     console.time("media post request: store metadata")
     // get resolution of file
@@ -149,9 +174,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
         data: {
             width,
             height,
-            createdDate: (Data.tags?.CreateDate != undefined && new Date(Data.tags.CreateDate * 1000)) ||
-                (createdDateMatchFromFilename && new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`))
-                || new Date(0)
+            createdDate: convertToDate(CreateDate) || (
+                createdDateMatchFromFilename
+                    ? new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)
+                    : convertToDate(FileModifyDate) || new Date(0)
+                )
         },
         where: { id: mediaId }
     })

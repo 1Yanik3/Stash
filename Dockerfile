@@ -1,7 +1,7 @@
 # FROM node:alpine
 FROM ghcr.io/max-lt/nginx-jwt-module:latest
 
-RUN apk add nodejs-current npm ffmpeg
+RUN apk add nodejs-current npm ffmpeg exiftool
 
 WORKDIR /app
 COPY . .
