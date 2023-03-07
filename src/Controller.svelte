@@ -161,6 +161,12 @@
             };
             await addToOutput($group);
 
+            output.push({
+                name: "Untagged",
+                active: false,
+                count: $media.reduce((old, currentValue) => old + (+!currentValue.tags.length), 0)
+            })
+
             tags.set(output);
         } catch (err) {
             console.warn("failed to update tags", err);
@@ -226,9 +232,11 @@
             updateGroups()
     });
 
-    group.subscribe((g) => updateMedia());
-    group.subscribe((g) => visibleMedium.set(null));
-    group.subscribe((g) => updateTags());
+    group.subscribe(async () => {
+        visibleMedium.set(null)
+        await updateMedia()
+        updateTags()
+    })
 
     onMount(() => {
         group.subscribe(() =>

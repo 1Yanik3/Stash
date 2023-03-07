@@ -3,7 +3,7 @@
     import { serverURL, group, tags, cluster, media, groups } from '$lib/stores'
 
     import { createEventDispatcher } from 'svelte'
-    import { mdiPound, mdiHelp } from '@mdi/js'
+    import { mdiHelp, mdiTagOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
     let isDraggingOver = false
@@ -86,8 +86,14 @@ on:click={e => {
     dispatch('click', e)
 
     if (tag) {
-
         // is a tag button
+
+        if (tag.name == "Untagged")
+            $tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
+        else
+            // @ts-ignore
+            $tags.find(t => t.name == "Untagged").active = false
+
         const tmp = $tags.find(t => t == tag)
         if (tmp)
             tmp.active = !tag.active
@@ -141,7 +147,7 @@ class:card
             <div class="spacer"><Icon path={icon || (
                 target
                 ? target.icon || mdiHelp
-                : mdiPound)
+                : mdiTagOutline /*mdiPound*/)
             } size={"1.25em"}/></div>
         {/if}
         <span>

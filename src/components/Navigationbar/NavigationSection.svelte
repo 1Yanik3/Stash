@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiPlus, mdiRenameBox, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
+    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiPlus, mdiRenameBox, mdiTagOffOutline, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
     
     import SidebarHierarchyEntry from "../SidebarHierarchyEntry.svelte"
     import SidebarSection from "../SidebarSection.svelte"
@@ -124,9 +124,17 @@
         {#if $tags.length}
             <SidebarSection title="Tags">
 
-                {#each $tags.sort((a, b) => b.count - a.count) as tag}
+                {#each $tags
+                    .filter(t => t.name != "Untagged")
+                    .sort((a, b) => b.count - a.count)
+                as tag}
                     <SidebarButton {tag}/>
                 {/each}
+
+                <SidebarButton
+                    tag={$tags.find(t => t.name == "Untagged")}
+                    icon={mdiTagOffOutline}
+                />
 
             </SidebarSection>
         {/if}

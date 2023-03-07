@@ -33,15 +33,16 @@
 
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
         const activeTags = ($tags || []).filter(t => t.active)
+        const invertOutput = activeTags[0]?.name == "Untagged"
 
         if (!activeTags.length) return true
 
         for (const i in activeTags)
             for (const j in medium.tags)
                 if (activeTags[i].name.toLowerCase() == medium.tags[j].name.toLowerCase())
-                    return true
+                    return invertOutput ? false : true
 
-        return false
+        return invertOutput ? true : false
     }
 
     const collator = new Intl.Collator([], {numeric: true})
