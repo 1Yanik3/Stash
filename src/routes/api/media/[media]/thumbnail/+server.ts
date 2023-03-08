@@ -18,13 +18,16 @@ export const GET: RequestHandler = async ({ params }) => {
     catch {
         // thumbnail needs to be created
 
-        const group = prisma.groups.findFirst({
+        const group = await prisma.groups.findFirstOrThrow({
             where: {
                 media: {
                     some: {
                         id: params.media
                     }
                 }
+            },
+            include: {
+                cluster: true
             }
         })
         let defaultDuration = 7
