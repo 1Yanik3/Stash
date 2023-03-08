@@ -18,16 +18,17 @@ export const GET: RequestHandler = async ({ params }) => {
     catch {
         // thumbnail needs to be created
 
-        const media = prisma.media.findFirst({
+        const group = prisma.groups.findFirst({
             where: {
-                id: params.media
-            },
-            include: {
-                group: true
+                media: {
+                    some: {
+                        id: params.media
+                    }
+                }
             }
         })
         let defaultDuration = 7
-        if (media.group.name == "Studios")
+        if (group.cluster.name == "Studios")
             defaultDuration = 30
 
         // get resolution and duration of file
