@@ -5,7 +5,11 @@
     import Icon from "mdi-svelte";
     import * as Icons from "@mdi/js"
 
-    onMount(async () => {});
+    let data: { id: number, mediaCount: number }[] = []
+
+    onMount(async () => {
+        data = await (await fetch("/api/global/statistics")).json()
+    });
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || Icons.mdiPackageVariant
 
@@ -28,9 +32,11 @@
 
             <div>
                 <span>Media Count</span>
-                <span class="bigNumber"> 3251 </span>
-                <span style="margin-top: 1em">Storage Usage</span>
-                <span class="bigNumber"> 10.2 GB </span>
+                <span class="bigNumber"> {data.find(d => d.id == c.id)?.mediaCount} </span>
+                <!-- <span style="margin-top: 1em">Storage Usage</span>
+                <span class="bigNumber"> 10.2 GB </span> -->
+                <span>​</span>
+                <span>​</span>
             </div>
         </section>
     {/each}
