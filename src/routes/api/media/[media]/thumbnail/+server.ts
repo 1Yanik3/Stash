@@ -18,12 +18,25 @@ export const GET: RequestHandler = async ({ params }) => {
     catch {
         // thumbnail needs to be created
 
+        const media = prisma.media.findFirst({
+            where: {
+                id: params.media
+            },
+            include: {
+                group: true
+            }
+        })
+        let defaultDuration = 7
+        if (media.group.name == "Studios")
+            defaultDuration = 30
+
         // get resolution and duration of file
+        // TODO: Do not do this, instead do this on upload
         const information: any = await new Promise(resolve => ffmpeg.ffprobe(`./media/${params.media}`, (_: any, d: any) => resolve(d)))
         const { duration } = (information && information["format"]) || { duration: null }
         const outputOptions = !isNaN(duration) ? [
             `-vframes 1`,
-            `-ss ${duration > 7 ? 7 : (duration / 2).toFixed()}`
+            `-ss ${duration > defaultDuration ? defaultDuration : (duration / 2).toFixed()}`
         ] : []
 
         // create thumbnail
