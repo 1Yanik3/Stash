@@ -15,11 +15,23 @@
     })
 
     const collator = new Intl.Collator([], {numeric: true})
+
+    let filter = ""
 </script>
 
 <main transition:fade={{ duration: 150 }}>
+
+    <div class="search">
+        <label>
+            Search
+            <input type="search" bind:value={filter}>
+        </label>
+    </div>
     
-    {#each data.sort((a, b) => collator.compare(b.name, a.name)) as d}
+    {#each data
+        .filter(a => a.name.includes(filter))
+        .sort((a, b) => collator.compare(b.name, a.name))
+    as d}
         <a on:click={() => {
             let target
             
@@ -64,6 +76,11 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         margin: -0.5em;
+
+        .search {
+            grid-column: 1 / -1;
+            width: 100%;
+        }
     }
 
     a {
