@@ -32,6 +32,7 @@ enum ClusterType {
   collection
   screenshots
   stories
+  withName
 }
 
 model Clusters {

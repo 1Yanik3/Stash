@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, visibleMedium } from "$lib/stores"
+    import { cluster, serverURL, visibleMedium } from "$lib/stores"
     
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
     import type { Media, Tags } from "@prisma/client";
@@ -65,6 +65,17 @@
         >
             <rect width={medium.width} height={medium.height} x="0" y="0"/>
         </svg>
+
+        {#if $cluster.type == "withName"}
+            <div style="
+                text-align: center;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                padding-bottom: 3em
+            ">{medium.name}</div>
+        {/if}
 
     </div>
 </IntersectionObserver>
