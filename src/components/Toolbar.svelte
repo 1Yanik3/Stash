@@ -99,7 +99,7 @@
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
 {/key}
 
-<main style="min-width: calc(100% - 4em)">
+<main style="min-width: calc(100% - 4em)" class:fullscreen={$isFullscreen}>
     <section>
 
         <button on:click={() => visibleMedium.set(null)}>
@@ -205,6 +205,18 @@
                 cursor: pointer;
             }
 
+        }
+
+        &.fullscreen {
+            box-shadow: none;
+            position: absolute;
+            z-index: 5;
+            left: 0;
+            top: 0;
+
+            div, section:last-child, button:not(:nth-child(2)) {
+                display: none;
+            }
         }
     }
 </style>

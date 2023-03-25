@@ -1,7 +1,6 @@
 <script lang="ts">
     import { mdiCalendar, mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
-    import { serverURL, cluster, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter } from "$lib/stores"
-    import prettyBytes from "pretty-bytes"
+    import { serverURL, media, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
     import Icon from "mdi-svelte"
     import { slide } from "svelte/transition"
 
@@ -41,12 +40,29 @@
 
 {#if $visibleMedium}
 
-<main class:detailsVisible={$detailsVisible}>
+<main class:detailsVisible={$detailsVisible} class:fullscreen={$isFullscreen}>
     {#if $detailsVisible}
         <div id="details" transition:slide>
             {#key $visibleMedium}
 
-                <span style="grid-column: span 2">
+                <span
+                style="grid-column: span 2; cursor: pointer"
+                on:mousedown={() => {
+                    if (!$visibleMedium)
+                        return
+
+                    const newName = window.prompt("Enter new name:", $visibleMedium.name)
+                    if (newName) {
+                        $visibleMedium.name = newName
+                        fetch(`/api/media/${$visibleMedium.id}/rename`, {
+                            method: "PUT",
+                            body: JSON.stringify({
+                                name: newName
+                            })
+                        })
+                    }
+                }}
+                >
                     <Icon path={mdiFormTextbox}/>
                     <span>{$visibleMedium.name}</span>
                 </span>
@@ -65,7 +81,7 @@
         </div>
     {/if}
     
-    <div id="media" bind:this={mediaElement}
+    <div id="media" bind:this={mediaElement} class:darkened={$isFullscreen}
         on:click={e => {
             if ($settings.mobileNavigationButtons) {
                 const { width } = (imageElement || video).getBoundingClientRect()
@@ -147,6 +163,9 @@
         position: relative;
 
         background: #202020;
+        &.darkened {
+            background: #000;
+        }
 
         width: 100%;
         height: calc(100vh - 40.5px);
@@ -175,6 +194,12 @@
             cursor: zoom-out;
             max-width: 200%;
             max-height: 200%;
+        }
+    }
+
+    main.fullscreen {
+        &, #media {
+            height: 100%;
         }
     }
 

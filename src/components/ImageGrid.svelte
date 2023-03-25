@@ -10,6 +10,7 @@
     import type { Group } from "../types"
     import { mdiFolderArrowUpOutline } from "@mdi/js"
     import type { Media, Tags } from "@prisma/client";
+    import ImageGridStudios from "./ImageGrid_Studios.svelte";
 
     const pageSize = 50
 
@@ -80,7 +81,11 @@
             <section transition:fade={{ duration: 150 }}>
 
                 {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
+                    {#if $cluster.type == "withName" }
+                    <ImageGridStudios media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+                    {:else}
                     <ImageGridPage media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+                    {/if}
                 {/each}
                 
             </section>
@@ -94,6 +99,7 @@
     section {
         display: grid;
         gap: 14px;
+        overflow-x: hidden;
     }
 
     #collectionGroups {

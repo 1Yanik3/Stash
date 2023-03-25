@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cluster, serverURL, visibleMedium } from "$lib/stores"
+    import { serverURL, visibleMedium } from "$lib/stores"
     
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
     import type { Media, Tags } from "@prisma/client";
@@ -7,6 +7,7 @@
     export let i: number
     export let medium: Media & { tags: Tags[] }
     export let finishedLoading: boolean
+    export let disableActive = false
 
     let thumbnailLoadedCompletely = false
 
@@ -51,7 +52,7 @@
                 src={`${serverURL}/api/media/${medium.id}/thumbnail`}
                 alt={medium.name}
                 class:hidden={!thumbnailLoadedCompletely}
-                class:active={$visibleMedium == medium}
+                class:active={!disableActive && $visibleMedium == medium}
                 on:load={() => thumbnailLoadedCompletely = true}
                 crossorigin="use-credentials"
             >
@@ -65,17 +66,6 @@
         >
             <rect width={medium.width} height={medium.height} x="0" y="0"/>
         </svg>
-
-        {#if $cluster.type == "withName"}
-            <div style="
-                text-align: center;
-                display: block;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                padding-bottom: 3em
-            ">{medium.name}</div>
-        {/if}
 
     </div>
 </IntersectionObserver>
