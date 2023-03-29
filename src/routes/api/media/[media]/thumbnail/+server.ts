@@ -6,7 +6,6 @@ import ffmpeg from 'fluent-ffmpeg'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-
 export const GET: RequestHandler = async ({ params }) => {
 
     try {
@@ -40,7 +39,7 @@ export const GET: RequestHandler = async ({ params }) => {
         const { duration } = (information && information["format"]) || { duration: null }
         const outputOptions = !isNaN(duration) ? [
             `-vframes 1`,
-            `-ss ${duration > defaultDuration ? defaultDuration : (duration / 2).toFixed()}`
+            `-ss ${duration > defaultDuration ? defaultDuration : (duration / 2).toFixed(1)}`
         ] : []
 
         // create thumbnail

@@ -16,6 +16,7 @@
 
     let fileOver = false
     let uploadProgress: null | { done: number, from: number } = null
+    let uploadPercentage = 0
 
     const onDrop = async (files: File[]) => {
 
@@ -25,20 +26,24 @@
                 done: +i,
                 from: files.length
             }
+            uploadPercentage = 0
 
             const data = new FormData()
             data.append('file', files[i])
 
-            const request = fetch(`/api/group/${$group.id}/media`, {
-                method: 'POST',
-                body: data
+            await new Promise(resolve => {
+                var ajax = new XMLHttpRequest();
+                ajax.upload.addEventListener("progress", e => {
+                    uploadPercentage = Math.round((e.loaded / e.total) * 100)
+                    console.log({uploadPercentage})
+                    // console.log("Uploaded " + e.loaded + " bytes of " + e.total + " (" + (e.loaded / e.total) * 100 + ")")
+                }, false);
+                ajax.addEventListener("load", resolve, false);
+                ajax.addEventListener("error", () => console.log("Error"), false);
+                ajax.addEventListener("abort", () => console.log("Aborted"), false);
+                ajax.open("POST", `api/group/${$group.id}/media`);
+                ajax.send(data);
             })
-
-            console.log(request)
-
-            await request
-
-            console.log(request)
 
         }
     
@@ -76,7 +81,7 @@
                 <div class="dropZone">
                     <Icon path={mdiFileUpload} size={3}/>
                     {#if uploadProgress}
-                        <span>uploading {uploadProgress?.done} out of {uploadProgress?.from}</span>
+                        <span>uploading {uploadProgress?.done} out of {uploadProgress?.from} ({uploadPercentage}%)</span>
                     {:else}
                         <span>Drop to upload</span>
                     {/if}

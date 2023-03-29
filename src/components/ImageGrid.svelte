@@ -8,7 +8,7 @@
     import { fade } from "svelte/transition"
     import SidebarButton from "./SidebarButton.svelte"
     import type { Group } from "../types"
-    import { mdiFolderArrowUpOutline } from "@mdi/js"
+    import { mdiFolderArrowDown, mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js"
     import type { Media, Tags } from "@prisma/client";
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
 
@@ -68,7 +68,7 @@
                 </SidebarButton>
             {/if}
             {#each $group.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
-                <SidebarButton card target={child}>
+                <SidebarButton card target={child} icon={mdiFolderArrowDownOutline}>
                     {child.name}
                 </SidebarButton>
             {/each}

@@ -24,8 +24,6 @@
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { Media, Tags } from "@prisma/client";
 
-    $: console.log("media", $media)
-
     const flattenGroups = () => {
         const flattentedGroups: Array<Group> = [
             $groups.find((g) => g.id == $cluster.everythingGroupId) as Group,
