@@ -23,6 +23,8 @@
 
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { Media, Tags } from "@prisma/client";
+    import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
+    import { text } from "svelte/internal";
 
     const flattenGroups = () => {
         const flattentedGroups: Array<Group> = [
@@ -278,6 +280,25 @@
         if (mediaIndex < $media.length - 1)
             visibleMedium.set($media[mediaIndex + 1]);
     };
+
+    let prompt_visible = false
+    let prompt_question = ""
+    let prompt_value = ""
+    let prompt_callback = (b: boolean) => {}
+    export const prompt = (question: string, placeholder = ""): Promise<string | null> => new Promise(resolve => {
+        prompt_question = question
+        prompt_value = placeholder
+
+        prompt_callback = (b: boolean) => {
+            if (b)
+                resolve(prompt_value)
+            else
+                resolve(null)
+            prompt_visible = false
+        }
+
+        prompt_visible = true
+    })
 </script>
 
 <!-- Media Navigation -->
@@ -345,3 +366,7 @@
         cluster.set($clusters[currentClusterIndex + 1]);
     }}
 />
+
+{#if prompt_visible}
+    <PromptPopup bind:value={prompt_value} text={prompt_question} on:result={e => prompt_callback(e.detail)} />
+{/if}

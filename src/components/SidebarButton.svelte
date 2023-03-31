@@ -20,6 +20,7 @@
     export let hidden = false
     export let right = false
     export let card = false
+    export let highlighted = false
 
     const dispatch = createEventDispatcher()
 
@@ -81,6 +82,7 @@ style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || ($group && target && $group.id == target.id)}
 class:hidden
 class:right
+class:highlighted
 on:click={e => {
 
     dispatch('click', e)
@@ -201,6 +203,14 @@ class:card
         &.active {
             background: hsl(0, 0%, 24%);
             border: 1px solid hsl(0, 0%, 33%);
+        }
+        &.highlighted {
+            background: hsl(0, 0%, 33%);
+            border: 1px solid hsl(0, 0%, 35%);
+            &:hover {
+                background: hsl(0, 0%, 42%);
+                border: 1px solid hsl(0, 0%, 44%);
+            }
         }
 
         &.isDraggingOver {

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter } from '$lib/stores'
+    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter, settings } from '$lib/stores'
     import { browser } from '$app/environment'
 
     import Icon from 'mdi-svelte'
@@ -99,7 +99,7 @@
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
 {/key}
 
-<main style="min-width: calc(100% - 4em)" class:fullscreen={$isFullscreen}>
+<main class:fullscreen={$isFullscreen} class:windowControlsSpacer={$settings.windowControlsSpacer}>
     <section>
 
         <button on:click={() => visibleMedium.set(null)}>
@@ -159,6 +159,7 @@
     main {
         box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
         padding: 0.35em;
+        min-width: calc(100% - 4em);
 
         display: flex;
         justify-content: space-between;
@@ -212,6 +213,9 @@
             position: absolute;
             z-index: 5;
             left: 0;
+            &.windowControlsSpacer {
+                left: 4.625em;
+            }
             top: 0;
 
             div, section:last-child, button:not(:nth-child(2)) {

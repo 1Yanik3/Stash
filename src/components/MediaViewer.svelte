@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { mdiCalendar, mdiFormTextbox, mdiHarddisk, mdiInformationOutline, mdiMoveResize } from "@mdi/js"
-    import { serverURL, media, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
+    import { mdiCalendar, mdiFormTextbox, mdiMoveResize } from "@mdi/js"
+    import { serverURL, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
     import Icon from "mdi-svelte"
-    import { slide } from "svelte/transition"
 
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
@@ -42,16 +41,16 @@
 
 <main class:detailsVisible={$detailsVisible} class:fullscreen={$isFullscreen}>
     {#if $detailsVisible}
-        <div id="details" transition:slide>
+        <div id="details">
             {#key $visibleMedium}
 
                 <span
                 style="grid-column: span 2; cursor: pointer"
-                on:mousedown={() => {
+                on:mousedown={async () => {
                     if (!$visibleMedium)
                         return
 
-                    const newName = window.prompt("Enter new name:", $visibleMedium.name)
+                    const newName = await $controller.prompt("Enter new name:", $visibleMedium.name)
                     if (newName) {
                         $visibleMedium.name = newName
                         fetch(`/api/media/${$visibleMedium.id}/rename`, {

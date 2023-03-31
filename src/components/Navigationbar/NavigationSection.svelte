@@ -12,7 +12,7 @@
     // TODO: Move into other section
     let showOptions = false
     const createGroup = async () => {
-        const name = window.prompt("Enter a name for the new collection")
+        const name = await $controller.prompt("Enter a name for the new collection")
 
         if (name) {
             await fetch(`/api/cluster/${$cluster.id}/group`,{
@@ -27,11 +27,14 @@
     }
 
     const renameGroup = async () => {
-        const name = window.prompt("Enter a name for the group", $group.name)
+        const name = await $controller.prompt("Enter a name for the group", $group.name)
 
         if (name) {
-            await fetch(`${serverURL}/${$cluster.id}/${$group.id}/name/${name}`,{
-                method: "PATCH"
+            await fetch(`/api/group/${$group.id}/rename`,{
+                method: "PUT",
+                body: JSON.stringify({
+                    name
+                })
             })
             $controller.updateGroups()
         }
