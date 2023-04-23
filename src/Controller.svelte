@@ -367,6 +367,15 @@
     }}
 />
 
+<!-- Jump to Group functionality -->
+<Shortcut
+    meta
+    key="o"
+    action={() => {
+        // TODO
+    }}
+/>
+
 {#if prompt_visible}
     <PromptPopup bind:value={prompt_value} text={prompt_question} on:result={e => prompt_callback(e.detail)} />
 {/if}

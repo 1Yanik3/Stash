@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiPlus, mdiRenameBox, mdiTagOffOutline, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
+    import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiImport, mdiPlus, mdiRenameBox, mdiTagOffOutline, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
     
     import SidebarHierarchyEntry from "../SidebarHierarchyEntry.svelte"
     import SidebarSection from "../SidebarSection.svelte"
@@ -8,6 +8,7 @@
     import { serverURL, cluster, group, groups, stories, story, tags, mediaTypeFilter, controller } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../reusables/Shortcut.svelte'
+    import ImportPopup from '../Popups/ImportPopup.svelte';
 
     // TODO: Move into other section
     let showOptions = false
@@ -53,6 +54,8 @@
             })
         )
     }
+
+    let importPopup = false
 </script>
 
 <!-- Create Group -->
@@ -103,6 +106,9 @@
                 </SidebarButton>
                 <SidebarButton right on:click={createGroup} icon={mdiPlus}>
                     Create Group
+                </SidebarButton>
+                <SidebarButton right on:click={() => importPopup = true} icon={mdiImport}>
+                    Import
                 </SidebarButton>
             </SidebarSection>
         </div>
@@ -169,6 +175,10 @@
     </div>
     {/if}
 </main>
+
+{#if importPopup}
+    <ImportPopup bind:visible={importPopup}/>
+{/if}
 
 <style lang="scss">
     main {

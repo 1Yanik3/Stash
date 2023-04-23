@@ -1,10 +1,10 @@
 import type { RequestHandler } from './$types'
 
 import fs from 'fs/promises'
-import { execSync } from 'child_process'
-import { ExifParserFactory } from "ts-exif-parser"
+// import { ExifParserFactory } from "ts-exif-parser"
 
 import { PrismaClient } from '@prisma/client'
+import sharedImportLogic from '../sharedImportLogic'
 const prisma = new PrismaClient()
 // const prisma = new PrismaClient({
 //     log: [
@@ -111,78 +111,17 @@ export const POST: RequestHandler = async ({ params, request }) => {
     })
     console.timeEnd("media post request: create db entry")
 
+    // TODO: Get rid of this step
     console.time("media post request: get buffer")
     const fileBuffer = Buffer.from(await file.arrayBuffer())
     console.timeEnd("media post request: get buffer")
 
     console.time("media post request: store file")
     // store file
-    const filePath = `./media/${mediaId}`
-    await fs.writeFile(filePath, fileBuffer)
+    await fs.writeFile(`./media/${mediaId}`, fileBuffer)
     console.timeEnd("media post request: store file")
 
-    // TODO: Run this in a seperate thread
-    console.time("media post request: get metadata")
-    // get resolution of file
-    // const Data = ExifParserFactory.create(fileBuffer).parse()
-
-    // Temporarely disabled
-    // // get resolution of file
-    // const information: any = await new Promise(resolve => ffmpeg.ffprobe(filePath, (_, d) => resolve(d)))
-    // const { width, height } = information["streams"].find((d: any) => !!d['width'])
-
-    const createdDateMatchFromFilename = file.name.match(/(20\d\d)-?([01]\d)-?([0123]\d)/)
-
-    const [{ ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate }] = JSON.parse(
-        execSync(`exiftool -j ${filePath}`).toString()
-    )
-    const height = [90, 270, -90, -270].includes(Rotation) ? ImageWidth : ImageHeight
-    const width = [90, 270, -90, -270].includes(Rotation) ? ImageHeight : ImageWidth
-
-    console.log({ ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate, width, height })
-
-    // // Get width and height
-    // let width = Data.tags?.ExifImageWidth || Data.imageSize?.width
-    // let height = Data.tags?.ExifImageHeight || Data.imageSize?.height
-    // let [ffmpeg_width, ffmpeg_height, rotation] = [0, 0, 0]
-    // if (!width || !height) {
-    //     [ffmpeg_width, ffmpeg_height, rotation] = execSync(`ffprobe -loglevel error  -select_streams v:0  -show_entries stream=width,height:side_data="rotation"  -of default=nw=1:nk=1 -i ${filePath}`).toString().split("\n") as any as number[]
-    //     height = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_width : +ffmpeg_height
-    //     width = [90, 270, -90, -270].includes(rotation) ? +ffmpeg_height : +ffmpeg_width
-    // }
-
-    const convertToDate = (input: string) => {
-        if (!input) return false
-        const date = new Date(input.replace(":", "-").replace(":", "-").replace(" ", "T"))
-        console.log(input, date)
-        if (date > new Date(0))
-            return date
-        else
-            return false
-    }
-
-    console.log(convertToDate(CreateDate) || (
-        createdDateMatchFromFilename
-            ? new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)
-            : convertToDate(FileModifyDate) || new Date(0)
-        ))
-    
-    console.timeEnd("media post request: get metadata")
-    console.time("media post request: store metadata")
-    // get resolution of file
-    await prisma.media.update({
-        data: {
-            width,
-            height,
-            createdDate: convertToDate(CreateDate) || (
-                createdDateMatchFromFilename
-                    ? new Date(`${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`)
-                    : convertToDate(FileModifyDate) || new Date(0)
-                )
-        },
-        where: { id: mediaId }
-    })
-    console.timeEnd("media post request: store metadata")
+    await sharedImportLogic(file.name, mediaId)
 
     return new Response()
 }
