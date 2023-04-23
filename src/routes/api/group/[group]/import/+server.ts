@@ -26,7 +26,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
     })
 
-    await fs.rename(`${importFolderPath}/${filename}`, `./media/${mediaId}`)
+    await fs.copyFile(`${importFolderPath}/${filename}`, `./media/${mediaId}`)
+    await fs.rm(`${importFolderPath}/${filename}`)
 
     await sharedImportLogic(filename, mediaId)
 
