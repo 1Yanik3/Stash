@@ -1,18 +1,27 @@
-# FROM node:alpine
-FROM ghcr.io/max-lt/nginx-jwt-module:latest
-
-RUN apk add nodejs-current npm ffmpeg exiftool
-
+FROM node:alpine as builder
 WORKDIR /app
 COPY . .
 
-# Setup project
-RUN npm i
+RUN npm ci
 RUN npx prisma generate
 RUN npm run build
+RUN npm prune --production
+
+
+
+FROM ghcr.io/max-lt/nginx-jwt-module:latest
+WORKDIR /app
+
+RUN apk add --no-cache nodejs-current ffmpeg exiftool
+
+# Setup Svelte Project
+COPY --from=builder /app/build build/
+COPY --from=builder /app/node_modules node_modules/
+COPY package.json .
 
 # Setup nginx
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
-CMD nginx && npm start
+ENV NODE_ENV=production
+CMD nginx && node build
