@@ -1,12 +1,14 @@
 <script lang="ts">
     import type { Group, Tag } from '../types'
-    import { tags } from '$lib/stores'
+    import type { PageData } from '../routes/[group]/$types';
 
     import { createEventDispatcher } from 'svelte'
     import { mdiHelp, mdiTagOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
     import { page } from '$app/stores';
     import { invalidateAll } from '$app/navigation';
+
+    $: pageData = $page.data as PageData
 
     let isDraggingOver = false
 
@@ -92,15 +94,14 @@ on:click={e => {
         // is a tag button
 
         if (tag.name == "Untagged")
-            $tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
+            pageData.tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
         else
             // @ts-ignore
-            $tags.find(t => t.name == "Untagged").active = false
+            pageData.tags.find(t => t.name == "Untagged").active = false
 
-        const tmp = $tags.find(t => t == tag)
+        const tmp = pageData.tags.find(t => t == tag)
         if (tmp)
             tmp.active = !tag.active
-        tags.set($tags)
 
     }
 }}

@@ -1,4 +1,4 @@
-import type { Group, Tag } from "../types"
+import type { Group } from "../types"
 import { sortingMethods } from "../types"
 import { get, type Writable } from "svelte/store"
 
@@ -17,8 +17,6 @@ export const getCluster = (_: any) => {
 }
 
 export let story: Writable<Story> = writable({ id: "0", title: "", content: "", date: new Date(), clusterId: 0, source: "Unknown" })
-
-export let tags: Writable<Array<Tag>> = writable([])
 
 export let visibleMedium: Writable<Media & { tags: Tags[] } | null> = writable(null)
 export let imageSuffixParameter: Writable<String> = writable("")

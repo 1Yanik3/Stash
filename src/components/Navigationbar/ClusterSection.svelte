@@ -9,7 +9,7 @@
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
     import SettingsPopup from '../Popups/SettingsPopup/index.svelte';
     import { page } from '$app/stores';
-    import { invalidate } from '$app/navigation';
+    import { invalidate, invalidateAll } from '$app/navigation';
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
@@ -30,13 +30,14 @@
         {/if}
         <span
             class:disabled={c?.type == "collection" || c?.type == "stories"}
-            on:click={() =>
+            on:click={() => {
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
                 )
-            } 
+                invalidateAll()
+            }} 
             on:contextmenu|preventDefault={() =>
-                activeSortingMethod.set($activeSortingMethod)
+                invalidateAll()
             }
         >
             <div style="margin-left: 2px"><Icon path={$activeSortingMethod.icon} size={0.8}/></div>

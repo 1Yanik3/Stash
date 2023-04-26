@@ -4,18 +4,15 @@ import fs from 'fs/promises'
 // import { ExifParserFactory } from "ts-exif-parser"
 
 import sharedImportLogic from '../sharedImportLogic'
-import type { Group } from '../../../../../types'
-
-// TODO: This does not work
-import { activeSortingMethod, mediaTypeFilter } from '../../../../../lib/stores'
-
-import { get } from 'svelte/store'
+import { sortingMethods, type Group } from '../../../../../types'
 import { json } from '@sveltejs/kit'
 
 import { PrismaClient, type Media, type Tags } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async ({ params, request }) => {
+
+    const searchParams = new URL(request.url).searchParams
 
     const cluster = await prisma.clusters.findFirstOrThrow({
         where: {
@@ -72,7 +69,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
                 return d
             })
         })(g.id)];
-        if (new URL(request.url).searchParams.get("traverse") == "true")
+        if (searchParams.get("traverse") == "true")
             for (const i in g.children)
                 await addToOutput(g.children[i]);
     };
@@ -86,17 +83,17 @@ export const GET: RequestHandler = async ({ params, request }) => {
     })
     
     await addToOutput(group as any);
-
+console.log(searchParams.get("mediaTypeFilter"))
     const collator = new Intl.Collator([], { numeric: true });
     if (group.cluster.type == "collection" && group.id != group.cluster.everythingGroupId) {
         return json(output
-        .filter((d) => d.type.startsWith(get(mediaTypeFilter)))
+        .filter((d) => d.type.startsWith(searchParams.get("mediaTypeFilter") || ""))
         .sort((a, b) => collator.compare(a.name, b.name)))
     } else {
         return json(output
-        .filter((d) => d.type.startsWith(get(mediaTypeFilter)))
+        .filter((d) => d.type.startsWith(searchParams.get("mediaTypeFilter") || ""))
         // @ts-ignore
-        .sort(get(activeSortingMethod).method))
+        .sort(sortingMethods[+searchParams.get("activeSortingMethod")].method))
     }
 }
 

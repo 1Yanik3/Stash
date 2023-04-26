@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { tags, data as dataStore, controller } from "$lib/stores"
+    import { data as dataStore, controller } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -13,7 +13,7 @@
     import { page } from "$app/stores";
 
     import type { PageData } from "../routes/[group]/$types"
-    import type { Group } from "../types";
+    import type { Group, Tag } from "../types";
     $: data = $page.data as PageData
 
     const pageSize = 50
@@ -36,7 +36,7 @@
     // })
 
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
-        const activeTags = ($tags || []).filter(t => t.active)
+        const activeTags = ($page.data.tags as Tag[]).filter(t => t.active)
         const invertOutput = activeTags[0]?.name == "Untagged"
 
         if (!activeTags.length) return true

@@ -5,11 +5,15 @@
     import SidebarSection from "../SidebarSection.svelte"
     import SidebarButton from "../SidebarButton.svelte"
 
-    import { story, tags, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
+    import { story, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../reusables/Shortcut.svelte'
     import ImportPopup from '../Popups/ImportPopup.svelte';
     import { page } from '$app/stores';
+    import type { PageData } from '../../routes/[group]/$types';
+    import { invalidateAll } from '$app/navigation';
+
+    $: pageData = $page.data as PageData
 
     // TODO: Move into other section
     let showOptions = false
@@ -127,10 +131,10 @@
         {#if c?.type != "collection"}
 
         <!-- Tags -->
-        {#if $tags.length}
+        {#if pageData.tags.length}
             <SidebarSection title="Tags">
 
-                {#each $tags
+                {#each pageData.tags
                     .filter(t => t.name != "Untagged")
                     .sort((a, b) => b.count - a.count)
                 as tag}
@@ -138,7 +142,7 @@
                 {/each}
 
                 <SidebarButton
-                    tag={$tags.find(t => t.name == "Untagged")}
+                    tag={pageData.tags.find(t => t.name == "Untagged")}
                     icon={mdiTagOffOutline}
                 />
 
@@ -153,6 +157,7 @@
                     mediaTypeFilter.set("")
                 else
                     mediaTypeFilter.set("image")
+                invalidateAll()
             }} active={$mediaTypeFilter == "image"}>
                 Image
             </SidebarButton>
@@ -162,6 +167,7 @@
                     mediaTypeFilter.set("")
                 else
                     mediaTypeFilter.set("video")
+                invalidateAll()
             }} active={$mediaTypeFilter == "video"}>
                 Video
             </SidebarButton>

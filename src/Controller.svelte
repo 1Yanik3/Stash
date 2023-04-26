@@ -1,12 +1,9 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { browser } from "$app/environment";
-    import { onDestroy, onMount } from "svelte";
 
-    import type { Group, Tag } from "./types";
+    import type { Group } from "./types";
     import {
-        tags,
-        traverse,
         visibleMedium,
         imageSuffixParameter,
         data,
@@ -89,26 +86,12 @@
         }
     }
 
-    // TODO
-    // const clearTagSelection = () =>
-    //     tags.set(
-    //         $tags.map((t) => {
-    //             t.active = false;
-    //             return t;
-    //         })
-    //     );
-    // $: if ($cluster && $group) clearTagSelection();
-
     updateAll()
 
     // TODO: Optimise
     export const getGroup = () => {
         return flattenGroups().find(g => g.id == +$page.params.group) as Group
     }
-
-    // TODO
-    // activeSortingMethod.subscribe((g) => updateMedia());
-    // mediaTypeFilter.subscribe((g) => updateMedia());
     
     visibleMedium.subscribe(() => imageSuffixParameter.set(""))
 
