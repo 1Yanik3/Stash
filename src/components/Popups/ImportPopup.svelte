@@ -9,7 +9,7 @@
     const importElement = async (filename: string) => {
         loading = true
 
-        const response = await fetch(`/api/group/${$controller.getGroup()}/import`, {
+        const response = await fetch(`/api/group/${$controller.getGroup().id}/import`, {
             method: "POST",
             body: JSON.stringify({
                 filename
