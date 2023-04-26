@@ -24,4 +24,4 @@ RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
 
 ENV NODE_ENV=production
-CMD nginx && node build
+CMD nginx && BODY_SIZE_LIMIT=0 node build

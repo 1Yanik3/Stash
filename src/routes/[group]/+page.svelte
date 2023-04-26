@@ -11,6 +11,7 @@
     import Navigationbar from '../../components/Navigationbar/index.svelte'
     
     import { visibleMedium, controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
+    import { invalidateAll } from '$app/navigation';
 
     //#region Uploader
 
@@ -50,7 +51,7 @@
         fileOver = false
         uploadProgress = null
 
-        $controller.updateMedia()
+        invalidateAll()
     }
 
     //#endregion  

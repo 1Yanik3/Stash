@@ -101,12 +101,6 @@
 
     updateAll()
 
-    // group.subscribe(async () => {
-    //     visibleMedium.set(null)
-    //     await updateMedia()
-    //     updateTags()
-    // })
-
     // TODO: Optimise
     export const getGroup = () => {
         return flattenGroups().find(g => g.id == +$page.params.group) as Group
