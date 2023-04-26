@@ -1,7 +1,7 @@
 <script lang="ts">
+    import { controller } from "../../lib/stores";
     import Popup from "../../reusables/Popup.svelte";
     import SidebarButton from "../SidebarButton.svelte";
-    import { group } from "../../lib/stores";
     
     export let visible: boolean
     let loading = false
@@ -9,7 +9,7 @@
     const importElement = async (filename: string) => {
         loading = true
 
-        const response = await fetch(`/api/group/${$group.id}/import`, {
+        const response = await fetch(`/api/group/${$controller.getGroup()}/import`, {
             method: "POST",
             body: JSON.stringify({
                 filename

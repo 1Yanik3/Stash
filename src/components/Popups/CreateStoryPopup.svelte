@@ -1,8 +1,9 @@
 <script lang="ts">
     import { mdiSend } from "@mdi/js";
-    import { cluster, group } from "../../lib/stores";
+    import { data } from "../../lib/stores";
     import Popup from "../../reusables/Popup.svelte";
     import SidebarButton from "../SidebarButton.svelte";
+    import { page } from "$app/stores";
 
     export let visible: boolean
 
@@ -10,9 +11,11 @@
     let source = ""
     let content = ""
 
+    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
+
     const submitStory = async () => {
 
-        const response = await fetch(`/api/cluster/${$cluster.id}/stories`, {
+        const response = await fetch(`/api/cluster/${c?.id}/stories`, {
             method: "POST",
             body: JSON.stringify({
                 title, source, content
@@ -24,7 +27,7 @@
 
         const { id } = await response.json()
 
-        window.location.href = `/?c=${$cluster.id}&g=${id}`
+        window.location.href = `/?c=${c?.id}&g=${id}`
 
     }
 </script>

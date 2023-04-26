@@ -5,10 +5,11 @@
     import SidebarSection from "../SidebarSection.svelte"
     import SidebarButton from "../SidebarButton.svelte"
 
-    import { serverURL, cluster, group, groups, stories, story, tags, mediaTypeFilter, controller } from '$lib/stores'
+    import { story, tags, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../reusables/Shortcut.svelte'
     import ImportPopup from '../Popups/ImportPopup.svelte';
+    import { page } from '$app/stores';
 
     // TODO: Move into other section
     let showOptions = false
@@ -16,61 +17,57 @@
         const name = await $controller.prompt("Enter a name for the new collection")
 
         if (name) {
-            await fetch(`/api/cluster/${$cluster.id}/group`,{
+            await fetch(`/api/cluster/${getCluster($clusterIndex).id}/group`,{
                 method: "POST",
                 body: JSON.stringify({
                     name,
-                    parentId: $group.id != -1 ? $group.id : ""
+                    parentId: +$page.params.group != -1 ? +$page.params.group : ""
                 })
             })
-            $controller.updateGroups()
+            $controller.updateAll()
         }
     }
 
     const renameGroup = async () => {
-        const name = await $controller.prompt("Enter a name for the group", $group.name)
+        const g = $controller.getGroup()
+        const name = await $controller.prompt("Enter a name for the group", g.name)
 
         if (name) {
-            await fetch(`/api/group/${$group.id}/rename`,{
+            await fetch(`/api/group/${g.id}/rename`,{
                 method: "PUT",
                 body: JSON.stringify({
                     name
                 })
             })
-            $controller.updateGroups()
+            $controller.updateAll()
         }
     }
     
+    // TODO
     const toggleHidden = () => {
-        fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!$group.children.length && !$group.collapsed}`, {
+        const g = $controller.flattenAllGroups().find(g => g.group.id == +$page.params.group)
+
+        fetch(`/api/group/${g?.group.id}/collapsed/${!!g?.group.children.length && !g?.group.collapsed}`, {
             method: "PATCH"
         })
-        groups.set(
-            $groups.map(g => {
-                if (g == $group && g.children.length) {
-                    g.collapsed = !g.collapsed
-                }
-                return g
-            })
-        )
     }
 
     let importPopup = false
 </script>
 
 <!-- Create Group -->
-<Shortcut key="c" action={() => $cluster.type != "stories" && createGroup()} />
+<Shortcut key="c" action={() => getCluster($clusterIndex).type != "stories" && createGroup()} />
 <Shortcut key="r" action={renameGroup} />
 
 <main>
-    {#if $cluster.type == "stories"}
+    {#if getCluster($clusterIndex)?.type == "stories"}
     <div style="margin-top: 8px; margin-right: 2px">
         <!-- <SidebarButton icon={mdiPlus}>
             Add
         </SidebarButton> -->
         <!-- <SidebarSection title="Stories"> -->
         <SidebarSection>
-            {#each $stories as s}
+            {#each getCluster($clusterIndex).stories as s}
                 <SidebarButton icon={null} active={$story == s} on:click={() => story.set(s)}>
                     {s.title}
                 </SidebarButton>
@@ -78,16 +75,17 @@
         </SidebarSection>
     </div>
     {:else}
+    {@const c = $data.find(c => c.id == $clusterIndex)}
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
-            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Everything")} icon={mdiBookshelf}>
+            <SidebarButton hidden target={c?.groups.find(g => g.id == c.everythingGroupId)} icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Unsorted")} icon={mdiArchiveOutline}>
+            <SidebarButton hidden target={c?.groups.find(g => g.id == c.unsortedGroupId)} icon={mdiArchiveOutline}>
                 Unsorted
             </SidebarButton>
-            <SidebarButton hidden target={$groups.find(g => g.id < 0 && g.name == "Trash")} icon={mdiTrashCanOutline}>
+            <SidebarButton hidden target={c?.groups.find(g => g.id == c.trashGroupId)} icon={mdiTrashCanOutline}>
                 Trash
             </SidebarButton>
             <SidebarButton hidden on:click={e =>
@@ -118,16 +116,15 @@
     <div>
         <!-- Folders -->
         <SidebarSection title="Folders">
-            {#key $groups}
-                
-                {#each $groups.filter(({ id }) => id > 0) as target}
+            {@const cluster = $data.find(c => c.id == $clusterIndex)}
+            {#if cluster}
+                {#each cluster.groups.filter(({ id }) => id > 0) as target}
                     <SidebarHierarchyEntry {target}/>
                 {/each}
-
-            {/key}
+            {/if}
         </SidebarSection>
 
-        {#if $cluster.type != "collection"}
+        {#if c?.type != "collection"}
 
         <!-- Tags -->
         {#if $tags.length}

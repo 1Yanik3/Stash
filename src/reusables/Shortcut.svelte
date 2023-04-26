@@ -10,6 +10,9 @@
     export let action: Function
 
     let handler = (e: KeyboardEvent) => {
+        if (e.target instanceof HTMLInputElement) {
+            return
+        }
 
         if (
             (alt || opt)

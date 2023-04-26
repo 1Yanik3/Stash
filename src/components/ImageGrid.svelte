@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { tags, media, cluster, group, groups } from "$lib/stores"
+    import { tags, data as dataStore, controller } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -7,30 +7,33 @@
 
     import { fade } from "svelte/transition"
     import SidebarButton from "./SidebarButton.svelte"
-    import type { Group } from "../types"
-    import { mdiFolderArrowDown, mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js"
+    import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js"
     import type { Media, Tags } from "@prisma/client";
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
+    import { page } from "$app/stores";
+
+    import type { PageData } from "../routes/[group]/$types"
+    import type { Group } from "../types";
+    $: data = $page.data as PageData
 
     const pageSize = 50
 
-    let flattentedGroups: Array<Group> = []
-    groups.subscribe(() => {
-        const flatten = (input: Group) => {
-            flattentedGroups.push(input)
+    // groups.subscribe(() => {
+    //     const flatten = (input: Group) => {
+    //         flattentedGroups.push(input)
 
-            if (!input?.children) {
-                console.error("no children found for ", input)
-            }
+    //         if (!input?.children) {
+    //             console.error("no children found for ", input)
+    //         }
 
-            if (input.children.length)
-                input.children.forEach(g => flatten(g))
-        }
+    //         if (input.children.length)
+    //             input.children.forEach(g => flatten(g))
+    //     }
 
-        $groups
-        .filter(g => g.id > 0)
-        .forEach(g => flatten(g))
-    })
+    //     $groups
+    //     .filter(g => g.id > 0)
+    //     .forEach(g => flatten(g))
+    // })
 
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
         const activeTags = ($tags || []).filter(t => t.active)
@@ -47,41 +50,47 @@
     }
 
     const collator = new Intl.Collator([], {numeric: true})
+
+    $: c = $dataStore.find(c => c.groups.some(g => g.id == +$page.params.group))
+    $: g = c?.groups.find(g => g.id  == +$page.params.group) as Group
 </script>
 
-{#if $cluster.type == "collection" && $group.id < 0 && $group.name.includes("Everything")}
+{#if c?.type == "collection" && c?.everythingGroupId == +$page.params.group}
 
     <ImageGridCollection/>
 
-{:else if $cluster.type == "stories"}
+{:else if c?.type == "stories"}
 
     <ImageGridStories/>
 
 {:else}
 
-    {#if $cluster.type == "collection"}
-        {@const parent = flattentedGroups.find(g => g.children.includes($group))}
+    {#if c?.type == "collection"}
+        {@const parent = $controller.flattenGroups().find(g => g.children.includes(g))}
         <div id="collectionGroups" transition:fade={{ duration: 150 }}>
             {#if parent}
                 <SidebarButton card target={parent} icon={mdiFolderArrowUpOutline}>
                     {parent.name}
                 </SidebarButton>
             {/if}
-            {#each $group.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
+            
+            {#each (
+                g.children.sort((a, b) => collator.compare(a.name, b.name))
+            ) as child}
                 <SidebarButton card target={child} icon={mdiFolderArrowDownOutline}>
                     {child.name}
                 </SidebarButton>
             {/each}
         </div>
     {/if}
-
-    {#key [ $media, $tags ]}
+    
+    {#key [ data.media ]}
         {#if true}
-            {@const activeMedia = $media.filter(includesActiveTags)}
-            <section transition:fade={{ duration: 150 }}>
+            {@const activeMedia = data.media.filter(includesActiveTags)}
+            <section transition:fade={{ duration: 100 }}>
 
                 {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
-                    {#if $cluster.type == "withName" }
+                    {#if c?.type == "withName" }
                     <ImageGridStudios media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
                     {:else}
                     <ImageGridPage media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
@@ -99,7 +108,7 @@
     section {
         display: grid;
         gap: 14px;
-        overflow-x: hidden;
+        overflow: hidden;
     }
 
     #collectionGroups {

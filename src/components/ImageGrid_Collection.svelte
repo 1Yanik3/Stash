@@ -1,16 +1,19 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import { fade } from "svelte/transition";
-    import { cluster, group, serverURL, groups } from "$lib/stores"
-    
+    import { serverURL, data as dataStore } from "$lib/stores"
+    import { page } from "$app/stores";
+
     let data: {
         id:      number,
         name:    string,
         Media: number
     }[] = []
 
+    $: c = $dataStore.find(c => c.groups.some(g => g.id == +$page.params.group))
+
     onMount(async () => {
-        const res = await fetch(`/api/cluster/${$cluster.id}/index`)
+        const res = await fetch(`/api/cluster/${c?.id}/index`)
         data = await res.json()
     })
 
@@ -32,30 +35,7 @@
         .filter(a => a.name.includes(filter))
         .sort((a, b) => collator.compare(b.name, a.name))
     as d}
-        <a on:click={() => {
-            let target
-            
-            $groups.find(g => {
-
-                // @ts-ignore
-                const recursion = (g) => {
-
-                    if (g.id == d.id)
-                        target = g
-                    else
-                        g.children.forEach(recursion)
-
-                }
-                return recursion(g)
-
-            })
-
-            console.log(target)
-            if (!target) return
-            group.set(target)
-        }}
-        href={`?c=${$cluster.id || 1}&g=${d.id}`}
-        >
+        <a href="/{d.id}">
 
             {#if d.Media}
                 <img

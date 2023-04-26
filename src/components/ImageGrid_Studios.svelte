@@ -1,9 +1,10 @@
 <script lang="ts">
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
     import GridThumbnail from './GridThumbnail.svelte'
-    import { visibleMedium, group, groups } from '$lib/stores'
+    import { clusterIndex, controller, data, getCluster, visibleMedium } from '$lib/stores'
     import type { Media, Tags } from '@prisma/client'
     import { onMount } from "svelte"
+    import { page } from "$app/stores";
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
@@ -11,6 +12,7 @@
     export let media: Array<Media & { tags: Tags[] }>
     export let i: number
 
+    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
 </script>
 
 <IntersectionObserver
@@ -37,8 +39,8 @@
                     <div class="details">
                         <b>{medium.name}</b>
                         <span>
-                            {#if $group.name.includes("Everything")}
-                                {$groups.find(g => g.id == medium.groupId)?.name},
+                            {#if $controller.getGroup().id == c?.everythingGroupId}
+                                {getCluster($clusterIndex).groups.find(g => g.id == medium.groupId)?.name},
                             {/if}
                             {medium.width}x{medium.height}
                         </span>

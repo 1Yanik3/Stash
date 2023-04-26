@@ -3,22 +3,20 @@
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { cluster, clusters, traverse, activeSortingMethod, settings } from '$lib/stores'
+    import { traverse, activeSortingMethod, settings, data, clusterIndex } from '$lib/stores'
     import { sortingMethods } from '../../types'
     
     import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
     import SettingsPopup from '../Popups/SettingsPopup/index.svelte';
-
-    const changeCluster = (id: number) => {
-        console.log(id)
-        window.history.pushState({}, '', `?c=${id}`)
-        cluster.set($clusters.find(c => c.id == id) || $clusters[0])
-    }
+    import { page } from '$app/stores';
+    import { invalidate } from '$app/navigation';
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
     let isSettingsVisible = false
     let isShortcutsVisible = false
+
+    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
 </script>
 
 <SettingsPopup bind:isSettingsVisible/>
@@ -31,7 +29,7 @@
             <span style="height: 0.5em; pointer-events: none"></span>
         {/if}
         <span
-            class:disabled={$cluster.type == "collection" || $cluster.type == "stories"}
+            class:disabled={c?.type == "collection" || c?.type == "stories"}
             on:click={() =>
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
@@ -45,10 +43,10 @@
         </span>
 
         <span
-            class:disabled={$cluster.type == "stories"}
+            class:disabled={c?.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse)
-                localStorage.setItem('traverse', $traverse.toString())
+                invalidate("app:load")
             }}
         >
             <div style="margin-left: 2px">
@@ -62,14 +60,14 @@
     </section>
 
     <section>
-        {#each $clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
-            <span
-            on:mousedown={() => changeCluster(c.id)}
+        {#each $data.sort((a, b) => a.sortOrder - b.sortOrder) as c}
+            <a
+            href="/{c.everythingGroupId}"
             title={c.name}
-            class:active={$cluster.id == c.id}
+            class:active={$clusterIndex == c.id}
             >
                 <Icon path={getIcon(c.icon)} size={0.8} />
-            </span>
+            </a>
         {/each}
     </section>
 
@@ -104,7 +102,7 @@
         // For desktop Electron app
         -webkit-app-region: drag;
 
-        span {
+        span, a {
             // For desktop Electron app
             -webkit-app-region: no-drag;
 
@@ -127,15 +125,15 @@
                 background: hsl(0, 0%, 22%);
                 border: 1px solid hsl(0, 0%, 24%);
             }
-            &.active {
-                background: hsl(0, 0%, 24%);
-                border: 1px solid hsl(0, 0%, 33%);
-            }
+        }
 
-            &.disabled {
-                pointer-events: none;
-                filter: opacity(0.5);
-            }
+        span.disabled {
+            pointer-events: none;
+            filter: opacity(0.5);
+        }
+        a.active {
+            background: hsl(0, 0%, 24%);
+            border: 1px solid hsl(0, 0%, 33%);
         }
     }
 </style>

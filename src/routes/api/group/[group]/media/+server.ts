@@ -3,61 +3,65 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 // import { ExifParserFactory } from "ts-exif-parser"
 
-import { PrismaClient } from '@prisma/client'
 import sharedImportLogic from '../sharedImportLogic'
+import type { Group } from '../../../../../types'
+
+// TODO: This does not work
+import { activeSortingMethod, mediaTypeFilter } from '../../../../../lib/stores'
+
+import { get } from 'svelte/store'
+import { json } from '@sveltejs/kit'
+
+import { PrismaClient, type Media, type Tags } from '@prisma/client'
 const prisma = new PrismaClient()
-// const prisma = new PrismaClient({
-//     log: [
-//         {
-//             emit: 'event',
-//             level: 'query',
-//         },
-//         {
-//             emit: 'stdout',
-//             level: 'error',
-//         },
-//         {
-//             emit: 'stdout',
-//             level: 'info',
-//         },
-//         {
-//             emit: 'stdout',
-//             level: 'warn',
-//         },
-//     ],
-// })
 
-// prisma.$on('query', (e) => {
-//     console.log('Query: ' + e.query)
-//     console.log('Params: ' + e.params)
-//     console.log('Duration: ' + e.duration + 'ms')
-// })
-
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params, request }) => {
 
     const cluster = await prisma.clusters.findFirstOrThrow({
         where: {
             groups: {
                 some: {
-                    id: Number(params.group)
+                    id: +params.group
                 }
             }
         }
     })
 
-    // return all media of a cluster if it's the everything group
-    if (Number(params.group) == cluster.everythingGroupId)
-        return new Response(JSON.stringify(
-            (
-                await prisma.media.findMany({
-                    where: {
-                        group: {
-                            cluster
+    let output: (Media & { tags: Tags[] })[] = [];
+
+    const addToOutput = async (g: Group) => {
+        output = [...output, ...await (async (groupId: number) => {
+    
+            // return all media of a cluster if it's the everything group
+            if (Number(groupId) == cluster.everythingGroupId)
+                return  (
+                    await prisma.media.findMany({
+                        where: {
+                            group: {
+                                cluster
+                            }
+                        },
+                        include: {
+                            tags: {
+                                select: {
+                                    id: true,
+                                    name: true
+                                }
+                            }
                         }
-                    },
+                    })
+                ).map(d => {
+                    d.date = d.date.getTime() as any
+                    return d
+                })
+        
+            return (
+                await prisma.media.findMany({
+                    where: { groupId },
                     include: {
                         tags: {
                             select: {
+                                id: true,
                                 name: true
                             }
                         }
@@ -67,25 +71,33 @@ export const GET: RequestHandler = async ({ params }) => {
                 d.date = d.date.getTime() as any
                 return d
             })
-        ))
+        })(g.id)];
+        if (new URL(request.url).searchParams.get("traverse") == "true")
+            for (const i in g.children)
+                await addToOutput(g.children[i]);
+    };
 
-    return new Response(JSON.stringify(
-        (
-            await prisma.media.findMany({
-                where: { groupId: Number(params.group) },
-                include: {
-                    tags: {
-                        select: {
-                            name: true
-                        }
-                    }
-                }
-            })
-        ).map(d => {
-            d.date = d.date.getTime() as any
-            return d
-        })
-    ))
+    const group = await prisma.groups.findFirstOrThrow({
+        where: { id: +params.group },
+        include: {
+            cluster: true,
+            children: true
+        }
+    })
+    
+    await addToOutput(group as any);
+
+    const collator = new Intl.Collator([], { numeric: true });
+    if (group.cluster.type == "collection" && group.id != group.cluster.everythingGroupId) {
+        return json(output
+        .filter((d) => d.type.startsWith(get(mediaTypeFilter)))
+        .sort((a, b) => collator.compare(a.name, b.name)))
+    } else {
+        return json(output
+        .filter((d) => d.type.startsWith(get(mediaTypeFilter)))
+        // @ts-ignore
+        .sort(get(activeSortingMethod).method))
+    }
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {

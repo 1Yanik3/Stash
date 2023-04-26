@@ -2,15 +2,15 @@
     import { mdiFileUpload } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
-    import Controller from '../Controller.svelte'
+    import Controller from '../../Controller.svelte'
 
-    import ImageGrid from '../components/ImageGrid.svelte'
-    import Toolbar from '../components/Toolbar.svelte'
-    import DropFile from '../components/DropFile.svelte'
-    import MediaViewer from '../components/MediaViewer.svelte'
-    import Navigationbar from '../components/Navigationbar/index.svelte'
+    import ImageGrid from '../../components/ImageGrid.svelte'
+    import Toolbar from '../../components/Toolbar.svelte'
+    import DropFile from '../../components/DropFile.svelte'
+    import MediaViewer from '../../components/MediaViewer.svelte'
+    import Navigationbar from '../../components/Navigationbar/index.svelte'
     
-    import { group, visibleMedium, controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
+    import { visibleMedium, controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
 
     //#region Uploader
 
@@ -41,7 +41,7 @@
                 ajax.addEventListener("load", resolve, false);
                 ajax.addEventListener("error", () => console.log("Error"), false);
                 ajax.addEventListener("abort", () => console.log("Aborted"), false);
-                ajax.open("POST", `api/group/${$group.id}/media`);
+                ajax.open("POST", `api/group/${$controller.getGroup().id}/media`);
                 ajax.send(data);
             })
 

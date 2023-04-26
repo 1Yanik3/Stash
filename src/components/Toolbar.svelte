@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, cluster, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter, settings } from '$lib/stores'
+    import { serverURL, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter, settings, data } from '$lib/stores'
     import { browser } from '$app/environment'
 
     import Icon from 'mdi-svelte'
@@ -9,6 +9,7 @@
     import Shortcut from '../reusables/Shortcut.svelte';
     import UpscalePopup from './Popups/UpscalePopup.svelte';
     import type { Tags } from '@prisma/client';
+    import { page } from '$app/stores';
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
@@ -86,8 +87,6 @@
 
     }
 
-    $: console.log($visibleMedium)
-    
 </script>
 
 <!-- Toggle Fullscreen -->
@@ -132,7 +131,7 @@
                 }}
             >{tag.name}</span>
         {/each}
-        {#if $cluster.type != "collection"}
+        {#if $data.find(c => c.groups.some(g => g.id == +$page.params.group))?.type != "collection"}
             <input type="text" on:keydown|stopPropagation={handleKeyDown}>
         {/if}
     </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { clusters } from "$lib/stores";
+    import { data as dataStore } from "$lib/stores";
     import Icon from "mdi-svelte";
     import * as Icons from "@mdi/js"
 
@@ -23,7 +23,7 @@
         <span class="bigNumber"> 56.2 GB </span>
     </div>
 
-    {#each $clusters as c}
+    {#each $dataStore as c}
         <section>
             <div>
                 <Icon path={getIcon(c.icon)} size={1.5} />

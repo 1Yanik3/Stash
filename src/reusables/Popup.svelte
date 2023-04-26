@@ -5,6 +5,7 @@
 
     export let visible = true
     export let title = ""
+    export let hideHeader = false
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key != "Escape") return
@@ -19,15 +20,17 @@
 {#if visible}
 <main transition:fade={{ duration: 100 }}>
     <section transition:scale={{ start: 1.1, duration: 100 }}>
-        <div id="header">
+        {#if !hideHeader}
+            <div id="header">
 
-            <h2>{title}</h2>
-            
-            <button on:click={() => visible = false}>
-                <Icon path={mdiClose}/>
-            </button>
+                <h2>{title}</h2>
+                
+                <button on:click={() => visible = false}>
+                    <Icon path={mdiClose}/>
+                </button>
 
-        </div>
+            </div>
+        {/if}
         <div id="content">
             <slot/>
         </div>

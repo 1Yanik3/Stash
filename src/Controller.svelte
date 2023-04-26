@@ -1,263 +1,122 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { browser } from "$app/environment";
-    import { onMount } from "svelte";
-    import { mdiArchive, mdiImage, mdiTrashCan, mdiVideo } from "@mdi/js";
+    import { onDestroy, onMount } from "svelte";
 
     import type { Group, Tag } from "./types";
     import {
-        stories,
-        story,
-        clusters,
-        cluster,
-        groups,
-        group,
         tags,
         traverse,
-        mediaTypeFilter,
-        activeSortingMethod,
-        media,
         visibleMedium,
         imageSuffixParameter,
+        data,
+        clusterIndex,
+        type MainDataType,
     } from "$lib/stores";
 
     import Shortcut from "./reusables/Shortcut.svelte";
-    import type { Media, Tags } from "@prisma/client";
+    import type { Clusters } from "@prisma/client";
     import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
-    import { text } from "svelte/internal";
+    import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
+    import { goto } from "$app/navigation";
+    import type { PageData } from "./routes/[group]/$types";
 
-    const flattenGroups = () => {
+    export const flattenAllGroups = () => {
+        const flattentedGroups: {group: Group, cluster: Clusters}[] = []
+
+        $data.forEach(cluster => {
+            // TODO: Everything, Unsorted, Trash
+            const flatten = (group: Group) => {
+                flattentedGroups.push({ group, cluster });
+
+                if (group.children.length)
+                group.children.forEach(flatten);
+            };
+            cluster.groups.forEach(flatten);
+        })
+
+        return flattentedGroups;
+    }
+
+    export const flattenGroups = () => {
+        const c = $data.find(c => c.id == $clusterIndex)
+        if (!c)
+            throw window.alert("Something went wrong flattening the groups")
+
         const flattentedGroups: Array<Group> = [
-            $groups.find((g) => g.id == $cluster.everythingGroupId) as Group,
-            $groups.find((g) => g.id == $cluster.unsortedGroupId) as Group,
-            $groups.find((g) => g.id == $cluster.trashGroupId) as Group,
+            c.groups.find(g => g.id == c.everythingGroupId) as Group,
+            c.groups.find(g => g.id == c.unsortedGroupId) as Group,
+            c.groups.find(g => g.id == c.trashGroupId) as Group
         ];
 
         const flatten = (input: Group) => {
             flattentedGroups.push(input);
 
             if (input.children.length)
-                input.children.forEach((g) => flatten(g));
+                input.children.forEach(flatten);
         };
-        $groups.filter((g) => g.id > 0).forEach((g) => flatten(g));
+        c.groups.filter(g => g.id > 0).forEach(flatten);
 
         return flattentedGroups;
     };
 
-    export const updateClusters = async () => {
+    export const updateAll = async () => {
         if (!browser) return;
 
-        console.log("Updating clusters...");
+        console.log("Updating All...");
         try {
-            const res = await fetch(`/api/cluster`);
-
-            clusters.set(await res.json());
-            cluster.set(
-                $clusters.find(
-                    (c) =>
-                        c.id == Number(new URL($page.url).searchParams.get("c"))
-                ) || $clusters[0]
-            );
-        } catch (err) {
-            console.error("failed to update clusters", err);
-        }
-    };
-
-    export const updateGroups = async () => {
-        if (!browser) return;
-
-        console.log("Updating groups...");
-        stories.set([]);
-        try {
-            const res = await fetch(`/api/cluster/${$cluster.id}/group`);
-            groups.set(
-                (await res.json())
-                    .map((c: Group) => {
-                        if (c.id == -1) c.icon = mdiArchive;
-                        if (c.id == -2) c.icon = mdiTrashCan;
-
-                        if (c.icon == "images") c.icon = mdiImage;
-                        if (c.icon == "videos") c.icon = mdiVideo;
-
-                        return c;
-                    })
-                    .sort((a: Group, b: Group) =>
-                        $cluster.type == "collection"
+            const res = await fetch(`/api/cluster/all`);
+            data.set(
+                (await res.json() as MainDataType[])
+                .map(cluster => {
+                    cluster.groups = cluster.groups
+                        .sort((a, b) => cluster.type == "collection"
                             ? b.name.localeCompare(a.name)
-                            : a.name.localeCompare(b.name)
-                    )
+                            : a.name.localeCompare(b.name))
+                    return cluster
+                })
             );
 
-            console.log("groups", { groups });
-
-            const flattentedGroups: Array<Group> = [];
-            const flatten = (input: Group) => {
-                try {
-                    if (input.children.length)
-                        input.children.forEach((g) => flatten(g));
-
-                    flattentedGroups.push(input);
-                } catch (e) {
-                    console.error("failed to flatten", input, e);
-                }
-            };
-
-            $groups.forEach((g) => flatten(g));
-
-            console.log("flattened", { groups });
-
-            console.log(new URL($page.url).searchParams.get("g"));
-            group.set(
-                flattentedGroups.find(
-                    (g) =>
-                        g.id == Number(new URL($page.url).searchParams.get("g"))
-                ) ||
-                    $groups.find((g) => g.name.includes("Everything")) ||
-                    $groups[0]
-            );
-        } catch (err) {
-            console.error("failed to update groups", err);
-        }
-    };
-
-    export const updateStories = async () => {
-        if (!browser) return;
-
-        console.log("Updating stories...");
-        groups.set([]);
-
-        try {
-            const res = await fetch(`/api/cluster/${$cluster.id}/stories`);
-            stories.set(await res.json());
-            story.set($stories.find(s => s.id == new URL($page.url).searchParams.get("g")) || $stories[0]);
-
-            console.log("stories", stories);
-        } catch (err) {
-            console.error("failed to update stories", err);
-        }
-    };
-
-    export const updateTags = async () => {
-        if (!browser || !$cluster.id || !$group.id || $traverse == undefined)
-            return;
-
-        console.log("Updating tags...");
-        try {
-            let output: Array<Tag> = [];
-
-            const addToOutput = async (g: Group) => {
-                const res = await fetch(`/api/group/${g.id}/tags`);
-                output = [
-                    ...output,
-                    ...(await res.json()).map((t: any) => {
-                        t.active = false;
-                        return t;
-                    }),
-                ];
-
-                if ($traverse)
-                    for (const i in g.children)
-                        await addToOutput(g.children[i]);
-            };
-            await addToOutput($group);
-
-            output.push({
-                name: "Untagged",
-                active: false,
-                count: $media.reduce((old, currentValue) => old + (+!currentValue.tags.length), 0)
+            page.subscribe(() => {
+                const clusterForGroup = flattenAllGroups().find(g => g.group.id == +$page.params.group)
+                if (!clusterForGroup)
+                    window.alert("cluster not found")
+                else
+                    clusterIndex.set(clusterForGroup.cluster.id)
             })
-
-            tags.set(output);
         } catch (err) {
-            console.warn("failed to update tags", err);
+            console.error("failed to update all", err);
         }
-    };
+    }
 
-    export const updateMedia = async () => {
-        if ($cluster.id && $group.id) {
-            console.log("Updating media...");
-            try {
-                let output: (Media & { tags: Tags[] })[] = [];
+    // TODO
+    // const clearTagSelection = () =>
+    //     tags.set(
+    //         $tags.map((t) => {
+    //             t.active = false;
+    //             return t;
+    //         })
+    //     );
+    // $: if ($cluster && $group) clearTagSelection();
 
-                const addToOutput = async (g: Group) => {
-                    const res = await fetch(`/api/group/${g.id}/media`);
-                    output = [...output, ...(await res.json())];
+    updateAll()
 
-                    if ($traverse)
-                        for (const i in g.children)
-                            await addToOutput(g.children[i]);
-                };
-                await addToOutput($group);
+    // group.subscribe(async () => {
+    //     visibleMedium.set(null)
+    //     await updateMedia()
+    //     updateTags()
+    // })
 
-                console.log("out", output)
+    // TODO: Optimise
+    export const getGroup = () => {
+        return flattenGroups().find(g => g.id == +$page.params.group) as Group
+    }
 
-                const collator = new Intl.Collator([], { numeric: true });
-                // todo: make better
-                if ($cluster.type == "collection" && $group.id != -3) {
-                    media.set(
-                        output
-                            .filter((d) => d.type.startsWith($mediaTypeFilter))
-                            .sort((a, b) => collator.compare(a.name, b.name))
-                    );
-                } else {
-                    media.set(
-                        output
-                            .filter((d) => d.type.startsWith($mediaTypeFilter))
-                            // @ts-ignore
-                            .sort($activeSortingMethod.method)
-                    );
-                }
-            } catch (err) {
-                console.error("failed to update media", err);
-            }
-        }
-    };
-
-    const clearTagSelection = () =>
-        tags.set(
-            $tags.map((t) => {
-                t.active = false;
-                return t;
-            })
-        );
-    $: if ($cluster && $group) clearTagSelection();
-
-    updateClusters();
-    cluster.subscribe((c) => {
-        if (c.id <= 0) return
-
-        if (c.type == "stories")
-            updateStories()
-        else
-            updateGroups()
-    });
-
-    group.subscribe(async () => {
-        visibleMedium.set(null)
-        await updateMedia()
-        updateTags()
-    })
-
-    onMount(() => {
-        group.subscribe(() =>
-            history.pushState({}, "", `/?c=${$cluster.id}&g=${$group.id}`)
-        )
-        story.subscribe(() =>
-            history.pushState({}, "", `/?c=${$cluster.id}&g=${$story.id}`)
-        )
-    });
-
-    traverse.subscribe(updateMedia);
-    traverse.subscribe(updateTags);
-
-    activeSortingMethod.subscribe((g) => updateMedia());
-    mediaTypeFilter.subscribe((g) => updateMedia());
+    // TODO
+    // activeSortingMethod.subscribe((g) => updateMedia());
+    // mediaTypeFilter.subscribe((g) => updateMedia());
     
     visibleMedium.subscribe(() => imageSuffixParameter.set(""))
-
-    onMount(() => {
-        traverse.set(localStorage.getItem("traverse") == "true");
-    });
 
     const shift = true,
         control = true,
@@ -268,19 +127,20 @@
     export const goToPreviousMedia = () => {
         if (!$visibleMedium) return;
 
-        const mediaIndex = $media.indexOf($visibleMedium);
+        const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
 
-        if (mediaIndex > 0) visibleMedium.set($media[mediaIndex - 1]);
+        if (mediaIndex > 0) visibleMedium.set(($page.data as PageData).media[mediaIndex - 1]);
     };
     export const goToNextMedia = () => {
         if (!$visibleMedium) return;
 
-        const mediaIndex = $media.indexOf($visibleMedium);
+        const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
 
-        if (mediaIndex < $media.length - 1)
-            visibleMedium.set($media[mediaIndex + 1]);
+        if (mediaIndex < ($page.data as PageData).media.length - 1)
+            visibleMedium.set(($page.data as PageData).media[mediaIndex + 1]);
     };
 
+    let quickSwitchOpen = false
     let prompt_visible = false
     let prompt_question = ""
     let prompt_value = ""
@@ -311,13 +171,9 @@
     key="ArrowUp"
     action={() => {
         const flattenedGroups = flattenGroups();
-
-        // @ts-ignore
-        const currentGroupIndex = flattenedGroups.findIndex(
-            (g) => g.id == $group.id
-        );
+        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == +$page.params.group);
         if (currentGroupIndex == 0) return;
-        $group = flattenedGroups[currentGroupIndex - 1];
+        goto(`/${flattenedGroups[currentGroupIndex - 1].id}`)
     }}
 />
 
@@ -327,13 +183,9 @@
     key="ArrowDown"
     action={() => {
         const flattenedGroups = flattenGroups();
-
-        // @ts-ignore
-        const currentGroupIndex = flattenedGroups.findIndex(
-            (g) => g.id == $group.id
-        );
+        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == +$page.params.group);
         if (currentGroupIndex >= flattenedGroups.length - 1) return;
-        $group = flattenedGroups[currentGroupIndex + 1];
+        goto(`/${flattenedGroups[currentGroupIndex + 1].id}`)
     }}
 />
 
@@ -343,12 +195,9 @@
     opt
     key="ArrowUp"
     action={() => {
-        // @ts-ignore
-        const currentClusterIndex = $clusters.findIndex(
-            (c) => c.id == $cluster.id
-        );
+        const currentClusterIndex = $data.findIndex(c => c.id == $clusterIndex);
         if (currentClusterIndex == 0) return;
-        cluster.set($clusters[currentClusterIndex - 1]);
+        clusterIndex.set($data[currentClusterIndex - 1].id);
     }}
 />
 
@@ -358,24 +207,25 @@
     opt
     key="ArrowDown"
     action={() => {
-        // @ts-ignore
-        const currentClusterIndex = $clusters.findIndex(
-            (c) => c.id == $cluster.id
-        );
-        if (currentClusterIndex >= $clusters.length - 1) return;
-        cluster.set($clusters[currentClusterIndex + 1]);
-    }}
-/>
-
-<!-- Jump to Group functionality -->
-<Shortcut
-    meta
-    key="o"
-    action={() => {
-        // TODO
+        const currentClusterIndex = $data.findIndex(c => c.id == $clusterIndex);
+        if (currentClusterIndex >= $data.length - 1) return;
+        clusterIndex.set($data[currentClusterIndex + 1].id);
     }}
 />
 
 {#if prompt_visible}
     <PromptPopup bind:value={prompt_value} text={prompt_question} on:result={e => prompt_callback(e.detail)} />
+{/if}
+
+<!-- Quick Switch -->
+<Shortcut
+    meta
+    key="o"
+    action={() => {
+        quickSwitchOpen = !quickSwitchOpen
+    }}
+/>
+
+{#if quickSwitchOpen}
+    <QuickSwitch bind:visible={quickSwitchOpen}/>
 {/if}

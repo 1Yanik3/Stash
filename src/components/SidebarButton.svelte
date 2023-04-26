@@ -1,10 +1,12 @@
 <script lang="ts">
     import type { Group, Tag } from '../types'
-    import { serverURL, group, tags, cluster, media, groups } from '$lib/stores'
+    import { tags } from '$lib/stores'
 
     import { createEventDispatcher } from 'svelte'
     import { mdiHelp, mdiTagOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
+    import { page } from '$app/stores';
+    import { invalidateAll } from '$app/navigation';
 
     let isDraggingOver = false
 
@@ -47,10 +49,9 @@
                         })
                     })
 
+                    // TODO ?
                     if (response.ok)
-                        media.set(
-                            $media.filter(m => m.id.toString() != mediaId)
-                        )
+                        invalidateAll()
                     else
                         window.alert("Something wen't wrong moving media")
                     
@@ -77,9 +78,9 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
 bind:this={element}
-href={$group && target ? `?c=${$cluster.id || 1}&g=${target.id}` : ""}
+href={target ? `/${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
-class:active={active || tag?.active || ($group && target && $group.id == target.id)}
+class:active={active || tag?.active || (target && +$page.params.group == target.id)}
 class:hidden
 class:right
 class:highlighted
@@ -102,36 +103,29 @@ on:click={e => {
         tags.set($tags)
 
     }
-    else {
-        if (!target) return
-
-        // is a group button
-        if ($group != target)
-            group.set(target)
-
-    }
 }}
 
 on:dblclick={() => {
     if (!target) return
-    fetch(`${serverURL}/${$cluster.id}/${$group.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
-        method: "PATCH"
-    })
+    // TODO
+    // fetch(`${serverURL}/${$data.find(c => c.groups.some(g => g.id == +$page.params.group))?.id}/${$group.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
+    //     method: "PATCH"
+    // })
     
-    $groups.find(g => {
-        // @ts-ignore
-        const recursion = (g) => {
-            if (g == target && g.children.length) {
-                // @ts-ignore
-                g.collapsed = !g.collapsed
-            }
-            else
-                g.children.forEach(recursion)
-        }
-        return recursion(g)
-    })
+    // $controller.flattenGroups().find(g => {
+    //     // @ts-ignore
+    //     const recursion = (g) => {
+    //         if (g == target && g.children.length) {
+    //             // @ts-ignore
+    //             g.collapsed = !g.collapsed
+    //         }
+    //         else
+    //             g.children.forEach(recursion)
+    //     }
+    //     return recursion(g)
+    // })
 
-    groups.set($groups)
+    // groups.set($groups)
 }}
 
 on:drop|preventDefault|stopPropagation={handleDrop}
