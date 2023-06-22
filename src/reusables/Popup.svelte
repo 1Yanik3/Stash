@@ -1,16 +1,20 @@
 <script lang="ts">
-	import { slide, fade, scale } from 'svelte/transition';
+	import { fade, scale } from 'svelte/transition';
     import { mdiClose } from "@mdi/js";
     import Icon from "mdi-svelte";
+    import { createEventDispatcher } from 'svelte';
 
     export let visible = true
     export let title = ""
     export let hideHeader = false
 
+    const dispatch = createEventDispatcher();
+
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key != "Escape") return
 
         e.preventDefault()
+        dispatch('close')
         visible = false
     }
 </script>
@@ -25,7 +29,10 @@
 
                 <h2>{title}</h2>
                 
-                <button on:click={() => visible = false}>
+                <button on:click={() => {
+                    dispatch('close')
+                    visible = false
+                }}>
                     <Icon path={mdiClose}/>
                 </button>
 

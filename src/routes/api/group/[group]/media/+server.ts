@@ -82,8 +82,8 @@ export const GET: RequestHandler = async ({ params, request }) => {
         }
     })
     
-    await addToOutput(group as any);
-console.log(searchParams.get("mediaTypeFilter"))
+    await addToOutput(group as any)
+    
     const collator = new Intl.Collator([], { numeric: true });
     if (group.cluster.type == "collection" && group.id != group.cluster.everythingGroupId) {
         return json(output
