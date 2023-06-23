@@ -25,6 +25,7 @@
     export let right = false
     export let card = false
     export let highlighted = false
+    export let disabled = false
 
     const dispatch = createEventDispatcher()
 
@@ -135,6 +136,7 @@ on:dragenter={handleEnter}
 on:dragleave={handleLeave}
 class:isDraggingOver
 class:card
+class:disabled
 >
 
     <div class="section">
@@ -189,6 +191,11 @@ class:card
             background: hsl(0, 0%, 13%);
             border: 1px solid hsl(0, 0%, 24%);
             margin: 0.25em;
+        }
+
+        &.disabled {
+            opacity: 75%;
+            pointer-events: none;
         }
 
         &:hover {

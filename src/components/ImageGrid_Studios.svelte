@@ -1,16 +1,33 @@
 <script lang="ts">
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
-    import GridThumbnail from './GridThumbnail.svelte'
-    import { clusterIndex, controller, data, getCluster, visibleMedium } from '$lib/stores'
+    import { data } from '$lib/stores'
     import type { Media, Tags } from '@prisma/client'
     import { onMount } from "svelte"
-    import { page } from "$app/stores";
+    import { page } from "$app/stores"
+    import SidebarButton from "./SidebarButton.svelte"
+    import { mdiGroup, mdiUngroup } from "@mdi/js"
+    import { invalidateAll } from "$app/navigation"
+    import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
 
-    export let media: Array<Media & { tags: Tags[] }>
+    export let media: Array<Media & { tags: Tags[], disabled: Boolean, expanded: Boolean }>
     export let i: number
+
+    const alreadyProcessedGroupedInto: number[] = []
+    for (let i = 0; i < media.length; i++) {
+        const element = media[i];
+        if (element.groupedIntoNamesId != null) {
+            if (alreadyProcessedGroupedInto.includes(element.groupedIntoNamesId)) {
+                element.disabled = true
+            } else {
+                alreadyProcessedGroupedInto.push(element.groupedIntoNamesId)
+            }
+        }
+    }
+
+    let selectedMedia: string[] = []
 
     $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
 </script>
@@ -25,28 +42,37 @@
 
         <main>
 
-            {#each media as medium}
-                <div
-                class="row"
-                on:mousedown={() => visibleMedium.set(medium)}
-                class:active={$visibleMedium == medium}
-                >
-
-                    <div class="thumb">
-                        <GridThumbnail {medium} {i} {finishedLoading} disableActive />
-                    </div>
-
-                    <div class="details">
-                        <b>{medium.name}</b>
-                        <span>
-                            {#if $controller.getGroup().id == c?.everythingGroupId}
-                                {getCluster($clusterIndex).groups.find(g => g.id == medium.groupId)?.name},
-                            {/if}
-                            {medium.width}x{medium.height}
-                        </span>
-                    </div>
-
+            {#if selectedMedia.length}
+                <div class="groupActions">
+                    <SidebarButton card icon={mdiGroup} disabled={selectedMedia.length <= 1}
+                        on:click={() => {
+                            // TODO: Allow grouping of media
+                            fetch(`/api/group-together`,{
+                                method: "POST",
+                                body: JSON.stringify(selectedMedia)
+                            }).then(() => invalidateAll())
+                        }}
+                    >Group</SidebarButton>
+                    <SidebarButton card icon={mdiUngroup} disabled={selectedMedia.length > 1}
+                    
+                    >Ungroup</SidebarButton>
                 </div>
+            {/if}
+
+            {#each media.filter(m => !m.disabled) as medium, i}
+                {@const parent = medium.groupedIntoNamesId != null}
+                {@const sortedMatchingMedia =  !parent ? [ medium ] : (
+                    media.filter(m => m.groupedIntoNamesId == medium.groupedIntoNamesId)
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                )}
+
+                <ImageGridStudiosThumbnail medium={sortedMatchingMedia[0]} on:click={() => medium.expanded = !medium.expanded} {finishedLoading} {parent} bind:selectedMedia />
+
+                {#if parent && medium.expanded}
+                    {#each sortedMatchingMedia as subMedium, i}
+                        <ImageGridStudiosThumbnail sub medium={subMedium} {finishedLoading} bind:selectedMedia />
+                    {/each}
+                {/if}
             {/each}
 
         </main>
@@ -64,38 +90,10 @@
         gap: 0.5em;
         margin-bottom: 1em;
 
-        .row {
-            display: grid;
-            grid-template-columns: 10em 1fr;
-            max-width: calc(100% - 64px);
-
-            padding: 1em;
-            border: 1px solid transparent;
-            border-radius: 0.5em;
-
-            transition: all 200ms;
-            &:hover, &.active {
-                background: #212121;
-                box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
-                border: 1px solid hsl(0, 0%, 22%);
-            }
-
-            .thumb {
-                pointer-events: none;
-            }
-
-            .details {
-                display: flex;
-                flex-direction: column;
-                gap: 0.25em;
-                margin: 0.5em;
-                margin-left: 0.75em;
-
-                b {
-                    font-weight: bold;
-                }
-            }
+        .groupActions {
+            display: flex;
         }
+
     }
 
 </style>

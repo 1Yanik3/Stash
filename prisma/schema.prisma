@@ -1,13 +1,13 @@
 // This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider      = "postgresql"
-  url           = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum CredentialsIcon {
@@ -69,19 +69,27 @@ model Groups {
 }
 
 model Media {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   type        String
   name        String
-  date        DateTime @default(now())
-  createdDate DateTime @default(now())
-  group       Groups   @relation(fields: [groupId], references: [id])
+  date        DateTime          @default(now())
+  createdDate DateTime          @default(now())
+  group       Groups            @relation(fields: [groupId], references: [id])
   height      Int
   width       Int
   tags        Tags[]
+  groupedInto GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
 
-  groupId Int
+  groupId            Int
+  groupedIntoNamesId Int?
 
   @@index([id, groupId])
+}
+
+model GroupedIntoNames {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Media Media[]
 }
 
 model Tags {
