@@ -96,10 +96,6 @@ class:sub
             border: 1px solid hsl(0, 0%, 36%);
         }
 
-        .thumb {
-            pointer-events: none;
-        }
-
         .details {
             display: flex;
             flex-direction: column;
