@@ -1,9 +1,9 @@
 import { get } from 'svelte/store'
 import { activeSortingMethod, mediaTypeFilter, traverse } from '$lib/stores'
-import type { PageLoad } from './$types'
+import type { PageServerLoad } from './$types'
 import { sortingMethods, type Tag } from '../../types'
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch }) => {
 	const media = await fetch(`/api/group/${params.group}/media
 		?traverse=${get(traverse).toString()}
 		&activeSortingMethod=${sortingMethods.indexOf(get(activeSortingMethod))}

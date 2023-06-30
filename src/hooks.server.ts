@@ -45,8 +45,18 @@ export const handle: Handle = (async ({ event, resolve }) => {
     const isValid = isJwtValid(event.cookies.get("session") || "")
 
     // api is forbidden without valid login
-    if (!isValid && event.url.pathname.startsWith("/api"))
+    if (!isValid && event.url.pathname.startsWith("/api")) {
+
+      // TODO
+      if (
+        event.url.pathname.startsWith("/api/group")
+        && event.request.method == "GET"
+        && event.cookies.get("guest_token") == "TotallySecretToken@4x2PLm6J"
+      ) {
+        return await resolve(event)
+      }
       return new Response("Unauthorized", { status: 401 })
+    }
 
     // redirect to auth
     if (!isValid && !event.url.pathname.startsWith("/auth"))
@@ -56,6 +66,10 @@ export const handle: Handle = (async ({ event, resolve }) => {
     if (isValid && event.url.pathname == "/auth")
       return Response.redirect(event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan", 307)
   }
+
+  if (event.url.pathname == "/auth" && event.cookies.get("guest_token"))
+    return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan"}/guest`, 307)
+
 
   return await resolve(event)
 })
