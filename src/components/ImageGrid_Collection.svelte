@@ -4,6 +4,8 @@
     import { serverURL, data as dataStore } from "$lib/stores"
     import { page } from "$app/stores";
 
+    export let guest = false
+
     let data: {
         id:      number,
         name:    string,
@@ -35,7 +37,7 @@
         .filter(a => a.name.includes(filter))
         .sort((a, b) => collator.compare(b.name, a.name))
     as d}
-        <a href="/{d.id}">
+        <a href={guest ? `/guest/${d.id}` : `/${d.id}`}>
 
             {#if d.Media}
                 <img

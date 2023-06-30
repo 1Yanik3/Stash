@@ -13,6 +13,8 @@
     import type { PageData } from '../../routes/[group]/$types';
     import { invalidateAll } from '$app/navigation';
 
+    export let guest = false;
+
     $: pageData = $page.data as PageData
 
     // TODO: Move into other section
@@ -59,9 +61,11 @@
     let importPopup = false
 </script>
 
+{#if !guest}
 <!-- Create Group -->
 <Shortcut key="c" action={() => getCluster($clusterIndex).type != "stories" && createGroup()} />
 <Shortcut key="r" action={renameGroup} />
+{/if}
 
 <main>
     {#if getCluster($clusterIndex)?.type == "stories"}
@@ -83,18 +87,20 @@
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
-            <SidebarButton hidden target={c?.groups.find(g => g.id == c.everythingGroupId)} icon={mdiBookshelf}>
+            <SidebarButton {guest} hidden target={c?.groups.find(g => g.id == c.everythingGroupId)} icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton hidden target={c?.groups.find(g => g.id == c.unsortedGroupId)} icon={mdiArchiveOutline}>
+            <SidebarButton {guest} hidden target={c?.groups.find(g => g.id == c.unsortedGroupId)} icon={mdiArchiveOutline}>
                 Unsorted
             </SidebarButton>
+            {#if !guest}
             <SidebarButton hidden target={c?.groups.find(g => g.id == c.trashGroupId)} icon={mdiTrashCanOutline}>
                 Trash
             </SidebarButton>
             <SidebarButton hidden on:click={e =>
                 showOptions = !showOptions
             } icon={mdiDotsVertical}/>
+            {/if}
         </SidebarSection>
 
         {#if showOptions}
@@ -123,7 +129,7 @@
             {@const cluster = $data.find(c => c.id == $clusterIndex)}
             {#if cluster}
                 {#each cluster.groups.filter(({ id }) => id > 0) as target}
-                    <SidebarHierarchyEntry {target}/>
+                    <SidebarHierarchyEntry {guest} {target}/>
                 {/each}
             {/if}
         </SidebarSection>

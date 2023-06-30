@@ -11,6 +11,8 @@
     import type { Tags } from '@prisma/client';
     import { page } from '$app/stores';
 
+    export let guest = false
+
     const handleKeyDown = (e: KeyboardEvent) => {
         const value: string = (e.target as any).value
         if (e.key == "Enter" && value) {
@@ -89,6 +91,7 @@
 
 </script>
 
+{#if !guest}
 <!-- Toggle Fullscreen -->
 <Shortcut key="f" action={() => {
     isFullscreen.set(!$isFullscreen)
@@ -97,6 +100,7 @@
 {#key $visibleMedium}
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
 {/key}
+{/if}
 
 <main class:fullscreen={$isFullscreen} class:windowControlsSpacer={$settings.windowControlsSpacer}>
     <section>
@@ -105,6 +109,7 @@
             <Icon path={mdiClose} size={0.8}/>
         </button>
 
+        {#if !guest}
         <button on:click={() => {
             isFullscreen.set(!$isFullscreen)
             if ($isFullscreen) {
@@ -119,6 +124,7 @@
         <button on:click={() => detailsVisible.set(!$detailsVisible)}>
             <Icon path={mdiInformationOutline} size={0.8}/>
         </button>
+        {/if}
 
     </section>
 
@@ -127,17 +133,19 @@
             <span
                 class="tag"
                 on:contextmenu|preventDefault={() => {
-                    removeTagFromMedia(tag)
+                    if (!guest) removeTagFromMedia(tag)
                 }}
             >{tag.name}</span>
         {/each}
-        {#if $data.find(c => c.groups.some(g => g.id == +$page.params.group))?.type != "collection"}
+        <!-- TODO -->
+        {#if !guest && $data.find(c => c.groups.some(g => g.id == +$page.params.group))?.type != "collection"}
             <input type="text" on:keydown|stopPropagation={handleKeyDown}>
         {/if}
     </div>
 
     <section>
 
+        {#if !guest}
         <button on:click={replaceWithLocalMedia}>
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
         </button>
@@ -145,6 +153,7 @@
         <button on:click={() => upscalePopup_open = true}>
             <Icon path={mdiResize} size={0.8}/>
         </button>
+        {/if}
 
         <button on:click={() => window.open(`${serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>

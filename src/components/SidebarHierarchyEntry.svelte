@@ -5,29 +5,11 @@
     import * as Icons from '@mdi/js';
 
     export let target: Group
-    export let indent: number = 0
+    export let indent = 0
+    export let guest = false
+    console.log(guest)
 
     let element: HTMLAnchorElement
-    // group.subscribe(() => {
-    //     if (!element) return
-
-    //     const r = element.getBoundingClientRect()
-    //     if ($group == target && !(
-    //         r.top >= 60 &&
-    //         r.bottom <= (window.innerHeight - 40)
-    //     )) {
-    //         element.scrollIntoView({
-    //             block: "nearest",
-    //             behavior: "smooth"
-    //         })
-    //     }
-    // })
-    // onMount(() => {
-    //     if ($group == target) 
-    //         element.scrollIntoView({
-    //             block: "center"
-    //         })
-    // })
 
     const collator = new Intl.Collator([], {numeric: true})
 </script>
@@ -36,6 +18,7 @@
     bind:element
     bind:target
     {indent}
+    {guest}
     icon={target.icon 
         // @ts-ignore
         ? Icons[`mdi${target.icon || ""}`]
@@ -47,6 +30,6 @@
 
 {#if target.children && !target.collapsed}
     {#each target.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
-        <svelte:self bind:target={child} indent={indent + 1}/>
+        <svelte:self bind:target={child} indent={indent + 1} {guest} />
     {/each}
 {/if}

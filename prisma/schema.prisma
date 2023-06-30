@@ -23,6 +23,7 @@ enum CredentialsIcon {
 model Credentials {
   id         String @id @default(cuid())
   credential String
+  limitAccessToCollection Int?
 
   icon CredentialsIcon
   name String

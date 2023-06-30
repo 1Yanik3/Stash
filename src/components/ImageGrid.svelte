@@ -18,22 +18,7 @@
 
     const pageSize = 50
 
-    // groups.subscribe(() => {
-    //     const flatten = (input: Group) => {
-    //         flattentedGroups.push(input)
-
-    //         if (!input?.children) {
-    //             console.error("no children found for ", input)
-    //         }
-
-    //         if (input.children.length)
-    //             input.children.forEach(g => flatten(g))
-    //     }
-
-    //     $groups
-    //     .filter(g => g.id > 0)
-    //     .forEach(g => flatten(g))
-    // })
+    export let guest = false
 
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
         const activeTags = ($page.data.tags as Tag[]).filter(t => t.active)
@@ -57,7 +42,7 @@
 
 {#if c?.type == "collection" && c?.everythingGroupId == +$page.params.group}
 
-    <ImageGridCollection/>
+    <ImageGridCollection {guest}/>
 
 {:else if c?.type == "stories"}
 
