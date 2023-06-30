@@ -14,7 +14,7 @@
     import NavigationSection from "../../../components/Navigationbar/NavigationSection.svelte";
 
     import { serverURL } from "$lib/stores";
-    serverURL.set(`https://stash.any.gay`);
+    $: serverURL.set(`https://stash.any.gay`);
 </script>
 
 <Controller bind:this={$controller} />

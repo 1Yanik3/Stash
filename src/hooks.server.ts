@@ -61,15 +61,15 @@ export const handle: Handle = (async ({ event, resolve }) => {
 
     // redirect to auth
     if (!isValid && !event.url.pathname.startsWith("/auth"))
-      return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan"}/auth`, 307)
+      return Response.redirect(`${event.url.origin}/auth`, 307)
 
     // if has logged in, return to main page
     if (isValid && event.url.pathname == "/auth")
-      return Response.redirect(event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan", 307)
+      return Response.redirect(event.url.origin, 307)
   }
 
   if (event.url.pathname == "/auth" && sessionCookie == "TotallySecretToken@4x2PLm6J")
-    return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.any.gay"}/guest`, 307)
+    return Response.redirect(`${event.url.origin}/guest`, 307)
 
   return await resolve(event)
 })
