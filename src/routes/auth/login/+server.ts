@@ -10,9 +10,8 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
 
     // TODO
     if (token == "TotallySecretToken@4x2PLm6J") {
-        console.log("TEST")
         cookies.set(
-            "guest_token",
+            "session",
             "TotallySecretToken@4x2PLm6J",
             { expires: new Date(Date.now() + 2678400000), path: "/", sameSite: "none" }
         )

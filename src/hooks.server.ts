@@ -17,10 +17,12 @@ export const handle: Handle = (async ({ event, resolve }) => {
   if (event.url.origin == "http://sveltekit-prerender")
     return await resolve(event)
 
+  const sessionCookie = event.cookies.get("session") || ""
+
   if (event.url.pathname.startsWith("/guest")) {
 
     // TODO
-    if (event.cookies.get("guest_token") != "TotallySecretToken@4x2PLm6J") {
+    if (sessionCookie != "TotallySecretToken@4x2PLm6J") {
       return new Response("Unauthorized (guest token invalid or not present)", { status: 401 })
     }
 
@@ -42,16 +44,16 @@ export const handle: Handle = (async ({ event, resolve }) => {
     }
 
   } else {
-    const isValid = isJwtValid(event.cookies.get("session") || "")
+    const isValid = isJwtValid(sessionCookie)
 
     // api is forbidden without valid login
     if (!isValid && event.url.pathname.startsWith("/api")) {
 
       // TODO
       if (
-        event.url.pathname.startsWith("/api/group")
+        (event.url.pathname.startsWith("/api/group") || event.url.pathname.startsWith("/api/cluster"))
         && event.request.method == "GET"
-        && event.cookies.get("guest_token") == "TotallySecretToken@4x2PLm6J"
+        && sessionCookie == "TotallySecretToken@4x2PLm6J"
       ) {
         return await resolve(event)
       }
@@ -67,9 +69,8 @@ export const handle: Handle = (async ({ event, resolve }) => {
       return Response.redirect(event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan", 307)
   }
 
-  if (event.url.pathname == "/auth" && event.cookies.get("guest_token"))
+  if (event.url.pathname == "/auth" && sessionCookie == "TotallySecretToken@4x2PLm6J")
     return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan"}/guest`, 307)
-
 
   return await resolve(event)
 })
