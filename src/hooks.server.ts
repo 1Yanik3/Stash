@@ -69,7 +69,7 @@ export const handle: Handle = (async ({ event, resolve }) => {
   }
 
   if (event.url.pathname == "/auth" && sessionCookie == "TotallySecretToken@4x2PLm6J")
-    return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.hera.lan"}/guest`, 307)
+    return Response.redirect(`${event.url.hostname == "localhost" ? "http://localhost:5173" : "https://stash.any.gay"}/guest`, 307)
 
   return await resolve(event)
 })

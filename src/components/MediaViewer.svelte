@@ -100,7 +100,7 @@
     
             <img
                 bind:this={imageElement}
-                src={`${serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}${$imageSuffixParameter}`}
+                src={`${$serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}${$imageSuffixParameter}`}
                 crossorigin="use-credentials"
                 alt={$visibleMedium.name}
                 class:isZoomedIn
@@ -113,7 +113,7 @@
         {:else if $visibleMedium.type.startsWith("video")}
     
             <video
-                src={`${serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}`}
+                src={`${$serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}`}
                 controls
                 autoplay
                 bind:this={video}

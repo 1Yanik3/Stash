@@ -155,7 +155,7 @@
         </button>
         {/if}
 
-        <button on:click={() => window.open(`${serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
+        <button on:click={() => window.open(`${$serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </button>
 

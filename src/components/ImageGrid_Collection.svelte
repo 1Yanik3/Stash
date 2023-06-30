@@ -41,7 +41,7 @@
 
             {#if d.Media}
                 <img
-                src={`${serverURL}/api/media/${d.Media}/thumbnail`}
+                src={`${$serverURL}/api/media/${d.Media}/thumbnail`}
                 alt=""
                 >
             {/if}
