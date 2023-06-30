@@ -26,6 +26,8 @@
 
     let video: HTMLVideoElement
 
+    export let guest = false
+
     function toIsoString(date: Date) {
         const pad = (num: number) => (num < 10 ? '0' : '') + num;
 
@@ -98,7 +100,7 @@
     
             <img
                 bind:this={imageElement}
-                src={`${serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
+                src={`${serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}${$imageSuffixParameter}`}
                 crossorigin="use-credentials"
                 alt={$visibleMedium.name}
                 class:isZoomedIn
@@ -111,7 +113,7 @@
         {:else if $visibleMedium.type.startsWith("video")}
     
             <video
-                src={`${serverURL}/file/${$visibleMedium.id}`}
+                src={`${serverURL}/${guest ? 'guest-file' : 'file'}/${$visibleMedium.id}`}
                 controls
                 autoplay
                 bind:this={video}

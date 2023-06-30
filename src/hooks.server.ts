@@ -51,8 +51,7 @@ export const handle: Handle = (async ({ event, resolve }) => {
 
       // TODO
       if (
-        (event.url.pathname.startsWith("/api/group") || event.url.pathname.startsWith("/api/cluster"))
-        && event.request.method == "GET"
+        event.request.method == "GET"
         && sessionCookie == "TotallySecretToken@4x2PLm6J"
       ) {
         return await resolve(event)

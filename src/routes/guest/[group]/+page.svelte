@@ -34,7 +34,7 @@
         <section style={$isFullscreen ? "grid-column: 1 / span 3" : ""}>
             <Toolbar guest />
 
-            <MediaViewer />
+            <MediaViewer guest />
         </section>
     {/if}
 </main>
