@@ -118,7 +118,7 @@
                 autoplay
                 bind:this={video}
                 on:playing={() => {
-                    if (video.duration <= 3)
+                    if (video.duration <= 5)
                         video.loop = true
                 }}
                 crossorigin="use-credentials"

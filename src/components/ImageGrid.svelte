@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { data as dataStore, controller } from "$lib/stores"
+    import { data as dataStore, controller, type MainDataType } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -36,8 +36,39 @@
 
     const collator = new Intl.Collator([], {numeric: true})
 
-    $: c = $dataStore.find(c => c.groups.some(g => g.id == +$page.params.group))
-    $: g = c?.groups.find(g => g.id  == +$page.params.group) as Group
+    let c: MainDataType
+    let g: Group
+
+    page.subscribe(() => {
+
+        const processGroup = (group: Group, cluster: MainDataType) => {
+            if (group.id == +$page.params.group) {
+                console.log(group.id, +$page.params.group, group)
+                g = group
+                c = cluster
+                return true
+            } else {
+
+                for (let i = 0; i < group.children.length; i++) {
+                    if (processGroup(group.children[i], cluster)) return true
+                }
+
+            }
+
+            return false
+        }
+
+        for (const cluster of $dataStore) {
+            
+            for (let i = 0; i < cluster.groups.length; i++) {
+                const group = cluster.groups[i];
+
+                if (processGroup(group, cluster)) return
+
+            }
+
+        }
+    })
 </script>
 
 {#if c?.type == "collection" && c?.everythingGroupId == +$page.params.group}
@@ -51,7 +82,7 @@
 {:else}
 
     {#if c?.type == "collection"}
-        {@const parent = $controller.flattenGroups().find(g => g.children.includes(g))}
+        {@const parent = $controller.flattenGroups().find(gr => gr.children.includes(g))}
         <div id="collectionGroups" transition:fade={{ duration: 150 }}>
             {#if parent}
                 <SidebarButton card target={parent} icon={mdiFolderArrowUpOutline}>

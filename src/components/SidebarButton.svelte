@@ -108,27 +108,14 @@ on:click={e => {
     }
 }}
 
-on:dblclick={() => {
+on:dblclick={async () => {
     if (!target) return
-    // TODO
-    // fetch(`${serverURL}/${$data.find(c => c.groups.some(g => g.id == +$page.params.group))?.id}/${$group.id}/collapsed/${!!target.children.length && !target.collapsed}`, {
-    //     method: "PATCH"
-    // })
-    
-    // $controller.flattenGroups().find(g => {
-    //     // @ts-ignore
-    //     const recursion = (g) => {
-    //         if (g == target && g.children.length) {
-    //             // @ts-ignore
-    //             g.collapsed = !g.collapsed
-    //         }
-    //         else
-    //             g.children.forEach(recursion)
-    //     }
-    //     return recursion(g)
-    // })
+    const req = await fetch(`/api/group/${target.id}/collapsed`, {
+        method: "PATCH"
+    })
+    const res = !!(await req.json())
 
-    // groups.set($groups)
+    target.collapsed = res
 }}
 
 on:drop|preventDefault|stopPropagation={handleDrop}
