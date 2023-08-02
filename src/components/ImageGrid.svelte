@@ -126,7 +126,7 @@
     section {
         display: grid;
         gap: 14px;
-        overflow: hidden;
+        // overflow: hidden;
     }
 
     #collectionGroups {

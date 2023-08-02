@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serverURL, visibleMedium } from "$lib/stores"
+    import { selectedMediaIds, serverURL, visibleMedium } from "$lib/stores"
     
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
     import type { Media, Tags } from "@prisma/client";
@@ -30,10 +30,23 @@
             })
         }
     })
+
+    const leftClick = (e: MouseEvent) => {
+        if (e.metaKey) {
+            visibleMedium.set(null)
+            if ($selectedMediaIds.includes(medium.id))
+                selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
+            else
+                selectedMediaIds.set([...$selectedMediaIds, medium.id])
+        } else {
+            selectedMediaIds.set([])
+            visibleMedium.set(medium)
+        }
+    }
 </script>
 
 <IntersectionObserver
-    on:click={() => { visibleMedium.set(medium) }}
+    on:click={e => leftClick(e.detail)}
     once={true}
     top={500}
     let:intersecting
@@ -44,6 +57,7 @@
         on:click={() => { visibleMedium.set(medium) }}
         on:dragstart|stopPropagation={dragStartHandler}
         bind:this={element}
+        class:selected={$selectedMediaIds.includes(medium.id)}
     >
 
         {#if (intersecting && finishedLoading) || i == 0}
@@ -74,6 +88,10 @@
 
     div {
         scroll-margin: 11px;
+
+        &.selected img {
+            outline: 3px solid hsl(0, 0%, 36%);
+        }
     }
 
     .hidden {

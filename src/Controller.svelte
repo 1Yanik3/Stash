@@ -9,14 +9,20 @@
         data,
         clusterIndex,
         type MainDataType,
+        selectedMediaIds,
     } from "$lib/stores";
 
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { Clusters } from "@prisma/client";
     import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
     import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
-    import { goto } from "$app/navigation";
+    import { goto, afterNavigate } from "$app/navigation";
     import type { PageData } from "./routes/[group]/$types";
+    import QuickActions from "./components/Popups/QuickActions.svelte";
+
+    afterNavigate(() => {
+        selectedMediaIds.set([])
+    })
 
     export const flattenAllGroups = () => {
         const flattentedGroups: {group: Group, cluster: Clusters}[] = []
@@ -118,6 +124,8 @@
     };
 
     let quickSwitchOpen = false
+    let quickActionsOpen = false
+
     let prompt_visible = false
     let prompt_question = ""
     let prompt_value = ""
@@ -205,4 +213,17 @@
 
 {#if quickSwitchOpen}
     <QuickSwitch bind:visible={quickSwitchOpen}/>
+{/if}
+
+<!-- Quick Actions -->
+<Shortcut
+    meta
+    key="k"
+    action={() => {
+        quickActionsOpen = !quickActionsOpen
+    }}
+/>
+
+{#if quickActionsOpen}
+    <QuickActions bind:visible={quickActionsOpen}/>
 {/if}

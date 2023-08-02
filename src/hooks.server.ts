@@ -72,7 +72,7 @@ export const handle: Handle = (async ({ event, resolve }) => {
   }
 
   if (event.url.pathname == "/auth" && sessionCookie == "TotallySecretToken@4x2PLm6J")
-    return Response.redirect(`${origin}/guest`, 307)
+    return Response.redirect(`${origin}/guest/-9`, 307)
 
   return await resolve(event)
 })

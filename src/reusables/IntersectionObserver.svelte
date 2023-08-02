@@ -42,7 +42,7 @@
   
 <div
   bind:this={container}
-  on:click={() => dispatch("click")}
+  on:click={e => dispatch("click", e)}
 >
   <slot {intersecting}></slot>
 </div>

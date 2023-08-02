@@ -20,6 +20,7 @@ export let story: Writable<Story> = writable({ id: "0", title: "", content: "", 
 
 export let visibleMedium: Writable<Media & { tags: Tags[] } | null> = writable(null)
 export let imageSuffixParameter: Writable<String> = writable("")
+export let selectedMediaIds: Writable<String[]> = writable([])
 
 export let traverse = writable(false)
 export let activeSortingMethod = writable(sortingMethods[3])
