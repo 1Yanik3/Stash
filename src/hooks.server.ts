@@ -18,7 +18,7 @@ export const handle: Handle = (async ({ event, resolve }) => {
     return await resolve(event)
 
   // const origin = event.url.origin.includes("localhost") ? event.url.origin : event.url.origin.replace("http", "https")
-  const origin = event.url.origin
+  const origin = event.url.origin.replace(/:\d+$/, "")
 
   const sessionCookie = event.cookies.get("session") || ""
 
