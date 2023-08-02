@@ -150,8 +150,10 @@ class:disabled
     {#if tag}
         <div class="section" style="filter: opacity(0.6)">
 
+            {#if tag.count >= 0}
             <span>{tag.count}</span>
-
+            {/if}
+            
         </div>
     {/if}
 
