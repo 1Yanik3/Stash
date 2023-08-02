@@ -17,7 +17,8 @@ export const handle: Handle = (async ({ event, resolve }) => {
   if (event.url.origin == "http://sveltekit-prerender")
     return await resolve(event)
 
-  const origin = event.url.origin.includes("localhost") ? event.url.origin : event.url.origin.replace("http", "https")
+  // const origin = event.url.origin.includes("localhost") ? event.url.origin : event.url.origin.replace("http", "https")
+  const origin = event.url.origin
 
   const sessionCookie = event.cookies.get("session") || ""
 
