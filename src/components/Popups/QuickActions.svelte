@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import Popup from "../../reusables/Popup.svelte";
     import FuzzySearch from "fuzzy-search";
-    import { controller, selectedMediaIds } from "../../lib/stores";
+    import { controller, selectedMediaIds, data } from "../../lib/stores";
 
     export let visible: boolean;
     let inputBox: HTMLInputElement
@@ -29,6 +29,14 @@
                 .catch(console.error)
             }
 
+        }
+    })
+
+    if ($controller?.getGroup()?.id != $controller?.getCluster()?.everythingGroupId) functionalities.push({
+        name: "Import",
+        async function() {
+            visible = false
+            $controller.showImportPopup()
         }
     })
 

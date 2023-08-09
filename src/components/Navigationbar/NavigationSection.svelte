@@ -8,7 +8,6 @@
     import { story, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../reusables/Shortcut.svelte'
-    import ImportPopup from '../Popups/ImportPopup.svelte';
     import { page } from '$app/stores';
     import type { PageData } from '../../routes/[group]/$types';
     import { invalidateAll } from '$app/navigation';
@@ -57,8 +56,6 @@
             method: "PATCH"
         })
     }
-
-    let importPopup = false
 </script>
 
 {#if !guest}
@@ -114,9 +111,6 @@
                 </SidebarButton>
                 <SidebarButton right on:click={createGroup} icon={mdiPlus}>
                     Create Group
-                </SidebarButton>
-                <SidebarButton right on:click={() => importPopup = true} icon={mdiImport}>
-                    Import
                 </SidebarButton>
             </SidebarSection>
         </div>
@@ -184,10 +178,6 @@
     </div>
     {/if}
 </main>
-
-{#if importPopup}
-    <ImportPopup bind:visible={importPopup}/>
-{/if}
 
 <style lang="scss">
     main {

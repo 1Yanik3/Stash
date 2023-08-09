@@ -19,6 +19,7 @@
     import { goto, afterNavigate } from "$app/navigation";
     import type { PageData } from "./routes/[group]/$types";
     import QuickActions from "./components/Popups/QuickActions.svelte";
+    import ImportPopup from "./components/Popups/ImportPopup.svelte";
 
     afterNavigate(() => {
         selectedMediaIds.set([])
@@ -98,6 +99,9 @@
     export const getGroup = () => {
         return flattenGroups().find(g => g.id == +$page.params.group) as Group
     }
+    export const getCluster = () => {
+        return $data.find(c => c.groups.some(g => g.id == +$page.params.group)) as MainDataType
+    }
     
     visibleMedium.subscribe(() => imageSuffixParameter.set(""))
 
@@ -125,6 +129,8 @@
 
     let quickSwitchOpen = false
     let quickActionsOpen = false
+    let importPopupOpen = false
+    export const showImportPopup = () => importPopupOpen = true
 
     let prompt_visible = false
     let prompt_question = ""
@@ -226,4 +232,8 @@
 
 {#if quickActionsOpen}
     <QuickActions bind:visible={quickActionsOpen}/>
+{/if}
+
+{#if importPopupOpen}
+    <ImportPopup bind:visible={importPopupOpen}/>
 {/if}
