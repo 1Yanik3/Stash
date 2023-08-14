@@ -3,6 +3,9 @@
     import Popup from "../../reusables/Popup.svelte";
     import FuzzySearch from "fuzzy-search";
     import { goto } from "$app/navigation";
+    import { clusterIndex, controller, data } from "../../lib/stores";
+
+    const Cluster = $data.find(c => c.id == $clusterIndex)
 
     export let visible: boolean;
     let inputBox: HTMLInputElement
@@ -11,7 +14,7 @@
     let selectedIndex = 0;
     let results: {id: number, name: number, cluster :{id: number,name: string} }[] = []
     $: if (results) selectedIndex = 0;
-    $: results = searcher?.search(value) || [];
+    $: results = searcher?.search(value).slice(0, 8).sort((a: any, b: any) => +(b.cluster.id == Cluster?.id) - +(a.cluster.id == Cluster?.id)) || [];
 
     let searcher: any = null;
     onMount(async () => {
@@ -43,7 +46,7 @@
     <main>
         <input type="search" bind:value on:keydown={(e) => onInput(e)} bind:this={inputBox} />
 
-        {#each results.slice(0, 8) as {name, cluster}, i}
+        {#each results as {name, cluster}, i}
             <div class:active={i == selectedIndex}>
                 <span>{name}</span>
                 <span>{cluster.name}</span>

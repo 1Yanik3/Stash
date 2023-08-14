@@ -48,7 +48,6 @@
         }
     }
     
-    // TODO
     const toggleHidden = () => {
         const g = $controller.flattenAllGroups().find(g => g.group.id == +$page.params.group)
 
