@@ -2,7 +2,7 @@
     import Popup from "../../reusables/Popup.svelte"
 
     import { visibleMedium } from '$lib/stores'
-    import SidebarButton from "../SidebarButton.svelte"
+    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte"
     import { mdiBicyclePennyFarthing, mdiBrushVariant, mdiCancel, mdiFloppyVariant } from "@mdi/js"
     import ImageCompare from "../../reusables/ImageCompare.svelte"
     import { Stretch } from 'svelte-loading-spinners'

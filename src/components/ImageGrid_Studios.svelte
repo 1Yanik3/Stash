@@ -4,7 +4,7 @@
     import type { Media, Tags } from '@prisma/client'
     import { onMount } from "svelte"
     import { page } from "$app/stores"
-    import SidebarButton from "./SidebarButton.svelte"
+    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte"
     import { mdiGroup, mdiUngroup } from "@mdi/js"
     import { invalidateAll } from "$app/navigation"
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
@@ -12,7 +12,7 @@
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
 
-    export let media: Array<Media & { tags: Tags[], disabled: Boolean, expanded: Boolean }>
+    export let media: Array<Media & { tags: Tags[], disabled?: Boolean, expanded?: Boolean }>
     export let i: number
 
     const alreadyProcessedGroupedInto: number[] = []

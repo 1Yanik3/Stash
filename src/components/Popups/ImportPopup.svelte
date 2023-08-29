@@ -2,7 +2,7 @@
     import { invalidateAll } from "$app/navigation";
     import { controller } from "../../lib/stores";
     import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../SidebarButton.svelte";
+    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
     
     export let visible: boolean
     let loading = false

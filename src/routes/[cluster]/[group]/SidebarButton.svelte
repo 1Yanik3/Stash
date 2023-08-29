@@ -1,20 +1,20 @@
 <script lang="ts">
-    import type { Group, Tag } from '../types'
-    import type { PageData } from '../routes/[group]/$types';
-
+    import type { Tag } from '../../../types'
     import { createEventDispatcher } from 'svelte'
     import { mdiHelp, mdiTagOutline } from '@mdi/js'
     import Icon from 'mdi-svelte'
     import { page } from '$app/stores';
     import { invalidateAll } from '$app/navigation';
+    import type { Groups } from '@prisma/client';
 
+    import type { PageData } from './$types';
     $: pageData = $page.data as PageData
 
     let isDraggingOver = false
 
     // @ts-ignore
     export let element: HTMLAnchorElement = null
-    export let target: Group | null = null
+    export let target: Groups | { id: number | null, collapsed?: boolean, icon?: string } | null = null
     export let tag: Tag | null = null
 
     export let icon: string | null = ""
@@ -82,7 +82,7 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
 bind:this={element}
-href={target ? !guest ? `/${target.id}` : `/guest/${target.id}` : ""}
+href={target ? !guest ? `/${pageData.cluster.name}/${target.id}` : `/guest/${target.id}` : ""}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || (target && +$page.params.group == target.id)}
 class:hidden
@@ -92,24 +92,25 @@ on:click={e => {
 
     dispatch('click', e)
 
-    if (tag) {
-        // is a tag button
+    // TODO
+    // if (tag) {
+    //     // is a tag button
 
-        if (tag.name == "Untagged")
-            pageData.tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
-        else
-            // @ts-ignore
-            pageData.tags.find(t => t.name == "Untagged").active = false
+    //     if (tag.name == "Untagged")
+    //         pageData.tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
+    //     else
+    //         // @ts-ignore
+    //         pageData.tags.find(t => t.name == "Untagged").active = false
 
-        const tmp = pageData.tags.find(t => t == tag)
-        if (tmp)
-            tmp.active = !tag.active
+    //     const tmp = pageData.tags.find(t => t == tag)
+    //     if (tmp)
+    //         tmp.active = !tag.active
 
-    }
+    // }
 }}
 
 on:dblclick={async () => {
-    if (!target) return
+    if (!target || !target.collapsed) return
     const req = await fetch(`/api/group/${target.id}/collapsed`, {
         method: "PATCH"
     })

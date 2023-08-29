@@ -4,7 +4,7 @@
     import SvelteMarkdown from "svelte-markdown";
     import Shortcut from "../reusables/Shortcut.svelte";
     import CreateStoryPopup from "./Popups/CreateStoryPopup.svelte";
-    import SidebarButton from "./SidebarButton.svelte";
+    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
 
     const extractHeaders = (markdown: string) => {
         const headers = [];

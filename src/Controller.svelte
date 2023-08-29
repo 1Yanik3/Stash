@@ -1,6 +1,5 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import { browser } from "$app/environment";
 
     import type { Group } from "./types";
     import {
@@ -13,11 +12,9 @@
     } from "$lib/stores";
 
     import Shortcut from "./reusables/Shortcut.svelte";
-    import type { Clusters } from "@prisma/client";
     import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
     import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
     import { goto, afterNavigate } from "$app/navigation";
-    import type { PageData } from "./routes/[group]/$types";
     import QuickActions from "./components/Popups/QuickActions.svelte";
     import ImportPopup from "./components/Popups/ImportPopup.svelte";
 
@@ -25,83 +22,83 @@
         selectedMediaIds.set([])
     })
 
-    export const flattenAllGroups = () => {
-        const flattentedGroups: {group: Group, cluster: Clusters}[] = []
+    // export const flattenAllGroups = () => {
+    //     const flattentedGroups: {group: Group, cluster: Clusters}[] = []
 
-        $data.forEach(cluster => {
-            // TODO: Everything, Unsorted, Trash
-            const flatten = (group: Group) => {
-                flattentedGroups.push({ group, cluster });
+    //     $data.forEach(cluster => {
+    //         // TODO: Everything, Unsorted, Trash
+    //         const flatten = (group: Group) => {
+    //             flattentedGroups.push({ group, cluster });
 
-                if (group.children.length)
-                group.children.forEach(flatten);
-            };
-            cluster.groups.forEach(flatten);
-        })
+    //             if (group.children.length)
+    //             group.children.forEach(flatten);
+    //         };
+    //         cluster.groups.forEach(flatten);
+    //     })
 
-        return flattentedGroups;
-    }
+    //     return flattentedGroups;
+    // }
 
-    export const flattenGroups = () => {
-        const c = $data.find(c => c.id == $clusterIndex)
-        if (!c)
-            throw window.alert("Something went wrong flattening the groups")
+    // export const flattenGroups = () => {
+    //     const c = $data.find(c => c.id == $clusterIndex)
+    //     if (!c)
+    //         throw window.alert("Something went wrong flattening the groups")
 
-        const flattentedGroups: Array<Group> = [
-            c.groups.find(g => g.id == c.everythingGroupId) as Group,
-            c.groups.find(g => g.id == c.unsortedGroupId) as Group,
-            c.groups.find(g => g.id == c.trashGroupId) as Group
-        ];
+    //     const flattentedGroups: Array<Group> = [
+    //         c.groups.find(g => g.id == c.everythingGroupId) as Group,
+    //         c.groups.find(g => g.id == c.unsortedGroupId) as Group,
+    //         c.groups.find(g => g.id == c.trashGroupId) as Group
+    //     ];
 
-        const flatten = (input: Group) => {
-            flattentedGroups.push(input);
+    //     const flatten = (input: Group) => {
+    //         flattentedGroups.push(input);
 
-            if (input.children.length)
-                input.children.forEach(flatten);
-        };
-        c.groups.filter(g => g.id > 0).forEach(flatten);
+    //         if (input.children.length)
+    //             input.children.forEach(flatten);
+    //     };
+    //     c.groups.filter(g => g.id > 0).forEach(flatten);
 
-        return flattentedGroups;
-    };
+    //     return flattentedGroups;
+    // };
 
-    export const updateAll = async () => {
-        if (!browser) return;
+    // export const updateAll = async () => {
+    //     if (!browser) return;
 
-        console.log("Updating All...");
-        try {
-            const res = await fetch(`/api/cluster/all`);
-            data.set(
-                (await res.json() as MainDataType[])
-                .map(cluster => {
-                    cluster.groups = cluster.groups
-                        .sort((a, b) => cluster.type == "collection"
-                            ? b.name.localeCompare(a.name)
-                            : a.name.localeCompare(b.name))
-                    return cluster
-                })
-            );
+    //     console.log("Updating All...");
+    //     try {
+    //         const res = await fetch(`/api/cluster/all`);
+    //         data.set(
+    //             (await res.json() as MainDataType[])
+    //             .map(cluster => {
+    //                 cluster.groups = cluster.groups
+    //                     .sort((a, b) => cluster.type == "collection"
+    //                         ? b.name.localeCompare(a.name)
+    //                         : a.name.localeCompare(b.name))
+    //                 return cluster
+    //             })
+    //         );
 
-            page.subscribe(() => {
-                const clusterForGroup = flattenAllGroups().find(g => g.group.id == +$page.params.group)
-                if (!clusterForGroup)
-                    window.alert("cluster not found")
-                else
-                    clusterIndex.set(clusterForGroup.cluster.id)
-            })
-        } catch (err) {
-            console.error("failed to update all", err);
-        }
-    }
+    //         page.subscribe(() => {
+    //             const clusterForGroup = flattenAllGroups().find(g => g.group.id == +$page.params.group)
+    //             if (!clusterForGroup)
+    //                 window.alert("cluster not found")
+    //             else
+    //                 clusterIndex.set(clusterForGroup.cluster.id)
+    //         })
+    //     } catch (err) {
+    //         console.error("failed to update all", err);
+    //     }
+    // }
 
-    updateAll()
+    // updateAll()
 
     // TODO: Optimise
-    export const getGroup = () => {
-        return flattenGroups().find(g => g.id == +$page.params.group) as Group
-    }
-    export const getCluster = () => {
-        return $data.find(c => c.groups.some(g => g.id == +$page.params.group)) as MainDataType
-    }
+    // export const getGroup = () => {
+    //     return flattenGroups().find(g => g.id == +$page.params.group) as Group
+    // }
+    // export const getCluster = () => {
+    //     return $data.find(c => c.groups.some(g => g.id == +$page.params.group)) as MainDataType
+    // }
     
     visibleMedium.subscribe(() => imageSuffixParameter.set(""))
 
@@ -111,21 +108,21 @@
         opt = true,
         meta = true;
 
-    export const goToPreviousMedia = () => {
-        if (!$visibleMedium) return;
+    // export const goToPreviousMedia = () => {
+    //     if (!$visibleMedium) return;
 
-        const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
+    //     const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
 
-        if (mediaIndex > 0) visibleMedium.set(($page.data as PageData).media[mediaIndex - 1]);
-    };
-    export const goToNextMedia = () => {
-        if (!$visibleMedium) return;
+    //     if (mediaIndex > 0) visibleMedium.set(($page.data as PageData).media[mediaIndex - 1]);
+    // };
+    // export const goToNextMedia = () => {
+    //     if (!$visibleMedium) return;
 
-        const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
+    //     const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
 
-        if (mediaIndex < ($page.data as PageData).media.length - 1)
-            visibleMedium.set(($page.data as PageData).media[mediaIndex + 1]);
-    };
+    //     if (mediaIndex < ($page.data as PageData).media.length - 1)
+    //         visibleMedium.set(($page.data as PageData).media[mediaIndex + 1]);
+    // };
 
     let quickSwitchOpen = false
     let quickActionsOpen = false
@@ -153,11 +150,11 @@
 </script>
 
 <!-- Media Navigation -->
-<Shortcut key="," action={goToPreviousMedia} />
-<Shortcut key="." action={goToNextMedia} />
+<!-- <Shortcut key="," action={goToPreviousMedia} />
+<Shortcut key="." action={goToNextMedia} /> -->
 
 <!-- Go up by a group -->
-<Shortcut
+<!-- <Shortcut
     opt
     key="ArrowUp"
     action={() => {
@@ -166,10 +163,10 @@
         if (currentGroupIndex == 0) return;
         goto(`/${flattenedGroups[currentGroupIndex - 1].id}`)
     }}
-/>
+/> -->
 
 <!-- Go down by a group -->
-<Shortcut
+<!-- <Shortcut
     opt
     key="ArrowDown"
     action={() => {
@@ -178,7 +175,7 @@
         if (currentGroupIndex >= flattenedGroups.length - 1) return;
         goto(`/${flattenedGroups[currentGroupIndex + 1].id}`)
     }}
-/>
+/> -->
 
 <!-- Go up by a cluster -->
 <Shortcut

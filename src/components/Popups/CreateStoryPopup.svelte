@@ -2,7 +2,7 @@
     import { mdiSend } from "@mdi/js";
     import { data } from "../../lib/stores";
     import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../SidebarButton.svelte";
+    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
     import { page } from "$app/stores";
 
     export let visible: boolean

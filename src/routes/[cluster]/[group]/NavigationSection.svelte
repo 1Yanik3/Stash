@@ -1,15 +1,16 @@
 <script lang="ts">
     import { mdiArchiveOutline, mdiBookshelf, mdiDotsVertical, mdiFolderHidden, mdiImageOutline, mdiImport, mdiPlus, mdiRenameBox, mdiTagOffOutline, mdiTrashCanOutline, mdiVideoOutline } from '@mdi/js'
     
-    import SidebarHierarchyEntry from "../SidebarHierarchyEntry.svelte"
-    import SidebarSection from "../SidebarSection.svelte"
-    import SidebarButton from "../SidebarButton.svelte"
+    import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
+    import SidebarSection from "../../../components/SidebarSection.svelte"
+    import SidebarButton from "./SidebarButton.svelte"
 
     import { story, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
     import { slide } from 'svelte/transition'
-    import Shortcut from '../../reusables/Shortcut.svelte'
+    import Shortcut from '../../../reusables/Shortcut.svelte'
     import { page } from '$app/stores';
-    import type { PageData } from '../../routes/[group]/$types';
+
+    import type { PageData } from './$types';
     import { invalidateAll } from '$app/navigation';
 
     export let guest = false;
@@ -49,11 +50,11 @@
     }
     
     const toggleHidden = () => {
-        const g = $controller.flattenAllGroups().find(g => g.group.id == +$page.params.group)
+        // const g = $controller.flattenAllGroups().find(g => g.group.id == +$page.params.group)
 
-        fetch(`/api/group/${g?.group.id}/collapsed/${!!g?.group.children.length && !g?.group.collapsed}`, {
-            method: "PATCH"
-        })
+        // fetch(`/api/group/${g?.group.id}/collapsed/${!!g?.group.children.length && !g?.group.collapsed}`, {
+        //     method: "PATCH"
+        // })
     }
 </script>
 
@@ -79,18 +80,17 @@
         </SidebarSection>
     </div>
     {:else}
-    {@const c = $data.find(c => c.id == $clusterIndex)}
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
-            <SidebarButton {guest} hidden target={c?.groups.find(g => g.id == c.everythingGroupId)} icon={mdiBookshelf}>
+            <SidebarButton {guest} hidden target={{ id: pageData.cluster.everythingGroupId }} icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton {guest} hidden target={c?.groups.find(g => g.id == c.unsortedGroupId)} icon={mdiArchiveOutline}>
+            <SidebarButton {guest} hidden target={{ id: pageData.cluster.unsortedGroupId }} icon={mdiArchiveOutline}>
                 Unsorted
             </SidebarButton>
             {#if !guest}
-            <SidebarButton hidden target={c?.groups.find(g => g.id == c.trashGroupId)} icon={mdiTrashCanOutline}>
+            <SidebarButton hidden target={{ id: pageData.cluster.trashGroupId }} icon={mdiTrashCanOutline}>
                 Trash
             </SidebarButton>
             <SidebarButton hidden on:click={e =>
@@ -119,15 +119,12 @@
     <div>
         <!-- Folders -->
         <SidebarSection title="Folders">
-            {@const cluster = $data.find(c => c.id == $clusterIndex)}
-            {#if cluster}
-                {#each cluster.groups.filter(({ id }) => id > 0) as target}
-                    <SidebarHierarchyEntry {guest} {target}/>
-                {/each}
-            {/if}
+            {#each pageData.groups as target}
+                <SidebarHierarchyEntry {guest} {target}/>
+            {/each}
         </SidebarSection>
 
-        {#if c?.type != "collection"}
+        {#if pageData.cluster.type != "collection"}
 
         <!-- Tags -->
         {#if pageData.tags.length}
@@ -181,11 +178,18 @@
 <style lang="scss">
     main {
         height: 100vh;
+        width: 240px;
         overflow: hidden;
+
+        background: hsl(0, 0%, 13%);
+        border-right: 1px solid hsl(0, 0%, 22%);
 
         & > :nth-child(2) {
             overflow: scroll;
             scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
             height: calc(100% - 60px);
             scroll-padding: 38px;
         }

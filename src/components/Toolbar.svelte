@@ -8,8 +8,9 @@
 
     import Shortcut from '../reusables/Shortcut.svelte';
     import UpscalePopup from './Popups/UpscalePopup.svelte';
-    import type { Tags } from '@prisma/client';
+    import type { Media, Tags } from '@prisma/client';
     import { page } from '$app/stores';
+    import { invalidateAll } from '$app/navigation';
 
     export let guest = false
 

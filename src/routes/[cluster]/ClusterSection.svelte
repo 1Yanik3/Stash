@@ -3,20 +3,21 @@
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { traverse, activeSortingMethod, settings, data, clusterIndex } from '$lib/stores'
-    import { sortingMethods } from '../../types'
+    import { traverse, activeSortingMethod, settings, clusterIndex } from '$lib/stores'
     
-    import ShortcutPopup from '../Popups/ShortcutPopup.svelte'
-    import SettingsPopup from '../Popups/SettingsPopup/index.svelte';
+    import ShortcutPopup from '../../components/Popups/ShortcutPopup.svelte'
+    import SettingsPopup from '../../components/Popups/SettingsPopup/index.svelte';
     import { page } from '$app/stores';
     import { invalidate, invalidateAll } from '$app/navigation';
+    import { sortingMethods } from '../../types';
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
     let isSettingsVisible = false
     let isShortcutsVisible = false
 
-    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
+    import type { LayoutData } from './$types'
+    $: pageData = $page.data as LayoutData
 </script>
 
 <SettingsPopup bind:isSettingsVisible/>
@@ -29,7 +30,7 @@
             <span style="height: 0.5em; pointer-events: none"></span>
         {/if}
         <span
-            class:disabled={c?.type == "collection" || c?.type == "stories"}
+            class:disabled={pageData.cluster.type == "collection" || pageData.cluster.type == "stories"}
             on:click={() => {
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
@@ -44,10 +45,9 @@
         </span>
 
         <span
-            class:disabled={c?.type == "stories"}
+            class:disabled={pageData.cluster.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse)
-                invalidate("app:load")
             }}
         >
             <div style="margin-left: 2px">
@@ -61,11 +61,11 @@
     </section>
 
     <section>
-        {#each $data.sort((a, b) => a.sortOrder - b.sortOrder) as c}
+        {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
             <a
-            href="/{c.everythingGroupId}"
+            href="/{c.name}/{c.everythingGroupId}"
             title={c.name}
-            class:active={$clusterIndex == c.id}
+            class:active={c.id == pageData.cluster.id}
             >
                 <Icon path={getIcon(c.icon)} size={0.8} />
             </a>
@@ -91,7 +91,11 @@
 
         padding-top: 0.5em;
         padding-bottom: 0.5em;
+
         border-right: 1px solid hsl(0, 0%, 22%);
+
+        flex-grow: 1;
+        width: 64px;
         
         section {
             display: flex;

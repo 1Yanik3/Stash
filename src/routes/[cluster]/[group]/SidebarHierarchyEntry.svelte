@@ -1,13 +1,14 @@
 <script lang="ts">
-    import SidebarButton from '../components/SidebarButton.svelte'
+    import type { Groups } from '@prisma/client';
+    import SidebarButton from './SidebarButton.svelte'
 
-    import type { Group } from 'src/types'
     import * as Icons from '@mdi/js';
 
-    export let target: Group
+    import type { PageData } from '../$types';
+
+    export let target: PageData["groups"][number]
     export let indent = 0
     export let guest = false
-    console.log(guest)
 
     let element: HTMLAnchorElement
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import SidebarButton from "../../components/SidebarButton.svelte";
+    import SidebarButton from "../[cluster]/[group]/SidebarButton.svelte";
 
     let token = "";
 

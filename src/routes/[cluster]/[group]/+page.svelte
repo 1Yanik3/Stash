@@ -2,16 +2,14 @@
     import { mdiFileUpload } from '@mdi/js'
     import Icon from 'mdi-svelte'
 
-    import Controller from '../../Controller.svelte'
-
-    import ImageGrid from '../../components/ImageGrid.svelte'
-    import Toolbar from '../../components/Toolbar.svelte'
-    import DropFile from '../../components/DropFile.svelte'
-    import MediaViewer from '../../components/MediaViewer.svelte'
-    import Navigationbar from '../../components/Navigationbar/index.svelte'
+    import ImageGrid from '../../../components/ImageGrid.svelte'
+    import Toolbar from '../../../components/Toolbar.svelte'
+    import DropFile from '../../../components/DropFile.svelte'
+    import MediaViewer from '../../../components/MediaViewer.svelte'
     
     import { visibleMedium, controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
     import { invalidateAll } from '$app/navigation';
+    import NavigationSection from './NavigationSection.svelte';
 
     //#region Uploader
 
@@ -58,20 +56,14 @@
 
 </script>
 
-<Controller bind:this={$controller}/>
-
 <main>
-    
-    <section style={$isFullscreen || $isStoryFullScreen ? 'display: none' : ''}>
-        <Navigationbar/>
-    </section>
 
-    <section
-        id="imageGallerySection"
-        style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${$isFullscreen ? 'display: none' : ''} ${$isStoryFullScreen ? 'grid-column: 1 / span 3;' : ''}`}
-    >
+    <NavigationSection/>
 
-        <DropFile
+    <section id="imageGallerySection" >
+        <!-- style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${$isFullscreen ? 'display: none' : ''} ${$isStoryFullScreen ? 'grid-column: 1 / span 3;' : ''}`} -->
+
+        <!-- <DropFile
             onDrop={onDrop}
             onEnter={() => fileOver = true}
             onLeave={() => fileOver = false}
@@ -88,13 +80,13 @@
                     {/if}
                 </div>
 
-            {:else}
+            {:else} -->
 
                 <ImageGrid />
 
-            {/if}
+            <!-- {/if}
             
-        </DropFile>
+        </DropFile> -->
 
     </section>
     
@@ -112,52 +104,44 @@
 
 <style lang="scss">
     main {
-        display: grid;
-        grid-template-columns: 300px minmax(200px, 600px) minmax(350px, 1fr);
+        display: flex;
 
-        height: 100%;
-        width: 100%;
+        height: 100vh;
 
-        section {
-            box-shadow: inset -0.7px 0 0 rgba($color: #fff, $alpha: 0.15);
+        #imageGallerySection {
+            padding: 1em;
+            flex-grow: 1;
 
-            &:nth-child(1),  &:nth-child(3) {
-                background: hsl(0, 0%, 13%);
-            }
-            &:nth-child(1) {
-                overflow-y: auto;
-            }
-            &:nth-child(2) {
-                padding: 1em;
+            .dropZone {
+                box-shadow: inset 0.7px 0.7px 0.7px rgba($color: #fff, $alpha: 0.15);
+                background: #444;
+                height: 100%;
+                width: 100%;
 
-                .dropZone {
-                    box-shadow: inset 0.7px 0.7px 0.7px rgba($color: #fff, $alpha: 0.15);
-                    background: #444;
-                    height: 100%;
-                    width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex-direction: column;
+                pointer-events: none;
 
-                    pointer-events: none;
-
-                    span { margin-top: 0.5em }
-                }
+                span { margin-top: 0.5em }
             }
 
-            // Grid
-            &:nth-child(2) {
-                background: hsl(0, 0%, 19%);
-                overflow-y: auto;
-            }
-
-            // Image viewer
-            &:nth-child(3) {
-                max-height: 100vh;
-            }
-
+            background: hsl(0, 0%, 19%);
+            overflow-y: auto;
         }
+
+        // section {
+        //     box-shadow: inset -0.7px 0 0 rgba($color: #fff, $alpha: 0.15);
+
+            
+
+        //     // Image viewer
+        //     &:nth-child(2) {
+        //         max-height: 100vh;
+        //     }
+
+        // }
     }
 </style>

@@ -2,7 +2,7 @@
     import { mdiScanner, mdiTrashCanOutline } from "@mdi/js";
     import { fade } from "svelte/transition";
 
-    import SidebarButton from "../../../SidebarButton.svelte";
+    import SidebarButton from "../../../../routes/[cluster]/[group]/SidebarButton.svelte";
 </script>
 
 <main in:fade>
