@@ -13,7 +13,6 @@
     import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { PageData } from "./routes/[cluster]/[group]/$types";
-    import type { Group } from "./types";
 
     $: pageData = $page.data as PageData;
 

@@ -4,9 +4,6 @@
     import FuzzySearch from "fuzzy-search";
     import { controller, selectedMediaIds } from "../../lib/stores";
     import { page } from "$app/stores";
-    import type { PageData } from "../../routes/[cluster]/[group]/$types";
-
-    $: pageData = $page.data as PageData
 
     export let visible: boolean;
     let inputBox: HTMLInputElement
@@ -36,7 +33,7 @@
         }
     })
 
-    if (pageData.group?.id != pageData.cluster.everythingGroupId) functionalities.push({
+    if ($page.data.group.id != $page.data.cluster.everythingGroupId) functionalities.push({
         name: "Import",
         async function() {
             visible = false
