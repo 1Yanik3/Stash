@@ -2,14 +2,14 @@
     import { selectedTags } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
-    // import ImageGridStories from "./ImageGrid_Stories.svelte"
-    // import ImageGridCollection from './ImageGrid_Collection.svelte'
+    import ImageGridStories from "./ImageGrid_Stories.svelte"
+    import ImageGridCollection from './ImageGrid_Collection.svelte'
 
     import { fade } from "svelte/transition"
     // import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte"
     // import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js"
     import type { Media, Tags } from "@prisma/client";
-    // import ImageGridStudios from "./ImageGrid_Studios.svelte";
+    import ImageGridStudios from "./ImageGrid_Studios.svelte";
     import { page } from "$app/stores";
 
     import type { PageData } from "../routes/[cluster]/[group]/$types"
@@ -40,7 +40,7 @@
     // const collator = new Intl.Collator([], {numeric: true})
     
 </script>
-<!-- 
+
 {#if pageData.cluster.type == "collection" && pageData.cluster.everythingGroupId == +$page.params.group}
 
     <ImageGridCollection {guest}/>
@@ -49,7 +49,7 @@
 
     <ImageGridStories/>
 
-{:else} -->
+{:else}
 
     <!-- {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups" transition:fade={{ duration: 150 }}>
@@ -69,7 +69,7 @@
         </div>
     {/if} -->
     
-    <!-- TODO: is this key needed? -->
+    <!-- TODO: Somehow make the transition feel more fluent? -->
     {#key [ pageData ]}
         {#if true}
             {@const activeMedia = pageData.media.filter(includesActiveTags)}
@@ -77,7 +77,7 @@
 
                 {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
                     {#if pageData.cluster.type == "withName" }
-                    <!-- <ImageGridStudios media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} /> -->
+                    <ImageGridStudios media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
                     {:else}
                     <ImageGridPage media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
                     {/if}
@@ -87,14 +87,13 @@
         {/if}
     {/key}
 
-<!-- {/if} -->
+{/if}
 
 <style lang="scss">
     
     section {
         display: grid;
         gap: 14px;
-        // overflow: hidden;
     }
 
     #collectionGroups {

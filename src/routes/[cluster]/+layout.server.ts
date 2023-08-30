@@ -57,7 +57,6 @@ export const load: LayoutServerLoad = async ({ parent, params }) => {
             }
         }
     })
-    console.log("test123")
 
     return {
         cluster,

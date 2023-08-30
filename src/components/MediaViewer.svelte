@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { mdiCalendar, mdiFormTextbox, mdiMoveResize } from "@mdi/js"
-    import { serverURL, visibleMedium, detailsVisible, settings, controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
-    import Icon from "mdi-svelte"
-    import { invalidateAll } from "$app/navigation";
+    import { invalidate } from "$app/navigation";
+    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from "$lib/stores";
+    import { mdiCalendar, mdiFormTextbox, mdiMoveResize } from "@mdi/js";
+    import Icon from "./Icon.svelte";
 
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
@@ -62,7 +62,7 @@
                                 name: newName
                             })
                         })
-                        invalidateAll();
+                        invalidate("media-and-tags")
                     }
                 }}
                 >
@@ -133,6 +133,10 @@
 {/if}
 
 <style lang="scss">
+    main {
+        border-left: 1px solid hsl(0, 0%, 22%);
+    }
+
     #details {
         padding: 0.7em;
         background: #131313;

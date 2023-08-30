@@ -1,16 +1,17 @@
 <script lang="ts">
-    import { serverURL, visibleMedium, detailsVisible, isFullscreen, imageSuffixParameter, settings, data } from '$lib/stores'
-    import { browser } from '$app/environment'
+    import { browser } from '$app/environment';
+    import { detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
 
-    import Icon from 'mdi-svelte'
-    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js'
-    import selectFiles from 'select-files'
+    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
+    import selectFiles from 'select-files';
+    import Icon from './Icon.svelte';
 
-    import Shortcut from '../reusables/Shortcut.svelte';
-    import UpscalePopup from './Popups/UpscalePopup.svelte';
-    import type { Media, Tags } from '@prisma/client';
     import { page } from '$app/stores';
-    import { invalidateAll } from '$app/navigation';
+    import type { Tags } from '@prisma/client';
+    import Shortcut from '../reusables/Shortcut.svelte';
+    import type { PageData } from '../routes/[cluster]/[group]/$types';
+    import UpscalePopup from './Popups/UpscalePopup.svelte';
+    $: pageData = $page.data as PageData
 
     export let guest = false
 
@@ -139,7 +140,7 @@
             >{tag.name}</span>
         {/each}
         <!-- TODO -->
-        {#if !guest && $data.find(c => c.groups.some(g => g.id == +$page.params.group))?.type != "collection"}
+        {#if !guest && pageData.cluster.type != "collection"}
             <input type="text" on:keydown|stopPropagation={handleKeyDown}>
         {/if}
     </div>
@@ -166,7 +167,8 @@
 
 <style lang="scss">
     main {
-        box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+        border-left: 1px solid hsl(0, 0%, 22%);
+        border-bottom: 1px solid hsl(0, 0%, 22%);
         padding: 0.35em;
         min-width: calc(100% - 4em);
 

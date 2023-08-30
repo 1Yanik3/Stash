@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { mdiFileUpload } from '@mdi/js'
-    import Icon from 'mdi-svelte'
+    import { mdiFileUpload } from '@mdi/js';
+    import Icon from "../../../components/Icon.svelte";
 
-    import ImageGrid from '../../../components/ImageGrid.svelte'
-    import Toolbar from '../../../components/Toolbar.svelte'
-    import DropFile from '../../../components/DropFile.svelte'
-    import MediaViewer from '../../../components/MediaViewer.svelte'
+    import DropFile from '../../../components/DropFile.svelte';
+    import ImageGrid from '../../../components/ImageGrid.svelte';
+    import MediaViewer from '../../../components/MediaViewer.svelte';
+    import Toolbar from '../../../components/Toolbar.svelte';
     
-    import { visibleMedium, controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
-    import { invalidateAll } from '$app/navigation';
+    import { invalidate } from '$app/navigation';
+    import { page } from '$app/stores';
+    import { isFullscreen, visibleMedium } from '$lib/stores';
     import NavigationSection from './NavigationSection.svelte';
 
     //#region Uploader
@@ -40,7 +41,7 @@
                 ajax.addEventListener("load", resolve, false);
                 ajax.addEventListener("error", () => console.log("Error"), false);
                 ajax.addEventListener("abort", () => console.log("Aborted"), false);
-                ajax.open("POST", `api/group/${$controller.getGroup().id}/media`);
+                ajax.open("POST", `/api/group/${$page.params.group}/media`);
                 ajax.send(data);
             })
 
@@ -49,7 +50,7 @@
         fileOver = false
         uploadProgress = null
 
-        invalidateAll()
+        invalidate("media-and-tags")
     }
 
     //#endregion  
@@ -58,14 +59,18 @@
 
 <main>
 
-    <NavigationSection/>
+    <section id="navigationSection">
+        <NavigationSection/>
+    </section>
 
     <section id="imageGallerySection" >
-        <!-- style={`${$visibleMedium ? "" : "grid-column: 2 / span 2;"} ${$isFullscreen ? 'display: none' : ''} ${$isStoryFullScreen ? 'grid-column: 1 / span 3;' : ''}`} -->
 
-        <!-- <DropFile
+        <DropFile
             onDrop={onDrop}
-            onEnter={() => fileOver = true}
+            onEnter={() => {
+                fileOver = true
+                visibleMedium.set(null)
+            }}
             onLeave={() => fileOver = false}
         >
 
@@ -80,18 +85,18 @@
                     {/if}
                 </div>
 
-            {:else} -->
+            {:else}
 
                 <ImageGrid />
 
-            <!-- {/if}
+            {/if}
             
-        </DropFile> -->
+        </DropFile>
 
     </section>
     
     {#if $visibleMedium}
-        <section style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
+        <section id="mediaPlayerSection" style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
 
             <Toolbar />
             
@@ -108,8 +113,13 @@
 
         height: 100vh;
 
+        #navigationSection {
+            width: 234px;
+        }
+
         #imageGallerySection {
             padding: 1em;
+            min-width: 350px;
             flex-grow: 1;
 
             .dropZone {
@@ -130,6 +140,11 @@
 
             background: hsl(0, 0%, 19%);
             overflow-y: auto;
+        }
+
+        #mediaPlayerSection {
+            max-width: 960px;
+            flex-grow: 2;
         }
 
         // section {

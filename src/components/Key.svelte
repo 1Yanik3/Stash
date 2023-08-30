@@ -1,6 +1,6 @@
 <script lang="ts">
     import { mdiAppleKeyboardCommand, mdiAppleKeyboardControl, mdiAppleKeyboardOption, mdiAppleKeyboardShift, mdiArrowDown, mdiArrowLeft, mdiArrowRight, mdiArrowUp, mdiBackspaceOutline, mdiKeyboardCaps, mdiKeyboardEsc, mdiKeyboardF1, mdiKeyboardF10, mdiKeyboardF11, mdiKeyboardF12, mdiKeyboardF2, mdiKeyboardF3, mdiKeyboardF4, mdiKeyboardF5, mdiKeyboardF6, mdiKeyboardF7, mdiKeyboardF8, mdiKeyboardF9, mdiKeyboardReturn, mdiKeyboardSpace, mdiKeyboardTab } from "@mdi/js"
-    import Icon from "mdi-svelte"
+    import Icon from "./Icon.svelte"
 
     export let key: string
 

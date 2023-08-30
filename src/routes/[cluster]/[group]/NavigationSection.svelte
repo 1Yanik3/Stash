@@ -5,13 +5,13 @@
     import SidebarSection from "../../../components/SidebarSection.svelte"
     import SidebarButton from "./SidebarButton.svelte"
 
-    import { story, mediaTypeFilter, controller, data, clusterIndex, getCluster } from '$lib/stores'
+    import { story, mediaTypeFilter, controller } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../../reusables/Shortcut.svelte'
     import { page } from '$app/stores';
 
     import type { PageData } from './$types';
-    import { invalidateAll } from '$app/navigation';
+    import { invalidate } from '$app/navigation';
 
     export let guest = false;
 
@@ -23,7 +23,7 @@
         const name = await $controller.prompt("Enter a name for the new collection")
 
         if (name) {
-            await fetch(`/api/cluster/${getCluster($clusterIndex).id}/group`,{
+            await fetch(`/api/cluster/${pageData.cluster.id}/group`,{
                 method: "POST",
                 body: JSON.stringify({
                     name,
@@ -60,19 +60,19 @@
 
 {#if !guest}
 <!-- Create Group -->
-<Shortcut key="c" action={() => getCluster($clusterIndex).type != "stories" && createGroup()} />
+<Shortcut key="c" action={() => pageData.cluster.type != "stories" && createGroup()} />
 <Shortcut key="r" action={renameGroup} />
 {/if}
 
 <main>
-    {#if getCluster($clusterIndex)?.type == "stories"}
+    {#if pageData.cluster.type == "stories"}
     <div style="margin-top: 8px; margin-right: 2px">
         <!-- <SidebarButton icon={mdiPlus}>
             Add
         </SidebarButton> -->
         <!-- <SidebarSection title="Stories"> -->
         <SidebarSection>
-            {#each getCluster($clusterIndex).stories as s}
+            {#each pageData.stories as s}
                 <SidebarButton icon={null} active={$story == s} on:click={() => story.set(s)}>
                     {s.title}
                 </SidebarButton>
@@ -120,7 +120,7 @@
         <!-- Folders -->
         <SidebarSection title="Folders">
             {#each pageData.groups as target}
-                <SidebarHierarchyEntry {guest} {target}/>
+                <SidebarHierarchyEntry {guest} {target} />
             {/each}
         </SidebarSection>
 
@@ -153,7 +153,7 @@
                     mediaTypeFilter.set("")
                 else
                     mediaTypeFilter.set("image")
-                invalidateAll()
+                invalidate("media-and-tags")
             }} active={$mediaTypeFilter == "image"}>
                 Image
             </SidebarButton>
@@ -163,7 +163,7 @@
                     mediaTypeFilter.set("")
                 else
                     mediaTypeFilter.set("video")
-                invalidateAll()
+                invalidate("media-and-tags")
             }} active={$mediaTypeFilter == "video"}>
                 Video
             </SidebarButton>
@@ -178,7 +178,6 @@
 <style lang="scss">
     main {
         height: 100vh;
-        width: 240px;
         overflow: hidden;
 
         background: hsl(0, 0%, 13%);

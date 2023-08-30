@@ -1,15 +1,16 @@
 <script lang="ts">
-    import Icon from 'mdi-svelte'
     import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
     import * as Icons from '@mdi/js'
 
-    import { traverse, activeSortingMethod, settings, clusterIndex } from '$lib/stores'
+    import { traverse, activeSortingMethod, settings } from '$lib/stores'
     
     import ShortcutPopup from '../../components/Popups/ShortcutPopup.svelte'
     import SettingsPopup from '../../components/Popups/SettingsPopup/index.svelte';
     import { page } from '$app/stores';
-    import { invalidate, invalidateAll } from '$app/navigation';
+    import { invalidate } from '$app/navigation';
     import { sortingMethods } from '../../types';
+
+    import Icon from "../../components/Icon.svelte"
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
@@ -35,10 +36,10 @@
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
                 )
-                invalidateAll()
+                invalidate("media-and-tags")
             }} 
             on:contextmenu|preventDefault={() =>
-                invalidateAll()
+                invalidate("media-and-tags")
             }
         >
             <div style="margin-left: 2px"><Icon path={$activeSortingMethod.icon} size={0.8}/></div>
@@ -48,6 +49,7 @@
             class:disabled={pageData.cluster.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse)
+                invalidate("media-and-tags")
             }}
         >
             <div style="margin-left: 2px">

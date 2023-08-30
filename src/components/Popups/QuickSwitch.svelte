@@ -3,9 +3,10 @@
     import Popup from "../../reusables/Popup.svelte";
     import FuzzySearch from "fuzzy-search";
     import { goto } from "$app/navigation";
-    import { clusterIndex, controller, data } from "../../lib/stores";
+    import { page } from "$app/stores";
+    import type { PageData } from "../../routes/[cluster]/[group]/$types";
 
-    const Cluster = $data.find(c => c.id == $clusterIndex)
+    $: pageData = $page.data as PageData
 
     export let visible: boolean;
     let inputBox: HTMLInputElement
@@ -14,7 +15,7 @@
     let selectedIndex = 0;
     let results: {id: number, name: number, cluster :{id: number,name: string} }[] = []
     $: if (results) selectedIndex = 0;
-    $: results = searcher?.search(value).slice(0, 8).sort((a: any, b: any) => +(b.cluster.id == Cluster?.id) - +(a.cluster.id == Cluster?.id)) || [];
+    $: results = searcher?.search(value).slice(0, 8).sort((a: any, b: any) => +(b.cluster.id == pageData.cluster.id) - +(a.cluster.id == pageData.cluster.id)) || [];
 
     let searcher: any = null;
     onMount(async () => {
@@ -37,7 +38,7 @@
 
         if (event.key == "Enter") {
             visible = false
-            goto(`/${results[selectedIndex].id}`)
+            goto(`/${results[selectedIndex].cluster.name}/${results[selectedIndex].id}`)
         }
     };
 </script>

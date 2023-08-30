@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { Groups } from '@prisma/client';
     import SidebarButton from './SidebarButton.svelte'
 
     import * as Icons from '@mdi/js';
 
-    import type { PageData } from '../$types';
+    import type { PageData } from './$types';
 
     export let target: PageData["groups"][number]
     export let indent = 0

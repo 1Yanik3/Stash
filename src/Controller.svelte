@@ -1,106 +1,28 @@
 <script lang="ts">
-    import { page } from "$app/stores";
-
-    import type { Group } from "./types";
     import {
-        visibleMedium,
         imageSuffixParameter,
-        data,
-        clusterIndex,
-        type MainDataType,
         selectedMediaIds,
+        visibleMedium,
     } from "$lib/stores";
 
-    import Shortcut from "./reusables/Shortcut.svelte";
-    import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
-    import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
-    import { goto, afterNavigate } from "$app/navigation";
-    import QuickActions from "./components/Popups/QuickActions.svelte";
+    import { afterNavigate, goto } from "$app/navigation";
+    import { page } from "$app/stores";
     import ImportPopup from "./components/Popups/ImportPopup.svelte";
+    import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
+    import QuickActions from "./components/Popups/QuickActions.svelte";
+    import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
+    import Shortcut from "./reusables/Shortcut.svelte";
+    import type { PageData } from "./routes/[cluster]/[group]/$types";
+    import type { Group } from "./types";
+
+    $: pageData = $page.data as PageData;
 
     afterNavigate(() => {
-        selectedMediaIds.set([])
-    })
+        selectedMediaIds.set([]);
+        visibleMedium.set(null);
+    });
 
-    // export const flattenAllGroups = () => {
-    //     const flattentedGroups: {group: Group, cluster: Clusters}[] = []
-
-    //     $data.forEach(cluster => {
-    //         // TODO: Everything, Unsorted, Trash
-    //         const flatten = (group: Group) => {
-    //             flattentedGroups.push({ group, cluster });
-
-    //             if (group.children.length)
-    //             group.children.forEach(flatten);
-    //         };
-    //         cluster.groups.forEach(flatten);
-    //     })
-
-    //     return flattentedGroups;
-    // }
-
-    // export const flattenGroups = () => {
-    //     const c = $data.find(c => c.id == $clusterIndex)
-    //     if (!c)
-    //         throw window.alert("Something went wrong flattening the groups")
-
-    //     const flattentedGroups: Array<Group> = [
-    //         c.groups.find(g => g.id == c.everythingGroupId) as Group,
-    //         c.groups.find(g => g.id == c.unsortedGroupId) as Group,
-    //         c.groups.find(g => g.id == c.trashGroupId) as Group
-    //     ];
-
-    //     const flatten = (input: Group) => {
-    //         flattentedGroups.push(input);
-
-    //         if (input.children.length)
-    //             input.children.forEach(flatten);
-    //     };
-    //     c.groups.filter(g => g.id > 0).forEach(flatten);
-
-    //     return flattentedGroups;
-    // };
-
-    // export const updateAll = async () => {
-    //     if (!browser) return;
-
-    //     console.log("Updating All...");
-    //     try {
-    //         const res = await fetch(`/api/cluster/all`);
-    //         data.set(
-    //             (await res.json() as MainDataType[])
-    //             .map(cluster => {
-    //                 cluster.groups = cluster.groups
-    //                     .sort((a, b) => cluster.type == "collection"
-    //                         ? b.name.localeCompare(a.name)
-    //                         : a.name.localeCompare(b.name))
-    //                 return cluster
-    //             })
-    //         );
-
-    //         page.subscribe(() => {
-    //             const clusterForGroup = flattenAllGroups().find(g => g.group.id == +$page.params.group)
-    //             if (!clusterForGroup)
-    //                 window.alert("cluster not found")
-    //             else
-    //                 clusterIndex.set(clusterForGroup.cluster.id)
-    //         })
-    //     } catch (err) {
-    //         console.error("failed to update all", err);
-    //     }
-    // }
-
-    // updateAll()
-
-    // TODO: Optimise
-    // export const getGroup = () => {
-    //     return flattenGroups().find(g => g.id == +$page.params.group) as Group
-    // }
-    // export const getCluster = () => {
-    //     return $data.find(c => c.groups.some(g => g.id == +$page.params.group)) as MainDataType
-    // }
-    
-    visibleMedium.subscribe(() => imageSuffixParameter.set(""))
+    visibleMedium.subscribe(() => imageSuffixParameter.set(""));
 
     const shift = true,
         control = true,
@@ -108,74 +30,97 @@
         opt = true,
         meta = true;
 
-    // export const goToPreviousMedia = () => {
-    //     if (!$visibleMedium) return;
+    export const goToPreviousMedia = () => {
+        if (!$visibleMedium) return;
 
-    //     const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
+        const mediaIndex = pageData.media.indexOf(
+            $visibleMedium
+        );
 
-    //     if (mediaIndex > 0) visibleMedium.set(($page.data as PageData).media[mediaIndex - 1]);
-    // };
-    // export const goToNextMedia = () => {
-    //     if (!$visibleMedium) return;
+        if (mediaIndex > 0)
+            visibleMedium.set(pageData.media[mediaIndex - 1]);
+    };
 
-    //     const mediaIndex = ($page.data as PageData).media.indexOf($visibleMedium);
+    export const goToNextMedia = () => {
+        if (!$visibleMedium) return;
 
-    //     if (mediaIndex < ($page.data as PageData).media.length - 1)
-    //         visibleMedium.set(($page.data as PageData).media[mediaIndex + 1]);
-    // };
+        const mediaIndex = pageData.media.indexOf($visibleMedium);
 
-    let quickSwitchOpen = false
-    let quickActionsOpen = false
-    let importPopupOpen = false
-    export const showImportPopup = () => importPopupOpen = true
+        if (mediaIndex < pageData.media.length - 1)
+            visibleMedium.set(pageData.media[mediaIndex + 1]);
+    };
 
-    let prompt_visible = false
-    let prompt_question = ""
-    let prompt_value = ""
-    let prompt_callback = (b: boolean) => {}
-    export const prompt = (question: string, placeholder = ""): Promise<string | null> => new Promise(resolve => {
-        prompt_question = question
-        prompt_value = placeholder
+    let quickSwitchOpen = false;
+    let quickActionsOpen = false;
+    let importPopupOpen = false;
+    export const showImportPopup = () => (importPopupOpen = true);
 
-        prompt_callback = (b: boolean) => {
-            if (b)
-                resolve(prompt_value)
-            else
-                resolve(null)
-            prompt_visible = false
-        }
+    const flattenGroups = (groups: typeof pageData.groups) => {
+        const flattentedGroups: Array<typeof pageData.groups[0]> = [];
 
-        prompt_visible = true
-    })
+        const flatten = (input: typeof pageData.groups[0]) => {
+            flattentedGroups.push(input);
+
+            if (input.children.length)
+                input.children.forEach(flatten);
+        };
+        groups.filter(g => g.id > 0).forEach(flatten);
+
+        return flattentedGroups;
+    };
+    $: flattenedGroups = flattenGroups(pageData.groups)
+
+    //#region Prompt
+
+    let prompt_visible = false;
+    let prompt_question = "";
+    let prompt_value = "";
+    let prompt_callback = (b: boolean) => {};
+    export const prompt = (
+        question: string,
+        placeholder = ""
+    ): Promise<string | null> =>
+        new Promise((resolve) => {
+            prompt_question = question;
+            prompt_value = placeholder;
+
+            prompt_callback = (b: boolean) => {
+                if (b) resolve(prompt_value);
+                else resolve(null);
+                prompt_visible = false;
+            };
+
+            prompt_visible = true;
+        });
+
+    //#endregion
 </script>
 
 <!-- Media Navigation -->
-<!-- <Shortcut key="," action={goToPreviousMedia} />
-<Shortcut key="." action={goToNextMedia} /> -->
+<Shortcut key="," action={goToPreviousMedia} />
+<Shortcut key="." action={goToNextMedia} />
 
 <!-- Go up by a group -->
-<!-- <Shortcut
+<Shortcut
     opt
     key="ArrowUp"
     action={() => {
-        const flattenedGroups = flattenGroups();
-        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == +$page.params.group);
+        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == pageData.group?.id)
         if (currentGroupIndex == 0) return;
-        goto(`/${flattenedGroups[currentGroupIndex - 1].id}`)
+        goto(flattenedGroups[currentGroupIndex - 1].id.toString())
     }}
-/> -->
+/>
 
 <!-- Go down by a group -->
-<!-- <Shortcut
+<Shortcut
     opt
     key="ArrowDown"
     action={() => {
-        const flattenedGroups = flattenGroups();
-        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == +$page.params.group);
+        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == pageData.group?.id);
         if (currentGroupIndex >= flattenedGroups.length - 1) return;
-        goto(`/${flattenedGroups[currentGroupIndex + 1].id}`)
+        goto(flattenedGroups[currentGroupIndex + 1].id.toString())
     }}
-/> -->
+/>
 
 <!-- Go up by a cluster -->
 <Shortcut
@@ -183,9 +128,10 @@
     opt
     key="ArrowUp"
     action={() => {
-        const currentClusterIndex = $data.findIndex(c => c.id == $clusterIndex);
+        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id);
         if (currentClusterIndex == 0) return;
-        clusterIndex.set($data[currentClusterIndex - 1].id);
+        const cluster = pageData.clusters[currentClusterIndex - 1]
+        goto(`/${cluster.name}/${cluster.everythingGroupId}`)
     }}
 />
 
@@ -195,14 +141,19 @@
     opt
     key="ArrowDown"
     action={() => {
-        const currentClusterIndex = $data.findIndex(c => c.id == $clusterIndex);
-        if (currentClusterIndex >= $data.length - 1) return;
-        clusterIndex.set($data[currentClusterIndex + 1].id);
+        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id);
+        if (currentClusterIndex >= pageData.clusters.length - 1) return;
+        const cluster = pageData.clusters[currentClusterIndex + 1]
+        goto(`/${cluster.name}/${cluster.everythingGroupId}`)
     }}
 />
 
 {#if prompt_visible}
-    <PromptPopup bind:value={prompt_value} text={prompt_question} on:result={e => prompt_callback(e.detail)} />
+    <PromptPopup
+        bind:value={prompt_value}
+        text={prompt_question}
+        on:result={(e) => prompt_callback(e.detail)}
+    />
 {/if}
 
 <!-- Quick Switch -->
@@ -210,12 +161,12 @@
     meta
     key="o"
     action={() => {
-        quickSwitchOpen = !quickSwitchOpen
+        quickSwitchOpen = !quickSwitchOpen;
     }}
 />
 
 {#if quickSwitchOpen}
-    <QuickSwitch bind:visible={quickSwitchOpen}/>
+    <QuickSwitch bind:visible={quickSwitchOpen} />
 {/if}
 
 <!-- Quick Actions -->
@@ -223,14 +174,14 @@
     meta
     key="k"
     action={() => {
-        quickActionsOpen = !quickActionsOpen
+        quickActionsOpen = !quickActionsOpen;
     }}
 />
 
 {#if quickActionsOpen}
-    <QuickActions bind:visible={quickActionsOpen}/>
+    <QuickActions bind:visible={quickActionsOpen} />
 {/if}
 
 {#if importPopupOpen}
-    <ImportPopup bind:visible={importPopupOpen}/>
+    <ImportPopup bind:visible={importPopupOpen} />
 {/if}

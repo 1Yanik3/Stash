@@ -1,11 +1,14 @@
 <script lang="ts">
-    import { clusterIndex, controller, data, getCluster, visibleMedium } from '$lib/stores'
+    import { visibleMedium } from '$lib/stores'
     import GridThumbnail from './GridThumbnail.svelte'
     import type { Media, Tags } from '@prisma/client'
     import { mdiCardMultiple } from '@mdi/js'
     import { createEventDispatcher } from 'svelte'
     import { page } from "$app/stores"
-    import Icon from 'mdi-svelte'
+    import Icon from './Icon.svelte'
+    import type { PageData } from '../routes/[cluster]/[group]/$types';
+
+    $: pageData = $page.data as PageData
 
     const dispatch = createEventDispatcher()
 
@@ -32,8 +35,6 @@
             }
         }
     }
-
-    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
 </script>
 
 <main
@@ -58,8 +59,10 @@ class:sub
         {:else}
         <b>{medium.name}</b>
             <span>
-                {#if $controller.getGroup().id == c?.everythingGroupId}
-                    {getCluster($clusterIndex).groups.find(g => g.id == medium.groupId)?.name},
+                {#if pageData.groups.find(g => g.id == medium.groupId)?.name}
+                    {#if +$page.params.group == pageData.cluster.everythingGroupId}
+                        {pageData.groups.find(g => g.id == medium.groupId)?.name},
+                    {/if}
                 {/if}
                 {medium.width}x{medium.height}
             </span>
@@ -80,7 +83,6 @@ class:sub
     main {
         display: grid;
         grid-template-columns: 10em 1fr;
-        max-width: calc(100% - 64px);
         user-select: none;
 
         padding: 1em;

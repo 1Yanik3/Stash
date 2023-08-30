@@ -1,9 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { data as dataStore } from "$lib/stores";
-    import Icon from "mdi-svelte";
+    import Icon from "../../../Icon.svelte";
     import * as Icons from "@mdi/js"
+    import { page } from "$app/stores";
+    import type { PageData } from "../../../../routes/[cluster]/[group]/$types";
+
+    $: pageData = $page.data as PageData
 
     let data: { id: number, mediaCount: number }[] = []
 
@@ -23,7 +26,7 @@
         <span class="bigNumber"> 56.2 GB </span>
     </div>
 
-    {#each $dataStore as c}
+    {#each pageData.clusters as c}
         <section>
             <div>
                 <Icon path={getIcon(c.icon)} size={1.5} />

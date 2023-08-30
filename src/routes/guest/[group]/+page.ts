@@ -9,6 +9,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		&activeSortingMethod=${sortingMethods.indexOf(get(activeSortingMethod))}
 		&mediaTypeFilter=${get(mediaTypeFilter)}
 	`).then(res => res.json())
+
 	const tags = await fetch(`/api/group/${params.group}/tags?traverse=${get(traverse).toString()}`).then(res => res.json()) as Tag[]
 
 	return {

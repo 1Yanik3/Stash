@@ -2,7 +2,7 @@
     import type { Tag } from '../../../types'
     import { createEventDispatcher } from 'svelte'
     import { mdiHelp, mdiTagOutline } from '@mdi/js'
-    import Icon from 'mdi-svelte'
+    import Icon from "../../../components/Icon.svelte"
     import { page } from '$app/stores';
     import { invalidateAll } from '$app/navigation';
     import type { Groups } from '@prisma/client';
@@ -82,7 +82,7 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
 bind:this={element}
-href={target ? !guest ? `/${pageData.cluster.name}/${target.id}` : `/guest/${target.id}` : ""}
+href={target ? (!guest ? `/${pageData.cluster.name}/${target.id}` : `/guest/${target.id}`) : null}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || (target && +$page.params.group == target.id)}
 class:hidden

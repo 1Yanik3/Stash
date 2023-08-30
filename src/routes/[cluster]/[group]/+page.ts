@@ -4,7 +4,9 @@ import type { PageLoad } from './$types'
 import { sortingMethods, type Tag } from '../../../types'
 import type { Media, Tags } from '@prisma/client'
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params, fetch, depends, data }) => {
+	depends("media-and-tags")
+
 	const media = await fetch(`/api/group/${params.group}/media
 		?traverse=${get(traverse).toString()}
 		&activeSortingMethod=${sortingMethods.indexOf(get(activeSortingMethod))}
@@ -15,6 +17,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 	return {
         media,
-		tags
+		tags,
+		...data
 	};
 }

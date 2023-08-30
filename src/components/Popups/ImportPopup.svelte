@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { invalidateAll } from "$app/navigation";
+    import { invalidate } from "$app/navigation";
     import { controller } from "../../lib/stores";
     import Popup from "../../reusables/Popup.svelte";
     import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
@@ -25,7 +25,7 @@
 </script>
 
 
-<Popup title="Import" bind:visible on:close={() => invalidateAll()}>
+<Popup title="Import" bind:visible on:close={() => invalidate("media-and-tags")}>
     <main>
         {#if loading}
             <!-- TODO: Loading spinner -->

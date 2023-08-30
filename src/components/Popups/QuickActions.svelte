@@ -2,7 +2,11 @@
     import { onMount } from "svelte";
     import Popup from "../../reusables/Popup.svelte";
     import FuzzySearch from "fuzzy-search";
-    import { controller, selectedMediaIds, data } from "../../lib/stores";
+    import { controller, selectedMediaIds } from "../../lib/stores";
+    import { page } from "$app/stores";
+    import type { PageData } from "../../routes/[cluster]/[group]/$types";
+
+    $: pageData = $page.data as PageData
 
     export let visible: boolean;
     let inputBox: HTMLInputElement
@@ -32,7 +36,7 @@
         }
     })
 
-    if ($controller?.getGroup()?.id != $controller?.getCluster()?.everythingGroupId) functionalities.push({
+    if (pageData.group?.id != pageData.cluster.everythingGroupId) functionalities.push({
         name: "Import",
         async function() {
             visible = false

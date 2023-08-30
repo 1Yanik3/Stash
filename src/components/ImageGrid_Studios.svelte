@@ -1,13 +1,15 @@
 <script lang="ts">
-    import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
-    import { data } from '$lib/stores'
-    import type { Media, Tags } from '@prisma/client'
-    import { onMount } from "svelte"
-    import { page } from "$app/stores"
-    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte"
-    import { mdiGroup, mdiUngroup } from "@mdi/js"
-    import { invalidateAll } from "$app/navigation"
-    import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
+    import { invalidate } from "$app/navigation";
+    import { page } from "$app/stores";
+    import { mdiGroup, mdiUngroup } from "@mdi/js";
+    import type { Media, Tags } from '@prisma/client';
+    import { onMount } from "svelte";
+    import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
+    import type { PageData } from "../routes/[cluster]/[group]/$types";
+    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
+    import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
+
+    $: pageData = $page.data as PageData
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
@@ -28,8 +30,6 @@
     }
 
     let selectedMedia: string[] = []
-
-    $: c = $data.find(c => c.groups.some(g => g.id == +$page.params.group))
 </script>
 
 <IntersectionObserver
@@ -50,7 +50,7 @@
                             fetch(`/api/group-together`,{
                                 method: "POST",
                                 body: JSON.stringify(selectedMedia)
-                            }).then(() => invalidateAll())
+                            }).then(() => invalidate("media-and-tags"))
                         }}
                     >Group</SidebarButton>
                     <SidebarButton card icon={mdiUngroup} disabled={selectedMedia.length > 1}
@@ -85,8 +85,8 @@
 <style lang="scss">
 
     main {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(40em, 1fr));;
+        // display: grid;
+        // grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));;
         gap: 0.5em;
         margin-bottom: 1em;
 
