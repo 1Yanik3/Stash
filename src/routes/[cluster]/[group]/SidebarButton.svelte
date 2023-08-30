@@ -26,7 +26,6 @@
     export let card = false
     export let highlighted = false
     export let disabled = false
-    export let guest = false
 
     const dispatch = createEventDispatcher()
 
@@ -82,7 +81,7 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
 bind:this={element}
-href={target ? (!guest ? `/${pageData.cluster.name}/${target.id}` : `/guest/${target.id}`) : null}
+href={target ? `/${pageData.cluster.name}/${target.id}` : null}
 style={`padding-left: ${0.75 + indent}em`}
 class:active={active || tag?.active || (target && +$page.params.group == target.id)}
 class:hidden

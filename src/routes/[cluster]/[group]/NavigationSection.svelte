@@ -13,8 +13,6 @@
     import type { PageData } from './$types';
     import { invalidate } from '$app/navigation';
 
-    export let guest = false;
-
     $: pageData = $page.data as PageData
 
     // TODO: Move into other section
@@ -58,11 +56,9 @@
     }
 </script>
 
-{#if !guest}
 <!-- Create Group -->
 <Shortcut key="c" action={() => pageData.cluster.type != "stories" && createGroup()} />
 <Shortcut key="r" action={renameGroup} />
-{/if}
 
 <main>
     {#if pageData.cluster.type == "stories"}
@@ -83,20 +79,18 @@
     <div>
         <!-- Statics -->
         <SidebarSection horizontal>
-            <SidebarButton {guest} hidden target={{ id: pageData.cluster.everythingGroupId }} icon={mdiBookshelf}>
+            <SidebarButton hidden target={{ id: pageData.cluster.everythingGroupId }} icon={mdiBookshelf}>
                 All
             </SidebarButton>
-            <SidebarButton {guest} hidden target={{ id: pageData.cluster.unsortedGroupId }} icon={mdiArchiveOutline}>
+            <SidebarButton hidden target={{ id: pageData.cluster.unsortedGroupId }} icon={mdiArchiveOutline}>
                 Unsorted
             </SidebarButton>
-            {#if !guest}
             <SidebarButton hidden target={{ id: pageData.cluster.trashGroupId }} icon={mdiTrashCanOutline}>
                 Trash
             </SidebarButton>
             <SidebarButton hidden on:click={e =>
                 showOptions = !showOptions
             } icon={mdiDotsVertical}/>
-            {/if}
         </SidebarSection>
 
         {#if showOptions}
@@ -120,7 +114,7 @@
         <!-- Folders -->
         <SidebarSection title="Folders">
             {#each pageData.groups as target}
-                <SidebarHierarchyEntry {guest} {target} />
+                <SidebarHierarchyEntry {target} />
             {/each}
         </SidebarSection>
 

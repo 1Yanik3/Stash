@@ -22,57 +22,28 @@ export const handle: Handle = (async ({ event, resolve }) => {
 
   const sessionCookie = event.cookies.get("session") || ""
 
-  if (event.url.pathname.startsWith("/guest")) {
+  const isValid = isJwtValid(sessionCookie)
+
+  // api is forbidden without valid login
+  if (!isValid && event.url.pathname.startsWith("/api")) {
 
     // TODO
-    if (sessionCookie != "TotallySecretToken@4x2PLm6J") {
-      return new Response("Unauthorized (guest token invalid or not present)", { status: 401 })
+    if (
+      event.request.method == "GET"
+      && sessionCookie == "TotallySecretToken@4x2PLm6J"
+    ) {
+      return await resolve(event)
     }
-
-    if (event.url.pathname.startsWith("/guest/")) {
-
-      const cluster = await prisma.groups.findFirst({
-        where: {
-          id: +(event.params.group || 0)
-        },
-        select: {
-          clusterId: true
-        }
-      })
-
-      if (cluster?.clusterId != 3) {
-        return new Response("Unauthorized (no guest access to group allowed)", { status: 401 })
-      }
-
-    }
-
-  } else {
-    const isValid = isJwtValid(sessionCookie)
-
-    // api is forbidden without valid login
-    if (!isValid && event.url.pathname.startsWith("/api")) {
-
-      // TODO
-      if (
-        event.request.method == "GET"
-        && sessionCookie == "TotallySecretToken@4x2PLm6J"
-      ) {
-        return await resolve(event)
-      }
-      return new Response("Unauthorized", { status: 401 })
-    }
-
-    // redirect to auth
-    if (!isValid && !event.url.pathname.startsWith("/auth"))
-      return Response.redirect(`${origin}/auth`, 307)
-
-    // if has logged in, return to main page
-    if (isValid && event.url.pathname == "/auth")
-      return Response.redirect(origin, 307)
+    return new Response("Unauthorized", { status: 401 })
   }
 
-  if (event.url.pathname == "/auth" && sessionCookie == "TotallySecretToken@4x2PLm6J")
-    return Response.redirect(`${origin}/guest/-9`, 307)
+  // redirect to auth
+  if (!isValid && !event.url.pathname.startsWith("/auth"))
+    return Response.redirect(`${origin}/auth`, 307)
+
+  // if has logged in, return to main page
+  if (isValid && event.url.pathname == "/auth")
+    return Response.redirect(origin, 307)
 
   return await resolve(event)
 })

@@ -19,8 +19,6 @@
 
     const pageSize = 50
 
-    export let guest = false
-
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
         // const activeTags = ($page.data.tags as Tag[]).filter(t => t.active)
         // const lookingForUntagged = activeTags[0]?.name == "Untagged"
@@ -43,7 +41,7 @@
 
 {#if pageData.cluster.type == "collection" && pageData.cluster.everythingGroupId == +$page.params.group}
 
-    <ImageGridCollection {guest}/>
+    <ImageGridCollection />
 
 {:else if pageData.cluster.type == "stories"}
 

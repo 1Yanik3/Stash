@@ -5,7 +5,6 @@
     import { page } from "$app/stores";
     import type { PageData } from "../routes/[cluster]/[group]/$types";
     
-    export let guest = false
     $: pageData = $page.data as PageData
 
     let data: {
@@ -37,7 +36,7 @@
         .filter(a => a.name.includes(filter))
         .sort((a, b) => collator.compare(b.name, a.name))
     as d}
-        <a href={guest ? `/guest/${d.id}` : `${d.id}`}>
+        <a href={d.id.toString()}>
 
             {#if d.Media}
                 <img

@@ -7,7 +7,6 @@
 
     export let target: PageData["groups"][number]
     export let indent = 0
-    export let guest = false
 
     let element: HTMLAnchorElement
 
@@ -18,7 +17,6 @@
     bind:element
     bind:target
     {indent}
-    {guest}
     icon={target.icon 
         // @ts-ignore
         ? Icons[`mdi${target.icon || ""}`]
@@ -30,6 +28,6 @@
 
 {#if target.children && !target.collapsed}
     {#each target.children.sort((a, b) => collator.compare(a.name, b.name)) as child}
-        <svelte:self bind:target={child} indent={indent + 1} {guest} />
+        <svelte:self bind:target={child} indent={indent + 1} />
     {/each}
 {/if}
