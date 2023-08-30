@@ -1,16 +1,16 @@
 <script lang="ts">
     import { invalidate } from "$app/navigation";
-    import { controller } from "../../lib/stores";
+    import { page } from "$app/stores";
     import Popup from "../../reusables/Popup.svelte";
     import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
-    
+
     export let visible: boolean
     let loading = false
 
     const importElement = async (filename: string) => {
         loading = true
 
-        const response = await fetch(`/api/group/${$controller.getGroup().id}/import`, {
+        const response = await fetch(`/api/group/${$page.params.group}/import`, {
             method: "POST",
             body: JSON.stringify({
                 filename

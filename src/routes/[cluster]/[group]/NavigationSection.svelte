@@ -33,11 +33,10 @@
     }
 
     const renameGroup = async () => {
-        const g = $controller.getGroup()
-        const name = await $controller.prompt("Enter a name for the group", g.name)
+        const name = await $controller.prompt("Enter a name for the group", pageData.group?.name)
 
         if (name) {
-            await fetch(`/api/group/${g.id}/rename`,{
+            await fetch(`/api/group/${$page.params.group}/rename`,{
                 method: "PUT",
                 body: JSON.stringify({
                     name
