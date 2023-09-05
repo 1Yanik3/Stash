@@ -7,10 +7,9 @@
 
     import { afterNavigate, goto } from "$app/navigation";
     import { page } from "$app/stores";
-    import ImportPopup from "./components/Popups/ImportPopup.svelte";
     import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
-    import QuickActions from "./components/Popups/QuickActions.svelte";
-    import QuickSwitch from "./components/Popups/QuickSwitch.svelte";
+    import QuickActions from "./components/Popups/QuickSwitcher/QuickActions.svelte";
+    import QuickSwitch from "./components/Popups/QuickSwitcher/QuickSwitch.svelte";
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { PageData } from "./routes/[cluster]/[group]/$types";
 
@@ -51,8 +50,6 @@
 
     let quickSwitchOpen = false;
     let quickActionsOpen = false;
-    let importPopupOpen = false;
-    export const showImportPopup = () => (importPopupOpen = true);
 
     const flattenGroups = (groups: typeof pageData.groups) => {
         const flattentedGroups: Array<typeof pageData.groups[0]> = [];
@@ -179,8 +176,4 @@
 
 {#if quickActionsOpen}
     <QuickActions bind:visible={quickActionsOpen} />
-{/if}
-
-{#if importPopupOpen}
-    <ImportPopup bind:visible={importPopupOpen} />
 {/if}
