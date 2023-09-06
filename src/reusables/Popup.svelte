@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { mdiClose } from "@mdi/js";
+	import { createEventDispatcher } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
-    import { mdiClose } from "@mdi/js";
-    import Icon from "mdi-svelte";
-    import { createEventDispatcher } from 'svelte';
+	import Icon from "../components/Icon.svelte";
+	import { controller } from '../lib/stores';
 
-    export let visible = true
     export let title = ""
     export let hideHeader = false
 
@@ -15,13 +15,12 @@
 
         e.preventDefault()
         dispatch('close')
-        visible = false
+        $controller.setPopup(null)
     }
 </script>
 
 <svelte:window on:keydown={onKeyDown}/>
 
-{#if visible}
 <main transition:fade={{ duration: 100 }}>
     <section transition:scale={{ start: 1.1, duration: 100 }}>
         {#if !hideHeader}
@@ -31,7 +30,7 @@
                 
                 <button on:click={() => {
                     dispatch('close')
-                    visible = false
+                    $controller.setPopup(null)
                 }}>
                     <Icon path={mdiClose}/>
                 </button>
@@ -43,7 +42,6 @@
         </div>
     </section>
 </main>
-{/if}
 
 <style lang="scss">
 

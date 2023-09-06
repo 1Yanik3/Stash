@@ -54,7 +54,7 @@
     }
 </script>
 
-<Popup title="Shortcuts" bind:visible={isVisible}>
+<Popup title="Shortcuts">
     <main>
         
         {#if isLoading}

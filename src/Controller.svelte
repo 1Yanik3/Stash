@@ -1,19 +1,22 @@
 <script lang="ts">
+    import { afterNavigate, goto } from "$app/navigation";
+    import { page } from "$app/stores";
     import {
         imageSuffixParameter,
         selectedMediaIds,
         visibleMedium,
     } from "$lib/stores";
-
-    import { afterNavigate, goto } from "$app/navigation";
-    import { page } from "$app/stores";
     import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
     import QuickActions from "./components/Popups/QuickSwitcher/QuickActions.svelte";
+    import QuickActionsImport from "./components/Popups/QuickSwitcher/QuickActions_Import.svelte";
     import QuickSwitch from "./components/Popups/QuickSwitcher/QuickSwitch.svelte";
+    import SettingsPopup from "./components/Popups/SettingsPopup/index.svelte";
+    import ShortcutPopup from "./components/Popups/ShortcutPopup.svelte";
     import Shortcut from "./reusables/Shortcut.svelte";
     import type { PageData } from "./routes/[cluster]/[group]/$types";
 
     $: pageData = $page.data as PageData;
+    $: console.log(pageData);
 
     afterNavigate(() => {
         selectedMediaIds.set([]);
@@ -21,12 +24,6 @@
     });
 
     visibleMedium.subscribe(() => imageSuffixParameter.set(""));
-
-    const shift = true,
-        control = true,
-        alt = true,
-        opt = true,
-        meta = true;
 
     export const goToPreviousMedia = () => {
         if (!$visibleMedium) return;
@@ -47,9 +44,6 @@
         if (mediaIndex < pageData.media.length - 1)
             visibleMedium.set(pageData.media[mediaIndex + 1]);
     };
-
-    let quickSwitchOpen = false;
-    let quickActionsOpen = false;
 
     const flattenGroups = (groups: typeof pageData.groups) => {
         const flattentedGroups: Array<typeof pageData.groups[0]> = [];
@@ -90,7 +84,44 @@
         });
 
     //#endregion
+
+    const shift = true,
+        control = true,
+        alt = true,
+        opt = true,
+        meta = true;
+
+    const popups = {
+        "Quick Actions": QuickActions,
+        "Quick Actions Import": QuickActionsImport,
+        "Quick Switch": QuickSwitch,
+        "Shortcuts": ShortcutPopup,
+        "Settings": SettingsPopup
+    } as const
+
+    // TODO: the type should be the key of the object
+    let popup: keyof typeof popups | null = null;
+    export const setPopup = (newPopup: typeof popup) => popup = newPopup
 </script>
+
+<!-- Popups -->
+{#if popup}
+    <svelte:component this={popups[popup]} />
+{/if}
+
+<Shortcut meta key="o"
+    action={() => { popup = "Quick Switch" }}
+/>
+<Shortcut meta key="k"
+    action={() => { popup = "Quick Actions" }}
+/>
+<Shortcut meta key=","
+    action={() => popup="Shortcuts"}
+/>
+<Shortcut meta key="/"
+    action={() => popup="Settings"}
+/>
+
 
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />
@@ -124,10 +155,10 @@
     opt
     key="ArrowUp"
     action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id);
+        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id)
         if (currentClusterIndex == 0) return;
-        const cluster = pageData.clusters[currentClusterIndex - 1]
-        goto(`/${cluster.name}/${cluster.everythingGroupId}`)
+        const newCluster = pageData.clusters[currentClusterIndex - 1]
+        goto(`/${newCluster.name}/${newCluster.everythingGroupId}`)
     }}
 />
 
@@ -150,30 +181,4 @@
         text={prompt_question}
         on:result={(e) => prompt_callback(e.detail)}
     />
-{/if}
-
-<!-- Quick Switch -->
-<Shortcut
-    meta
-    key="o"
-    action={() => {
-        quickSwitchOpen = !quickSwitchOpen;
-    }}
-/>
-
-{#if quickSwitchOpen}
-    <QuickSwitch bind:visible={quickSwitchOpen} />
-{/if}
-
-<!-- Quick Actions -->
-<Shortcut
-    meta
-    key="k"
-    action={() => {
-        quickActionsOpen = !quickActionsOpen;
-    }}
-/>
-
-{#if quickActionsOpen}
-    <QuickActions bind:visible={quickActionsOpen} />
 {/if}

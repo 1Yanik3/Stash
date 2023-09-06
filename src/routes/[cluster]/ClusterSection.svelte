@@ -1,28 +1,18 @@
 <script lang="ts">
-    import { mdiCog, mdiPackageVariant, mdiHook, mdiHookOff, mdiKeyboard } from '@mdi/js'
-    import * as Icons from '@mdi/js'
-
-    import { traverse, activeSortingMethod, settings } from '$lib/stores'
-    
-    import ShortcutPopup from '../../components/Popups/ShortcutPopup.svelte'
-    import SettingsPopup from '../../components/Popups/SettingsPopup/index.svelte';
-    import { page } from '$app/stores';
+    import * as Icons from '@mdi/js';
+    import { mdiCog, mdiHook, mdiHookOff, mdiKeyboard, mdiPackageVariant } from '@mdi/js';
+    import { activeSortingMethod, controller, settings, traverse } from '$lib/stores';
     import { invalidate } from '$app/navigation';
+    import { page } from '$app/stores';
     import { sortingMethods } from '../../types';
 
-    import Icon from "../../components/Icon.svelte"
+    import Icon from "../../components/Icon.svelte";
 
     const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
-    let isSettingsVisible = false
-    let isShortcutsVisible = false
-
-    import type { LayoutData } from './$types'
+    import type { LayoutData } from './$types';
     $: pageData = $page.data as LayoutData
 </script>
-
-<SettingsPopup bind:isSettingsVisible/>
-<ShortcutPopup bind:isShortcutsVisible/>
 
 <main>
 
@@ -75,10 +65,10 @@
     </section>
 
     <section>
-        <span on:click={() => isShortcutsVisible = true}>
+        <span on:click={() => $controller.setPopup("Shortcuts")}>
             <Icon path={mdiKeyboard} size={0.8} />
         </span>
-        <span on:click={() => isSettingsVisible = true}>
+        <span on:click={() => $controller.setPopup("Settings")}>
             <Icon path={mdiCog} size={0.8} />
         </span>
     </section>

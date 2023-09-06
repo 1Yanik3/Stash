@@ -1,21 +1,16 @@
 <script lang="ts">
-    import Popup from "../../../reusables/Popup.svelte"
-    import Shortcut from "../../../reusables/Shortcut.svelte"
+    import Popup from "../../../reusables/Popup.svelte";
     import Sidebar from "./components/Sidebar.svelte";
-
     import About from "./tabs/about.svelte";
+    import Credentials from "./tabs/credentials.svelte";
     import General from "./tabs/general.svelte";
-    import Credentials from "./tabs/credentials.svelte"
-    import Statistics from "./tabs/statistics.svelte";
     import Jobs from "./tabs/jobs.svelte";
+    import Statistics from "./tabs/statistics.svelte";
 
-    export let isSettingsVisible = true
-    
     let activeTab = "general"
 </script>
 
-<Shortcut meta key="," action={() => isSettingsVisible = true} />
-<Popup title="Settings" bind:visible={isSettingsVisible}>
+<Popup title="Settings">
     <main>
 
         <Sidebar bind:activeTab/>

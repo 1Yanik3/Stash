@@ -3,7 +3,6 @@
     import Popup from "../../../reusables/Popup.svelte";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
-    export let visible: boolean;
     let loading = false;
 
     const importElement = async (filename: string) => {
@@ -28,7 +27,7 @@
         .then((d) => d as string[]);
 </script>
 
-<!-- on:close={() => invalidate("media-and-tags")} -->
+<!-- TODO: on:close={() => invalidate("media-and-tags")} -->
 {#if loading}
     <Popup hideHeader>
         <!-- TODO: Loading spinner -->
@@ -36,7 +35,6 @@
     </Popup>
 {:else}
     <FuzzyPopupTemplate
-        bind:visible
         {promise}
         searchAttributes={[""]}
         let:result

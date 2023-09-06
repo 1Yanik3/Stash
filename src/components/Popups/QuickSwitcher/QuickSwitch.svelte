@@ -2,8 +2,6 @@
     import { goto } from "$app/navigation";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
-    export let visible: boolean;
-
     let data = fetch(`/api/group/all`)
         .then((res) => res.json())
         .then(
@@ -17,7 +15,6 @@
 </script>
 
 <FuzzyPopupTemplate
-    bind:visible
     promise={data}
     searchAttributes={["name", "cluster.name"]}
     let:result

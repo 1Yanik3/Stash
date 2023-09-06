@@ -1,14 +1,9 @@
 <script lang="ts">
-    import Popup from "../../reusables/Popup.svelte"
-    import Shortcut from "../../reusables/Shortcut.svelte"
-
-    import Key from '../Key.svelte'
-
-    export let isShortcutsVisible = true
+    import Popup from "../../reusables/Popup.svelte";
+    import Key from '../Key.svelte';
 </script>
 
-<Shortcut meta key="/" action={() => isShortcutsVisible = true} />
-<Popup title="Shortcuts" bind:visible={isShortcutsVisible}>
+<Popup title="Shortcuts">
     <main>
         <b>Groups</b>
         <div>

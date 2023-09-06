@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { controller } from "$lib/stores";
+
     import FuzzySearch from "fuzzy-search";
     import Popup from "../../../reusables/Popup.svelte";
     import { createEventDispatcher, onMount } from "svelte";
@@ -6,7 +8,6 @@
     type T = $$Generic<Record>;
     type TAsArray = Array<T>;
 
-    export let visible: boolean = true;
     export let promise: Promise<TAsArray>;
     export let searchAttributes: string[];
 
@@ -17,6 +18,7 @@
     let searcher: any = null;
     let results: T[];
     $: results = (searcher?.search(value).slice(0, 8) as T) || [];
+    $: console.log(results);
     promise.then((data) => {
         searcher = new FuzzySearch(data, searchAttributes, {
             caseSensitive: false,
@@ -34,11 +36,11 @@
         }
 
         if (event.key == "ArrowDown") {
-            if (selectedIndex >= results.length) selectedIndex++;
+            if (selectedIndex <= results.length) selectedIndex++;
         }
 
         if (event.key == "Enter") {
-            visible = false;
+            $controller.setPopup(null)
             dispatch("selected", results[selectedIndex]);
         }
     };
@@ -48,7 +50,7 @@
     });
 </script>
 
-<Popup bind:visible hideHeader>
+<Popup hideHeader>
     <main>
         <input
             type="search"

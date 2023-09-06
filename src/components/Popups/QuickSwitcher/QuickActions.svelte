@@ -2,11 +2,6 @@
     import { controller, selectedMediaIds } from "../../../lib/stores";
     import { page } from "$app/stores";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
-    import QuickActionsImport from "./QuickActions_Import.svelte";
-
-    export let visible: boolean;
-    
-    let importPopupVisible = false
 
     type functionalitiesType = {
         name: string;
@@ -36,7 +31,7 @@
             functionalities.push({
                 name: "Import",
                 async function() {
-                    importPopupVisible = true
+                    $controller.setPopup("Quick Actions Import");
                 },
             });
 
@@ -52,7 +47,3 @@
 >
     <span>{result.name}</span>
 </FuzzyPopupTemplate>
-
-{#if importPopupVisible}
-<QuickActionsImport bind:visible />
-{/if}

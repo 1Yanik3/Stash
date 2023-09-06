@@ -1,16 +1,14 @@
 <script lang="ts">
     import { browser } from '$app/environment';
-    import { detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
-
-    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
-    import selectFiles from 'select-files';
-    import Icon from './Icon.svelte';
-
     import { page } from '$app/stores';
+    import { detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
+    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
     import type { Tags } from '@prisma/client';
+    import selectFiles from 'select-files';
     import Shortcut from '../reusables/Shortcut.svelte';
     import type { PageData } from '../routes/[cluster]/[group]/$types';
-    import UpscalePopup from './Popups/UpscalePopup.svelte';
+    import Icon from './Icon.svelte';
+    // import UpscalePopup from './Popups/UpscalePopup.svelte';
     $: pageData = $page.data as PageData
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -77,8 +75,6 @@
         })
     }
 
-    let upscalePopup_open = false
-
     const replaceWithLocalMedia = () => {
         if (!browser) return
 
@@ -96,9 +92,9 @@
     isFullscreen.set(!$isFullscreen)
 }} />
 
-{#key $visibleMedium}
+<!-- {#key $visibleMedium}
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
-{/key}
+{/key} -->
 
 <main class:fullscreen={$isFullscreen} class:windowControlsSpacer={$settings.windowControlsSpacer}>
     <section>
@@ -143,9 +139,9 @@
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
         </button>
 
-        <button on:click={() => upscalePopup_open = true}>
+        <!-- <button on:click={() => upscalePopup_open = true}>
             <Icon path={mdiResize} size={0.8}/>
-        </button>
+        </button> -->
 
         <button on:click={() => window.open(`${$serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
