@@ -21,12 +21,29 @@ enum CredentialsIcon {
 }
 
 model Credentials {
-  id         String @id @default(cuid())
-  credential String
+  id                      String @id @default(cuid())
+  credential              String
   limitAccessToCollection Int?
 
   icon CredentialsIcon
   name String
+}
+
+model Auths {
+  hostname          String           @id @unique
+  expectedChallenge String
+  oneTimeToken      String
+  authenticators    Authenticators[]
+}
+
+model Authenticators {
+  id                  String  @id @default(cuid())
+  credentialID        Bytes
+  credentialPublicKey Bytes
+  counter             Int
+  
+  Auths               Auths?  @relation(fields: [authsHostname], references: [hostname])
+  authsHostname       String?
 }
 
 enum ClusterType {

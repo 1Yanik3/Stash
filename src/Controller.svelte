@@ -16,7 +16,6 @@
     import type { PageData } from "./routes/[cluster]/[group]/$types";
 
     $: pageData = $page.data as PageData;
-    $: console.log(pageData);
 
     afterNavigate(() => {
         selectedMediaIds.set([]);
