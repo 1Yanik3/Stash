@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
         verification = await verifyAuthenticationResponse({
             response: body,
             expectedChallenge: auth.expectedChallenge,
-            expectedOrigin: url.origin,
+            expectedOrigin: url.origin.replace(":80", ""),
             expectedRPID: auth.hostname,
             authenticator: await prisma.authenticators.findFirstOrThrow({
                 where: {
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
         "session",
         // TODO: Make key actually safe
         jwt.sign({ verified: true }, "superSecretKey"),
-        { expires: new Date(Date.now() + 2678400000), path: "/", sameSite: "none" }
+        { expires: new Date(Date.now() + 2678400000), path: "/", secure: false }
     )
 
     return json(verification)
