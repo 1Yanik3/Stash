@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { selectedMediaIds, serverURL, visibleMedium } from "$lib/stores"
+    import { selectedMediaIds, serverURL, visibleMedium } from "$lib/stores";
     
-    import IntersectionObserver from '../reusables/IntersectionObserver.svelte'
     import type { Media, Tags } from "@prisma/client";
+    import IntersectionObserver from '../reusables/IntersectionObserver.svelte';
 
     export let i: number
     export let medium: Media & { tags: Tags[] }
-    export let finishedLoading: boolean
     export let disableActive = false
 
     let thumbnailLoadedCompletely = false
@@ -50,9 +49,7 @@
     once={true}
     top={500}
     let:intersecting
-    delay={150}
 >
-    <!-- transition:fade="{{duration: 120}}" -->
     <div
         on:click={() => { visibleMedium.set(medium) }}
         on:dragstart|stopPropagation={dragStartHandler}
@@ -60,7 +57,7 @@
         class:selected={$selectedMediaIds.includes(medium.id)}
     >
 
-        {#if (intersecting && finishedLoading) || i == 0}
+        {#if (intersecting) || i == 0}
 
             <img
                 src={`${$serverURL}/api/media/${medium.id}/thumbnail`}

@@ -5,9 +5,13 @@ const prisma = new PrismaClient()
 
 export const load: PageServerLoad = async ({ params }) => {
 
-    const group = await prisma.groups.findUnique({
+    const group = await prisma.groups.findUniqueOrThrow({
         where: {
             id: +params.group
+        },
+        include: {
+            parent: true,
+            children: true
         }
     })
 

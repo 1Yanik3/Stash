@@ -1,20 +1,17 @@
 <script lang="ts">
-    import { selectedTags } from "$lib/stores"
+    import { controller, selectedTags } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
     import ImageGridCollection from './ImageGrid_Collection.svelte'
 
-    import { fade } from "svelte/transition"
-    // import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte"
-    // import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js"
     import type { Media, Tags } from "@prisma/client";
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
     import { page } from "$app/stores";
 
     import type { PageData } from "../routes/[cluster]/[group]/$types"
-    // import type { Group, Tag } from "../types";
-    // import { resolvePackageData } from "vite";
+    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
+    import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js";
     $: pageData = $page.data as PageData
 
     const pageSize = 50
@@ -35,7 +32,7 @@
         return false
     }
 
-    // const collator = new Intl.Collator([], {numeric: true})
+    const collator = new Intl.Collator([], { numeric: true })
     
 </script>
 
@@ -49,29 +46,29 @@
 
 {:else}
 
-    <!-- {#if pageData.cluster.type == "collection"}
-        <div id="collectionGroups" transition:fade={{ duration: 150 }}>
-            {#if parent}
-                <SidebarButton card target={parent} icon={mdiFolderArrowUpOutline}>
-                    {parent.name}
+    {#if pageData.cluster.type == "collection"}
+        <div id="collectionGroups">
+            {#if pageData.group.parent}
+                <SidebarButton card target={pageData.group.parent} icon={mdiFolderArrowUpOutline}>
+                    {pageData.group.parent.name}
                 </SidebarButton>
             {/if}
             
             {#each (
-                g.children.sort((a, b) => collator.compare(a.name, b.name))
+                pageData.group.children.sort((a, b) => collator.compare(a.name, b.name))
             ) as child}
                 <SidebarButton card target={child} icon={mdiFolderArrowDownOutline}>
                     {child.name}
                 </SidebarButton>
             {/each}
         </div>
-    {/if} -->
+    {/if}
     
     <!-- TODO: Somehow make the transition feel more fluent? -->
     {#key [ pageData ]}
         {#if true}
             {@const activeMedia = pageData.media.filter(includesActiveTags)}
-            <section transition:fade={{ duration: 100 }}>
+            <section>
 
                 {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
                     {#if pageData.cluster.type == "withName" }

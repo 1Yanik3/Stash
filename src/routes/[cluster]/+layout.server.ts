@@ -17,6 +17,9 @@ export const load: LayoutServerLoad = async ({ parent, params }) => {
                 gt: 0
             }
         },
+        orderBy: {
+            name: cluster.type == "collection" ? "desc" : "asc"
+        },
         include: { // 1
             children: { // 2
                 include: { // 3
