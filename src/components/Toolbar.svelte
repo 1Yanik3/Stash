@@ -97,7 +97,7 @@
                 }))
 
                 fetch(`/api/media/${$visibleMedium?.id}/thumbnail`, {
-                    method: "PUT",
+                    method: "POST",
                     body: data
                 })
                 .then(async () => {

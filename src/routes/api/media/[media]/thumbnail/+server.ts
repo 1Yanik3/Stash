@@ -61,3 +61,16 @@ export const GET: RequestHandler = async ({ params }) => {
     }
 
 }
+
+
+export const POST: RequestHandler = async ({ request, params }) => {
+    // extract data from request
+    const data = await request.formData()
+    const file = data.get('file') as File
+    const fileBuffer = Buffer.from(await file.arrayBuffer())
+
+    await fs.writeFile(`./thumbnails/${params.media}.webp`, fileBuffer)
+    
+    return new Response()
+
+}
