@@ -2,12 +2,13 @@
     import { browser } from '$app/environment';
     import { page } from '$app/stores';
     import { detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
-    import { mdiClose, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
+    import { mdiClose, mdiFileRefreshOutline, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
     import type { Tags } from '@prisma/client';
     import selectFiles from 'select-files';
     import Shortcut from '../reusables/Shortcut.svelte';
     import type { PageData } from '../routes/[cluster]/[group]/$types';
     import Icon from './Icon.svelte';
+    import { invalidateAll } from '$app/navigation';
     // import UpscalePopup from './Popups/UpscalePopup.svelte';
     $: pageData = $page.data as PageData
 
@@ -85,6 +86,27 @@
 
     }
 
+    const replaceThumbnail = () => {
+        if (!browser) return
+
+        selectFiles({ accept: "image/*" }).then(files => {
+            if (files && files[0]) {
+                const data = new FormData()
+                data.append('file', new File([files[0]], $visibleMedium?.name || "newImage.jpg", {
+                    type: files[0].type
+                }))
+
+                fetch(`/api/media/${$visibleMedium?.id}/thumbnail`, {
+                    method: "PUT",
+                    body: data
+                })
+                .then(async () => {
+                    invalidateAll()
+                })
+            }
+        });
+    }
+
 </script>
 
 <!-- Toggle Fullscreen -->
@@ -135,7 +157,12 @@
 
     <section>
 
-        <button on:click={replaceWithLocalMedia}>
+        <button on:click={replaceWithLocalMedia} title="Replace file content">
+            <Icon path={mdiFileReplace} size={0.8}/>
+        </button>
+
+        <!-- TODO: Timestamp picker (in frontend, using video element) -->
+        <button on:click={replaceThumbnail} title="Replace file thumbnail">
             <Icon path={mdiFileReplaceOutline} size={0.8}/>
         </button>
 
