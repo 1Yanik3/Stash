@@ -22,7 +22,7 @@
         else throw "Something went wrong with the import";
     };
 
-    const promise = fetch(`/api/group/-1/import`)
+    $: promise = fetch(`/api/group/-1/import`)
         .then((res) => res.json())
         .then((d) => d as string[]);
 </script>
