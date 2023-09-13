@@ -10,6 +10,7 @@
 
     export let promise: Promise<TAsArray>;
     export let searchAttributes: string[];
+    export let disableClose = false;
 
     let inputBox: HTMLInputElement;
     let selectedIndex = 0;
@@ -40,7 +41,9 @@
         }
 
         if (event.key == "Enter") {
-            $controller.setPopup(null)
+            if (!disableClose) {
+                $controller.setPopup(null)
+            }
             dispatch("selected", results[selectedIndex]);
         }
     };

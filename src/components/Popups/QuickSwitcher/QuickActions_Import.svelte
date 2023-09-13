@@ -39,6 +39,7 @@
         searchAttributes={[""]}
         let:result
         on:selected={({ detail }) => importElement(detail)}
+        disableClose
     >
         <span>{result}</span>
     </FuzzyPopupTemplate>
