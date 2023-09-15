@@ -25,6 +25,7 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
                     credentialID: Buffer.from(body.id, "base64")
                 }
             }),
+            requireUserVerification: false
         })
     } catch (e: any) {
         console.error(e)
