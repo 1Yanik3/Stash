@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: authenticator.credentialID,
             type: 'public-key',
         })),
-        userVerification: 'required',
+        userVerification: 'preferred',
     })
 
     // Remember the challenge
