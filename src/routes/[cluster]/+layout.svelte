@@ -1,13 +1,9 @@
 <script lang="ts">
-    import { controller, isFullscreen, isStoryFullScreen } from '$lib/stores'
-    
-    import Controller from '../../Controller.svelte'
+    import { isFullscreen, isStoryFullScreen } from '$lib/stores'
 
     import ClusterSection from './ClusterSection.svelte';
 
 </script>
-
-<Controller bind:this={$controller}/>
 
 <main>
     

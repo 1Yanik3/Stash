@@ -4,7 +4,7 @@ import type { Writable } from "svelte/store"
 
 import { writable } from "svelte/store"
 import { persisted } from 'svelte-local-storage-store'
-import type Controller from "../Controller.svelte"
+import type Controller from "../routes/Controller.svelte"
 import type { Clusters, Story, Media, Tags } from "@prisma/client"
 import QuickActionsCast from "../components/Popups/ActionBars/Cast.svelte"
 

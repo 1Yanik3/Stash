@@ -8,14 +8,14 @@
         selectedMediaIds,
         visibleMedium,
     } from "$lib/stores";
-    import PromptPopup from "./components/Popups/Prompts/PromptPopup.svelte";
-    import QuickActions from "./components/Popups/QuickSwitcher/QuickActions.svelte";
-    import QuickActionsImport from "./components/Popups/QuickSwitcher/QuickActions_Import.svelte";
-    import QuickSwitch from "./components/Popups/QuickSwitcher/QuickSwitch.svelte";
-    import SettingsPopup from "./components/Popups/SettingsPopup/index.svelte";
-    import ShortcutPopup from "./components/Popups/ShortcutPopup.svelte";
-    import Shortcut from "./reusables/Shortcut.svelte";
-    import type { PageData } from "./routes/[cluster]/[group]/$types";
+    import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte";
+    import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte";
+    import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte";
+    import QuickSwitch from "../components/Popups/QuickSwitcher/QuickSwitch.svelte";
+    import SettingsPopup from "../components/Popups/SettingsPopup/index.svelte";
+    import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte";
+    import Shortcut from "../reusables/Shortcut.svelte";
+    import type { PageData } from "./[cluster]/[group]/$types";
 
     $: pageData = $page.data as PageData;
 
