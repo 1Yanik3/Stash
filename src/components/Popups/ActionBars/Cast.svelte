@@ -11,8 +11,6 @@
         mdiFastForward15,
         mdiFastForward60,
         mdiPause,
-        mdiPipe,
-        mdiPipeDisconnected,
         mdiPlay,
         mdiProjectorScreen,
         mdiProjectorScreenOff,
@@ -24,10 +22,8 @@
     import { fade } from "svelte/transition";
 
     let socket: WebSocket | null = null;
-    let connected = false;
-
     let blank = false;
-    let videoPlaying = false;
+    let videoPlaying = true;
     let currentTime = 0;
     let playbackProgress = 0;
     let playbackDuration = 1;
@@ -35,7 +31,7 @@
 
     let audioDestination: "mute" | "local" | "remote" = "mute";
 
-    visibleMedium.subscribe(() => (videoPlaying = false));
+    visibleMedium.subscribe(() => (videoPlaying = true));
 
     const sendMessage = (message: string) => {
         if (!socket) return;
@@ -47,14 +43,11 @@
     onMount(async () => {
         if (!browser) return;
 
-        connected = true;
-
         const pairingCode = await $controller.prompt("Enter pairing code:") || "";
         const url = `wss://pubSub.hera.lan/${pairingCode}`
         socket = new WebSocket(url);
 
         socket.addEventListener("open", () => {
-            connected = true;
             visibleMedium.subscribe(() => {
                 if (!socket) return console.log("socket is null");
                 if (!$visibleMedium) {
@@ -68,8 +61,8 @@
             });
         });
         socket.addEventListener("message", (event) => {
+            console.log(event.data)
             if (event.data.startsWith("progress-video: ")) {
-                console.log(event.data)
                 playbackProgress = Number(
                     event.data.replace("progress-video: ", "")
                 );
@@ -106,6 +99,8 @@
 <main>
     <section class="first">
         <span on:click={() => {
+            sendMessage("blank")
+            visibleMedium.set(null)
             $controller.setActionBar(null)
         }}>
             <Icon path={mdiClose} size={0.8} />

@@ -14,14 +14,14 @@ WORKDIR /app
 
 RUN apk add --no-cache nodejs-current ffmpeg exiftool
 
-# Setup Svelte Project
-COPY --from=builder /app/build build/
-COPY --from=builder /app/node_modules node_modules/
-COPY package.json .
-
 # Setup nginx
 RUN apk add nginx
 COPY ./nginx.conf /etc/nginx
+
+# Setup Svelte Project
+COPY package.json .
+COPY --from=builder /app/node_modules node_modules/
+COPY --from=builder /app/build build/
 
 ENV NODE_ENV=production
 CMD nginx && BODY_SIZE_LIMIT=0 node build
