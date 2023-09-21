@@ -13,6 +13,8 @@ const isJwtValid = (token: string) => {
 }
 
 export const handle: Handle = (async ({ event, resolve }) => {
+  return await resolve(event)
+
   // TODO: get rid of
   if (event.url.origin == "http://sveltekit-prerender")
     return await resolve(event)

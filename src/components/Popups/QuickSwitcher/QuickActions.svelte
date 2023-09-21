@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { controller, selectedMediaIds } from "../../../lib/stores";
     import { page } from "$app/stores";
+    import { controller, selectedMediaIds } from "../../../lib/stores";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
     type functionalitiesType = {
@@ -34,6 +34,15 @@
                     $controller.setPopup("Quick Actions Import");
                 },
             });
+        
+        functionalities.push({
+            name: "Cast",
+            async function() {
+                console.log("CAST")
+                $controller.setPopup(null);
+                $controller.setActionBar("Cast");
+            },
+        });
 
         resolve(functionalities);
     });

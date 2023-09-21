@@ -2,6 +2,8 @@
     import { afterNavigate, goto } from "$app/navigation";
     import { page } from "$app/stores";
     import {
+        actionBar,
+        actionBars,
         imageSuffixParameter,
         selectedMediaIds,
         visibleMedium,
@@ -98,12 +100,13 @@
         "Settings": SettingsPopup
     } as const
 
+
     // TODO: the type should be the key of the object
     let popup: keyof typeof popups | null = null;
     export const setPopup = (newPopup: typeof popup) => popup = newPopup
+    export const setActionBar = (newActionBar: keyof typeof actionBars | null) => actionBar.set(newActionBar)
 </script>
 
-<!-- Popups -->
 {#if popup}
     <svelte:component this={popups[popup]} />
 {/if}

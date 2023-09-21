@@ -51,7 +51,6 @@
     let:intersecting
 >
     <div
-        on:click={() => { visibleMedium.set(medium) }}
         on:dragstart|stopPropagation={dragStartHandler}
         bind:this={element}
         class:selected={$selectedMediaIds.includes(medium.id)}

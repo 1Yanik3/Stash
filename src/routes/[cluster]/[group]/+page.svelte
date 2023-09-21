@@ -9,7 +9,7 @@
     
     import { invalidate } from '$app/navigation';
     import { page } from '$app/stores';
-    import { isFullscreen, visibleMedium } from '$lib/stores';
+    import { actionBar, actionBars, isFullscreen, visibleMedium } from '$lib/stores';
     import NavigationSection from './NavigationSection.svelte';
 
     //#region Uploader
@@ -94,15 +94,18 @@
         </DropFile>
 
     </section>
-    
-    {#if $visibleMedium}
-        <section id="mediaPlayerSection" style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
 
-            <Toolbar />
-            
-            <MediaViewer />
-
+    {#if $actionBar}
+        <section class="actionBar">
+            <svelte:component this={actionBars[$actionBar]} />
         </section>
+    {:else}
+        {#if $visibleMedium}
+            <section id="mediaPlayerSection" style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
+                <Toolbar />
+                <MediaViewer />
+            </section>
+        {/if}
     {/if}
 
 </main>
@@ -145,6 +148,10 @@
         #mediaPlayerSection {
             max-width: 960px;
             flex-grow: 2;
+        }
+
+        .actionBar {
+            width: 64px;
         }
 
         // section {
