@@ -29,6 +29,7 @@
 
     const dispatch = createEventDispatcher<{
         selected: T;
+        close: void;
     }>();
 
     const onInput = (event: KeyboardEvent) => {
@@ -42,6 +43,7 @@
 
         if (event.key == "Enter") {
             if (!disableClose) {
+                dispatch("close");
                 $controller.setPopup(null)
             }
             dispatch("selected", results[selectedIndex]);
@@ -53,7 +55,7 @@
     });
 </script>
 
-<Popup hideHeader>
+<Popup on:close={() => dispatch("close")} hideHeader>
     <main>
         <input
             type="search"

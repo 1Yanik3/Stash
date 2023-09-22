@@ -1,15 +1,12 @@
-import type { Group, Tag } from "../types"
+import type { Tag } from "../types"
 import { sortingMethods } from "../types"
 import type { Writable } from "svelte/store"
 
 import { writable } from "svelte/store"
 import { persisted } from 'svelte-local-storage-store'
 import type Controller from "../routes/Controller.svelte"
-import type { Clusters, Story, Media, Tags } from "@prisma/client"
+import type { Story, Media, Tags } from "@prisma/client"
 import QuickActionsCast from "../components/Popups/ActionBars/Cast.svelte"
-
-// TODO: Switch to dynamic type based on endpoint
-export type MainDataType = Clusters & { groups: Group[], stories: Story[] }
 
 export let clusterIndex: Writable<number> = writable(1)
 
@@ -25,9 +22,6 @@ export let traverse = writable(false)
 export let activeSortingMethod = writable(sortingMethods[3])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 
-
-// TODO: Make automatic
-// export const serverURL = "http://localhost:5173"
 export const serverURL = writable("https://stash.hera.lan")
 export let controller: Writable<Controller> = writable()
 

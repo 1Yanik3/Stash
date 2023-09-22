@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { invalidate } from "$app/navigation";
     import { page } from "$app/stores";
     import Popup from "../../../reusables/Popup.svelte";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
@@ -27,7 +28,6 @@
         .then((d) => d as string[]);
 </script>
 
-<!-- TODO: on:close={() => invalidate("media-and-tags")} -->
 {#if loading}
     <Popup hideHeader>
         <!-- TODO: Loading spinner -->
@@ -40,6 +40,7 @@
         let:result
         on:selected={({ detail }) => importElement(detail)}
         disableClose
+        on:close={() => invalidate("media-and-tags")}
     >
         <span>{result}</span>
     </FuzzyPopupTemplate>

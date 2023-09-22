@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { isStoryFullScreen, story } from "$lib/stores";
+    import { controller, isStoryFullScreen, story } from "$lib/stores";
     import { onMount } from "svelte";
     import SvelteMarkdown from "svelte-markdown";
     import Shortcut from "../reusables/Shortcut.svelte";
-    import CreateStoryPopup from "./Popups/CreateStoryPopup.svelte";
     import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
 
     const extractHeaders = (markdown: string) => {
@@ -53,16 +52,10 @@
         }
 
     })
-
-    let createStoryPopupOpen = false
 </script>
 
-{#if createStoryPopupOpen}
-    <CreateStoryPopup bind:visible={createStoryPopupOpen}/>
-{/if}
-
 <!-- Add new story -->
-<Shortcut key="c" action={() => createStoryPopupOpen = true} />
+<Shortcut key="c" action={() => $controller.setPopup("Create Story")} />
 
 <!-- Toggle Serif -->
 <Shortcut

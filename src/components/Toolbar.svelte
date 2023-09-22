@@ -2,13 +2,12 @@
     import { browser } from '$app/environment';
     import { page } from '$app/stores';
     import { controller, detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
-    import { mdiClose, mdiFileRefreshOutline, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
+    import { mdiClose, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
     import type { Tags } from '@prisma/client';
     import selectFiles from 'select-files';
     import Shortcut from '../reusables/Shortcut.svelte';
     import type { PageData } from '../routes/[cluster]/[group]/$types';
     import Icon from './Icon.svelte';
-    import { invalidateAll } from '$app/navigation';
     // import UpscalePopup from './Popups/UpscalePopup.svelte';
     $: pageData = $page.data as PageData
 
@@ -90,23 +89,6 @@
         if (!browser) return
 
         $controller.setPopup("Replace Video Thumbnail")
-
-        // selectFiles({ accept: "image/*" }).then(files => {
-        //     if (files && files[0]) {
-        //         const data = new FormData()
-        //         data.append('file', new File([files[0]], $visibleMedium?.name || "newImage.jpg", {
-        //             type: files[0].type
-        //         }))
-
-        //         fetch(`/api/media/${$visibleMedium?.id}/thumbnail`, {
-        //             method: "POST",
-        //             body: data
-        //         })
-        //         .then(async () => {
-        //             invalidateAll()
-        //         })
-        //     }
-        // });
     }
 
 </script>

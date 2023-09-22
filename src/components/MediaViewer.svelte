@@ -60,7 +60,6 @@
                                 name: newName
                             })
                         })
-                        invalidate("media-and-tags")
                     }
                 }}
                 >

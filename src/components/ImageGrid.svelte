@@ -65,7 +65,6 @@
         </div>
     {/if}
     
-    <!-- TODO: Somehow make the transition feel more fluent? -->
     {#key [ pageData, $selectedTags ]}
         {#if true}
             {@const activeMedia = pageData.media.filter(includesActiveTags)}

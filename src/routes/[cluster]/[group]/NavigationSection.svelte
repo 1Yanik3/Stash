@@ -28,7 +28,7 @@
                     parentId: +$page.params.group != -1 ? +$page.params.group : ""
                 })
             })
-            $controller.updateAll()
+            invalidate("clusters-and-groups")
         }
     }
 
@@ -42,7 +42,7 @@
                     name
                 })
             })
-            $controller.updateAll()
+            invalidate("clusters-and-groups")
         }
     }
     

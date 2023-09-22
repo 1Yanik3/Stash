@@ -14,7 +14,6 @@
 
     export let selectedMedia: string[]
     export let medium: Media & { tags: Tags[] }
-    export let finishedLoading: boolean
 
     export let parent = false
     export let sub = false
@@ -38,14 +37,14 @@
 </script>
 
 <main
-on:mousedown={e => leftClick(e)}
+on:mouseup={e => leftClick(e)}
 class:active={$visibleMedium == medium && !parent}
 class:selected={selectedMedia.includes(medium.id)}
 class:sub
 >
 
     <div class="thumb">
-        <GridThumbnail {medium} i={-1} {finishedLoading} disableActive />
+        <GridThumbnail {medium} i={-1} disableActive />
     </div>
 
     <div class="details">
@@ -57,7 +56,9 @@ class:sub
                 </b>
             {/await}
         {:else}
-        <b>{medium.name}</b>
+            {#key ($visibleMedium == medium) ? $visibleMedium : null}
+                <b>{medium.name}</b>
+            {/key}
             <span>
                 {#if pageData.groups.find(g => g.id == medium.groupId)?.name}
                     {#if +$page.params.group == pageData.cluster.everythingGroupId}
@@ -69,6 +70,7 @@ class:sub
         {/if}
     </div>
 
+    {#key ($visibleMedium == medium) ? $visibleMedium : null}
     <div class="tags">
 
         {#each medium.tags || [] as tag}
@@ -76,6 +78,7 @@ class:sub
         {/each}
 
     </div>
+    {/key}
 
 </main>
 

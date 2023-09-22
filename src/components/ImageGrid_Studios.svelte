@@ -1,15 +1,11 @@
 <script lang="ts">
     import { invalidate } from "$app/navigation";
-    import { page } from "$app/stores";
     import { mdiGroup, mdiUngroup } from "@mdi/js";
     import type { Media, Tags } from '@prisma/client';
     import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
-    import type { PageData } from "../routes/[cluster]/[group]/$types";
     import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
-
-    $: pageData = $page.data as PageData
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
@@ -66,11 +62,11 @@
                     .sort((a, b) => a.name.localeCompare(b.name))
                 )}
 
-                <ImageGridStudiosThumbnail medium={sortedMatchingMedia[0]} on:click={() => medium.expanded = !medium.expanded} {finishedLoading} {parent} bind:selectedMedia />
+                <ImageGridStudiosThumbnail medium={sortedMatchingMedia[0]} on:click={() => medium.expanded = !medium.expanded} {parent} bind:selectedMedia />
 
                 {#if parent && medium.expanded}
                     {#each sortedMatchingMedia as subMedium, i}
-                        <ImageGridStudiosThumbnail sub medium={subMedium} {finishedLoading} bind:selectedMedia />
+                        <ImageGridStudiosThumbnail sub medium={subMedium} bind:selectedMedia />
                     {/each}
                 {/if}
             {/each}

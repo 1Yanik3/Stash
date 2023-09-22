@@ -3,7 +3,8 @@ import type { LayoutServerLoad } from './$types'
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
-export const load: LayoutServerLoad = async ({ parent, params }) => {
+export const load: LayoutServerLoad = async ({ parent, params, depends }) => {
+    depends("clusters-and-groups")
 
     const data = await parent()
 

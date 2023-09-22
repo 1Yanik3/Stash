@@ -7,9 +7,10 @@
     import MediaViewer from '../../../components/MediaViewer.svelte';
     import Toolbar from '../../../components/Toolbar.svelte';
     
-    import { invalidate } from '$app/navigation';
+    import { afterNavigate, invalidate } from '$app/navigation';
     import { page } from '$app/stores';
     import { actionBar, actionBars, isFullscreen, visibleMedium } from '$lib/stores';
+    import { tweened } from 'svelte/motion';
     import NavigationSection from './NavigationSection.svelte';
 
     //#region Uploader
@@ -53,7 +54,15 @@
         invalidate("media-and-tags")
     }
 
-    //#endregion  
+    //#endregion
+
+  const opacity = tweened(0, { duration: 150 });
+    afterNavigate(() => {
+        opacity.set(1, { duration: 0})
+        opacity.set(0, {
+             delay: 200
+        })
+    });
 
 </script>
 
@@ -63,7 +72,8 @@
         <NavigationSection/>
     </section>
 
-    <section id="imageGallerySection" >
+
+    <section id="imageGallerySection">
 
         <DropFile
             onDrop={onDrop}
@@ -92,6 +102,8 @@
             {/if}
             
         </DropFile>
+
+        <div style:opacity={$opacity} class="transitionBox"></div>
 
     </section>
 
@@ -125,6 +137,19 @@
             min-width: 350px;
             flex-grow: 1;
 
+            position: relative;
+
+            .transitionBox {
+                position: fixed;
+                top: 0;
+                left: 300px; // TODO
+                right: 0;
+                bottom: 0;
+                background: #303030;
+                z-index: 10;
+                pointer-events: none;
+            }
+
             .dropZone {
                 box-shadow: inset 0.7px 0.7px 0.7px rgba($color: #fff, $alpha: 0.15);
                 background: #444;
@@ -147,7 +172,8 @@
 
         #mediaPlayerSection {
             max-width: 960px;
-            flex-grow: 2;
+            min-width: 500px;
+            // flex-grow: 2;
         }
 
         .actionBar {

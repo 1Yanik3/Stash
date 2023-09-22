@@ -9,6 +9,7 @@
         selectedTags,
         visibleMedium,
     } from "$lib/stores";
+    import CreateStoryPopup from "../components/Popups/CreateStoryPopup.svelte";
     import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte";
     import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte";
     import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte";
@@ -101,7 +102,8 @@
         "Quick Switch": QuickSwitch,
         "Shortcuts": ShortcutPopup,
         "Settings": SettingsPopup,
-        "Replace Video Thumbnail": ReplaceVideoThumbnail
+        "Replace Video Thumbnail": ReplaceVideoThumbnail,
+        "Create Story": CreateStoryPopup
     } as const
 
 
