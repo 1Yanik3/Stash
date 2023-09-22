@@ -6,8 +6,6 @@
     import type { PageData } from "../../routes/[cluster]/[group]/$types";
     $: pageData = $page.data as PageData
 
-    export let visible: boolean
-
     let title = ""
     let source = ""
     let content = ""
@@ -31,7 +29,7 @@
     }
 </script>
 
-<Popup title="Create Story" bind:visible>
+<Popup title="Create Story">
     
     <main>
         <label>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { browser } from '$app/environment';
     import { page } from '$app/stores';
-    import { detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
+    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
     import { mdiClose, mdiFileRefreshOutline, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew, mdiResize } from '@mdi/js';
     import type { Tags } from '@prisma/client';
     import selectFiles from 'select-files';
@@ -89,22 +89,24 @@
     const replaceThumbnail = () => {
         if (!browser) return
 
-        selectFiles({ accept: "image/*" }).then(files => {
-            if (files && files[0]) {
-                const data = new FormData()
-                data.append('file', new File([files[0]], $visibleMedium?.name || "newImage.jpg", {
-                    type: files[0].type
-                }))
+        $controller.setPopup("Replace Video Thumbnail")
 
-                fetch(`/api/media/${$visibleMedium?.id}/thumbnail`, {
-                    method: "POST",
-                    body: data
-                })
-                .then(async () => {
-                    invalidateAll()
-                })
-            }
-        });
+        // selectFiles({ accept: "image/*" }).then(files => {
+        //     if (files && files[0]) {
+        //         const data = new FormData()
+        //         data.append('file', new File([files[0]], $visibleMedium?.name || "newImage.jpg", {
+        //             type: files[0].type
+        //         }))
+
+        //         fetch(`/api/media/${$visibleMedium?.id}/thumbnail`, {
+        //             method: "POST",
+        //             body: data
+        //         })
+        //         .then(async () => {
+        //             invalidateAll()
+        //         })
+        //     }
+        // });
     }
 
 </script>
@@ -162,9 +164,11 @@
         </button>
 
         <!-- TODO: Timestamp picker (in frontend, using video element) -->
-        <button on:click={replaceThumbnail} title="Replace file thumbnail">
-            <Icon path={mdiFileReplaceOutline} size={0.8}/>
-        </button>
+        {#if $visibleMedium?.type.startsWith("video")}
+            <button on:click={replaceThumbnail} title="Replace file thumbnail">
+                <Icon path={mdiFileReplaceOutline} size={0.8}/>
+            </button>
+        {/if}
 
         <!-- <button on:click={() => upscalePopup_open = true}>
             <Icon path={mdiResize} size={0.8}/>

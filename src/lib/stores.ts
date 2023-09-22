@@ -1,4 +1,4 @@
-import type { Group } from "../types"
+import type { Group, Tag } from "../types"
 import { sortingMethods } from "../types"
 import type { Writable } from "svelte/store"
 
@@ -19,7 +19,7 @@ export let visibleMedium: Writable<Media & { tags: Tags[] } | null> = writable(n
 export let imageSuffixParameter: Writable<String> = writable("")
 
 export let selectedMediaIds: Writable<String[]> = writable([])
-export let selectedTags: Writable<Tags[]> = writable([])
+export let selectedTags: Writable<Tag[]> = writable([])
 
 export let traverse = writable(false)
 export let activeSortingMethod = writable(sortingMethods[3])

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { controller, selectedTags } from "$lib/stores"
+    import { selectedTags } from "$lib/stores"
     
     import ImageGridPage from './ImageGrid_Page.svelte'
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -17,12 +17,13 @@
     const pageSize = 50
 
     const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
-        // const activeTags = ($page.data.tags as Tag[]).filter(t => t.active)
-        // const lookingForUntagged = activeTags[0]?.name == "Untagged"
-
         if (!$selectedTags.length) return true
 
-        // if (lookingForUntagged) return !medium.tags.length
+        const isUntaggedEnabled = $selectedTags.find(t => t.id == -1)
+        const mediumHasNoTags = !medium.tags.length;
+
+        if (isUntaggedEnabled)
+            return mediumHasNoTags
 
         for (const i in $selectedTags)
             for (const j in medium.tags)
@@ -65,7 +66,7 @@
     {/if}
     
     <!-- TODO: Somehow make the transition feel more fluent? -->
-    {#key [ pageData ]}
+    {#key [ pageData, $selectedTags ]}
         {#if true}
             {@const activeMedia = pageData.media.filter(includesActiveTags)}
             <section>

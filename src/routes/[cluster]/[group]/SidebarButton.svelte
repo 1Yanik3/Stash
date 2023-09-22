@@ -83,14 +83,13 @@
 bind:this={element}
 href={target ? `/${pageData.cluster.name}/${target.id}` : null}
 style={`padding-left: ${0.75 + indent}em`}
-class:active={active || tag?.active || (target && +$page.params.group == target.id)}
+class:active={active || (target && +$page.params.group == target.id)}
 class:hidden
 class:right
 class:highlighted
 on:click={e => {
 
     dispatch('click', e)
-
     // TODO
     // if (tag) {
     //     // is a tag button

@@ -6,12 +6,14 @@
         actionBars,
         imageSuffixParameter,
         selectedMediaIds,
+        selectedTags,
         visibleMedium,
     } from "$lib/stores";
     import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte";
     import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte";
     import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte";
     import QuickSwitch from "../components/Popups/QuickSwitcher/QuickSwitch.svelte";
+    import ReplaceVideoThumbnail from "../components/Popups/ReplaceVideoThumbnail.svelte";
     import SettingsPopup from "../components/Popups/SettingsPopup/index.svelte";
     import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte";
     import Shortcut from "../reusables/Shortcut.svelte";
@@ -21,6 +23,7 @@
 
     afterNavigate(() => {
         selectedMediaIds.set([]);
+        selectedTags.set([]);
         visibleMedium.set(null);
     });
 
@@ -97,11 +100,11 @@
         "Quick Actions Import": QuickActionsImport,
         "Quick Switch": QuickSwitch,
         "Shortcuts": ShortcutPopup,
-        "Settings": SettingsPopup
+        "Settings": SettingsPopup,
+        "Replace Video Thumbnail": ReplaceVideoThumbnail
     } as const
 
 
-    // TODO: the type should be the key of the object
     let popup: keyof typeof popups | null = null;
     export const setPopup = (newPopup: typeof popup) => popup = newPopup
     export const setActionBar = (newActionBar: keyof typeof actionBars | null) => actionBar.set(newActionBar)

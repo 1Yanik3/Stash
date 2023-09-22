@@ -6,14 +6,13 @@ export interface Group {
     collapsed:     boolean
 }
 
-export interface Tag {
-    name: string
+export interface Tag extends Tags {
     count: number
     active: boolean
 }
 
 import { mdiSort, mdiSortAlphabeticalAscending, mdiSortAlphabeticalDescending, mdiSortCalendarAscending, mdiSortCalendarDescending } from '@mdi/js'
-import type { Media as m } from '@prisma/client'
+import type { Media as m, Tags } from '@prisma/client'
 
 type Media = m & { date: number }
 

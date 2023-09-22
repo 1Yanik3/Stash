@@ -5,7 +5,7 @@
     import SidebarSection from "../../../components/SidebarSection.svelte"
     import SidebarButton from "./SidebarButton.svelte"
 
-    import { story, mediaTypeFilter, controller } from '$lib/stores'
+    import { story, mediaTypeFilter, controller, selectedTags } from '$lib/stores'
     import { slide } from 'svelte/transition'
     import Shortcut from '../../../reusables/Shortcut.svelte'
     import { page } from '$app/stores';
@@ -127,12 +127,35 @@
                     .filter(t => t.name != "Untagged")
                     .sort((a, b) => b.count - a.count)
                 as tag}
-                    <SidebarButton {tag}/>
+                    <SidebarButton {tag}
+                        on:click={() => {
+                            if ($selectedTags.find(e => e && e.id == -1))
+                                selectedTags.set([])
+
+                            if ($selectedTags.includes(tag))
+                                selectedTags.set($selectedTags.filter(t => t != tag))
+                            else
+                                selectedTags.set([...$selectedTags, tag])
+                        }}
+                        active={$selectedTags.includes(tag)}
+                        />
                 {/each}
 
                 <SidebarButton
                     tag={pageData.tags.find(t => t.name == "Untagged")}
                     icon={mdiTagOffOutline}
+                    active={!!$selectedTags.find(e => e && e.id == -1)}
+                    on:click={() => {
+                        if ($selectedTags.find(e => e && e.id == -1))
+                            selectedTags.set([])
+                        else
+                            selectedTags.set([{
+                                id: -1,
+                                name: "Untagged",
+                                count: 0, // TODO
+                                active: true
+                            }])
+                    }}
                 />
 
             </SidebarSection>
