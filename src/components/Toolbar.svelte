@@ -1,7 +1,7 @@
 <script lang="ts">
     import { browser } from '$app/environment';
     import { page } from '$app/stores';
-    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from '$lib/stores';
+    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, settings, visibleMedium } from '$lib/stores';
     import { mdiClose, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
     import type { Tags } from '@prisma/client';
     import selectFiles from 'select-files';
@@ -156,7 +156,7 @@
             <Icon path={mdiResize} size={0.8}/>
         </button> -->
 
-        <button on:click={() => window.open(`${$serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
+        <button on:click={() => window.open(`${$page.data.serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
             <Icon path={mdiOpenInNew} size={0.8}/>
         </button>
 

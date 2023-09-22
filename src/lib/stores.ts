@@ -22,7 +22,6 @@ export let traverse = writable(false)
 export let activeSortingMethod = writable(sortingMethods[3])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 
-export const serverURL = writable("https://stash.hera.lan")
 export let controller: Writable<Controller> = writable()
 
 export let settings = persisted('settings', {

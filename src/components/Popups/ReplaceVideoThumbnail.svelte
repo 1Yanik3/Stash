@@ -1,6 +1,7 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation";
-    import { controller, serverURL, visibleMedium } from "$lib/stores";
+    import { page } from "$app/stores";
+    import { controller, visibleMedium } from "$lib/stores";
     import Popup from "../../reusables/Popup.svelte";
     import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
 
@@ -69,7 +70,7 @@
         <!-- svelte-ignore a11y-media-has-caption -->
         <video
             bind:this={videoElement}
-            src="{$serverURL}/file/{$visibleMedium?.id}"
+            src="{$page.data.serverURL}/file/{$visibleMedium?.id}"
             controls
             crossorigin="use-credentials"
         />

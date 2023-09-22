@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types'
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
-export const load: LayoutServerLoad = async ({ parent, params, depends }) => {
+export const load: LayoutServerLoad = async ({ parent, params, depends, url }) => {
     depends("clusters-and-groups")
 
     const data = await parent()
@@ -62,9 +62,14 @@ export const load: LayoutServerLoad = async ({ parent, params, depends }) => {
         }
     })
 
+    let serverURL = "https://stash.hera.lan"
+    if (url.hostname == "stash.any.gay")
+        serverURL = "https://stash.any.gay"
+
     return {
         cluster,
-        groups
+        groups,
+        serverURL
     }
 
 

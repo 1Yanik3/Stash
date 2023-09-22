@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import { fade } from "svelte/transition";
-    import { serverURL } from "$lib/stores"
     import { page } from "$app/stores";
     import type { PageData } from "../routes/[cluster]/[group]/$types";
     
@@ -40,7 +39,7 @@
 
             {#if d.Media}
                 <img
-                src={`${$serverURL}/api/media/${d.Media}/thumbnail`}
+                src={`${$page.data.serverURL}/api/media/${d.Media}/thumbnail`}
                 alt=""
                 >
             {/if}

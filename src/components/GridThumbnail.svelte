@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { selectedMediaIds, serverURL, visibleMedium } from "$lib/stores";
+    import { selectedMediaIds, visibleMedium } from "$lib/stores";
     
     import type { Media, Tags } from "@prisma/client";
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte';
+    import { page } from "$app/stores";
 
     export let i: number
     export let medium: Media & { tags: Tags[] }
@@ -59,7 +60,7 @@
         {#if (intersecting) || i == 0}
 
             <img
-                src={`${$serverURL}/api/media/${medium.id}/thumbnail`}
+                src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
                 alt={medium.name}
                 class:hidden={!thumbnailLoadedCompletely}
                 class:active={!disableActive && $visibleMedium == medium}

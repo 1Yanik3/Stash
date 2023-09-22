@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { invalidate } from "$app/navigation";
-    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, serverURL, settings, visibleMedium } from "$lib/stores";
+    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, settings, visibleMedium } from "$lib/stores";
     import { mdiCalendar, mdiFormTextbox, mdiMoveResize } from "@mdi/js";
     import Icon from "./Icon.svelte";
+    import { page } from "$app/stores";
 
     let mediaElement: HTMLElement
     let imageElement: HTMLElement
@@ -97,7 +97,7 @@
     
             <img
                 bind:this={imageElement}
-                src={`${$serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
+                src={`${$page.data.serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
                 crossorigin="use-credentials"
                 alt={$visibleMedium.name}
                 class:isZoomedIn
@@ -110,7 +110,7 @@
         {:else if $visibleMedium.type.startsWith("video")}
     
             <video
-                src={`${$serverURL}/file/${$visibleMedium.id}`}
+                src={`${$page.data.serverURL}/file/${$visibleMedium.id}`}
                 controls
                 autoplay
                 bind:this={video}
