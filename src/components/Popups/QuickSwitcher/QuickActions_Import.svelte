@@ -25,9 +25,12 @@
         else throw "Something went wrong with the import";
     };
 
-    $: promise = fetch(`/api/cluster/-1/import`)
+    const getPromise = async (loading: boolean) => {
+        return fetch(`/api/cluster/-1/import`)
         .then((res) => res.json())
         .then((d) => d as string[]);
+    }
+    $: promise = getPromise(loading)
 </script>
 
 {#if loading}
