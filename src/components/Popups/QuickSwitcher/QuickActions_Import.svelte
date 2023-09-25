@@ -11,7 +11,7 @@
         loading = true;
 
         const response = await fetch(
-            `/cluster/${$page.data.cluster.id}/import`,
+            `/api/cluster/${$page.data.cluster.id}/import`,
             {
                 method: "POST",
                 body: JSON.stringify({
