@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             width: 0,
             cluster: {
                 connect: {
-                    name: params.cluster
+                    id: +params.cluster
                 }
             },
             tags: selectedTags.map(t => t.toLocaleLowerCase()) || []
