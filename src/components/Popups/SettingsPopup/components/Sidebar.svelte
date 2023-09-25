@@ -1,6 +1,6 @@
 <script lang="ts">
     import { mdiChartBar, mdiCog, mdiInformation, mdiInformationOutline, mdiKeyChain, mdiSync } from "@mdi/js";
-    import SidebarButton from "../../../../routes/[cluster]/[group]/SidebarButton.svelte";
+    import SidebarButton from "../../../../routes/[cluster]/SidebarButton.svelte";
 
     export let activeTab: string;
 </script>

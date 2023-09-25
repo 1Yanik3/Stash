@@ -1,25 +1,25 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
+    import { selectedTags } from "../../../lib/stores";
+    import type { PageData } from "../../../routes/[cluster]/$types";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
-    let data = fetch(`/api/group/all`)
-        .then((res) => res.json())
-        .then(
-            (d) =>
-                d as {
-                    id: number;
-                    name: number;
-                    cluster: { id: number; name: string };
-                }[]
-        );
+    $: pageData = $page.data as PageData;
+    $: data = (async () => {
+        return pageData.tags
+    })()
 </script>
 
 <FuzzyPopupTemplate
     promise={data}
-    searchAttributes={["name", "cluster.name"]}
+    searchAttributes={["tag"]}
     let:result
-    on:selected={({ detail }) => goto(`/${detail.cluster.name}/${detail.id}`)}
+    on:selected={({ detail }) => {
+        // goto(`/${detail.cluster.name}/${detail.id}`)
+        selectedTags.set([detail.tag.join("/")]);
+    }}
 >
-    <span>{result.name}</span>
-    <span>{result.cluster.name}</span>
+    <span>{result.tag.join("/")}</span>
+    <span>{result.count}</span>
 </FuzzyPopupTemplate>

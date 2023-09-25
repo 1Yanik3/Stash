@@ -1,75 +1,14 @@
 import type { LayoutServerLoad } from './$types'
 
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
-
-export const load: LayoutServerLoad = async ({ parent, params, depends, url }) => {
-    depends("clusters-and-groups")
+export const load: LayoutServerLoad = async ({ parent, params, depends }) => {
+    depends("cluster")
 
     const data = await parent()
 
     const cluster = data.clusters.find(c => c.name == params.cluster) || data.clusters[0]
 
-    const groups = await prisma.groups.findMany({
-        where: {
-            clusterId: cluster.id,
-            parentId: null,
-            id: {
-                gt: 0
-            }
-        },
-        orderBy: {
-            name: cluster.type == "collection" ? "desc" : "asc"
-        },
-        include: { // 1
-            children: { // 2
-                include: { // 3
-                    children: { // 4
-                        include: { // 5
-                            children: { // 6
-                                include: { // 7
-                                    children: { // 8
-                                        include: { // 9
-                                            children: {
-                                                include: { // 1
-                                                    children: { // 2
-                                                        include: { // 3
-                                                            children: { // 4
-                                                                include: { // 5
-                                                                    children: { // 6
-                                                                        include: { // 7
-                                                                            children: { // 8
-                                                                                include: { // 9
-                                                                                    children: true
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
-
-    let serverURL = "https://stash.hera.lan"
-    if (url.hostname == "stash.any.gay")
-        serverURL = "https://stash.any.gay"
-
     return {
-        cluster,
-        groups,
-        serverURL
+        cluster
     }
 
 

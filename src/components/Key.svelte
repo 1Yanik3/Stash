@@ -38,7 +38,7 @@
 
 <main>
     {#if iconOverwrites[key]}
-        <Icon path={iconOverwrites[key]} size={0.7} title={key.substring(0, 1).toUpperCase() + key.substring(1)}/>
+        <Icon name="iconOverwrites[key]" size={0.7} title={key.substring(0, 1).toUpperCase() + key.substring(1)}/>
     {:else}
         <span>{key}</span>
     {/if}

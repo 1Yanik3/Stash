@@ -32,7 +32,7 @@
                     dispatch('close')
                     $controller.setPopup(null)
                 }}>
-                    <Icon path={mdiClose}/>
+                    <Icon name="mdiClose"/>
                 </button>
 
             </div>

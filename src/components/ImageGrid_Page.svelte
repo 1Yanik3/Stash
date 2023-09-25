@@ -3,9 +3,9 @@
 
     import GridThumbnail from '../components/GridThumbnail.svelte'
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
-    import type { Media, Tags } from '@prisma/client';
+    import type { Media } from '@prisma/client';
 
-    export let media: Array<Media & { tags: Tags[] }>
+    export let media: Media[]
     export let i: number
 </script>
 

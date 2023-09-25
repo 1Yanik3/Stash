@@ -1,19 +1,19 @@
 <script lang="ts">
     import { visibleMedium } from '$lib/stores'
     import GridThumbnail from './GridThumbnail.svelte'
-    import type { Media, Tags } from '@prisma/client'
+    import type { Media } from '@prisma/client'
     import { mdiCardMultiple } from '@mdi/js'
     import { createEventDispatcher } from 'svelte'
     import { page } from "$app/stores"
     import Icon from './Icon.svelte'
-    import type { PageData } from '../routes/[cluster]/[group]/$types';
+    import type { PageData } from '../routes/[cluster]/$types';
 
     $: pageData = $page.data as PageData
 
     const dispatch = createEventDispatcher()
 
     export let selectedMedia: string[]
-    export let medium: Media & { tags: Tags[] }
+    export let medium: Media
 
     export let parent = false
     export let sub = false
@@ -51,7 +51,7 @@ class:sub
         {#if parent}
             {#await fetch(`/api/group-together/${medium.groupedIntoNamesId}`).then(response => response.text()) then name}
                 <b>
-                    <Icon path={mdiCardMultiple} size={0.8} />
+                    <Icon name="mdiCardMultiple" size={0.8} />
                     {name}
                 </b>
             {/await}
@@ -60,11 +60,11 @@ class:sub
                 <b>{medium.name}</b>
             {/key}
             <span>
-                {#if pageData.groups.find(g => g.id == medium.groupId)?.name}
+                <!-- {#if pageData.groups.find(g => g.id == medium.groupId)?.name}
                     {#if +$page.params.group == pageData.cluster.everythingGroupId}
                         {pageData.groups.find(g => g.id == medium.groupId)?.name},
                     {/if}
-                {/if}
+                {/if} -->
                 {medium.width}x{medium.height}
             </span>
         {/if}
@@ -73,8 +73,8 @@ class:sub
     {#key ($visibleMedium == medium) ? $visibleMedium : null}
     <div class="tags">
 
-        {#each medium.tags || [] as tag}
-            <span class="tag">{tag.name}</span>
+        {#each medium.tags as tag}
+            <span class="tag">{tag}</span>
         {/each}
 
     </div>

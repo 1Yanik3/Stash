@@ -9,14 +9,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     await prisma.media.update({
         data: {
             tags: {
-                connectOrCreate: {
-                    where: {
-                        name
-                    },
-                    create: {
-                        name
-                    }
-                }
+                push: name.toLocaleLowerCase()
             }
         },
         where: {

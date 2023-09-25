@@ -3,7 +3,7 @@
     import { page } from "$app/stores";
     import { controller, visibleMedium } from "$lib/stores";
     import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
+    import SidebarButton from "../../routes/[cluster]/SidebarButton.svelte";
 
     let videoElement: HTMLVideoElement;
 

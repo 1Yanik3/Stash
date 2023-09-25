@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { afterNavigate, goto } from "$app/navigation";
+    import { browser } from "$app/environment";
+    import { afterNavigate, goto, invalidate } from "$app/navigation";
     import { page } from "$app/stores";
     import {
         actionBar,
@@ -18,7 +19,7 @@
     import SettingsPopup from "../components/Popups/SettingsPopup/index.svelte";
     import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte";
     import Shortcut from "../reusables/Shortcut.svelte";
-    import type { PageData } from "./[cluster]/[group]/$types";
+    import type { PageData } from "./[cluster]/$types";
 
     $: pageData = $page.data as PageData;
 
@@ -29,6 +30,10 @@
     });
 
     visibleMedium.subscribe(() => imageSuffixParameter.set(""));
+    selectedTags.subscribe(() => {
+        if (browser)
+        invalidate("media")
+    })
 
     export const goToPreviousMedia = () => {
         if (!$visibleMedium) return;
@@ -49,21 +54,6 @@
         if (mediaIndex < pageData.media.length - 1)
             visibleMedium.set(pageData.media[mediaIndex + 1]);
     };
-
-    const flattenGroups = (groups: typeof pageData.groups) => {
-        const flattentedGroups: Array<typeof pageData.groups[0]> = [];
-
-        const flatten = (input: typeof pageData.groups[0]) => {
-            flattentedGroups.push(input);
-
-            if (input.children.length)
-                input.children.forEach(flatten);
-        };
-        groups.filter(g => g.id > 0).forEach(flatten);
-
-        return flattentedGroups;
-    };
-    $: flattenedGroups = flattenGroups(pageData.groups)
 
     //#region Prompt
 
@@ -135,7 +125,7 @@
 <Shortcut key="." action={goToNextMedia} />
 
 <!-- Go up by a group -->
-<Shortcut
+<!-- <Shortcut
     opt
     key="ArrowUp"
     action={() => {
@@ -143,10 +133,10 @@
         if (currentGroupIndex == 0) return;
         goto(flattenedGroups[currentGroupIndex - 1].id.toString())
     }}
-/>
+/> -->
 
 <!-- Go down by a group -->
-<Shortcut
+<!-- <Shortcut
     opt
     key="ArrowDown"
     action={() => {
@@ -154,7 +144,7 @@
         if (currentGroupIndex >= flattenedGroups.length - 1) return;
         goto(flattenedGroups[currentGroupIndex + 1].id.toString())
     }}
-/>
+/> -->
 
 <!-- Go up by a cluster -->
 <Shortcut
@@ -165,7 +155,7 @@
         const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id)
         if (currentClusterIndex == 0) return;
         const newCluster = pageData.clusters[currentClusterIndex - 1]
-        goto(`/${newCluster.name}/${newCluster.everythingGroupId}`)
+        goto(`/${newCluster.name}`)
     }}
 />
 
@@ -178,7 +168,7 @@
         const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id);
         if (currentClusterIndex >= pageData.clusters.length - 1) return;
         const cluster = pageData.clusters[currentClusterIndex + 1]
-        goto(`/${cluster.name}/${cluster.everythingGroupId}`)
+        goto(`/${cluster.name}`)
     }}
 />
 

@@ -1,6 +1,7 @@
 <script lang="ts">
+    import { invalidateAll } from "$app/navigation";
     import { page } from "$app/stores";
-    import { controller, selectedMediaIds } from "../../../lib/stores";
+    import { controller, selectedMediaIds, selectedTags } from "../../../lib/stores";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
     type functionalitiesType = {
@@ -27,20 +28,37 @@
                 },
             });
 
-        if ($page.data.group.id != $page.data.cluster.everythingGroupId)
-            functionalities.push({
-                name: "Import",
-                async function() {
-                    $controller.setPopup("Quick Actions Import");
-                },
-            });
+        functionalities.push({
+            name: "Import",
+            async function() {
+                $controller.setPopup("Quick Actions Import");
+            },
+        });
         
         functionalities.push({
             name: "Cast",
             async function() {
-                console.log("CAST")
                 $controller.setPopup(null);
                 $controller.setActionBar("Cast");
+            },
+        });
+        
+        functionalities.push({
+            name: "Rename Tag",
+            async function() {
+
+                const oldName = await $controller.prompt("What tag do you want to rename?", $selectedTags.length == 1 ? $selectedTags[0] as string : undefined)
+                const newName = await $controller.prompt("Enter new name:", oldName || "")
+
+                await fetch(`/api/cluster/${$page.data.cluster.name}/tags/rename`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        oldName,
+                        newName
+                    })
+                })
+                location.reload()
+
             },
         });
 

@@ -1,15 +1,15 @@
 <script lang="ts">
     import { mdiFileUpload } from '@mdi/js';
-    import Icon from "../../../components/Icon.svelte";
+    import Icon from "../../components/Icon.svelte";
 
-    import DropFile from '../../../components/DropFile.svelte';
-    import ImageGrid from '../../../components/ImageGrid.svelte';
-    import MediaViewer from '../../../components/MediaViewer.svelte';
-    import Toolbar from '../../../components/Toolbar.svelte';
+    import DropFile from '../../components/DropFile.svelte';
+    import ImageGrid from '../../components/ImageGrid.svelte';
+    import MediaViewer from '../../components/MediaViewer.svelte';
+    import Toolbar from '../../components/Toolbar.svelte';
     
     import { afterNavigate, invalidate } from '$app/navigation';
     import { page } from '$app/stores';
-    import { actionBar, actionBars, isFullscreen, visibleMedium } from '$lib/stores';
+    import { actionBar, actionBars, isFullscreen, selectedTags, visibleMedium } from '$lib/stores';
     import { tweened } from 'svelte/motion';
     import NavigationSection from './NavigationSection.svelte';
 
@@ -31,6 +31,7 @@
 
             const data = new FormData()
             data.append('file', files[i])
+            data.append('selectedTags', $selectedTags.join(','))
 
             await new Promise(resolve => {
                 var ajax = new XMLHttpRequest();
@@ -42,7 +43,7 @@
                 ajax.addEventListener("load", resolve, false);
                 ajax.addEventListener("error", () => console.log("Error"), false);
                 ajax.addEventListener("abort", () => console.log("Aborted"), false);
-                ajax.open("POST", `/api/group/${$page.params.group}/media`);
+                ajax.open("POST", `/api/cluster/${$page.params.cluster}/media`);
                 ajax.send(data);
             })
 
@@ -51,7 +52,7 @@
         fileOver = false
         uploadProgress = null
 
-        invalidate("media-and-tags")
+        invalidate("media")
     }
 
     //#endregion
@@ -87,7 +88,7 @@
             {#if fileOver || uploadProgress != null}
                 
                 <div class="dropZone">
-                    <Icon path={mdiFileUpload} size={3}/>
+                    <Icon name="mdiFileUpload" size={3}/>
                     {#if uploadProgress}
                         <span>uploading {uploadProgress?.done} out of {uploadProgress?.from} ({uploadPercentage}%)</span>
                     {:else}

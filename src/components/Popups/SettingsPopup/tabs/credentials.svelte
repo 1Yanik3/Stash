@@ -62,7 +62,7 @@
             on:click={() => icon++}
             style="display: flex; justify-content: center; align-items: center; cursor: pointer"
         >
-            <Icon path={currentIcon} size={0.8} />
+            <Icon name="currentIcon" size={0.8} />
         </div>
         <input type="text" placeholder="Key name..." bind:value={name} />
         <button on:click={createLogin}>

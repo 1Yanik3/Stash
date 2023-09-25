@@ -6,7 +6,7 @@
     import { page } from "$app/stores";
 
     export let i: number
-    export let medium: Media & { tags: Tags[] }
+    export let medium: Media
     export let disableActive = false
 
     let thumbnailLoadedCompletely = false

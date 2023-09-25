@@ -63,17 +63,17 @@
                     }
                 }}
                 >
-                    <Icon path={mdiFormTextbox}/>
+                    <Icon name="mdiFormTextbox"/>
                     <span>{$visibleMedium.name}</span>
                 </span>
 
                 <span>
-                    <Icon path={mdiMoveResize}/>
+                    <Icon name="mdiMoveResize"/>
                     <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
                 </span>
 
                 <span>
-                    <Icon path={mdiCalendar}/>
+                    <Icon name="mdiCalendar"/>
                     <span>{toIsoString(new Date($visibleMedium.date))}</span>
                 </span>
         

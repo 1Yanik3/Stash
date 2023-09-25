@@ -103,7 +103,7 @@
             visibleMedium.set(null)
             $controller.setActionBar(null)
         }}>
-            <Icon path={mdiClose} size={0.8} />
+            <Icon name="mdiClose" size={0.8} />
         </span>
 
         <span
@@ -113,9 +113,9 @@
             }}
         >
             <Icon
-                path={blank
-                    ? mdiProjectorScreenOff
-                    : mdiProjectorScreen}
+                name={blank
+                    ? "mdiProjectorScreenOff"
+                    : "mdiProjectorScreen"}
                 size={0.8}
             />
         </span>
@@ -131,7 +131,7 @@
                 on:click={() => sendMessage("control-video: backward-60")}
                 transition:fade={{ duration: 100 }}
             >
-                <Icon path={mdiRewind60} size={0.8} />
+                <Icon name="mdiRewind60" size={0.8} />
             </span>
 
             <!-- go forward 15 sec -->
@@ -139,7 +139,7 @@
                 on:click={() => sendMessage("control-video: backward-15")}
                 transition:fade={{ duration: 100 }}
             >
-                <Icon path={mdiRewind15} size={0.8} />
+                <Icon name="mdiRewind15" size={0.8} />
             </span>
 
             <!-- play/pause -->
@@ -151,7 +151,7 @@
                 }}
                 transition:fade={{ duration: 100 }}
             >
-                <Icon path={videoPlaying ? mdiPause : mdiPlay} size={0.8} />
+                <Icon name={videoPlaying ? "mdiPause" : "mdiPlay"} size={0.8} />
             </span>
 
             <!-- go forward 15 sec -->
@@ -159,7 +159,7 @@
                 on:click={() => sendMessage("control-video: forward-15")}
                 transition:fade={{ duration: 100 }}
             >
-                <Icon path={mdiFastForward15} size={0.8} />
+                <Icon name="mdiFastForward15" size={0.8} />
             </span>
 
             <!-- go forward 60 sec -->
@@ -167,7 +167,7 @@
                 on:click={() => sendMessage("control-video: forward-60")}
                 transition:fade={{ duration: 100 }}
             >
-                <Icon path={mdiFastForward60} size={0.8} />
+                <Icon name="mdiFastForward60" size={0.8} />
             </span>
 
         {/if}
@@ -193,14 +193,14 @@
             }}
             transition:fade={{ duration: 100 }}
         >
-            <Icon path={audioDestination === "mute" ? mdiVolumeMute : audioDestination === "local" ? mdiSpeaker : mdiCastAudio} size={0.8} />
+            <Icon name={audioDestination === "mute" ? "mdiVolumeMute" : audioDestination === "local" ? "mdiSpeaker" : "mdiCastAudio"} size={0.8} />
         </span>
 
         <span on:click={() => $controller.goToPreviousMedia()}>
-            <Icon path={mdiChevronLeft} size={0.8} />
+            <Icon name="mdiChevronLeft" size={0.8} />
         </span>
         <span on:click={() => $controller.goToNextMedia()}>
-            <Icon path={mdiChevronRight} size={0.8} />
+            <Icon name="mdiChevronRight" size={0.8} />
         </span>
     </section>
 

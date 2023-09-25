@@ -2,7 +2,7 @@
     import { onMount } from "svelte"
     import { fade } from "svelte/transition";
     import { page } from "$app/stores";
-    import type { PageData } from "../routes/[cluster]/[group]/$types";
+    import type { PageData } from "../routes/[cluster]/$types";
     
     $: pageData = $page.data as PageData
 

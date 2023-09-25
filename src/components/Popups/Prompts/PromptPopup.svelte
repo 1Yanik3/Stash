@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte"
     import Popup from "../../../reusables/Popup.svelte"
-    import SidebarButton from "../../../routes/[cluster]/[group]/SidebarButton.svelte"
+    import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte"
 
     export let visible: boolean = true
     export let text: string

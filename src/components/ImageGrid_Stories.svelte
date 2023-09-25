@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import SvelteMarkdown from "svelte-markdown";
     import Shortcut from "../reusables/Shortcut.svelte";
-    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
+    import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
 
     const extractHeaders = (markdown: string) => {
         const headers = [];

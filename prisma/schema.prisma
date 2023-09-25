@@ -26,58 +26,41 @@ model Clusters {
 
   sortOrder Int @default(0)
 
-  everythingGroupId Int?
-  unsortedGroupId   Int?
-  trashGroupId      Int?
-
-  groups  Groups[]
   stories Story[]
-}
-
-model Groups {
-  id        Int      @id @default(autoincrement())
-  cluster   Clusters @relation(fields: [clusterId], references: [id])
-  name      String
-  icon      String?
-  collapsed Boolean  @default(false)
-
-  children Groups[] @relation("group-hierarchy")
-  parent   Groups?  @relation("group-hierarchy", fields: [parentId], references: [id])
-
-  media Media[]
-
-  clusterId Int
-  parentId  Int?
+  Media   Media[]
 }
 
 model Media {
-  id          String            @id @default(uuid())
+  id          String   @id @default(uuid())
   type        String
   name        String
-  date        DateTime          @default(now())
-  createdDate DateTime          @default(now())
-  group       Groups            @relation(fields: [groupId], references: [id])
-  height      Int
-  width       Int
-  tags        Tags[]
-  groupedInto GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
+  date        DateTime @default(now())
+  createdDate DateTime @default(now())
 
-  groupId            Int
+  height Int
+  width  Int
+  tags   String[]
+
+  // Link to cluster
+  cluster    Clusters? @relation(fields: [clustersId], references: [id])
+  clustersId Int?
+
+  // Grouped with other media
+  groupedInto        GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
   groupedIntoNamesId Int?
 
-  @@index([id, groupId])
+  @@index(id)
+}
+
+model TagIcons {
+  tag  String @unique
+  icon String
 }
 
 model GroupedIntoNames {
   id    Int     @id @default(autoincrement())
   name  String
   Media Media[]
-}
-
-model Tags {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  media Media[]
 }
 
 model Story {

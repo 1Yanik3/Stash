@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types'
 
 import fs from 'fs/promises'
 import { json } from '@sveltejs/kit'
-import sharedImportLogic from '../sharedImportLogic'
+import sharedImportLogic from '../../../../../lib/sharedImportLogic'
 import mime from 'mime-types'
 
 import { PrismaClient } from '@prisma/client'
@@ -13,7 +13,7 @@ const importFolderPath = "./importables"
 export const GET: RequestHandler = async () => json(await fs.readdir(importFolderPath))
 
 export const POST: RequestHandler = async ({ params, request }) => {
-    const { filename }: { filename: string } = await request.json()
+    const { filename, selectedTags }: { filename: string, selectedTags: string[] } = await request.json()
 
     const { id: mediaId } = await prisma.media.create({
         data: {
@@ -22,7 +22,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
             date: new Date(),
             height: 0,
             width: 0,
-            groupId: Number(params.group),
+            cluster: {
+                connect: {
+                    name: params.cluster
+                }
+            },
+            tags: selectedTags.map(t => t.toLocaleLowerCase()) || []
         }
     })
 

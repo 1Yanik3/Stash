@@ -3,10 +3,9 @@
     import { page } from '$app/stores';
     import { controller, detailsVisible, imageSuffixParameter, isFullscreen, settings, visibleMedium } from '$lib/stores';
     import { mdiClose, mdiFileReplace, mdiFileReplaceOutline, mdiFullscreen, mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
-    import type { Tags } from '@prisma/client';
     import selectFiles from 'select-files';
     import Shortcut from '../reusables/Shortcut.svelte';
-    import type { PageData } from '../routes/[cluster]/[group]/$types';
+    import type { PageData } from '../routes/[cluster]/$types';
     import Icon from './Icon.svelte';
     // import UpscalePopup from './Popups/UpscalePopup.svelte';
     $: pageData = $page.data as PageData
@@ -23,10 +22,7 @@
             })
             .then(() => {
                 const tmp = $visibleMedium
-                tmp?.tags.push({
-                    id: -1,
-                    name: value
-                })
+                tmp?.tags.push(value)
                 visibleMedium.set(tmp)
 
                 // TODO: increase count of tags in sidebar
@@ -36,16 +32,16 @@
         }
     }
     
-    const removeTagFromMedia = (tag: Tags) => {
+    const removeTagFromMedia = (tag: string) => {
         
-        fetch(`/api/media/${$visibleMedium?.id}/tag/${tag.name}`, {
+        fetch(`/api/media/${$visibleMedium?.id}/tag/${tag}`, {
             method: "DELETE"
         })
         .then(() => {
 
             if (!$visibleMedium) return
             const tmp = $visibleMedium
-            tmp.tags = tmp.tags.filter(t => t.name != tag.name)
+            tmp.tags = tmp.tags.filter(t => t != tag)
             visibleMedium.set(tmp)
 
         })
@@ -106,7 +102,7 @@
     <section>
 
         <button on:click={() => visibleMedium.set(null)}>
-            <Icon path={mdiClose} size={0.8}/>
+            <Icon name="mdiClose" size={0.8}/>
         </button>
 
         <button on:click={() => {
@@ -117,11 +113,11 @@
                 document.exitFullscreen()
             }
         }}>
-            <Icon path={mdiFullscreen} size={0.8}/>
+            <Icon name="mdiFullscreen" size={0.8}/>
         </button>
 
         <button on:click={() => detailsVisible.set(!$detailsVisible)}>
-            <Icon path={mdiInformationOutline} size={0.8}/>
+            <Icon name="mdiInformationOutline" size={0.8}/>
         </button>
 
     </section>
@@ -131,7 +127,7 @@
             <span
                 class="tag"
                 on:contextmenu|preventDefault={() => removeTagFromMedia(tag)}
-            >{tag.name}</span>
+            >{tag}</span>
         {/each}
         <!-- TODO -->
         {#if pageData.cluster.type != "collection"}
@@ -142,22 +138,22 @@
     <section>
 
         <button on:click={replaceWithLocalMedia} title="Replace file content">
-            <Icon path={mdiFileReplace} size={0.8}/>
+            <Icon name="mdiFileReplace" size={0.8}/>
         </button>
 
         <!-- TODO: Timestamp picker (in frontend, using video element) -->
         {#if $visibleMedium?.type.startsWith("video")}
             <button on:click={replaceThumbnail} title="Replace file thumbnail">
-                <Icon path={mdiFileReplaceOutline} size={0.8}/>
+                <Icon name="mdiFileReplaceOutline" size={0.8}/>
             </button>
         {/if}
 
         <!-- <button on:click={() => upscalePopup_open = true}>
-            <Icon path={mdiResize} size={0.8}/>
+            <Icon name="mdiResize" size={0.8}/>
         </button> -->
 
         <button on:click={() => window.open(`${$page.data.serverURL}/file/${$visibleMedium?.id}`, "_blank")}>
-            <Icon path={mdiOpenInNew} size={0.8}/>
+            <Icon name="mdiOpenInNew" size={0.8}/>
         </button>
 
     </section>

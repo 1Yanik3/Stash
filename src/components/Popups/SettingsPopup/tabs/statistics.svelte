@@ -4,7 +4,7 @@
     import Icon from "../../../Icon.svelte";
     import * as Icons from "@mdi/js"
     import { page } from "$app/stores";
-    import type { PageData } from "../../../../routes/[cluster]/[group]/$types";
+    import type { PageData } from "../../../../routes/[cluster]/$types";
 
     $: pageData = $page.data as PageData
 

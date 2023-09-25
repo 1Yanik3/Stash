@@ -1,40 +1,34 @@
-export interface Group {
-    id:         number
-    name:       string
-    icon?:      string
-    children:   Array<Group>
-    collapsed:     boolean
-}
 
-export interface Tag extends Tags {
-    count: number
-    active: boolean
-}
+import type { possibleIcons } from "$lib/possibleIcons";
+import type { Prisma } from '@prisma/client'
 
-import { mdiSort, mdiSortAlphabeticalAscending, mdiSortAlphabeticalDescending, mdiSortCalendarAscending, mdiSortCalendarDescending } from '@mdi/js'
-import type { Media as m, Tags } from '@prisma/client'
-
-type Media = m & { date: number }
-
-export const sortingMethods = [
+export const sortingMethods: Array<{ icon: keyof typeof possibleIcons, orderBy?: Prisma.MediaOrderByWithRelationInput, id?: string }> = [
     {
-        icon: mdiSortAlphabeticalAscending,
-        method: (a: Media, b: Media) => a.name.localeCompare(b.name)
+        icon: "mdiSortAlphabeticalAscending",
+        orderBy: {
+            name: "asc"
+        }
     },
     {
-        icon: mdiSortAlphabeticalDescending,
-        method: (a: Media, b: Media) => b.name.localeCompare(a.name)
+        icon: "mdiSortAlphabeticalDescending",
+        orderBy: {
+            name: "desc"
+        }
     },
     {
-        icon: mdiSortCalendarAscending,
-        method: (a: Media, b: Media) => a.date - b.date
+        icon: "mdiSortCalendarAscending",
+        orderBy: {
+            date: "asc"
+        }
     },
     {
-        icon: mdiSortCalendarDescending,
-        method: (a: Media, b: Media) => b.date - a.date
+        icon: "mdiSortCalendarDescending",
+        orderBy: {
+            date: "desc"
+        }
     },
     {
-        icon: mdiSort,
-        method: (a: Media, b: Media) => 0.5 - Math.random()
+        icon: "mdiSort",
+        id: "Random"
     }
 ]

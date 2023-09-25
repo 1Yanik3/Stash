@@ -5,7 +5,7 @@
 
 <Popup title="Shortcuts">
     <main>
-        <b>Groups</b>
+        <!-- <b>Groups</b>
         <div>
             <span>Rename group</span>
             <Key key="r" />
@@ -13,7 +13,7 @@
         <div>
             <span>Create group</span>
             <Key key="c" />
-        </div>
+        </div> -->
 
         <b>Media Viewer</b>
         <div>
@@ -27,7 +27,7 @@
         </div>
 
         <b>Navigation</b>
-        <div>
+        <!-- <div>
             <span>Previous Group</span>
             <Key key="option" />
             <Key key="arrowUp" />
@@ -36,7 +36,7 @@
             <span>Next Group</span>
             <Key key="option" />
             <Key key="arrowDown" />
-        </div>
+        </div> -->
         <div>
             <span>Previous Cluster</span>
             <Key key="shift" />

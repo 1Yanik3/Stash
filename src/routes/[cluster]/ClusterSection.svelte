@@ -1,14 +1,10 @@
 <script lang="ts">
-    import * as Icons from '@mdi/js';
-    import { mdiCog, mdiHook, mdiHookOff, mdiKeyboard, mdiPackageVariant } from '@mdi/js';
     import { activeSortingMethod, controller, settings, traverse } from '$lib/stores';
     import { invalidate } from '$app/navigation';
     import { page } from '$app/stores';
     import { sortingMethods } from '../../types';
 
     import Icon from "../../components/Icon.svelte";
-
-    const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || mdiPackageVariant
 
     import type { LayoutData } from './$types';
     $: pageData = $page.data as LayoutData
@@ -26,27 +22,27 @@
                 activeSortingMethod.set(
                     sortingMethods[(sortingMethods.indexOf($activeSortingMethod) + 1) % sortingMethods.length]
                 )
-                invalidate("media-and-tags")
+                invalidate("media")
             }} 
             on:contextmenu|preventDefault={() =>
-                invalidate("media-and-tags")
+                invalidate("media")
             }
         >
-            <div style="margin-left: 2px"><Icon path={$activeSortingMethod.icon} size={0.8}/></div>
+            <div style="margin-left: 2px"><Icon name={$activeSortingMethod.icon} size={0.8}/></div>
         </span>
 
         <span
             class:disabled={pageData.cluster.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse)
-                invalidate("media-and-tags")
+                invalidate("media")
             }}
         >
             <div style="margin-left: 2px">
                 {#if $traverse}
-                    <Icon path={mdiHook} size={0.8}/>
+                    <Icon name="mdiHook" size={0.8}/>
                 {:else}
-                    <Icon path={mdiHookOff} size={0.8}/>
+                    <Icon name="mdiHookOff" size={0.8}/>
                 {/if}
             </div>
         </span>
@@ -55,21 +51,21 @@
     <section>
         {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
             <a
-            href="/{c.name}/{c.everythingGroupId}"
+            href="/{c.name}"
             title={c.name}
             class:active={c.id == pageData.cluster.id}
             >
-                <Icon path={getIcon(c.icon)} size={0.8} />
+                <Icon nameAlt={c.icon} size={0.8} />
             </a>
         {/each}
     </section>
 
     <section>
         <span on:click={() => $controller.setPopup("Shortcuts")}>
-            <Icon path={mdiKeyboard} size={0.8} />
+            <Icon name="mdiKeyboard" size={0.8} />
         </span>
         <span on:click={() => $controller.setPopup("Settings")}>
-            <Icon path={mdiCog} size={0.8} />
+            <Icon name="mdiCog" size={0.8} />
         </span>
     </section>
 </main>

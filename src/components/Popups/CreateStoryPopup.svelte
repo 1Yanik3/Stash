@@ -1,9 +1,9 @@
 <script lang="ts">
     import { mdiSend } from "@mdi/js";
     import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte";
+    import SidebarButton from "../../routes/[cluster]/SidebarButton.svelte";
     import { page } from "$app/stores";
-    import type { PageData } from "../../routes/[cluster]/[group]/$types";
+    import type { PageData } from "../../routes/[cluster]/$types";
     $: pageData = $page.data as PageData
 
     let title = ""

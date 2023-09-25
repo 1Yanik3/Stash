@@ -1,16 +1,16 @@
 <script lang="ts">
     import { invalidate } from "$app/navigation";
     import { mdiGroup, mdiUngroup } from "@mdi/js";
-    import type { Media, Tags } from '@prisma/client';
+    import type { Media } from '@prisma/client';
     import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
-    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
+    import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
 
     let finishedLoading = false
     onMount(() => setTimeout(() => finishedLoading = true, 100))
 
-    export let media: Array<Media & { tags: Tags[], disabled?: Boolean, expanded?: Boolean }>
+    export let media: Array<Media & { disabled?: Boolean, expanded?: Boolean }>
     export let i: number
 
     const alreadyProcessedGroupedInto: number[] = []
@@ -46,7 +46,7 @@
                             fetch(`/api/group-together`,{
                                 method: "POST",
                                 body: JSON.stringify(selectedMedia)
-                            }).then(() => invalidate("media-and-tags"))
+                            }).then(() => invalidate("media"))
                         }}
                     >Group</SidebarButton>
                     <SidebarButton card icon={mdiUngroup} disabled={selectedMedia.length > 1}

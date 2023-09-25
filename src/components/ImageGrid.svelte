@@ -5,39 +5,22 @@
     import ImageGridStories from "./ImageGrid_Stories.svelte"
     import ImageGridCollection from './ImageGrid_Collection.svelte'
 
-    import type { Media, Tags } from "@prisma/client";
+    import type { Media } from "@prisma/client";
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
     import { page } from "$app/stores";
 
-    import type { PageData } from "../routes/[cluster]/[group]/$types"
-    import SidebarButton from "../routes/[cluster]/[group]/SidebarButton.svelte";
+    import type { PageData } from "../routes/[cluster]/$types"
+    import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
     import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js";
     $: pageData = $page.data as PageData
 
     const pageSize = 50
 
-    const includesActiveTags = (medium: Media & { tags: Tags[] }) => {
-        if (!$selectedTags.length) return true
-
-        const isUntaggedEnabled = $selectedTags.find(t => t.id == -1)
-        const mediumHasNoTags = !medium.tags.length;
-
-        if (isUntaggedEnabled)
-            return mediumHasNoTags
-
-        for (const i in $selectedTags)
-            for (const j in medium.tags)
-                if ($selectedTags[i].name.toLowerCase() == medium.tags[j].name.toLowerCase())
-                    return true
-
-        return false
-    }
-
     const collator = new Intl.Collator([], { numeric: true })
-    
+
 </script>
 
-{#if pageData.cluster.type == "collection" && pageData.cluster.everythingGroupId == +$page.params.group}
+<!-- {#if pageData.cluster.type == "collection" && pageData.cluster.everythingGroupId == +$page.params.group}
 
     <ImageGridCollection />
 
@@ -45,9 +28,9 @@
 
     <ImageGridStories/>
 
-{:else}
+{:else} -->
 
-    {#if pageData.cluster.type == "collection"}
+    <!-- {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups">
             {#if pageData.group.parent}
                 <SidebarButton card target={pageData.group.parent} icon={mdiFolderArrowUpOutline}>
@@ -63,18 +46,17 @@
                 </SidebarButton>
             {/each}
         </div>
-    {/if}
+    {/if} -->
     
-    {#key [ pageData, $selectedTags ]}
+    {#key [ pageData.media ]}
         {#if true}
-            {@const activeMedia = pageData.media.filter(includesActiveTags)}
             <section>
 
-                {#each (new Array(Math.ceil(activeMedia.length / pageSize))) as _, i}
+                {#each (new Array(Math.ceil(pageData.media.length / pageSize))) as _, i}
                     {#if pageData.cluster.type == "withName" }
-                    <ImageGridStudios media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+                    <ImageGridStudios media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
                     {:else}
-                    <ImageGridPage media={activeMedia.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+                    <ImageGridPage media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
                     {/if}
                 {/each}
                 
@@ -82,7 +64,7 @@
         {/if}
     {/key}
 
-{/if}
+<!-- {/if} -->
 
 <style lang="scss">
     
