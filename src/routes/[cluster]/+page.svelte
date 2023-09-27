@@ -67,7 +67,7 @@
 
 </script>
 
-<main>
+<main class:mobile={$settings.mobileLayout}>
 
     {#if !$settings.mobileLayout}
         <section id="navigationSection">
@@ -196,5 +196,11 @@
         //     }
 
         // }
+
+        &.mobile {
+            #imageGallerySection {
+                min-width: unset;
+            }
+        }
     }
 </style>
