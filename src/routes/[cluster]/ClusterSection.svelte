@@ -150,6 +150,7 @@
 
         &.mobile {
             width: 100%;
+            border-right: none;
 
             span, a {
                 width: calc(100vw - 48px);

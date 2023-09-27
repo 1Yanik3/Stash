@@ -109,6 +109,8 @@
                 border-bottom: none;
                 border-left: none;
                 border-right: none;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
                 width: 100vw;
