@@ -81,10 +81,10 @@
     href={null}
     style={`padding-left: ${0.75 + indent}em`}
     class:active
-    class:hidden
+    class:hidden={hidden || !$$slots.default}
     class:right
     class:highlighted
-    on:click={(e) => {
+    on:click={e => {
         dispatch("click", e);
         // TODO
         // if (tag) {
@@ -102,7 +102,8 @@
 
         // }
     }}
-    on:dblclick={async () => {
+    on:dblclick={e => {
+        dispatch("dblclick", e);
         // TODO
         // if (!target || !target.collapsed) return
         // const req = await fetch(`/api/group/${target.id}/collapsed`, {
@@ -142,6 +143,8 @@
     a {
         font-weight: 200;
         text-decoration: none;
+
+        -webkit-tap-highlight-color: transparent;
 
         cursor: pointer;
 

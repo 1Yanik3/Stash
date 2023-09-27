@@ -36,5 +36,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     await sharedImportLogic(filename, mediaId)
 
+    // TODO: Start thumbnail generation
+
     return new Response()
 }

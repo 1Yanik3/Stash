@@ -1,50 +1,53 @@
 <script lang="ts">
-	import { mdiClose } from "@mdi/js";
-	import { createEventDispatcher } from 'svelte';
-	import { fade, scale } from 'svelte/transition';
-	import Icon from "../components/Icon.svelte";
-	import { controller } from '../lib/stores';
+    import { createEventDispatcher } from "svelte";
+    import { fade, scale } from "svelte/transition";
+    import Icon from "../components/Icon.svelte";
+    import { controller } from "../lib/stores";
 
-    export let title = ""
-    export let hideHeader = false
+    export let title = "";
+    export let hideHeader = false;
+    export let bottomSheet = false;
 
     const dispatch = createEventDispatcher();
 
     const onKeyDown = (e: KeyboardEvent) => {
-        if (e.key != "Escape") return
+        if (e.key != "Escape") return;
 
-        e.preventDefault()
-        dispatch('close')
-        $controller.setPopup(null)
-    }
+        e.preventDefault();
+        dispatch("close");
+        $controller.setPopup(null);
+    };
 </script>
 
-<svelte:window on:keydown={onKeyDown}/>
+<svelte:window on:keydown={onKeyDown} />
 
-<main transition:fade={{ duration: 100 }}>
-    <section transition:scale={{ start: 1.1, duration: 100 }}>
+<main transition:fade={{ duration: 100 }} on:click={() => $controller.setPopup(null)}>
+    <section transition:scale={{ start: 1.1, duration: 100 }} class:bottomSheet on:click|stopPropagation>
         {#if !hideHeader}
             <div id="header">
+                {#if bottomSheet}
+                    <div class="centralBlob" />
+                {:else}
+                    <h2>{title}</h2>
 
-                <h2>{title}</h2>
-                
-                <button on:click={() => {
-                    dispatch('close')
-                    $controller.setPopup(null)
-                }}>
-                    <Icon name="mdiClose"/>
-                </button>
-
+                    <button
+                        on:click={() => {
+                            dispatch("close");
+                            $controller.setPopup(null);
+                        }}
+                    >
+                        <Icon name="mdiClose" />
+                    </button>
+                {/if}
             </div>
         {/if}
         <div id="content">
-            <slot/>
+            <slot />
         </div>
     </section>
 </main>
 
 <style lang="scss">
-
     main {
         position: fixed;
         z-index: 99;
@@ -68,7 +71,8 @@
             background: hsl(0, 0%, 13%);
             border: 1px solid hsl(0, 0%, 30%);
             border-radius: 0.5em;
-            box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 9px 0px, rgba(0, 0, 0, 0.24) 0px 2px 4px 0px;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 9px 0px,
+                rgba(0, 0, 0, 0.24) 0px 2px 4px 0px;
 
             #header {
                 display: flex;
@@ -76,13 +80,39 @@
                 align-items: center;
                 padding: 0.5em;
 
-                h2 { margin: 0 0.2em }
+                h2 {
+                    margin: 0 0.2em;
+                }
 
-                box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+                &:not(:has(.centralBlob)) {
+                    box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+                }
+
+                .centralBlob {
+                    width: 48px;
+                    height: 4px;
+                    border-radius: 2px;
+                    opacity: 40%;
+                    background: hsl(0, 0%, 50%);
+                    margin: auto;
+                    margin-top: 4px;
+                    margin-bottom: 4px;
+                }
             }
 
             #content {
                 padding: 0.5em;
+            }
+
+            &.bottomSheet {
+                align-self: flex-end;
+                border-bottom: none;
+                border-left: none;
+                border-right: none;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                width: 100vw;
+                max-width: 100vw;
             }
         }
     }

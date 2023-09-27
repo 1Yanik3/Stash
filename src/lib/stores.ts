@@ -24,7 +24,8 @@ export let controller: Writable<Controller> = writable()
 
 export let settings = persisted('settings', {
     windowControlsSpacer: false,
-    mobileNavigationButtons: false,
+    touchNavigationButtons: false,
+    mobileLayout: false,
 })
 
 export let detailsVisible: Writable<boolean> = writable(false)

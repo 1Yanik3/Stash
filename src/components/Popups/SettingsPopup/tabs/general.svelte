@@ -6,20 +6,29 @@
 </script>
 
 <main in:fade>
-    <span>Mobile Navigation Touch areas</span>
-    <SettingsPopupToggle
-        state={$settings.mobileNavigationButtons}
-        on:toggle={e => settings.update(s => { 
-            s.mobileNavigationButtons = e.detail
-            return s
-        })}
-    />
-
     <span>Window-Controls spacing</span>
     <SettingsPopupToggle
         state={$settings.windowControlsSpacer}
         on:toggle={e => settings.update(s => { 
             s.windowControlsSpacer = e.detail
+            return s
+        })}
+    />
+
+    <span>Mobile Navigation Touch areas</span>
+    <SettingsPopupToggle
+        state={$settings.touchNavigationButtons}
+        on:toggle={e => settings.update(s => { 
+            s.touchNavigationButtons = e.detail
+            return s
+        })}
+    />
+
+    <span>Mobile Layout</span>
+    <SettingsPopupToggle
+        state={$settings.mobileLayout}
+        on:toggle={e => settings.update(s => { 
+            s.mobileLayout = e.detail
             return s
         })}
     />

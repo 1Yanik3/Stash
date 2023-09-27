@@ -10,7 +10,7 @@
     $: pageData = $page.data as LayoutData
 </script>
 
-<main>
+<main class:mobile={$settings.mobileLayout}>
 
     <section>
         {#if $settings.windowControlsSpacer}
@@ -29,6 +29,10 @@
             }
         >
             <div style="margin-left: 2px"><Icon name={$activeSortingMethod.icon} size={0.8}/></div>
+
+            {#if $settings.mobileLayout}
+                Sorting Method
+            {/if}
         </span>
 
         <span
@@ -45,6 +49,10 @@
                     <Icon name="mdiHookOff" size={0.8}/>
                 {/if}
             </div>
+
+            {#if $settings.mobileLayout}
+                Traverse
+            {/if}
         </span>
     </section>
 
@@ -56,16 +64,25 @@
             class:active={c.id == pageData.cluster.id}
             >
                 <Icon nameAlt={c.icon} size={0.8} />
+                {#if $settings.mobileLayout}
+                    {c.name}
+                {/if}
             </a>
         {/each}
     </section>
 
     <section>
+        {#if !$settings.mobileLayout}
         <span on:click={() => $controller.setPopup("Shortcuts")}>
             <Icon name="mdiKeyboard" size={0.8} />
         </span>
+            
+        {/if}
         <span on:click={() => $controller.setPopup("Settings")}>
             <Icon name="mdiCog" size={0.8} />
+            {#if $settings.mobileLayout}
+                Settings
+            {/if}
         </span>
     </section>
 </main>
@@ -84,6 +101,8 @@
 
         flex-grow: 1;
         width: 64px;
+
+        gap: 3em;
         
         section {
             display: flex;
@@ -127,6 +146,18 @@
         a.active {
             background: hsl(0, 0%, 24%);
             border: 1px solid hsl(0, 0%, 33%);
+        }
+
+        &.mobile {
+            width: 100%;
+
+            span, a {
+                width: calc(100vw - 48px);
+                justify-content: space-between;
+                padding-left: 8px;                
+                padding-right: 8px;
+                text-decoration: none;
+            }
         }
     }
 </style>

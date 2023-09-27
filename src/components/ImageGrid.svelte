@@ -71,6 +71,7 @@
     section {
         display: grid;
         gap: 14px;
+        max-width: 100vw;
     }
 
     #collectionGroups {

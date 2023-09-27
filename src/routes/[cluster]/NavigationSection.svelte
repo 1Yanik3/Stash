@@ -11,7 +11,7 @@
     import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte";
 
     import { page } from "$app/stores";
-    import { mediaTypeFilter, selectedTags, story } from "$lib/stores";
+    import { mediaTypeFilter, selectedTags, settings, story } from "$lib/stores";
 
     import { invalidate } from "$app/navigation";
     import type { PageData } from "./$types";
@@ -68,7 +68,7 @@
 <!-- <Shortcut key="c" action={() => pageData.cluster.type != "stories" && createGroup()} /> -->
 <!-- <Shortcut key="r" action={renameGroup} /> -->
 
-<main>
+<main class:mobile={$settings.mobileLayout}>
     {#if pageData.cluster.type == "stories"}
         <div style="margin-top: 8px; margin-right: 2px">
             <!-- <SidebarButton icon={mdiPlus}>
@@ -221,6 +221,12 @@
             }
             height: calc(100% - 60px);
             scroll-padding: 38px;
+        }
+
+        &.mobile {
+            height: 80vh;
+            width: 100%;
+            border: none;
         }
     }
 </style>

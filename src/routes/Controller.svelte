@@ -5,12 +5,18 @@
     import {
         actionBar,
         actionBars,
+        controller,
         imageSuffixParameter,
         selectedMediaIds,
         selectedTags,
+        settings,
         visibleMedium,
     } from "$lib/stores";
+    import { onMount } from "svelte";
     import CreateStoryPopup from "../components/Popups/CreateStoryPopup.svelte";
+    import ClusterSectionMobile from "../components/Popups/Mobile/ClusterSectionMobile.svelte";
+    import MediaViewerMobile from "../components/Popups/Mobile/MediaViewerMobile.svelte";
+    import NavigationSectionMobile from "../components/Popups/Mobile/NavigationSectionMobile.svelte";
     import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte";
     import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte";
     import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte";
@@ -29,10 +35,20 @@
         visibleMedium.set(null);
     });
 
-    visibleMedium.subscribe(() => imageSuffixParameter.set(""));
+    visibleMedium.subscribe(() => {
+        imageSuffixParameter.set("")
+    });
     selectedTags.subscribe(() => {
-        if (browser)
+        if (!browser) return
         invalidate("media")
+    })
+
+    onMount(() => {
+        visibleMedium.subscribe(() => {
+            if ($settings.mobileLayout) {
+                setPopup($visibleMedium ? "Media Viewer Mobile" : null);
+            }
+        });
     })
 
     export const goToPreviousMedia = () => {
@@ -93,7 +109,10 @@
         "Shortcuts": ShortcutPopup,
         "Settings": SettingsPopup,
         "Replace Video Thumbnail": ReplaceVideoThumbnail,
-        "Create Story": CreateStoryPopup
+        "Create Story": CreateStoryPopup,
+        "Cluster Section Mobile": ClusterSectionMobile,
+        "Navigation Section Mobile": NavigationSectionMobile,
+        "Media Viewer Mobile": MediaViewerMobile
     } as const
 
 
@@ -112,10 +131,10 @@
 <Shortcut meta key="k"
     action={() => { popup = "Quick Actions" }}
 />
-<Shortcut meta key=","
+<Shortcut meta key="/"
     action={() => popup="Shortcuts"}
 />
-<Shortcut meta key="/"
+<Shortcut meta key=","
     action={() => popup="Settings"}
 />
 

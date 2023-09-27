@@ -10,7 +10,7 @@
         <SidebarButton
             on:click={() => activeTab = "general"}
             active={activeTab == "general"}
-            icon={mdiCog}
+            icon="mdiCog"
         >
             General
         </SidebarButton>
@@ -18,19 +18,9 @@
 
     <span>
         <SidebarButton
-            on:click={() => activeTab = "credentials"}
-            active={activeTab == "credentials"}
-            icon={mdiKeyChain}
-        >
-            Credentials
-        </SidebarButton>
-    </span>
-
-    <span>
-        <SidebarButton
             on:click={() => activeTab = "jobs"}
             active={activeTab == "jobs"}
-            icon={mdiSync}
+            icon="mdiSync"
         >
             Jobs
         </SidebarButton>
@@ -42,7 +32,7 @@
         <SidebarButton
             on:click={() => activeTab = "statistics"}
             active={activeTab == "statistics"}
-            icon={mdiChartBar}
+            icon="mdiChartBar"
         >
             Statistics
         </SidebarButton>
@@ -52,7 +42,7 @@
         <SidebarButton
             on:click={() => activeTab = "about"}
             active={activeTab == "about"}
-            icon={mdiInformationOutline}
+            icon="mdiInformationOutline"
         >
             About
         </SidebarButton>

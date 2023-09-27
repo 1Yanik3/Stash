@@ -9,7 +9,7 @@
     
     import { afterNavigate, invalidate } from '$app/navigation';
     import { page } from '$app/stores';
-    import { actionBar, actionBars, isFullscreen, selectedTags, visibleMedium } from '$lib/stores';
+    import { actionBar, actionBars, isFullscreen, selectedTags, settings, visibleMedium } from '$lib/stores';
     import { tweened } from 'svelte/motion';
     import NavigationSection from './NavigationSection.svelte';
 
@@ -69,9 +69,11 @@
 
 <main>
 
-    <section id="navigationSection">
-        <NavigationSection/>
-    </section>
+    {#if !$settings.mobileLayout}
+        <section id="navigationSection">
+            <NavigationSection/>
+        </section>
+    {/if}
 
 
     <section id="imageGallerySection">
@@ -113,7 +115,7 @@
             <svelte:component this={actionBars[$actionBar]} />
         </section>
     {:else}
-        {#if $visibleMedium}
+        {#if $visibleMedium && !$settings.mobileLayout}
             <section id="mediaPlayerSection" style={$isFullscreen ? 'grid-column: 1 / span 3' : ''}>
                 <Toolbar />
                 <MediaViewer />
@@ -127,7 +129,9 @@
     main {
         display: flex;
 
-        height: 100vh;
+        // height: 100vh;
+        // height: fit-content;
+        overflow: scroll;
 
         #navigationSection {
             width: 234px;

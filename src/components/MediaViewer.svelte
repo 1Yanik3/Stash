@@ -83,7 +83,7 @@
     
     <div id="media" bind:this={mediaElement} class:darkened={$isFullscreen}
         on:click={e => {
-            if ($settings.mobileNavigationButtons) {
+            if ($settings.touchNavigationButtons) {
                 const { width } = (imageElement || video).getBoundingClientRect()
                 
                 if (e.offsetX < width/2)
@@ -102,7 +102,7 @@
                 alt={$visibleMedium.name}
                 class:isZoomedIn
                 on:click={e => {
-                    if (!$settings.mobileNavigationButtons)
+                    if (!$settings.touchNavigationButtons)
                         isZoomedIn = !isZoomedIn
                 }}
             >
