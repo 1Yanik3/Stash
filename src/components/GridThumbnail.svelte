@@ -105,9 +105,11 @@
 
         transition: filter 200ms, transform 200ms;
 
-        &:hover {
-            filter: brightness(0.85);
-            transform: scale(1.04);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                filter: brightness(0.85);
+                transform: scale(1.04);
+            }
         }
         &.active {
             transform: scale(1.04);

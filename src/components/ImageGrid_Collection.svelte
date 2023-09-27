@@ -84,9 +84,11 @@
             text-align: center;
         }
 
-        &:hover {
-            filter: brightness(0.85);
-            transform: scale(1.03);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                filter: brightness(0.85);
+                transform: scale(1.03);
+            }
         }
 
         img {

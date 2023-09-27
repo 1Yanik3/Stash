@@ -170,9 +170,11 @@
             pointer-events: none;
         }
 
-        &:hover {
-            background: hsl(0, 0%, 22%);
-            border: 1px solid hsl(0, 0%, 24%);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: hsl(0, 0%, 22%);
+                border: 1px solid hsl(0, 0%, 24%);
+            }
         }
         &.active {
             background: hsl(0, 0%, 24%);
@@ -181,9 +183,12 @@
         &.highlighted {
             background: hsl(0, 0%, 33%);
             border: 1px solid hsl(0, 0%, 35%);
-            &:hover {
-                background: hsl(0, 0%, 42%);
-                border: 1px solid hsl(0, 0%, 44%);
+
+            @media (hover: hover) and (pointer: fine) {
+                    &:hover {
+                    background: hsl(0, 0%, 42%);
+                    border: 1px solid hsl(0, 0%, 44%);
+                }
             }
         }
 

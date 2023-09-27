@@ -129,13 +129,16 @@
 
             margin: 0.25em;
             border-radius: 0.35em;
-
+            
             transition: background 100ms, border 100ms;
             border: 1px solid transparent;
+            -webkit-tap-highlight-color: transparent;
 
-            &:not(.disabled):hover {
-                background: hsl(0, 0%, 22%);
-                border: 1px solid hsl(0, 0%, 24%);
+            @media (hover: hover) and (pointer: fine) {
+                &:not(.disabled):hover {
+                    background: hsl(0, 0%, 22%);
+                    border: 1px solid hsl(0, 0%, 24%);
+                }
             }
         }
 
