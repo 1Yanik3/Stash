@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
     `
 
     const query = /*sql*/`
-        SELECT DISTINCT *
+        SELECT DISTINCT "Media".*
         FROM "Media",
         unnest("Media"."tags") AS t(tag) 
         WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
