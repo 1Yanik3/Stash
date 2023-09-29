@@ -2,7 +2,7 @@ FROM node:alpine as builder
 WORKDIR /app
 COPY . .
 
-RUN npm ci
+RUN npm i
 RUN npx prisma generate
 RUN npm run build
 RUN npm prune --production
