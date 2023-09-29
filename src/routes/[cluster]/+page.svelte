@@ -58,11 +58,15 @@
     //#endregion
 
   const opacity = tweened(0, { duration: 200 });
+  let previousMediaHash = ""
   page.subscribe(a => {
-    opacity.set(1, { duration: 0 })
-    opacity.set(0, {
-        delay: 75
-    })
+    if (previousMediaHash != $page.data.mediaHash) {
+        previousMediaHash = $page.data.mediaHash
+        opacity.set(1, { duration: 0 })
+        opacity.set(0, {
+            delay: 75
+        })
+    }
   })
 
 </script>

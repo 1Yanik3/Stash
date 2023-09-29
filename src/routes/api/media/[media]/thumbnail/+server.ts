@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ params }) => {
         await new Promise(resolve => ffmpeg()
             .input(`./media/${params.media}`)
             .complexFilter([
-                'scale=w=650:h=650:force_original_aspect_ratio=increase'
+                'scale=w=500:h=500:force_original_aspect_ratio=decrease'
             ])
             .output(`./thumbnails/${params.media}.webp`)
             .on('end', resolve)
