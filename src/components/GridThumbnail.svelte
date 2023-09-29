@@ -1,7 +1,7 @@
 <script lang="ts">
     import { selectedMediaIds, visibleMedium } from "$lib/stores";
     
-    import type { Media, Tags } from "@prisma/client";
+    import type { Media } from "@prisma/client";
     import IntersectionObserver from '../reusables/IntersectionObserver.svelte';
     import { page } from "$app/stores";
 
@@ -9,27 +9,25 @@
     export let medium: Media
     export let disableActive = false
 
-    let thumbnailLoadedCompletely = false
-
     const dragStartHandler = (e: DragEvent) => {
         e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
     }
 
     let element: HTMLDivElement
-    visibleMedium.subscribe(async () => {
-        if (!element) return
+    // visibleMedium.subscribe(async () => {
+    //     if (!element) return
 
-        const r = element.getBoundingClientRect()
-        if ($visibleMedium == medium && !(
-            r.top >= 210 &&
-            r.bottom <= (window.innerHeight - 210)
-        )) {
-            element.scrollIntoView({
-                block: "nearest",
-                behavior: "smooth"
-            })
-        }
-    })
+    //     const r = element.getBoundingClientRect()
+    //     if ($visibleMedium == medium && !(
+    //         r.top >= 210 &&
+    //         r.bottom <= (window.innerHeight - 210)
+    //     )) {
+    //         element.scrollIntoView({
+    //             block: "nearest",
+    //             behavior: "smooth"
+    //         })
+    //     }
+    // })
 
     const leftClick = (e: MouseEvent) => {
         if (e.metaKey) {
@@ -43,6 +41,7 @@
             visibleMedium.set(medium)
         }
     }
+
 </script>
 
 <IntersectionObserver
@@ -50,6 +49,7 @@
     once={true}
     top={500}
     let:intersecting
+    style={`position: relative`}
 >
     <div
         on:dragstart|stopPropagation={dragStartHandler}
@@ -57,27 +57,26 @@
         class:selected={$selectedMediaIds.includes(medium.id)}
     >
 
-        {#if (intersecting) || i == 0}
-
-            <img
-                src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
-                alt={medium.name}
-                class:hidden={!thumbnailLoadedCompletely}
-                class:active={!disableActive && $visibleMedium == medium}
-                on:load={() => thumbnailLoadedCompletely = true}
-                crossorigin="use-credentials"
-            >
-            
-        {/if}
-
         <svg
-            class:hidden={thumbnailLoadedCompletely}
             viewBox={`0 0 ${medium.width} ${medium.height}`}
             xmlns="http://www.w3.org/2000/svg"
         >
             <rect width={medium.width} height={medium.height} x="0" y="0"/>
         </svg>
 
+
+        {#if (intersecting) || i == 0}
+
+            {#await new Promise(resolve => resolve(true)) then }
+                <img
+                    src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
+                    alt={medium.name}
+                    class:active={!disableActive && $visibleMedium == medium}
+                    crossorigin="use-credentials"
+                >
+            {/await}
+            
+        {/if}
     </div>
 </IntersectionObserver>
 
@@ -85,20 +84,24 @@
 
     div {
         scroll-margin: 11px;
+        // height: calc(100% - 2px);
+        // position: relative;
 
         &.selected img {
             outline: 3px solid hsl(0, 0%, 36%);
         }
     }
 
-    .hidden {
-        display: none;
-    }
-
     img {
         width: 100%;
         height: 100%;
         cursor: pointer;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
 
         border-radius: 3px;
         box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;

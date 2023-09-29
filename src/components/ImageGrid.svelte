@@ -48,21 +48,17 @@
         </div>
     {/if} -->
     
-    {#key [ pageData.media ]}
-        {#if true}
-            <section>
+    <section>
 
-                {#each (new Array(Math.ceil(pageData.media.length / pageSize))) as _, i}
-                    {#if pageData.cluster.type == "withName" }
-                    <ImageGridStudios media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
-                    {:else}
-                    <ImageGridPage media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
-                    {/if}
-                {/each}
-                
-            </section>
-        {/if}
-    {/key}
+        {#each (new Array(Math.ceil(pageData.media.length / pageSize))) as _, i}
+            {#if pageData.cluster.type == "withName" }
+                <ImageGridStudios media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+            {:else}
+                <ImageGridPage media={pageData.media.slice(i * pageSize, (i + 1) * pageSize)} {i} />
+            {/if}
+        {/each}
+        
+    </section>
 
 <!-- {/if} -->
 

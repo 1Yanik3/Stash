@@ -40,6 +40,7 @@
       }
     });
     onMount(() => {
+      console.log("mount")
       const defaultOptions = GridClass.defaultOptions;
       const options: any = {};
   
@@ -58,7 +59,7 @@
       });
       grid.renderItems();
     });
-    afterUpdate(() => {
+    afterUpdate(async () => {
       if (isFirstMount) {
         isFirstMount = false;
         return;

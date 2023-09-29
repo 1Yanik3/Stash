@@ -2,33 +2,26 @@
 import type { possibleIcons } from "$lib/possibleIcons";
 import type { Prisma } from '@prisma/client'
 
-export const sortingMethods: Array<{ icon: keyof typeof possibleIcons, orderBy?: Prisma.MediaOrderByWithRelationInput, id?: string }> = [
+export const sortingMethods: Array<{ icon: keyof typeof possibleIcons, orderBy?: string, id?: string }> = [
     {
         icon: "mdiSortAlphabeticalAscending",
-        orderBy: {
-            name: "asc"
-        }
+        orderBy: `"Media"."name" ASC`
     },
     {
         icon: "mdiSortAlphabeticalDescending",
-        orderBy: {
-            name: "desc"
-        }
+        orderBy: `"Media"."name" DESC`
     },
     {
         icon: "mdiSortCalendarAscending",
-        orderBy: {
-            date: "asc"
-        }
+        orderBy: `"Media"."date" ASC`
     },
     {
         icon: "mdiSortCalendarDescending",
-        orderBy: {
-            date: "desc"
-        }
+        orderBy: `"Media"."date" DESC`
     },
     {
         icon: "mdiSort",
-        id: "Random"
+        id: "Random",
+        orderBy: `RANDOM()`
     }
 ]

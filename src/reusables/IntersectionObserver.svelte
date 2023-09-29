@@ -8,12 +8,14 @@
   export let left = 0;
   export let right = 0;
   export let delay = 0;
+  export let style: string = '';
 
   let intersecting = false;
   let container: Element;
 
   $: if(intersecting) dispatch('intersecting')
 
+  // @ts-ignore
   onMount(async () => {
     if (delay) await new Promise(resolve => setTimeout(resolve, delay))
 
@@ -43,6 +45,7 @@
 <div
   bind:this={container}
   on:click={e => dispatch("click", e)}
+  {style}
 >
   <slot {intersecting}></slot>
 </div>

@@ -17,44 +17,35 @@ export const GET: RequestHandler = async ({ params, request }) => {
     const activeSortingMethod = sortingMethods[+(searchParams.get("activeSortingMethod") || 0)]
     const mediaTypeFilter = searchParams.get('mediaTypeFilter') || ""
 
-    let tagsFilter: Prisma.MediaWhereInput = {}
+    let typeFilter: string = ``
+    if (mediaTypeFilter) typeFilter = /*sql*/`
+        AND "Media"."type" LIKE '${mediaTypeFilter}%'
+    `
 
-    if (tags[0]?.length) tagsFilter = {
-        tags: {
-            hasSome: tags.map(t => t.toLocaleLowerCase()),
-        }
-    }
+    let tagsFilter: string = ``
 
-    if (tags[0] == "SHOW_UNSORTED") tagsFilter = {
-        tags: {
-            isEmpty: true
-        }
-    }
-    
-    return json(await prisma.media.findMany({
-        where: {
-            cluster: {
-                name: params.cluster
-            },
-            ...tagsFilter,
-            type: {
-                startsWith: mediaTypeFilter
-            },
-        },
-        orderBy: activeSortingMethod.orderBy || {} // TODO
-    }))
+    if (tags[0] == "SHOW_UNSORTED") tagsFilter = /*sql*/`
+        AND array_length("Media"."tags", 1) IS NULL
+    `
 
-    // const collator = new Intl.Collator([], { numeric: true });
-    // if (group.cluster.type == "collection" && group.id != group.cluster.everythingGroupId) {
-    //     return json(output
-    //     .filter((d) => d.type.startsWith(searchParams.get("mediaTypeFilter") || ""))
-    //     .sort((a, b) => collator.compare(a.name, b.name)))
-    // } else {
-    //     return json(output
-    //     .filter((d) => d.type.startsWith(searchParams.get("mediaTypeFilter") || ""))
-    //     // @ts-ignore
-    //     .sort(sortingMethods[+searchParams.get("activeSortingMethod")].method))
-    // }
+    else if (tags[0]?.length) tagsFilter = /*sql*/`
+        AND (
+            t.tag = ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}'`)}])
+            ${traverse ? `OR t.tag LIKE ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}/%'`)}])` : ""}
+        )
+    `
+
+    const query = /*sql*/`
+        SELECT *
+        FROM "Media",
+        unnest("Media"."tags") AS t(tag) 
+        WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
+        ${typeFilter}
+        ${tagsFilter}
+        ORDER BY ${activeSortingMethod.orderBy}
+    `
+
+    return json(await prisma.$queryRawUnsafe(query))
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {

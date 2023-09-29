@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { mdiFileUpload } from '@mdi/js';
     import Icon from "../../components/Icon.svelte";
 
     import DropFile from '../../components/DropFile.svelte';
@@ -12,6 +11,7 @@
     import { actionBar, actionBars, isFullscreen, selectedTags, settings, visibleMedium } from '$lib/stores';
     import { tweened } from 'svelte/motion';
     import NavigationSection from './NavigationSection.svelte';
+    import { afterUpdate } from 'svelte';
 
     //#region Uploader
 
@@ -57,13 +57,13 @@
 
     //#endregion
 
-  const opacity = tweened(0, { duration: 150 });
-    afterNavigate(() => {
-        opacity.set(1, { duration: 0})
-        opacity.set(0, {
-             delay: 200
-        })
-    });
+  const opacity = tweened(0, { duration: 200 });
+  page.subscribe(a => {
+    opacity.set(1, { duration: 0 })
+    opacity.set(0, {
+        delay: 75
+    })
+  })
 
 </script>
 

@@ -1,17 +1,10 @@
 <script lang="ts">
-    import {
-        mdiArchiveOutline,
-        mdiBookshelf,
-        mdiImageOutline,
-        mdiVideoOutline,
-    } from "@mdi/js";
-
     import SidebarSection from "../../components/SidebarSection.svelte";
     import SidebarButton from "./SidebarButton.svelte";
     import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte";
 
     import { page } from "$app/stores";
-    import { mediaTypeFilter, selectedTags, settings, story } from "$lib/stores";
+    import { mediaTypeFilter, selectedTags, settings, story, traverse } from "$lib/stores";
 
     import { invalidate } from "$app/navigation";
     import type { PageData } from "./$types";
@@ -35,7 +28,7 @@
         let tagData: TagData = [];
         rawData
             .sort((a, b) => a.tag.length - b.tag.length)
-            .forEach(({ tag, count }) => {
+            .forEach(({ tag, direct_count, indirect_count }) => {
                 const addAt = (at: TagData, i: number) => {
                     if (!tag[i]) return;
 
@@ -49,7 +42,7 @@
                         const children: TagData = [];
                         at.push({
                             name: tag[i],
-                            count,
+                            count: $traverse ? direct_count + indirect_count : direct_count,
                             children,
                         });
                         addAt(children, i + 1);
