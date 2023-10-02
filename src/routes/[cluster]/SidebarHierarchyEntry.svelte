@@ -24,7 +24,6 @@
     selectedTags.subscribe(tags => {
         if (tags.length == 1 && tags.includes(name.toLowerCase())) {
             setTimeout(() => {
-                console.log("scrolla!")
                 element?.scrollIntoView({ block: "nearest" })
             }, 100);
         }

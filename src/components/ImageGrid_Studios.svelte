@@ -1,31 +1,47 @@
 <script lang="ts">
     import { invalidate } from "$app/navigation";
-    import { mdiGroup, mdiUngroup } from "@mdi/js";
-    import type { Media } from '@prisma/client';
+    import type { Media } from "@prisma/client";
     import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
 
-    let finishedLoading = false
-    onMount(() => setTimeout(() => finishedLoading = true, 100))
+    export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>;
+    export let i: number;
 
-    export let media: Array<Media & { disabled?: Boolean, expanded?: Boolean }>
-    export let i: number
-
-    const alreadyProcessedGroupedInto: number[] = []
-    for (let i = 0; i < media.length; i++) {
-        const element = media[i];
-        if (element.groupedIntoNamesId != null) {
-            if (alreadyProcessedGroupedInto.includes(element.groupedIntoNamesId)) {
-                element.disabled = true
+    const getProcessedMedia = (oldMedia: typeof media) => {
+        let alreadyProcessedGroupedInto: number[] = [];
+        let newMedia: typeof media = [];
+        for (let i = 0; i < media.length; i++) {
+            const element = oldMedia[i];
+            if (element.groupedIntoNamesId != null) {
+                if (
+                    !alreadyProcessedGroupedInto.includes(element.groupedIntoNamesId)
+                ) {
+                    alreadyProcessedGroupedInto.push(element.groupedIntoNamesId);
+                    newMedia.push(element);
+                }
             } else {
-                alreadyProcessedGroupedInto.push(element.groupedIntoNamesId)
+                newMedia.push(element);
             }
         }
+        return newMedia
     }
 
-    let selectedMedia: string[] = []
+    const getSortedMatchingMedia = (
+        medium: (typeof media)[0]
+    ) =>
+        {
+            return medium.groupedIntoNamesId == null
+            ? [medium]
+            : media
+                  .filter(
+                      (m) => m.groupedIntoNamesId == medium.groupedIntoNamesId
+                  )
+                  .sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+    let selectedMedia: string[] = [];
 </script>
 
 <IntersectionObserver
@@ -35,51 +51,53 @@
     delay={i > 0 ? 300 : 0}
 >
     {#if intersecting}
-
         <main>
-
             {#if selectedMedia.length}
                 <div class="groupActions">
-                    <SidebarButton card icon={mdiGroup} disabled={selectedMedia.length <= 1}
+                    <SidebarButton
+                        card
+                        icon="mdiGroup"
+                        disabled={selectedMedia.length <= 1}
                         on:click={() => {
                             // TODO: Allow grouping of media
-                            fetch(`/api/group-together`,{
+                            fetch(`/api/group-together`, {
                                 method: "POST",
-                                body: JSON.stringify(selectedMedia)
-                            }).then(() => invalidate("media"))
-                        }}
-                    >Group</SidebarButton>
-                    <SidebarButton card icon={mdiUngroup} disabled={selectedMedia.length > 1}
-                    
-                    >Ungroup</SidebarButton>
+                                body: JSON.stringify(selectedMedia),
+                            }).then(() => invalidate("media"));
+                        }}>Group</SidebarButton
+                    >
+                    <SidebarButton
+                        card
+                        icon="mdiUngroup"
+                        disabled={selectedMedia.length > 1}
+                        >Ungroup</SidebarButton
+                    >
                 </div>
             {/if}
 
-            {#each media.filter(m => !m.disabled) as medium, i}
-                {@const parent = medium.groupedIntoNamesId != null}
-                {@const sortedMatchingMedia =  !parent ? [ medium ] : (
-                    media.filter(m => m.groupedIntoNamesId == medium.groupedIntoNamesId)
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                )}
+            {#each getProcessedMedia(media) as medium}
+                <ImageGridStudiosThumbnail
+                    medium={medium}
+                    on:click={() => (medium.expanded = !medium.expanded)}
+                    parent={medium.groupedIntoNamesId != null}
+                    bind:selectedMedia
+                />
 
-                <ImageGridStudiosThumbnail medium={sortedMatchingMedia[0]} on:click={() => medium.expanded = !medium.expanded} {parent} bind:selectedMedia />
-
-                {#if parent && medium.expanded}
-                    {#each sortedMatchingMedia as subMedium, i}
-                        <ImageGridStudiosThumbnail sub medium={subMedium} bind:selectedMedia />
+                {#if medium.groupedIntoNamesId != null && medium.expanded}
+                    {#each getSortedMatchingMedia(medium) as subMedium}
+                        <ImageGridStudiosThumbnail
+                            sub
+                            medium={subMedium}
+                            bind:selectedMedia
+                        />
                     {/each}
                 {/if}
             {/each}
-
         </main>
-
-
     {/if}
-
 </IntersectionObserver>
 
 <style lang="scss">
-
     main {
         // display: grid;
         // grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));;
@@ -89,7 +107,5 @@
         .groupActions {
             display: flex;
         }
-
     }
-
 </style>
