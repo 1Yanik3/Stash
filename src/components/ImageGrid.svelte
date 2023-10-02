@@ -11,42 +11,46 @@
 
     import type { PageData } from "../routes/[cluster]/$types"
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
-    import { mdiFolderArrowDownOutline, mdiFolderArrowUpOutline } from "@mdi/js";
     $: pageData = $page.data as PageData
 
     const pageSize = 50
-
-    const collator = new Intl.Collator([], { numeric: true })
-
 </script>
 
-<!-- {#if pageData.cluster.type == "collection" && pageData.cluster.everythingGroupId == +$page.params.group}
+{#if pageData.cluster.type == "collection" && !$selectedTags.length}
 
     <ImageGridCollection />
 
-{:else if pageData.cluster.type == "stories"}
+<!-- {:else if pageData.cluster.type == "stories"}
 
-    <ImageGridStories/>
+    <ImageGridStories/> -->
 
-{:else} -->
+{:else}
 
-    <!-- {#if pageData.cluster.type == "collection"}
+    {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups">
-            {#if pageData.group.parent}
-                <SidebarButton card target={pageData.group.parent} icon={mdiFolderArrowUpOutline}>
-                    {pageData.group.parent.name}
+            {#if $selectedTags.length == 1 && $selectedTags[0].includes('/')}
+                <SidebarButton
+                    card
+                    icon="mdiFolderArrowUpOutline"
+                    on:click={() =>
+                        selectedTags.set([
+                            $selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
+                        ])
+                    }
+                >
+                    {$selectedTags[0].replace(/\/.+$/, "")}
                 </SidebarButton>
             {/if}
             
-            {#each (
+            <!-- {#each (
                 pageData.group.children.sort((a, b) => collator.compare(a.name, b.name))
             ) as child}
-                <SidebarButton card target={child} icon={mdiFolderArrowDownOutline}>
+                <SidebarButton card target={child} icon="mdiFolderArrowDownOutline">
                     {child.name}
                 </SidebarButton>
-            {/each}
+            {/each} -->
         </div>
-    {/if} -->
+    {/if}
     
     <section>
 
@@ -60,7 +64,7 @@
         
     </section>
 
-<!-- {/if} -->
+{/if}
 
 <style lang="scss">
     

@@ -52,8 +52,8 @@
                 addAt(tagData, 0);
             });
 
-        // console.log(tagData)
-        return tagData.sort((a, b) => b.count - a.count);
+        // TODO
+        return tagData.sort((a, b) => $page.params.cluster == "Camp Buddy" ? b.name.localeCompare(a.name) : b.count - a.count);
     }
 </script>
 
@@ -144,7 +144,7 @@
             {/each}
         </SidebarSection> -->
 
-            {#if pageData.cluster.type != "collection"}
+            <!-- {#if pageData.cluster.type != "collection"} -->
                 <SidebarSection title="Tags">
                     {#each orderDataHierarchically(pageData.tags) as { name, count, children }}
                         <SidebarHierarchyEntry {name} {count} {children} />
@@ -192,7 +192,7 @@
 
                 <!-- </SidebarSection> -->
                 <!-- {/if} -->
-            {/if}
+            <!-- {/if} -->
         </div>
     {/if}
 </main>

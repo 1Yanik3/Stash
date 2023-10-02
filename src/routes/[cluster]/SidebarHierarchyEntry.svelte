@@ -5,8 +5,6 @@
     import type { PageData } from "./$types";
     import SidebarButton from "./SidebarButton.svelte";
     
-    // import * as possibleIcons from "@mdi/js";
-
     type TagData = {
         name: string;
         count: number;
@@ -18,7 +16,21 @@
     export let children: TagData;
     export let indent = 0;
 
-    $: icon = ($page.data as PageData).tagIcons.find((t) => t.tag == name || name.substring(name.lastIndexOf("/") + 1) == t.tag)?.icon as keyof typeof possibleIcons;
+    let element: HTMLAnchorElement;
+    // if (element && $selectedTags.length == 1 && $selectedTags.includes(name.toLowerCase())) {
+    //     console.log("scroll!")
+    // }
+
+    selectedTags.subscribe(tags => {
+        if (tags.length == 1 && tags.includes(name.toLowerCase())) {
+            setTimeout(() => {
+                console.log("scrolla!")
+                element?.scrollIntoView({ block: "nearest" })
+            }, 100);
+        }
+    })
+
+    $: icon = ($page.data as PageData).tagIcons.find((t) => t.tag == name .toLowerCase()|| name.toLowerCase().substring(name.toLowerCase().lastIndexOf("/") + 1) == t.tag)?.icon as keyof typeof possibleIcons;
 </script>
 
 <SidebarButton
@@ -28,14 +40,15 @@
     on:click={(e) => {
         // @ts-ignore
         if (e.detail.altKey) {
-            if ($selectedTags.includes(name))
-                selectedTags.set($selectedTags.filter((t) => t != name));
-            else selectedTags.set([...$selectedTags, name]);
+            if ($selectedTags.includes(name.toLowerCase()))
+                selectedTags.set($selectedTags.filter((t) => t != name.toLowerCase()));
+            else selectedTags.set([...$selectedTags, name.toLowerCase()]);
         } else {
-            selectedTags.set([name]);
+            selectedTags.set([name.toLowerCase()]);
         }
     }}
-    active={$selectedTags.includes(name)}
+    active={$selectedTags.includes(name.toLowerCase())}
+    bind:element
 >
     {name.replace(/.+\//, "")}
 </SidebarButton>

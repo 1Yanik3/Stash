@@ -17,9 +17,9 @@
     let:result
     on:selected={({ detail }) => {
         // goto(`/${detail.cluster.name}/${detail.id}`)
-        selectedTags.set([detail.tag.join("/")]);
+        selectedTags.set([detail.tag.join("/").toLowerCase()]);
     }}
 >
     <span>{result.tag.join("/")}</span>
-    <span>{result.count}</span>
+    <span>{result.direct_count}</span>
 </FuzzyPopupTemplate>

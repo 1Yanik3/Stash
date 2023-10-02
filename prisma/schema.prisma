@@ -43,13 +43,13 @@ model Media {
 
   // Link to cluster
   cluster    Clusters? @relation(fields: [clustersId], references: [id])
-  clustersId Int?
+  clustersId Int
 
   // Grouped with other media
   groupedInto        GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
   groupedIntoNamesId Int?
 
-  @@index(id)
+  @@index([id, clustersId, tags])
 }
 
 model TagIcons {

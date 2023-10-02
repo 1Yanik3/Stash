@@ -8,6 +8,13 @@ import { md5 } from 'hash-wasm'
 export const load: PageLoad = async ({ params, fetch, depends, data }) => {
 	depends("media")
 
+	if (params.cluster == "Camp Buddy" && !get(selectedTags).length)
+		return {
+			media: [],
+			mediaHash: "",
+			...data
+		}
+
 	const mediaRequest = await fetch(`/api/cluster/${params.cluster}/media
 		?traverse=${get(traverse).toString()}
 		&tags=${get(selectedTags).join(",")}
