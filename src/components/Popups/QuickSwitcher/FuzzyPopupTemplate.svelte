@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { controller } from "$lib/stores";
+    import { controller, settings } from "$lib/stores";
 
     import FuzzySearch from "fuzzy-search";
     import Popup from "../../../reusables/Popup.svelte";
     import { createEventDispatcher, onMount } from "svelte";
+    import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte";
 
     type T = $$Generic<Record>;
     type TAsArray = Array<T>;
@@ -18,7 +19,7 @@
 
     let searcher: any = null;
     let results: T[];
-    $: results = (searcher?.search(value).slice(0, 8) as T) || [];
+    $: results = (searcher?.search(value).slice(0, $settings.mobileLayout ? 16 : 8) as T) || [];
     $: console.log(results);
     promise.then((data) => {
         searcher = new FuzzySearch(data, searchAttributes, {
@@ -69,6 +70,24 @@
                 <slot {result} />
             </div>
         {/each}
+
+        {#if $settings.mobileLayout}
+            <div class="mobileNavigationButtons">
+                <SidebarButton card icon="mdiArrowUp" on:click={() => {
+                    if (selectedIndex > 0) selectedIndex--;
+                }}/>
+                <SidebarButton card icon="mdiArrowDown" on:click={() => {
+                    if (selectedIndex <= results.length) selectedIndex++;
+                }}/>
+                <SidebarButton card icon="mdiKeyboardReturn" on:click={() => {
+                    if (!disableClose) {
+                        dispatch("close");
+                        $controller.setPopup(null)
+                    }
+                    dispatch("selected", results[selectedIndex]);
+                }}/>
+            </div>
+        {/if}
     </main>
 </Popup>
 
@@ -96,6 +115,12 @@
                 transition: background 150ms;
                 background: #303030;
                 border: 1px solid hsl(0, 0%, 24%);
+            }
+
+            &.mobileNavigationButtons {
+                position: absolute;
+                bottom: 1em;
+                right: 1em;
             }
         }
     }

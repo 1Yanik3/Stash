@@ -1,13 +1,15 @@
 <script lang="ts">
-    import Popup from "../../../reusables/Popup.svelte";
+    import { actionBar, settings } from "$lib/stores";
     import MediaViewer from "../../MediaViewer.svelte";
     import Toolbar from "../../Toolbar.svelte";
 </script>
 
+{#if !$actionBar}
 <main>
     <Toolbar />
     <MediaViewer />
 </main>
+{/if}
 
 <style lang="scss">
     main {

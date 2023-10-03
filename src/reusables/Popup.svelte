@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import { fade, scale } from "svelte/transition";
     import Icon from "../components/Icon.svelte";
-    import { controller } from "../lib/stores";
+    import { controller, settings } from "../lib/stores";
 
     export let title = "";
     export let hideHeader = false;
@@ -21,9 +21,9 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<main transition:fade={{ duration: 100 }} on:click={() => $controller.setPopup(null)}>
+<main transition:fade={{ duration: 100 }} on:click={() => $controller.setPopup(null)} class:mobile={$settings.mobileLayout}>
     <section transition:scale={{ start: 1.1, duration: 100 }} class:bottomSheet on:click|stopPropagation>
-        {#if !hideHeader}
+        {#if !hideHeader || $settings.mobileLayout}
             <div id="header">
                 {#if bottomSheet}
                     <div class="centralBlob" />
@@ -115,6 +115,20 @@
                 border-bottom-right-radius: 0;
                 width: 100vw;
                 max-width: 100vw;
+            }
+        }
+
+        &.mobile {
+            section {
+                width: 100vw;
+                max-width: 100vw;
+                height: 100vh;
+                max-height: 100vh;
+                border: none;
+                #content {
+                    display: grid;
+                    justify-content: center;
+                }
             }
         }
     }

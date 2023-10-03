@@ -12,6 +12,12 @@
     <SidebarButton icon="mdiTagMultiple" card  on:click={() => $controller.setPopup("Navigation Section Mobile")} />
 
     <div class="spacer" />
+
+    <!-- Quick Switch -->
+    <SidebarButton icon="mdiTabSearch" card  on:click={() => $controller.setPopup("Quick Switch")} />
+
+    <!-- Quick Actions -->
+    <SidebarButton icon="mdiConsoleLine" card  on:click={() => $controller.setPopup("Quick Actions")} />
 </main>
 
 <style lang="scss">
