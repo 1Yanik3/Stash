@@ -44,7 +44,7 @@
         if (!browser) return;
 
         const pairingCode = await $controller.prompt("Enter pairing code:") || "";
-        const url = `wss://pubSub.hera.lan/${pairingCode}`
+        const url = `wss://pubSub.any.gay/${pairingCode}`
         socket = new WebSocket(url);
 
         socket.addEventListener("open", () => {

@@ -94,7 +94,8 @@
 <style lang="scss">
     main {
         display: grid;
-        width: 30em;
+        // width: 30em;
+        max-width: 100%;
         max-height: 20.5em;
 
         input {

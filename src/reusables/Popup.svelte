@@ -125,8 +125,9 @@
                 height: 100vh;
                 max-height: 100vh;
                 border: none;
+                display: grid;
+                align-content: start;
                 #content {
-                    display: grid;
                     justify-content: center;
                 }
             }
