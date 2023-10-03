@@ -10,7 +10,7 @@
     $: pageData = $page.data as LayoutData
 </script>
 
-<main class:mobile={$settings.mobileLayout}>
+<main class:mobile={$settings.mobileLayout} class:windowControlsSpacer={$settings.windowControlsSpacer}>
 
     <section>
         {#if $settings.windowControlsSpacer}
@@ -101,6 +101,9 @@
 
         flex-grow: 1;
         width: 64px;
+        &.windowControlsSpacer {
+            width: 77px;
+        }
 
         gap: 3em;
         

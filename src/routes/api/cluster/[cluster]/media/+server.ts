@@ -35,8 +35,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
         )
     `
 
-    console.log(tags, tagsFilter)
-
     const query = /*sql*/`
         SELECT m.*
         FROM (

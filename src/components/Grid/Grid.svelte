@@ -40,7 +40,6 @@
       }
     });
     onMount(() => {
-      console.log("mount")
       const defaultOptions = GridClass.defaultOptions;
       const options: any = {};
   
