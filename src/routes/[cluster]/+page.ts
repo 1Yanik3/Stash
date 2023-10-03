@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params, fetch, depends, data }) => {
 	const mediaRequest = await fetch(`/api/cluster/${params.cluster}/media
 		?traverse=${get(traverse).toString()}
 		&tags=${get(selectedTags).join(",")}
-		&activeSortingMethod=${sortingMethods.indexOf(get(activeSortingMethod))}
+		&activeSortingMethod=${params.cluster == "Camp Buddy" ? sortingMethods.findIndex(a => a.icon == "mdiSortAlphabeticalAscending") : sortingMethods.indexOf(get(activeSortingMethod))}
 		&mediaTypeFilter=${get(mediaTypeFilter)}
 	`)
 

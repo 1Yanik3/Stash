@@ -48,8 +48,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
         ORDER BY ${activeSortingMethod.orderBy}
     `
 
-    console.log(query)
-
     return json(await prisma.$queryRawUnsafe(query))
 }
 
