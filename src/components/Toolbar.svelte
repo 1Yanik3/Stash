@@ -129,10 +129,7 @@
                 on:contextmenu|preventDefault={() => removeTagFromMedia(tag)}
             >{tag}</span>
         {/each}
-        <!-- TODO -->
-        {#if pageData.cluster.type != "collection"}
-            <input type="text" on:keydown|stopPropagation={handleKeyDown}>
-        {/if}
+        <input type="text" on:keydown|stopPropagation={handleKeyDown}>
     </div>
 
     <section>
