@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
     let tagsFilter: string = ``
 
     if (tags[0] == "SHOW_UNSORTED") tagsFilter = /*sql*/`
-        AND array_length("Media"."tags", 1) IS NULL
+        AND array_length("Media"."tags", 1) IS NULL OR tag = 'show_unsorted' OR tag = ''
     `
 
     else if (tags[0]?.length) tagsFilter = /*sql*/`
@@ -34,6 +34,8 @@ export const GET: RequestHandler = async ({ params, request }) => {
             ${traverse ? `OR t.tag LIKE ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}/%'`)}])` : ""}
         )
     `
+
+    console.log(tags, tagsFilter)
 
     const query = /*sql*/`
         SELECT m.*

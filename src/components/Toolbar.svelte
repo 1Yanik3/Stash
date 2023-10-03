@@ -129,7 +129,9 @@
                 on:contextmenu|preventDefault={() => removeTagFromMedia(tag)}
             >{tag}</span>
         {/each}
-        <input type="text" on:keydown|stopPropagation={handleKeyDown}>
+        {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
+            <input type="text" on:keydown|stopPropagation={handleKeyDown}>
+        {/if}
     </div>
 
     <section>
