@@ -28,7 +28,7 @@ export const load: PageLoad = async ({ params, fetch, depends, data }) => {
 
 	return {
         media,
-		mediaHash: md5(mediaRequestTest),
+		mediaHash: md5(mediaRequestTest), // TODO: This changes more often than it should, why
 		...data
 	};
 }

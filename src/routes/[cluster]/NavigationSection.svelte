@@ -4,7 +4,13 @@
     import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte";
 
     import { page } from "$app/stores";
-    import { mediaTypeFilter, selectedTags, settings, story, traverse } from "$lib/stores";
+    import {
+        mediaTypeFilter,
+        selectedTags,
+        settings,
+        story,
+        traverse,
+    } from "$lib/stores";
 
     import { invalidate } from "$app/navigation";
     import type { PageData } from "./$types";
@@ -42,7 +48,9 @@
                         const children: TagData = [];
                         at.push({
                             name: tag[i],
-                            count: $traverse ? direct_count + indirect_count : direct_count,
+                            count: $traverse
+                                ? direct_count + indirect_count
+                                : direct_count,
                             children,
                         });
                         addAt(children, i + 1);
@@ -53,7 +61,11 @@
             });
 
         // TODO
-        return tagData.sort((a, b) => $page.params.cluster == "Camp Buddy" ? b.name.localeCompare(a.name) : b.count - a.count);
+        return tagData.sort((a, b) =>
+            $page.params.cluster == "Camp Buddy"
+                ? b.name.localeCompare(a.name)
+                : b.count - a.count
+        );
     }
 </script>
 
@@ -84,7 +96,6 @@
         <div>
             <!-- Statics -->
             <SidebarSection horizontal>
-
                 <SidebarButton
                     hidden
                     icon="mdiBookshelf"
@@ -145,14 +156,30 @@
         </SidebarSection> -->
 
             <!-- {#if pageData.cluster.type != "collection"} -->
-                <SidebarSection title="Tags">
-                    {#each orderDataHierarchically(pageData.tags) as { name, count, children }}
+            <!-- TODO: Cluster settings -->
+            {#if pageData.cluster.id == 2}
+                <SidebarSection title="People">
+                    {#each orderDataHierarchically(pageData.tags.filter( (t) => ["Solo", "Two", "Group"].includes(t.tag[0]) )) as { name, count, children }}
                         <SidebarHierarchyEntry {name} {count} {children} />
                     {/each}
+                    <SidebarHierarchyEntry
+                        name="PEOPLE_COUNT_UNKNOWN"
+                        nameOverwrite="Unknown"
+                        iconOverwrite="mdiAccountQuestion"
+                        count={pageData.counters.untagged_count}
+                        children={[]}
+                    />
                 </SidebarSection>
+            {/if}
 
-                <!-- Tags -->
-                <!-- {#if pageData.tags.length}
+            <SidebarSection title="Tags">
+                {#each orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0]))) as { name, count, children }}
+                    <SidebarHierarchyEntry {name} {count} {children} />
+                {/each}
+            </SidebarSection>
+
+            <!-- Tags -->
+            <!-- {#if pageData.tags.length}
             <SidebarSection title="Tags">
 
                 {#each pageData.tags
@@ -190,8 +217,8 @@
                     }}
                 /> -->
 
-                <!-- </SidebarSection> -->
-                <!-- {/if} -->
+            <!-- </SidebarSection> -->
+            <!-- {/if} -->
             <!-- {/if} -->
         </div>
     {/if}

@@ -15,6 +15,8 @@
     export let count: number;
     export let children: TagData;
     export let indent = 0;
+    export let nameOverwrite = name;
+    export let iconOverwrite: keyof typeof possibleIcons | null = null;
 
     let element: HTMLAnchorElement;
     // if (element && $selectedTags.length == 1 && $selectedTags.includes(name.toLowerCase())) {
@@ -29,7 +31,7 @@
         }
     })
 
-    $: icon = ($page.data as PageData).tagIcons.find((t) => t.tag == name .toLowerCase()|| name.toLowerCase().substring(name.toLowerCase().lastIndexOf("/") + 1) == t.tag)?.icon as keyof typeof possibleIcons;
+    $: icon = iconOverwrite || ($page.data as PageData).tagIcons.find((t) => t.tag == name .toLowerCase()|| name.toLowerCase().substring(name.toLowerCase().lastIndexOf("/") + 1) == t.tag)?.icon as keyof typeof possibleIcons;
 </script>
 
 <SidebarButton
@@ -49,7 +51,7 @@
     active={$selectedTags.includes(name.toLowerCase())}
     bind:element
 >
-    {name.replace(/.+\//, "")}
+    {nameOverwrite.replace(/.+\//, "")}
 </SidebarButton>
 
 {#if children}

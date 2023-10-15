@@ -7,6 +7,7 @@
     import Shortcut from '../reusables/Shortcut.svelte';
     import type { PageData } from '../routes/[cluster]/$types';
     import Icon from './Icon.svelte';
+    import { invalidate } from '$app/navigation';
     // import UpscalePopup from './Popups/UpscalePopup.svelte';
     $: pageData = $page.data as PageData
 
@@ -26,6 +27,7 @@
                 visibleMedium.set(tmp)
 
                 // TODO: increase count of tags in sidebar
+                invalidate("tags")
             })
             .catch(console.error)
 

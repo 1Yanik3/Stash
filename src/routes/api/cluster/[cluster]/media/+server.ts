@@ -28,6 +28,12 @@ export const GET: RequestHandler = async ({ params, request }) => {
         AND array_length("Media"."tags", 1) IS NULL OR tag = 'show_unsorted' OR tag = ''
     `
 
+    else if (tags[0] == "people_count_unknown") tagsFilter = /*sql*/`
+        AND NOT "Media"."tags" @> ARRAY['solo']
+        AND NOT "Media"."tags" @> ARRAY['two']
+        AND NOT "Media"."tags" @> ARRAY['group']
+    `
+
     else if (tags[0]?.length) tagsFilter = /*sql*/`
         AND (
             t.tag = ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}'`)}])
