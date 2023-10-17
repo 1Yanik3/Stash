@@ -157,26 +157,28 @@
 
             <!-- {#if pageData.cluster.type != "collection"} -->
             <!-- TODO: Cluster settings -->
-            {#if pageData.cluster.id == 2}
-                <SidebarSection title="People">
-                    {#each orderDataHierarchically(pageData.tags.filter( (t) => ["Solo", "Two", "Group"].includes(t.tag[0]) )) as { name, count, children }}
+            {#key pageData.tags}
+                {#if pageData.cluster.id == 2}
+                    <SidebarSection title="People">
+                        {#each orderDataHierarchically(pageData.tags.filter( (t) => ["Solo", "Two", "Group"].includes(t.tag[0]) )) as { name, count, children }}
+                            <SidebarHierarchyEntry {name} {count} {children} />
+                        {/each}
+                        <SidebarHierarchyEntry
+                            name="PEOPLE_COUNT_UNKNOWN"
+                            nameOverwrite="Unknown"
+                            iconOverwrite="mdiAccountQuestion"
+                            count={pageData.counters.untagged_count}
+                            children={[]}
+                        />
+                    </SidebarSection>
+                {/if}
+
+                <SidebarSection title="Tags">
+                    {#each orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0]))) as { name, count, children }}
                         <SidebarHierarchyEntry {name} {count} {children} />
                     {/each}
-                    <SidebarHierarchyEntry
-                        name="PEOPLE_COUNT_UNKNOWN"
-                        nameOverwrite="Unknown"
-                        iconOverwrite="mdiAccountQuestion"
-                        count={pageData.counters.untagged_count}
-                        children={[]}
-                    />
                 </SidebarSection>
-            {/if}
-
-            <SidebarSection title="Tags">
-                {#each orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0]))) as { name, count, children }}
-                    <SidebarHierarchyEntry {name} {count} {children} />
-                {/each}
-            </SidebarSection>
+            {/key}
 
             <!-- Tags -->
             <!-- {#if pageData.tags.length}
