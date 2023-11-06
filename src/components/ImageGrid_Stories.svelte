@@ -1,9 +1,13 @@
 <script lang="ts">
-    import { controller, isStoryFullScreen, story } from "$lib/stores";
-    import { onMount } from "svelte";
+    import { controller, mobileBottomBarVisible, settings } from "$lib/stores";
     import SvelteMarkdown from "svelte-markdown";
     import Shortcut from "../reusables/Shortcut.svelte";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
+    import { page } from "$app/stores";
+    import type { PageData } from "../routes/[cluster]/$types";
+    import Popup from "../reusables/Popup.svelte";
+
+    let pageData = $page.data as PageData;
 
     const extractHeaders = (markdown: string) => {
         const headers = [];
@@ -16,115 +20,246 @@
         return headers;
     };
 
-    let serif = false
-    $: console.log({serif})
+    const goToChapter = (chapter: string) => {
+        setTimeout(() => {
+            const element = document.querySelector(
+                `#${chapter
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                    .replaceAll(/[’',]/g, "")}`
+            );
+            element?.scrollIntoView({
+                block: "start",
+            });
+        }, 0);
+    };
 
-    $: chapters = extractHeaders($story.content);
+    let story: (typeof pageData.stories)[number] | null = null;
+    let chapters: string[] = [];
 
+    let serif = false;
 
-    let contentElement: HTMLDivElement
-    let scrollElement: HTMLDivElement
-    let scrollElementSpacer: HTMLDivElement
+    let mainElement: HTMLElement;
+    let contentElement: HTMLDivElement;
+    let scrollElement: HTMLDivElement;
+    let scrollElementSpacer: HTMLDivElement;
 
-    onMount(async () => {
-        await new Promise(resolve => setTimeout(resolve, 100))
+    const selectStory = async (_story: (typeof pageData.stories)[number]) => {
+        story = _story;
+        chapters = extractHeaders(story.content);
 
-        scrollElementSpacer.style.height = `${contentElement.scrollHeight}px`
+        // await new Promise((resolve) => setTimeout(resolve, 100))
 
-        // source: https://stackoverflow.com/questions/9236314/how-do-i-synchronize-the-scroll-position-of-two-divs
-        var isSyncingLeftScroll = false;
-        var isSyncingRightScroll = false;
+        // // scrollElementSpacer.style.height = `${contentElement.scrollHeight}px`
 
-        contentElement.onscroll = e => {
-            if (!isSyncingLeftScroll) {
-                isSyncingRightScroll = true;
-                scrollElement.scrollTop = contentElement.scrollTop
-            }
-            isSyncingLeftScroll = false
+        // // source: https://stackoverflow.com/questions/9236314/how-do-i-synchronize-the-scroll-position-of-two-divs
+        // var isSyncingLeftScroll = false
+        // var isSyncingRightScroll = false
+
+        // contentElement.onscroll = (e) => {
+        //   if (!isSyncingLeftScroll) {
+        //     isSyncingRightScroll = true
+        //     scrollElement.scrollTop = contentElement.scrollTop
+        //   }
+        //   isSyncingLeftScroll = false
+        // }
+
+        // scrollElement.onscroll = (e) => {
+        //   if (!isSyncingRightScroll) {
+        //     isSyncingLeftScroll = true
+        //     contentElement.scrollTop = scrollElement.scrollTop
+        //   }
+        //   isSyncingRightScroll = false
+        // }
+    };
+
+    let buttonsHidden = false;
+    let chapterSelectionPopupOpen = false;
+    $: $mobileBottomBarVisible = !story;
+
+    let processTouchAreas = (e: MouseEvent) => {
+        // Top touch area (25%) => toggle buttons always on temporarely
+        // Left touch area (50%) => go back a page
+        // Right touch area (50%) => go forward a page
+
+        if (!$settings.mobileLayout) return;
+
+        const left = e.clientX / window.innerWidth;
+        const top = e.clientY / window.innerHeight;
+
+        console.log(`left: ${left * 100}%, top: ${top * 100}%`);
+
+        if (top < 0.25) {
+            if (!buttonsHidden) return;
+            buttonsHidden = false;
+        } else {
+            contentElement.scrollBy({
+                top:
+                    left < 0.5
+                        ? -window.innerHeight - 80
+                        : window.innerHeight - 80,
+            });
         }
-
-        scrollElement.onscroll = e => {
-            if (!isSyncingRightScroll) {
-                isSyncingLeftScroll = true;
-                contentElement.scrollTop = scrollElement.scrollTop
-            }
-            isSyncingRightScroll = false
-        }
-
-    })
+    };
 </script>
 
-<!-- Add new story -->
-<Shortcut key="c" action={() => $controller.setPopup("Create Story")} />
+{#if chapterSelectionPopupOpen}
+    <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
+        {#each chapters as chapter}
+            <SidebarButton
+                on:click={() => {
+                    goToChapter(chapter);
+                    chapterSelectionPopupOpen = false;
+                }}
+            >
+                {chapter}
+            </SidebarButton>
+        {/each}
+    </Popup>
+{/if}
 
-<!-- Toggle Serif -->
-<Shortcut
-    opt
-    key="ß"
-    action={() => {
-        serif = !serif
-    }}
-/>
-
-<!-- Toggle Fullscreen -->
-<Shortcut key="f" action={() => {
-    isStoryFullScreen.set(!$isStoryFullScreen)
-}} />
-
-
-<main>
-    <!-- Chapters -->
-    <div>
-        <div class="chapters">
-            {#each chapters as chapter, i}
+{#if story}
+    <main
+        class="story-view"
+        class:is-mobile={$settings.mobileLayout}
+        class:eink={$settings.eink}
+        on:mousedown={processTouchAreas}
+        bind:this={mainElement}
+    >
+        <!-- Chapters -->
+        <div class:buttonsHidden>
+            <div class="button">
                 <SidebarButton
-                    icon={null}
-                    on:click={(e) => {
-                        e.preventDefault();
-                        setTimeout(() => {
-                            const element = document.querySelector(
-                                `#${chapter
-                                    .toLowerCase()
-                                    .replaceAll(" ", "-")
-                                    .replaceAll(/[’',]/g, "")}`
-                            );
-                            element?.scrollIntoView({
-                                block: "start",
-                                behavior: "smooth",
-                            });
-                        }, 0);
-                    }}
-                >
-                    <div
-                        style="opacity: 0.5; display: grid; grid-template-columns: auto 1fr; gap: 0.5em"
+                    icon="mdiArrowLeft"
+                    on:click={() => (story = null)}
+                />
+                <div
+                    class="spacer"
+                    on:mousedown|capture|stopPropagation={() =>
+                        (buttonsHidden = true)}
+                />
+                <SidebarButton
+                    icon="mdiFormatFont"
+                    on:click={() => (serif = !serif)}
+                />
+                {#if $settings.mobileLayout}
+                    <SidebarButton
+                        icon="mdiFormatHeaderPound"
+                        on:click={() => (chapterSelectionPopupOpen = true)}
+                    />
+                {/if}
+            </div>
+            <div class="chapters">
+                {#each chapters as chapter, i}
+                    <SidebarButton
+                        icon={null}
+                        on:click={(e) => {
+                            e.preventDefault();
+                            goToChapter(chapter);
+                        }}
                     >
-                        <span>{i + 1}</span>
-                        <span style="text-overflow: ellipsis; overflow: hidden"
-                            >{chapter}</span
+                        <div
+                            style="opacity: 0.5; display: grid; grid-template-columns: auto 1fr; gap: 0.5em"
                         >
-                    </div>
-                </SidebarButton>
-            {/each}
+                            <span>{i + 1}</span>
+                            <span
+                                style="text-overflow: ellipsis; overflow: hidden"
+                                >{chapter}</span
+                            >
+                        </div>
+                    </SidebarButton>
+                {/each}
+            </div>
         </div>
-    </div>
 
-    <!-- Content (https://github.com/pablo-abc/svelte-markdown) -->
-    <div class="content" class:serif bind:this={contentElement}>
-        <h1 class="title">{$story.title}</h1>
-        <SvelteMarkdown source={$story.content} />
-    </div>
+        <!-- Content (https://github.com/pablo-abc/svelte-markdown) -->
+        <div class="content" class:serif bind:this={contentElement}>
+            <h1 class="title">{story.title}</h1>
+            <SvelteMarkdown source={story.content} />
+        </div>
+        <div class="content" bind:this={scrollElement}>
+            <div bind:this={scrollElementSpacer} />
+        </div>
+    </main>
+{:else}
+    <main class="stories-grid" class:eink={$settings.eink}>
+        {#each pageData.stories as story}
+            <div class="story" on:click={() => selectStory(story)}>
+                <div class="title">
+                    {story.title}
+                </div>
+                <div class="date">
+                    {new Date(story.date).toISOString().slice(0, 10)}
+                </div>
+            </div>
+        {/each}
+    </main>
 
-    <div class="content" bind:this={scrollElement}>
-        <div bind:this={scrollElementSpacer}></div>
-    </div>
-</main>
+    <!-- Add new story -->
+    <Shortcut key="c" action={() => $controller.setPopup("Create Story")} />
+{/if}
 
 <style lang="scss">
     @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap");
 
-    main {
+    main.stories-grid {
         display: grid;
-        grid-template-columns: minmax(18em, 1fr) minmax(30em, 50em) minmax(18em, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.5em;
+
+        .story {
+            padding: 0.5em;
+
+            background: hsl(0, 0%, 13%);
+            border: 1px solid hsl(0, 0%, 24%);
+            border-radius: 0.35em;
+
+            cursor: pointer;
+
+            &:hover {
+                background: hsl(0, 0%, 22%);
+                border: 1px solid hsl(0, 0%, 24%);
+            }
+
+            .title {
+                height: 120px;
+                padding: 0.5em;
+            }
+
+            .date {
+                font-size: 14px;
+                opacity: 0.8;
+                display: flex;
+                justify-content: center;
+                margin: 0.25em;
+            }
+        }
+
+        &.eink .story {
+            background: #fff;
+            border: 1px solid #444;
+            * {
+                color: #000;
+            }
+        }
+    }
+
+    main.story-view {
+        display: grid;
+        grid-template-columns: minmax(18em, 1fr) minmax(30em, 50em) minmax(
+                18em,
+                1fr
+            );
+
+        .button {
+            display: flex;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: calc(100vw - 2em);
+            padding: 1em;
+            padding-bottom: 0;
+        }
 
         .chapters {
             margin-top: 50vh;
@@ -133,12 +268,16 @@
         }
 
         .content {
+            max-height: calc(100vh);
+            margin-top: -1em;
             overflow: scroll;
-            max-height: calc(100vh - 2em);
-            margin: -1em 0;
             padding: 1em 0;
+            padding-top: 3em;
 
             scrollbar-width: none;
+            &:not(:last-child)::-webkit-scrollbar {
+                display: none;
+            }
 
             &.serif {
                 font-family: "EB Garamond", Arial;
@@ -148,6 +287,40 @@
             .title {
                 font-size: 2rem;
                 font-weight: 500;
+            }
+        }
+
+        &.is-mobile {
+            grid-template-columns: 1fr;
+            .chapters {
+                display: none;
+            }
+
+            .button {
+                padding-bottom: 1em;
+                background: #303030;
+
+                .spacer {
+                    flex-grow: 1;
+                }
+            }
+
+            .buttonsHidden {
+                opacity: 0;
+                pointer-events: none;
+                .button {
+                    background: transparent !important;
+                }
+            }
+        }
+
+        &.eink {
+            .button {
+                background: #fff;
+            }
+
+            :global(*) {
+                color: #000;
             }
         }
     }

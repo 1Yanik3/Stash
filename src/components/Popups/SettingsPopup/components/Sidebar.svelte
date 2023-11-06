@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { mdiChartBar, mdiCog, mdiInformation, mdiInformationOutline, mdiKeyChain, mdiSync } from "@mdi/js";
     import SidebarButton from "../../../../routes/[cluster]/SidebarButton.svelte";
 
     export let activeTab: string;
@@ -8,7 +7,7 @@
 <main>
     <span>
         <SidebarButton
-            on:click={() => activeTab = "general"}
+            on:click={() => (activeTab = "general")}
             active={activeTab == "general"}
             icon="mdiCog"
         >
@@ -18,7 +17,7 @@
 
     <span>
         <SidebarButton
-            on:click={() => activeTab = "jobs"}
+            on:click={() => (activeTab = "jobs")}
             active={activeTab == "jobs"}
             icon="mdiSync"
         >
@@ -26,11 +25,21 @@
         </SidebarButton>
     </span>
 
+    <span>
+        <SidebarButton
+            on:click={() => (activeTab = "tag-icons")}
+            active={activeTab == "tag-icons"}
+            icon="mdiTagSearch"
+        >
+            Tag Icons
+        </SidebarButton>
+    </span>
+
     <div style="flex-grow: 1" />
 
     <span>
         <SidebarButton
-            on:click={() => activeTab = "statistics"}
+            on:click={() => (activeTab = "statistics")}
             active={activeTab == "statistics"}
             icon="mdiChartBar"
         >
@@ -40,7 +49,7 @@
 
     <span>
         <SidebarButton
-            on:click={() => activeTab = "about"}
+            on:click={() => (activeTab = "about")}
             active={activeTab == "about"}
             icon="mdiInformationOutline"
         >

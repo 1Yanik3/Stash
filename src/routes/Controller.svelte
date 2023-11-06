@@ -36,12 +36,12 @@
     });
 
     visibleMedium.subscribe(() => {
-        imageSuffixParameter.set("")
+        imageSuffixParameter.set("");
     });
     selectedTags.subscribe(() => {
-        if (!browser) return
-        invalidate("media")
-    })
+        if (!browser) return;
+        invalidate("media-and-tags");
+    });
 
     onMount(() => {
         visibleMedium.subscribe(() => {
@@ -49,23 +49,24 @@
                 setPopup($visibleMedium ? "Media Viewer Mobile" : null);
             }
         });
-    })
+    });
 
     export const goToPreviousMedia = () => {
         if (!$visibleMedium) return;
 
-        const mediaIndex = pageData.media.indexOf(
-            $visibleMedium
+        const mediaIndex = pageData.media.findIndex(
+            (m) => m.id == $visibleMedium?.id
         );
 
-        if (mediaIndex > 0)
-            visibleMedium.set(pageData.media[mediaIndex - 1]);
+        if (mediaIndex > 0) visibleMedium.set(pageData.media[mediaIndex - 1]);
     };
 
     export const goToNextMedia = () => {
         if (!$visibleMedium) return;
 
-        const mediaIndex = pageData.media.indexOf($visibleMedium);
+        const mediaIndex = pageData.media.findIndex(
+            (m) => m.id == $visibleMedium?.id
+        );
 
         if (mediaIndex < pageData.media.length - 1)
             visibleMedium.set(pageData.media[mediaIndex + 1]);
@@ -106,38 +107,42 @@
         "Quick Actions": QuickActions,
         "Quick Actions Import": QuickActionsImport,
         "Quick Switch": QuickSwitch,
-        "Shortcuts": ShortcutPopup,
-        "Settings": SettingsPopup,
+        Shortcuts: ShortcutPopup,
+        Settings: SettingsPopup,
         "Replace Video Thumbnail": ReplaceVideoThumbnail,
         "Create Story": CreateStoryPopup,
         "Cluster Section Mobile": ClusterSectionMobile,
         "Navigation Section Mobile": NavigationSectionMobile,
-        "Media Viewer Mobile": MediaViewerMobile
-    } as const
-
+        "Media Viewer Mobile": MediaViewerMobile,
+    } as const;
 
     let popup: keyof typeof popups | null = null;
-    export const setPopup = (newPopup: typeof popup) => popup = newPopup
-    export const setActionBar = (newActionBar: keyof typeof actionBars | null) => actionBar.set(newActionBar)
+    export const setPopup = (newPopup: typeof popup) => (popup = newPopup);
+    export const setActionBar = (
+        newActionBar: keyof typeof actionBars | null
+    ) => actionBar.set(newActionBar);
 </script>
 
 {#if popup}
     <svelte:component this={popups[popup]} />
 {/if}
 
-<Shortcut meta key="o"
-    action={() => { popup = "Quick Switch" }}
+<Shortcut
+    meta
+    key="o"
+    action={() => {
+        popup = "Quick Switch";
+    }}
 />
-<Shortcut meta key="k"
-    action={() => { popup = "Quick Actions" }}
+<Shortcut
+    meta
+    key="k"
+    action={() => {
+        popup = "Quick Actions";
+    }}
 />
-<Shortcut meta key="/"
-    action={() => popup="Shortcuts"}
-/>
-<Shortcut meta key=","
-    action={() => popup="Settings"}
-/>
-
+<Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
+<Shortcut meta key="," action={() => (popup = "Settings")} />
 
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />
@@ -171,10 +176,12 @@
     opt
     key="ArrowUp"
     action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id)
+        const currentClusterIndex = pageData.clusters.findIndex(
+            (c) => c.id == pageData.cluster.id
+        );
         if (currentClusterIndex == 0) return;
-        const newCluster = pageData.clusters[currentClusterIndex - 1]
-        goto(`/${newCluster.name}`)
+        const newCluster = pageData.clusters[currentClusterIndex - 1];
+        goto(`/${newCluster.name}`);
     }}
 />
 
@@ -184,10 +191,12 @@
     opt
     key="ArrowDown"
     action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(c => c.id == pageData.cluster.id);
+        const currentClusterIndex = pageData.clusters.findIndex(
+            (c) => c.id == pageData.cluster.id
+        );
         if (currentClusterIndex >= pageData.clusters.length - 1) return;
-        const cluster = pageData.clusters[currentClusterIndex + 1]
-        goto(`/${cluster.name}`)
+        const cluster = pageData.clusters[currentClusterIndex + 1];
+        goto(`/${cluster.name}`);
     }}
 />
 

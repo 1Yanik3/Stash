@@ -21,12 +21,24 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<main transition:fade={{ duration: 100 }} on:click={() => $controller.setPopup(null)} class:mobile={$settings.mobileLayout}>
-    <section transition:scale={{ start: 1.1, duration: 100 }} class:bottomSheet on:click|stopPropagation>
+<main
+    transition:fade={{ duration: 100 }}
+    on:click={() => $controller.setPopup(null)}
+    class:mobile={$settings.mobileLayout}
+    class:eink={$settings.eink}
+>
+    <section
+        transition:scale={{ start: 1.1, duration: 100 }}
+        class:bottomSheet
+        on:click|stopPropagation
+    >
         {#if !hideHeader || $settings.mobileLayout}
             <div id="header">
                 {#if bottomSheet}
-                    <div class="centralBlob" />
+                    <div
+                        class="centralBlob"
+                        on:click={() => dispatch("close")}
+                    />
                 {:else}
                     <h2>{title}</h2>
 
@@ -122,7 +134,7 @@
             section {
                 width: 100vw;
                 max-width: 100vw;
-                height: 100vh;
+                // height: 100vh;
                 max-height: 100vh;
                 border: none;
                 display: grid;
@@ -130,6 +142,15 @@
                 #content {
                     justify-content: center;
                 }
+            }
+        }
+
+        &.eink {
+            background: none;
+            section {
+                background: #fff;
+                border: 1px solid #444;
+                box-shadow: none;
             }
         }
     }

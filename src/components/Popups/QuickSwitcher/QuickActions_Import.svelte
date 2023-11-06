@@ -16,7 +16,7 @@
                 method: "POST",
                 body: JSON.stringify({
                     filename,
-                    selectedTags: $selectedTags
+                    selectedTags: $selectedTags,
                 }),
             }
         );
@@ -27,10 +27,10 @@
 
     const getPromise = async (loading: boolean) => {
         return fetch(`/api/cluster/-1/import`)
-        .then((res) => res.json())
-        .then((d) => d as string[]);
-    }
-    $: promise = getPromise(loading)
+            .then((res) => res.json())
+            .then((d) => d as string[]);
+    };
+    $: promise = getPromise(loading);
 </script>
 
 {#if loading}
@@ -45,7 +45,7 @@
         let:result
         on:selected={({ detail }) => importElement(detail)}
         disableClose
-        on:close={() => invalidate("media")}
+        on:close={() => invalidate("media-and-tags")}
     >
         <span>{result}</span>
     </FuzzyPopupTemplate>

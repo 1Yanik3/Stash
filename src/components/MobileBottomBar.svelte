@@ -1,23 +1,41 @@
 <script lang="ts">
-    import { controller } from "../lib/stores";
+    import { controller, settings } from "../lib/stores";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
 </script>
 
-<main>
+<main class:eink={$settings.eink}>
     <!-- Cluster Section (Clusters and Settings) -->
-    <SidebarButton icon="mdiMenu" card on:click={() => $controller.setPopup("Cluster Section Mobile")} />
+    <SidebarButton
+        icon="mdiMenu"
+        card
+        on:click={() => $controller.setPopup("Cluster Section Mobile")}
+    />
 
-    <!-- Navigation Section (Tags) -->
-    <!-- or mdiAnimation -->
-    <SidebarButton icon="mdiTagMultiple" card  on:click={() => $controller.setPopup("Navigation Section Mobile")} />
+    {#if !$settings.mobileLayout}
+        <!-- Navigation Section (Tags) -->
+        <!-- or mdiAnimation -->
+        <SidebarButton
+            icon="mdiTagMultiple"
+            card
+            on:click={() => $controller.setPopup("Navigation Section Mobile")}
+        />
+    {/if}
 
     <div class="spacer" />
 
     <!-- Quick Switch -->
-    <SidebarButton icon="mdiTabSearch" card  on:click={() => $controller.setPopup("Quick Switch")} />
+    <SidebarButton
+        icon="mdiTabSearch"
+        card
+        on:click={() => $controller.setPopup("Quick Switch")}
+    />
 
     <!-- Quick Actions -->
-    <SidebarButton icon="mdiConsoleLine" card  on:click={() => $controller.setPopup("Quick Actions")} />
+    <SidebarButton
+        icon="mdiConsoleLine"
+        card
+        on:click={() => $controller.setPopup("Quick Actions")}
+    />
 </main>
 
 <style lang="scss">
@@ -30,6 +48,10 @@
 
         .spacer {
             flex: 1;
+        }
+
+        &.eink {
+            background: #fff;
         }
     }
 </style>

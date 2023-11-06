@@ -1,25 +1,26 @@
 <script lang="ts">
-    import { isFullscreen, isStoryFullScreen, settings } from '$lib/stores'
-    import MobileBottomBar from '../../components/MobileBottomBar.svelte';
+    import {
+        isFullscreen,
+        mobileBottomBarVisible,
+        settings,
+    } from "$lib/stores";
+    import MobileBottomBar from "../../components/MobileBottomBar.svelte";
 
-    import ClusterSection from './ClusterSection.svelte';
-
+    import ClusterSection from "./ClusterSection.svelte";
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
-    
     {#if !$settings.mobileLayout}
-    <section style={$isFullscreen || $isStoryFullScreen ? 'display: none' : ''}>
-        <ClusterSection/>
-    </section>
+        <section style={$isFullscreen ? "display: none" : ""}>
+            <ClusterSection />
+        </section>
     {/if}
 
-    <slot/>
+    <slot />
 
-    {#if $settings.mobileLayout}
-    <MobileBottomBar/>
+    {#if $settings.mobileLayout && $mobileBottomBarVisible}
+        <MobileBottomBar />
     {/if}
-
 </main>
 
 <style lang="scss">
@@ -31,7 +32,8 @@
         width: 100%;
 
         section {
-            display: flex;            
+            height: 100vh;
+            display: flex;
         }
 
         &.mobile {

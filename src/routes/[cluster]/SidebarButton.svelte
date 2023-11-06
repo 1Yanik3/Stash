@@ -1,11 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import Icon from "../../components/Icon.svelte";
-    import { page } from "$app/stores";
     import type { possibleIcons } from "$lib/possibleIcons";
-
-    import type { PageData } from "./$types";
-    $: pageData = $page.data as PageData;
+    import { settings } from "$lib/stores";
 
     let isDraggingOver = false;
 
@@ -84,7 +81,8 @@
     class:hidden={hidden || !$$slots.default}
     class:right
     class:highlighted
-    on:click={e => {
+    class:eink={$settings.eink}
+    on:click={(e) => {
         dispatch("click", e);
         // TODO
         // if (tag) {
@@ -102,7 +100,7 @@
 
         // }
     }}
-    on:dblclick={e => {
+    on:dblclick={(e) => {
         dispatch("dblclick", e);
         // TODO
         // if (!target || !target.collapsed) return
@@ -185,7 +183,7 @@
             border: 1px solid hsl(0, 0%, 35%);
 
             @media (hover: hover) and (pointer: fine) {
-                    &:hover {
+                &:hover {
                     background: hsl(0, 0%, 42%);
                     border: 1px solid hsl(0, 0%, 44%);
                 }
@@ -229,6 +227,23 @@
             &,
             .section {
                 flex-direction: row-reverse;
+            }
+        }
+
+        &.eink {
+            .section span {
+                color: #000;
+            }
+
+            &.card {
+                background: #fff;
+                border: 1px solid #444;
+            }
+
+            &.active {
+                background: #fff;
+                border: 1px solid #444;
+                display: none;
             }
         }
     }

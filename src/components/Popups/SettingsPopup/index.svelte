@@ -5,33 +5,36 @@
     import General from "./tabs/general.svelte";
     import Jobs from "./tabs/jobs.svelte";
     import Statistics from "./tabs/statistics.svelte";
+    import TagIcons from "./tabs/tagIcons.svelte";
 
-    let activeTab = "general"
+    let activeTab = "general";
 </script>
 
 <Popup title="Settings">
     <main>
+        <Sidebar bind:activeTab />
 
-        <Sidebar bind:activeTab/>
-
-        <section >
+        <section>
             {#if activeTab == "general"}
-                <General/>
+                <General />
             {/if}
 
             {#if activeTab == "jobs"}
-                <Jobs/>
+                <Jobs />
+            {/if}
+
+            {#if activeTab == "tag-icons"}
+                <TagIcons />
             {/if}
 
             {#if activeTab == "statistics"}
-                <Statistics/>
+                <Statistics />
             {/if}
 
             {#if activeTab == "about"}
-                <About/>
+                <About />
             {/if}
         </section>
-
     </main>
 </Popup>
 

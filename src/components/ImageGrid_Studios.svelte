@@ -16,30 +16,31 @@
             const element = oldMedia[i];
             if (element.groupedIntoNamesId != null) {
                 if (
-                    !alreadyProcessedGroupedInto.includes(element.groupedIntoNamesId)
+                    !alreadyProcessedGroupedInto.includes(
+                        element.groupedIntoNamesId
+                    )
                 ) {
-                    alreadyProcessedGroupedInto.push(element.groupedIntoNamesId);
+                    alreadyProcessedGroupedInto.push(
+                        element.groupedIntoNamesId
+                    );
                     newMedia.push(element);
                 }
             } else {
                 newMedia.push(element);
             }
         }
-        return newMedia
-    }
+        return newMedia;
+    };
 
-    const getSortedMatchingMedia = (
-        medium: (typeof media)[0]
-    ) =>
-        {
-            return medium.groupedIntoNamesId == null
+    const getSortedMatchingMedia = (medium: (typeof media)[0]) => {
+        return medium.groupedIntoNamesId == null
             ? [medium]
             : media
                   .filter(
                       (m) => m.groupedIntoNamesId == medium.groupedIntoNamesId
                   )
                   .sort((a, b) => a.name.localeCompare(b.name));
-        }
+    };
 
     let selectedMedia: string[] = [];
 </script>
@@ -63,7 +64,7 @@
                             fetch(`/api/group-together`, {
                                 method: "POST",
                                 body: JSON.stringify(selectedMedia),
-                            }).then(() => invalidate("media"));
+                            }).then(() => invalidate("media-and-tags"));
                         }}>Group</SidebarButton
                     >
                     <SidebarButton
@@ -77,7 +78,7 @@
 
             {#each getProcessedMedia(media) as medium}
                 <ImageGridStudiosThumbnail
-                    medium={medium}
+                    {medium}
                     on:click={() => (medium.expanded = !medium.expanded)}
                     parent={medium.groupedIntoNamesId != null}
                     bind:selectedMedia

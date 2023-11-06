@@ -1,132 +1,134 @@
 <script lang="ts">
-    import { controller, detailsVisible, imageSuffixParameter, isFullscreen, settings, visibleMedium } from "$lib/stores";
-    import { mdiCalendar, mdiFormTextbox, mdiMoveResize } from "@mdi/js";
+    import {
+        controller,
+        detailsVisible,
+        imageSuffixParameter,
+        isFullscreen,
+        settings,
+        visibleMedium,
+    } from "$lib/stores";
     import Icon from "./Icon.svelte";
     import { page } from "$app/stores";
 
-    let mediaElement: HTMLElement
-    let imageElement: HTMLElement
-    let isZoomedIn = false
-    $: if (mediaElement && (imageElement || video) &&
-            (isZoomedIn || !isZoomedIn)
-        ) {
-        if (isZoomedIn) {
-            mediaElement.style.marginLeft = `${(imageElement || video).getBoundingClientRect().width / 2}px`
-            mediaElement.style.marginTop = `${(imageElement || video).getBoundingClientRect().height / 2}px`
+    let imageElement: HTMLElement;
+    let isZoomedIn = false;
 
-            mediaElement.parentElement?.scrollTo(
-                (imageElement || video).getBoundingClientRect().width,
-                (imageElement || video).getBoundingClientRect().height
-            )
-        } else {
-            mediaElement.style.marginLeft = `0`
-            mediaElement.style.marginTop = `0`
-        }
-    }
-
-    let video: HTMLVideoElement
+    let video: HTMLVideoElement;
 
     function toIsoString(date: Date) {
-        const pad = (num: number) => (num < 10 ? '0' : '') + num;
+        const pad = (num: number) => (num < 10 ? "0" : "") + num;
 
-        return date.getFullYear() +
-            '-' + pad(date.getMonth() + 1) +
-            '-' + pad(date.getDate()) +
-            ' ' + pad(date.getHours()) +
-            ':' + pad(date.getMinutes()) +
-            ':' + pad(date.getSeconds())
+        return (
+            date.getFullYear() +
+            "-" +
+            pad(date.getMonth() + 1) +
+            "-" +
+            pad(date.getDate()) +
+            " " +
+            pad(date.getHours()) +
+            ":" +
+            pad(date.getMinutes()) +
+            ":" +
+            pad(date.getSeconds())
+        );
     }
 </script>
 
 {#if $visibleMedium}
-
-<main class:detailsVisible={$detailsVisible} class:fullscreen={$isFullscreen}>
-    {#if $detailsVisible}
-        <div id="details">
-            {#key $visibleMedium}
-
-                <span
-                style="grid-column: span 2; cursor: pointer"
-                on:mousedown={async () => {
-                    if (!$visibleMedium)
-                        return
-
-                    const newName = await $controller.prompt("Enter new name:", $visibleMedium.name)
-                    if (newName) {
-                        $visibleMedium.name = newName
-                        fetch(`/api/media/${$visibleMedium.id}/rename`, {
-                            method: "PUT",
-                            body: JSON.stringify({
-                                name: newName
-                            })
-                        })
-                    }
-                }}
-                >
-                    <Icon name="mdiFormTextbox"/>
-                    <span>{$visibleMedium.name}</span>
-                </span>
-
-                <span>
-                    <Icon name="mdiMoveResize"/>
-                    <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
-                </span>
-
-                <span>
-                    <Icon name="mdiCalendar"/>
-                    <span>{toIsoString(new Date($visibleMedium.date))}</span>
-                </span>
-        
-            {/key}
-        </div>
-    {/if}
-    
-    <div id="media" bind:this={mediaElement} class:darkened={$isFullscreen}
-        on:click={e => {
-            if ($settings.touchNavigationButtons) {
-                const { width } = (imageElement || video).getBoundingClientRect()
-                
-                if (e.offsetX < width/2)
-                    $controller.goToPreviousMedia()
-                if (e.offsetX > width/2)
-                    $controller.goToNextMedia()
-            }
-        }}
+    <main
+        class:detailsVisible={$detailsVisible}
+        class:fullscreen={$isFullscreen}
     >
-        {#if $visibleMedium.type.startsWith("image")}
-    
-            <img
-                bind:this={imageElement}
-                src={`${$page.data.serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
-                crossorigin="use-credentials"
-                alt={$visibleMedium.name}
-                class:isZoomedIn
-                on:click={e => {
-                    if (!$settings.touchNavigationButtons)
-                        isZoomedIn = !isZoomedIn
-                }}
-            >
-    
-        {:else if $visibleMedium.type.startsWith("video")}
-    
-            <video
-                src={`${$page.data.serverURL}/file/${$visibleMedium.id}`}
-                controls
-                autoplay
-                bind:this={video}
-                on:playing={() => {
-                    if (video.duration <= 5)
-                        video.loop = true
-                }}
-                crossorigin="use-credentials"
-            ><track kind="captions"/></video>
-    
-        {:else}
-            <span>{$visibleMedium.name}</span>
-        {/if}
-    </div>
-</main>
+        {#if $detailsVisible}
+            <div id="details">
+                {#key $visibleMedium}
+                    <span
+                        style="grid-column: span 2; cursor: pointer"
+                        on:mousedown={async () => {
+                            if (!$visibleMedium) return;
 
+                            const newName = await $controller.prompt(
+                                "Enter new name:",
+                                $visibleMedium.name
+                            );
+                            if (newName) {
+                                $visibleMedium.name = newName;
+                                fetch(
+                                    `/api/media/${$visibleMedium.id}/rename`,
+                                    {
+                                        method: "PUT",
+                                        body: JSON.stringify({
+                                            name: newName,
+                                        }),
+                                    }
+                                );
+                            }
+                        }}
+                    >
+                        <Icon name="mdiFormTextbox" />
+                        <span>{$visibleMedium.name}</span>
+                    </span>
+
+                    <span>
+                        <Icon name="mdiMoveResize" />
+                        <span
+                            >{$visibleMedium.width}x{$visibleMedium.height}</span
+                        >
+                    </span>
+
+                    <span>
+                        <Icon name="mdiCalendar" />
+                        <span>{toIsoString(new Date($visibleMedium.date))}</span
+                        >
+                    </span>
+                {/key}
+            </div>
+        {/if}
+
+        <div
+            id="media"
+            class:darkened={$isFullscreen}
+            class:isZoomedIn
+            on:click={(e) => {
+                if ($settings.touchNavigationButtons) {
+                    const { width } = (
+                        imageElement || video
+                    ).getBoundingClientRect();
+
+                    if (e.offsetX < width / 2) $controller.goToPreviousMedia();
+                    if (e.offsetX > width / 2) $controller.goToNextMedia();
+                }
+            }}
+        >
+            {#if $visibleMedium.type.startsWith("image")}
+                <img
+                    bind:this={imageElement}
+                    src={`${$page.data.serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
+                    crossorigin="use-credentials"
+                    alt={$visibleMedium.name}
+                    class:isZoomedIn
+                    on:click={(e) => {
+                        if (!$settings.touchNavigationButtons)
+                            isZoomedIn = !isZoomedIn;
+                    }}
+                />
+            {:else if $visibleMedium.type.startsWith("video")}
+                <video
+                    src={`${$page.data.serverURL}/file/${$visibleMedium.id}`}
+                    controls
+                    autoplay
+                    bind:this={video}
+                    on:playing={() => {
+                        if (video.duration <= 5) video.loop = true;
+                    }}
+                    crossorigin="use-credentials"
+                    ><track kind="captions" /></video
+                >
+            {:else}
+                <span>{$visibleMedium.name}</span>
+            {/if}
+        </div>
+    </main>
 {/if}
 
 <style lang="scss">
@@ -148,13 +150,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            span { margin-left: 0.5em }
+            span {
+                margin-left: 0.5em;
+            }
         }
     }
 
     main {
         // TODO: Make more elegant
-        height: calc(100vh - 40.5px);
+        height: calc(100vh - 42px);
         display: grid;
         grid-template-rows: 1fr;
         &.detailsVisible {
@@ -172,39 +176,42 @@
         }
 
         width: 100%;
-        height: calc(100vh - 40.5px);
+        height: calc(100vh - 42px);
 
         display: flex;
+        &.isZoomedIn {
+            align-items: baseline;
+        }
 
-            
         img {
             cursor: zoom-in;
         }
-        
-        img, video {
+
+        img,
+        video {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
 
-            position: absolute;
-            margin: auto;
+            // position: absolute;
+            // margin: auto;
 
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            // top: 50%;
+            // left: 50%;
+            // transform: translate(-50%, -50%);
         }
-        
+
         img.isZoomedIn {
             cursor: zoom-out;
-            max-width: 200%;
-            max-height: 200%;
+            max-width: unset;
+            max-height: unset;
         }
     }
 
     main.fullscreen {
-        &, #media {
+        &,
+        #media {
             height: 100%;
         }
     }
-
 </style>

@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 // import { ExifParserFactory } from "ts-exif-parser"
 
-import sharedImportLogic from '../../../../../lib/sharedImportLogic'
-import { sortingMethods } from '../../../../../types'
+import sharedImportLogic from '$lib/sharedImportLogic'
+import { setMethods, sortingMethods } from '$lib/../types'
 import { json } from '@sveltejs/kit'
 
 import { Prisma, PrismaClient, type Media } from '@prisma/client'
@@ -15,6 +15,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
     const traverse = searchParams.get('traverse') == "true"
     const tags = searchParams.get('tags')?.split(",") || []
     const activeSortingMethod = sortingMethods[+(searchParams.get("activeSortingMethod") || 0)]
+    const activeSetMethod = setMethods[+(searchParams.get("activeSetMethod") || 0)]
     const mediaTypeFilter = searchParams.get('mediaTypeFilter') || ""
 
     let typeFilter: string = ``
@@ -25,7 +26,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
     let tagsFilter: string = ``
 
     if (tags[0] == "SHOW_UNSORTED") tagsFilter = /*sql*/`
-        AND array_length("Media"."tags", 1) IS NULL OR tag = 'show_unsorted' OR tag = ''
+        AND (array_length("Media"."tags", 1) IS NULL OR tag = 'show_unsorted' OR tag = '')
     `
 
     else if (tags[0] == "people_count_unknown") tagsFilter = /*sql*/`
@@ -34,12 +35,21 @@ export const GET: RequestHandler = async ({ params, request }) => {
         AND NOT "Media"."tags" @> ARRAY['group']
     `
 
-    else if (tags[0]?.length) tagsFilter = /*sql*/`
-        AND (
-            t.tag = ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}'`)}])
-            ${traverse ? `OR t.tag LIKE ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}/%'`)}])` : ""}
-        )
-    `
+    // TODO: Traverse for AND
+    else if (tags[0]?.length)
+        if (activeSetMethod.title == "OR")
+            tagsFilter = /*sql*/`
+                AND (
+                    t.tag = ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}'`)}])
+                    ${traverse ? `OR t.tag LIKE ANY (ARRAY[${tags.map(t => `'${t.toLowerCase()}/%'`)}])` : ""}
+                )
+            `
+        else if (activeSetMethod.title == "AND")
+            tagsFilter = /*sql*/`
+                AND (
+                    ${tags.map(tag => `("Media"."tags" @> ARRAY['${tag.toLowerCase()}'])`).join(' AND ')}
+                )
+            `
 
     const query = /*sql*/`
         SELECT m.*
