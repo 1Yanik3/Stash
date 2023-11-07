@@ -11,15 +11,13 @@
         on:click={() => $controller.setPopup("Cluster Section Mobile")}
     />
 
-    {#if !$settings.mobileLayout}
-        <!-- Navigation Section (Tags) -->
-        <!-- or mdiAnimation -->
-        <SidebarButton
-            icon="mdiTagMultiple"
-            card
-            on:click={() => $controller.setPopup("Navigation Section Mobile")}
-        />
-    {/if}
+    <!-- Navigation Section (Tags) -->
+    <!-- or mdiAnimation -->
+    <SidebarButton
+        icon="mdiTagMultiple"
+        card
+        on:click={() => $controller.setPopup("Navigation Section Mobile")}
+    />
 
     <div class="spacer" />
 
