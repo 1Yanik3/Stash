@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 
 export const GET: RequestHandler = async ({ params }) => {
-    const sourceFolderPath = `./comics_raw/${params.deviceId}/${params.comicName}`
+    const sourceFolderPath = `./comics_raw/${params.deviceId}/${params.sourceName}/${params.comicName}`
     const sourceChapterFolders = (await fs.readdir(sourceFolderPath, { withFileTypes: true })).filter(a => a.isDirectory())
 
     let i = 0,

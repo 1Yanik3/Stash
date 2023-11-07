@@ -3,11 +3,27 @@ import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
 
 export const GET: RequestHandler = async ({ params }) => {
-    const sourceFolderPath = `./comics_raw/${params.deviceId}`
+    const sourcesFolderPath = `./comics_raw/${params.deviceId}`
     const targetFolderPath = `./comics_synced`
 
-    const sourceItems = (await fs.readdir(sourceFolderPath)).filter(a => !a.startsWith("."))
-    const targetItems = (await fs.readdir(targetFolderPath)).filter(a => !a.startsWith("."))
+    const sources = await fs.readdir(`${sourcesFolderPath}`)
+    const sourceItems = (await Promise.all(
+        sources
+            .filter(a => !a.startsWith("."))
+            .map(async s => {
+                const subItems = await fs.readdir(`${sourcesFolderPath}/${s}`)
+                return subItems.filter(a => !a.startsWith(".")).map(i => {
+                    return {
+                        source: s,
+                        id: i
+                    }
+                })
+            })
+    )).flat()
 
-    return json(sourceItems.map(id => { return { id, synced: targetItems.includes(id) } }))
+    const targetItems = await fs.readdir(targetFolderPath)
+
+    const syncedItems = sourceItems.map(item => ({ ...item, synced: targetItems.includes(item.id) }))
+
+    return json(syncedItems)
 }

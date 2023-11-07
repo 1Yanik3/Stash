@@ -2,19 +2,23 @@
     import { storyTab } from "$lib/stores";
     import Icon from "./Icon.svelte";
 
-    let comics: { id: string; synced: boolean }[] = [];
+    let comics: {
+        synced: boolean;
+        source: string;
+        id: string;
+    }[] = [];
     $: fetch(`/api/comics/${$storyTab}`)
         .then((r) => r.json())
         .then((res) => (comics = res));
 </script>
 
 <main>
-    {#each comics as { id, synced }}
+    {#each comics as { id, source, synced }}
         <div
             class="comic"
             on:click={() => {
                 fetch(
-                    `/api/comics/${$storyTab}/${id}/${
+                    `/api/comics/${$storyTab}/${source}/${id}/${
                         synced ? "remove" : "add"
                     }`
                 ).then(() => {
@@ -22,7 +26,7 @@
                 });
             }}
         >
-            <img src="/api/comics/{$storyTab}/{id}/cover" alt="" />
+            <img src="/api/comics/{$storyTab}/{source}/{id}/cover" alt="" />
             {#if synced}
                 <div class="indicator">
                     <Icon name="mdiCheckBold" color="#090" />
