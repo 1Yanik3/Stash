@@ -8,6 +8,7 @@
         mediaTypeFilter,
         selectedTags,
         settings,
+        storyTab,
         traverse,
     } from "$lib/stores";
 
@@ -69,101 +70,126 @@
     }
 </script>
 
-<!-- Create Group -->
-<!-- <Shortcut key="c" action={() => pageData.cluster.type != "stories" && createGroup()} /> -->
-<!-- <Shortcut key="r" action={renameGroup} /> -->
-
 <main class:mobile={$settings.mobileLayout}>
-    <div>
-        <!-- Statics -->
-        <SidebarSection horizontal>
+    {#if $page.data.cluster.type == "stories"}
+        <SidebarSection title="Books">
             <SidebarButton
-                hidden
-                icon="mdiBookshelf"
-                on:click={() => {
-                    selectedTags.set([]);
-                }}
-                active={$selectedTags.length == 0}
+                icon="mdiFileDocument"
+                on:click={() => storyTab.set(null)}
+                active={!$storyTab}
             >
-                All
-            </SidebarButton>
-            <SidebarButton
-                hidden
-                icon="mdiArchiveOutline"
-                on:click={() => {
-                    selectedTags.set(["SHOW_UNSORTED"]);
-                }}
-                active={$selectedTags[0] == "SHOW_UNSORTED"}
-            >
-                Unsorted
-            </SidebarButton>
-
-            <SidebarButton
-                hidden
-                icon="mdiImageOutline"
-                on:click={() => {
-                    if ($mediaTypeFilter == "image") mediaTypeFilter.set("");
-                    else mediaTypeFilter.set("image");
-                    invalidate("media-and-tags");
-                }}
-                active={$mediaTypeFilter == "image"}
-            >
-                Image
-            </SidebarButton>
-
-            <SidebarButton
-                hidden
-                icon="mdiVideoOutline"
-                on:click={() => {
-                    if ($mediaTypeFilter == "video") mediaTypeFilter.set("");
-                    else mediaTypeFilter.set("video");
-                    invalidate("media-and-tags");
-                }}
-                active={$mediaTypeFilter == "video"}
-            >
-                Video
+                Stories
             </SidebarButton>
         </SidebarSection>
-    </div>
 
-    <div>
-        <!-- Folders -->
-        <!-- <SidebarSection title="Folders">
+        <SidebarSection title="Comics">
+            {#each ["Tab S7", "Razr 40"] as device_id}
+                <SidebarButton
+                    icon="mdiFileImage"
+                    on:click={() => storyTab.set(device_id)}
+                    active={$storyTab == device_id}
+                >
+                    {device_id}
+                </SidebarButton>
+            {/each}
+        </SidebarSection>
+    {:else}
+        <div>
+            <!-- Statics -->
+            <SidebarSection horizontal>
+                <SidebarButton
+                    hidden
+                    icon="mdiBookshelf"
+                    on:click={() => {
+                        selectedTags.set([]);
+                    }}
+                    active={$selectedTags.length == 0}
+                >
+                    All
+                </SidebarButton>
+                <SidebarButton
+                    hidden
+                    icon="mdiArchiveOutline"
+                    on:click={() => {
+                        selectedTags.set(["SHOW_UNSORTED"]);
+                    }}
+                    active={$selectedTags[0] == "SHOW_UNSORTED"}
+                >
+                    Unsorted
+                </SidebarButton>
+
+                <SidebarButton
+                    hidden
+                    icon="mdiImageOutline"
+                    on:click={() => {
+                        if ($mediaTypeFilter == "image")
+                            mediaTypeFilter.set("");
+                        else mediaTypeFilter.set("image");
+                        invalidate("media-and-tags");
+                    }}
+                    active={$mediaTypeFilter == "image"}
+                >
+                    Image
+                </SidebarButton>
+
+                <SidebarButton
+                    hidden
+                    icon="mdiVideoOutline"
+                    on:click={() => {
+                        if ($mediaTypeFilter == "video")
+                            mediaTypeFilter.set("");
+                        else mediaTypeFilter.set("video");
+                        invalidate("media-and-tags");
+                    }}
+                    active={$mediaTypeFilter == "video"}
+                >
+                    Video
+                </SidebarButton>
+            </SidebarSection>
+        </div>
+
+        <div>
+            <!-- Folders -->
+            <!-- <SidebarSection title="Folders">
             {#each pageData.groups as target}
                 <SidebarHierarchyEntry {target} />
             {/each}
         </SidebarSection> -->
 
-        <!-- {#if pageData.cluster.type != "collection"} -->
-        <!-- TODO: Cluster settings -->
-        {#key pageData.tags}
-            {#if pageData.tags}
-                <!-- TODO: This should be a setting -->
-                {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
-                    <SidebarSection title="People">
-                        {#each orderDataHierarchically(pageData.tags.filter( (t) => ["Solo", "Two", "Group"].includes(t.tag[0]) )) as { name, count, children }}
+            <!-- {#if pageData.cluster.type != "collection"} -->
+            <!-- TODO: Cluster settings -->
+            {#key pageData.tags}
+                {#if pageData.tags}
+                    <!-- TODO: This should be a setting -->
+                    {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
+                        <SidebarSection title="People">
+                            {#each orderDataHierarchically(pageData.tags.filter( (t) => ["Solo", "Two", "Group"].includes(t.tag[0]) )) as { name, count, children }}
+                                <SidebarHierarchyEntry
+                                    {name}
+                                    {count}
+                                    {children}
+                                />
+                            {/each}
+                            <SidebarHierarchyEntry
+                                name="PEOPLE_COUNT_UNKNOWN"
+                                nameOverwrite="Unknown"
+                                iconOverwrite="mdiAccountQuestion"
+                                count={pageData.counters.untagged_count}
+                                children={[]}
+                            />
+                        </SidebarSection>
+                    {/if}
+
+                    <SidebarSection title="Tags">
+                        {#each orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0]))) as { name, count, children }}
                             <SidebarHierarchyEntry {name} {count} {children} />
                         {/each}
-                        <SidebarHierarchyEntry
-                            name="PEOPLE_COUNT_UNKNOWN"
-                            nameOverwrite="Unknown"
-                            iconOverwrite="mdiAccountQuestion"
-                            count={pageData.counters.untagged_count}
-                            children={[]}
-                        />
                     </SidebarSection>
                 {/if}
+            {/key}
 
-                <SidebarSection title="Tags">
-                    {#each orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0]))) as { name, count, children }}
-                        <SidebarHierarchyEntry {name} {count} {children} />
-                    {/each}
-                </SidebarSection>
-            {/if}
-        {/key}
-
-        <!-- Tags -->
-        <!-- {#if pageData.tags.length}
+            <!-- Tags -->
+            <!-- {#if pageData.tags.length}
             <SidebarSection title="Tags">
 
                 {#each pageData.tags
@@ -201,10 +227,11 @@
                     }}
                 /> -->
 
-        <!-- </SidebarSection> -->
-        <!-- {/if} -->
-        <!-- {/if} -->
-    </div>
+            <!-- </SidebarSection> -->
+            <!-- {/if} -->
+            <!-- {/if} -->
+        </div>
+    {/if}
 </main>
 
 <style lang="scss">

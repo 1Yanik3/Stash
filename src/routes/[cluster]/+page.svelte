@@ -88,7 +88,7 @@
 </script>
 
 <main class:mobile={$settings.mobileLayout} class:eink={$settings.eink}>
-    {#if !$settings.mobileLayout && $page.data.cluster.type != "stories"}
+    {#if !$settings.mobileLayout}
         <section id="navigationSection">
             <NavigationSection />
         </section>

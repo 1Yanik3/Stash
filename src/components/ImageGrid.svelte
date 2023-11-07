@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { selectedTags } from "$lib/stores";
+    import { selectedTags, storyTab } from "$lib/stores";
 
     import ImageGridPage from "./ImageGrid_Page.svelte";
     import ImageGridStories from "./ImageGrid_Stories.svelte";
+    import ImageGridStoriesComics from "./ImageGrid_Stories_Comics.svelte";
     import ImageGridCollection from "./ImageGrid_Collection.svelte";
 
-    import type { Media } from "@prisma/client";
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
     import { page } from "$app/stores";
 
@@ -19,7 +19,11 @@
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
     <ImageGridCollection />
 {:else if pageData.cluster.type == "stories"}
-    <ImageGridStories />
+    {#if $storyTab == null}
+        <ImageGridStories />
+    {:else}
+        <ImageGridStoriesComics />
+    {/if}
 {:else}
     {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups">

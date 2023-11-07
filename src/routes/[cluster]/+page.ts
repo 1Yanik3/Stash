@@ -1,5 +1,5 @@
 import { get } from 'svelte/store'
-import { activeSetMethod, activeSortingMethod, mediaTypeFilter, selectedTags, traverse } from '$lib/stores'
+import { activeSetMethod, activeSortingMethod, mediaTypeFilter, selectedTags, storyTab, traverse } from '$lib/stores'
 import type { PageLoad } from './$types'
 import { setMethods, sortingMethods } from '../../types'
 import type { Media } from '@prisma/client'

@@ -30,6 +30,7 @@ export let settings = persisted('settings', {
 
 export let detailsVisible: Writable<boolean> = writable(false)
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)
+export let storyTab: Writable<string | null> = writable(null)
 
 // TODO: Change to a "mode"
 export let isFullscreen: Writable<boolean> = writable(false)
