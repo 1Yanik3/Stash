@@ -27,6 +27,7 @@
             }}
         >
             <img src="/api/comics/{$storyTab}/{source}/{id}/cover" alt="" />
+            <span>{id}</span>
             {#if synced}
                 <div class="indicator">
                     <Icon name="mdiCheckBold" color="#090" />
@@ -65,6 +66,13 @@
                 background: #212121;
                 padding: 1px 4px;
                 border-radius: 0.5em;
+            }
+
+            span {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 3px;
             }
 
             cursor: pointer;
