@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ params }) => {
                         return { name: f.name, ...stats }
                     })
                     .sort((a, b) => {
-                        return a.mtimeMs - b.mtimeMs
+                        return b.mtimeMs - a.mtimeMs
                     })
                     .map(i => {
                         return {
