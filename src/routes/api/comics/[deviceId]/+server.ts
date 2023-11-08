@@ -1,6 +1,8 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import fs from 'fs/promises'
+import fsSync from 'fs'
+import path from 'path'
 
 export const GET: RequestHandler = async ({ params }) => {
     const sourcesFolderPath = `./comics_raw/${params.deviceId}`
@@ -10,15 +12,25 @@ export const GET: RequestHandler = async ({ params }) => {
     const sourceItems = (await Promise.all(
         sources
             .filter(a => !a.startsWith("."))
-            .map(async s => {
-                const subItems = await fs.readdir(`${sourcesFolderPath}/${s}`)
-                return subItems.filter(a => !a.startsWith(".")).map(i => {
-                    return {
-                        source: s,
-                        id: i
-                    }
-                })
-            })
+            .map(async s =>
+                (await fs.readdir(`${sourcesFolderPath}/${s}`, { withFileTypes: true }))
+                    .filter(s => s.isDirectory())
+                    .filter(a => !a.name.startsWith("."))
+                    .map(f => {
+                        const fullFolderPath = path.join(path.resolve(`${sourcesFolderPath}/${s}`), f.name)
+                        const stats = fsSync.statSync(fullFolderPath)
+                        return { name: f.name, ...stats }
+                    })
+                    .sort((a, b) => {
+                        return a.mtimeMs - b.mtimeMs
+                    })
+                    .map(i => {
+                        return {
+                            source: s,
+                            id: i.name
+                        }
+                    })
+            )
     )).flat()
 
     const targetItems = await fs.readdir(targetFolderPath)
