@@ -183,10 +183,11 @@
 
 <style lang="scss">
     main {
-        border-left: 1px solid hsl(0, 0%, 22%);
-        border-bottom: 1px solid hsl(0, 0%, 22%);
+        border-left: 1px solid $border-color-base;
+        border-bottom: 1px solid $border-color-base;
         padding: 0.35em;
         min-width: calc(100% - 4em);
+        background: $color-dark-level-1;
 
         display: flex;
         justify-content: space-between;
@@ -195,11 +196,10 @@
         div {
             display: flex;
             .tag {
-                background: hsl(0, 0%, 25%);
+                background: $color-dark-level-2;
                 padding: 0.3em 0.5em;
                 margin: 0.15em;
-                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
-                    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+                border: 1px solid $color-dark-level-1;
                 border-radius: 3px;
 
                 margin-right: 0.25em;
@@ -249,6 +249,9 @@
             button:not(:nth-child(2)) {
                 display: none;
             }
+
+            background: none;
+            border-bottom: none;
         }
     }
 </style>

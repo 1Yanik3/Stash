@@ -10,9 +10,11 @@
     export let element: HTMLAnchorElement = null;
 
     export let icon: keyof typeof possibleIcons | null = null;
+    export let iconNoTyping: string | null = null;
     export let indent: number = 0;
     export let count: number | null = null;
     export let active: boolean = false;
+    export let href: string | null = null;
 
     export let hidden = false;
     export let right = false;
@@ -75,13 +77,15 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
     bind:this={element}
-    href={null}
+    {href}
     style={`padding-left: ${0.75 + indent}em`}
     class:active
     class:hidden={hidden || !$$slots.default}
     class:right
     class:highlighted
-    class:eink={$settings.eink}
+    on:contextmenu={(e) => {
+        dispatch("contextmenu", e);
+    }}
     on:click={(e) => {
         dispatch("click", e);
         // TODO
@@ -102,27 +106,19 @@
     }}
     on:dblclick={(e) => {
         dispatch("dblclick", e);
-        // TODO
-        // if (!target || !target.collapsed) return
-        // const req = await fetch(`/api/group/${target.id}/collapsed`, {
-        //     method: "PATCH"
-        // })
-        // const res = !!(await req.json())
-        // target.collapsed = res
-        // on:drop|preventDefault|stopPropagation={handleDrop}
-        // on:dragover|preventDefault={() => {}}
-        // on:dragenter={handleEnter}
-        // on:dragleave={handleLeave}
     }}
     class:isDraggingOver
     class:card
     class:disabled
 >
     <div class="section">
-        {#if icon != null}
+        {#if (icon || iconNoTyping) != null}
             <!-- @ts-ignore -->
             <div class="spacer">
-                <Icon name={icon || "mdiHelp"} size={"1.25em"} />
+                <Icon
+                    nameAlt={icon || iconNoTyping || "mdiHelp"}
+                    size={"1.25em"}
+                />
             </div>
         {/if}
         <span>
@@ -170,29 +166,34 @@
 
         @media (hover: hover) and (pointer: fine) {
             &:hover {
-                background: hsl(0, 0%, 22%);
-                border: 1px solid hsl(0, 0%, 24%);
+                background: $color-dark-level-2;
+                border: 1px solid $border-color-1;
             }
         }
         &.active {
-            background: hsl(0, 0%, 24%);
-            border: 1px solid hsl(0, 0%, 33%);
+            background: $color-dark-level-2;
+            border: 1px solid $border-color-1;
+            &:hover {
+                background: lighten($color-dark-level-2, $amount: 2%);
+                border: 1px solid lighten($border-color-1, $amount: 2%);
+            }
         }
+
         &.highlighted {
-            background: hsl(0, 0%, 33%);
-            border: 1px solid hsl(0, 0%, 35%);
+            background: $color-dark-level-3;
+            border: 1px solid $border-color-1;
 
             @media (hover: hover) and (pointer: fine) {
                 &:hover {
-                    background: hsl(0, 0%, 42%);
-                    border: 1px solid hsl(0, 0%, 44%);
+                    background: lighten($color-dark-level-3, $amount: 2%);
+                    border: 1px solid lighten($border-color-1, $amount: 2%);
                 }
             }
         }
 
         &.isDraggingOver {
-            background: hsl(0, 0%, 30%);
-            border: 1px solid hsl(0, 0%, 45%);
+            background: lighten($color-dark-level-2, $amount: 2%);
+            border: 1px solid lighten($border-color-1, $amount: 2%);
         }
         .section {
             display: grid;
@@ -227,23 +228,6 @@
             &,
             .section {
                 flex-direction: row-reverse;
-            }
-        }
-
-        &.eink {
-            .section span {
-                color: #000;
-            }
-
-            &.card {
-                background: #fff;
-                border: 1px solid #444;
-            }
-
-            &.active {
-                background: #fff;
-                border: 1px solid #444;
-                display: none;
             }
         }
     }

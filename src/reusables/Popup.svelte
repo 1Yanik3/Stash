@@ -25,7 +25,6 @@
     transition:fade={{ duration: 100 }}
     on:click={() => $controller.setPopup(null)}
     class:mobile={$settings.mobileLayout}
-    class:eink={$settings.eink}
 >
     <section
         transition:scale={{ start: 1.1, duration: 100 }}
@@ -80,11 +79,11 @@
             max-width: 90%;
             max-height: 90%;
 
-            background: hsl(0, 0%, 13%);
-            border: 1px solid hsl(0, 0%, 30%);
+            background: $color-dark-level-base;
+            border: 1px solid $border-color-1;
             border-radius: 0.5em;
-            box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 9px 0px,
-                rgba(0, 0, 0, 0.24) 0px 2px 4px 0px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,
+                rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
 
             #header {
                 display: flex;
@@ -142,15 +141,6 @@
                 #content {
                     justify-content: center;
                 }
-            }
-        }
-
-        &.eink {
-            background: none;
-            section {
-                background: #fff;
-                border: 1px solid #444;
-                box-shadow: none;
             }
         }
     }

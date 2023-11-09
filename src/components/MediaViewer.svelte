@@ -132,14 +132,10 @@
 {/if}
 
 <style lang="scss">
-    main {
-        border-left: 1px solid hsl(0, 0%, 22%);
-    }
-
     #details {
         padding: 0.7em;
-        background: #131313;
-        box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+        background: $color-dark-level-1;
+        border-bottom: 1px solid $border-color-base;
 
         display: grid;
         gap: 0.5em;
@@ -159,6 +155,7 @@
     main {
         // TODO: Make more elegant
         height: calc(100vh - 42px);
+        border-left: 1px solid $border-color-base;
         display: grid;
         grid-template-rows: 1fr;
         &.detailsVisible {
@@ -168,9 +165,7 @@
     }
 
     #media {
-        position: relative;
-
-        background: #202020;
+        background: $color-dark-level-base;
         &.darkened {
             background: #000;
         }
@@ -192,13 +187,6 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-
-            // position: absolute;
-            // margin: auto;
-
-            // top: 50%;
-            // left: 50%;
-            // transform: translate(-50%, -50%);
         }
 
         img.isZoomedIn {
@@ -209,9 +197,19 @@
     }
 
     main.fullscreen {
-        &,
+        & {
+            height: 100%;
+        }
         #media {
             height: 100%;
+
+            img,
+            video {
+                height: 100vh;
+                width: 100vw;
+                max-height: 100vh;
+                max-width: 100vw;
+            }
         }
     }
 </style>

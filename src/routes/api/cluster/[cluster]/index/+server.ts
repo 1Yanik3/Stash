@@ -4,6 +4,7 @@ import type { RequestHandler } from './$types'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+// TODO
 export const GET: RequestHandler = async ({ params }) => json(await prisma.$queryRaw`
     SELECT DISTINCT ON (tag)
         SPLIT_PART(UNNEST(tags), '/', 1) AS tag,

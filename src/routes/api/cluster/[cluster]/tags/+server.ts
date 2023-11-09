@@ -37,7 +37,12 @@ export const GET: RequestHandler = async ({ params, request, url }) => {
         SELECT
             string_to_array(INITCAP(b.tag), '/') AS tag,
             b.direct_count::INTEGER,
-            COALESCE(SUM(a.direct_count), 0)::INTEGER AS indirect_count
+            COALESCE(SUM(a.direct_count), 0)::INTEGER AS indirect_count,
+            EXISTS (
+                SELECT 1
+                FROM "CollapsedTags"
+                WHERE starts_with(b.tag, "CollapsedTags".tag)
+            )::BOOLEAN AS tag_exists_in_collapsed_tags
         FROM tags b
         LEFT JOIN tags a ON a.tag LIKE LOWER(b.tag) || '/%'
         GROUP BY b.tag, b.direct_count 

@@ -122,7 +122,6 @@
     <main
         class="story-view"
         class:is-mobile={$settings.mobileLayout}
-        class:eink={$settings.eink}
         on:mousedown={processTouchAreas}
         bind:this={mainElement}
     >
@@ -182,7 +181,7 @@
         </div>
     </main>
 {:else}
-    <main class="stories-grid" class:eink={$settings.eink}>
+    <main class="stories-grid">
         {#each pageData.stories as story}
             <div class="story" on:click={() => selectStory(story)}>
                 <div class="title">
@@ -232,14 +231,6 @@
                 display: flex;
                 justify-content: center;
                 margin: 0.25em;
-            }
-        }
-
-        &.eink .story {
-            background: #fff;
-            border: 1px solid #444;
-            * {
-                color: #000;
             }
         }
     }
@@ -311,16 +302,6 @@
                 .button {
                     background: transparent !important;
                 }
-            }
-        }
-
-        &.eink {
-            .button {
-                background: #fff;
-            }
-
-            :global(*) {
-                color: #000;
             }
         }
     }

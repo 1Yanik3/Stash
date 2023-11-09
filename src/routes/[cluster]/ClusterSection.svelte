@@ -6,28 +6,29 @@
         settings,
         traverse,
     } from "$lib/stores";
-    import { invalidate } from "$app/navigation";
+    import { goto, invalidate } from "$app/navigation";
     import { page } from "$app/stores";
     import { setMethods, sortingMethods } from "../../types";
 
     import Icon from "../../components/Icon.svelte";
 
     import type { LayoutData } from "./$types";
+    import SidebarButton from "./SidebarButton.svelte";
     $: pageData = $page.data as LayoutData;
 </script>
 
 <main
     class:mobile={$settings.mobileLayout}
     class:windowControlsSpacer={$settings.windowControlsSpacer}
-    class:eink={$settings.eink}
 >
     <section>
         {#if $settings.windowControlsSpacer}
             <span style="height: 0.5em; pointer-events: none" />
         {/if}
-        <span
-            class:disabled={pageData.cluster.type == "collection" ||
-                pageData.cluster.type == "stories"}
+
+        <SidebarButton
+            hidden={!$settings.mobileLayout}
+            disabled={["collection", "stories"].includes(pageData.cluster.type)}
             on:click={() => {
                 activeSortingMethod.set(
                     sortingMethods[
@@ -37,40 +38,30 @@
                 );
                 invalidate("media-and-tags");
             }}
-            on:contextmenu|preventDefault={() => invalidate("media-and-tags")}
+            on:contextmenu={({ detail }) => {
+                detail.preventDefault();
+                invalidate("media-and-tags");
+            }}
+            icon={$activeSortingMethod.icon}
         >
-            <div style="margin-left: 2px">
-                <Icon name={$activeSortingMethod.icon} size={0.8} />
-            </div>
+            Sorting Method
+        </SidebarButton>
 
-            {#if $settings.mobileLayout}
-                Sorting Method
-            {/if}
-        </span>
-
-        <span
-            class:disabled={pageData.cluster.type == "stories"}
+        <SidebarButton
+            hidden={!$settings.mobileLayout}
+            disabled={pageData.cluster.type == "stories"}
             on:click={() => {
                 traverse.set(!$traverse);
                 invalidate("media-and-tags");
             }}
+            icon={$traverse ? "mdiHook" : "mdiHookOff"}
         >
-            <div style="margin-left: 2px">
-                {#if $traverse}
-                    <Icon name="mdiHook" size={0.8} />
-                {:else}
-                    <Icon name="mdiHookOff" size={0.8} />
-                {/if}
-            </div>
+            Traverse
+        </SidebarButton>
 
-            {#if $settings.mobileLayout}
-                Traverse
-            {/if}
-        </span>
-
-        <span
-            class:disabled={pageData.cluster.type == "collection" ||
-                pageData.cluster.type == "stories"}
+        <SidebarButton
+            hidden={!$settings.mobileLayout}
+            disabled={["collection", "stories"].includes(pageData.cluster.type)}
             on:click={() => {
                 activeSetMethod.set(
                     setMethods[
@@ -80,44 +71,41 @@
                 );
                 invalidate("media-and-tags");
             }}
+            icon={$activeSetMethod.icon}
         >
-            <div style="margin-left: 2px" title={$activeSetMethod.title}>
-                <Icon name={$activeSetMethod.icon} size={0.8} />
-            </div>
-
-            {#if $settings.mobileLayout}
-                Set Method ({$activeSetMethod.title})
-            {/if}
-        </span>
+            Set Method ({$activeSetMethod.title})
+        </SidebarButton>
     </section>
 
     <section>
         {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
-            <a
+            <SidebarButton
+                hidden={!$settings.mobileLayout}
+                iconNoTyping={c.icon}
                 href="/{c.name}"
-                title={c.name}
-                class:active={c.id == pageData.cluster.id}
+                active={c.id == pageData.cluster.id}
             >
-                <Icon nameAlt={c.icon} size={0.8} />
-                {#if $settings.mobileLayout}
-                    {c.name}
-                {/if}
-            </a>
+                {c.name}
+            </SidebarButton>
         {/each}
     </section>
 
     <section>
         {#if !$settings.mobileLayout}
-            <span on:click={() => $controller.setPopup("Shortcuts")}>
-                <Icon name="mdiKeyboard" size={0.8} />
-            </span>
+            <SidebarButton
+                hidden
+                icon="mdiKeyboard"
+                on:click={() => $controller.setPopup("Shortcuts")}
+            />
         {/if}
-        <span on:click={() => $controller.setPopup("Settings")}>
-            <Icon name="mdiCog" size={0.8} />
-            {#if $settings.mobileLayout}
-                Settings
-            {/if}
-        </span>
+
+        <SidebarButton
+            hidden={!$settings.mobileLayout}
+            icon="mdiCog"
+            on:click={() => $controller.setPopup("Settings")}
+        >
+            Settings
+        </SidebarButton>
     </section>
 </main>
 
@@ -140,7 +128,7 @@
         padding-top: 0.5em;
         padding-bottom: 0.5em;
 
-        border-right: 1px solid hsl(0, 0%, 22%);
+        border-right: 1px solid $border-color-base;
 
         width: 64px;
         &.windowControlsSpacer {
@@ -158,43 +146,43 @@
         -webkit-app-region: drag;
 
         // TODO: Reduce duplication
-        span,
-        a {
-            // For desktop Electron app
-            -webkit-app-region: no-drag;
+        // span,
+        // a {
+        //     // For desktop Electron app
+        //     -webkit-app-region: no-drag;
 
-            cursor: pointer;
+        //     cursor: pointer;
 
-            width: 45px;
-            height: 37px;
+        //     width: 45px;
+        //     height: 37px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        //     display: flex;
+        //     justify-content: center;
+        //     align-items: center;
 
-            margin: 0.25em;
-            border-radius: 0.35em;
+        //     margin: 0.25em;
+        //     border-radius: 0.35em;
 
-            transition: background 100ms, border 100ms;
-            border: 1px solid transparent;
-            -webkit-tap-highlight-color: transparent;
+        //     transition: background 100ms, border 100ms;
+        //     border: 1px solid transparent;
+        //     -webkit-tap-highlight-color: transparent;
 
-            @media (hover: hover) and (pointer: fine) {
-                &:not(.disabled):hover {
-                    background: hsl(0, 0%, 22%);
-                    border: 1px solid hsl(0, 0%, 24%);
-                }
-            }
-        }
+        //     @media (hover: hover) and (pointer: fine) {
+        //         &:not(.disabled):hover {
+        //             background: hsl(0, 0%, 22%);
+        //             border: 1px solid hsl(0, 0%, 24%);
+        //         }
+        //     }
+        // }
 
         span.disabled {
             pointer-events: none;
             filter: opacity(0.5);
         }
-        a.active {
-            background: hsl(0, 0%, 24%);
-            border: 1px solid hsl(0, 0%, 33%);
-        }
+        // a.active {
+        //     background: hsl(0, 0%, 24%);
+        //     border: 1px solid hsl(0, 0%, 33%);
+        // }
 
         &.mobile {
             width: 100%;
@@ -203,27 +191,15 @@
             flex-direction: column;
             gap: 1em;
 
-            span,
-            a {
-                width: calc(100vw - 48px);
-                justify-content: space-between;
-                padding-left: 8px;
-                padding-right: 8px;
-                text-decoration: none;
-            }
-        }
-
-        &.eink {
-            a {
-                color: #000;
-                &.active {
-                    background: #fff;
-                    border: 1px solid #444;
-                }
-            }
-            section span {
-                color: #000;
-            }
+            // TODO
+            // span,
+            // a {
+            //     width: calc(100vw - 48px);
+            //     justify-content: space-between;
+            //     padding-left: 8px;
+            //     padding-right: 8px;
+            //     text-decoration: none;
+            // }
         }
     }
 </style>

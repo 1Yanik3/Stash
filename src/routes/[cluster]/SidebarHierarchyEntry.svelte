@@ -4,13 +4,14 @@
     import type { possibleIcons } from "$lib/possibleIcons";
     import type { PageData } from "./$types";
     import SidebarButton from "./SidebarButton.svelte";
-    
+    import { invalidate } from "$app/navigation";
+
     type TagData = {
         name: string;
         count: number;
         children: TagData;
     }[];
-
+    
     export let name: string;
     export let count: number;
     export let children: TagData;
@@ -18,34 +19,64 @@
     export let nameOverwrite = name;
     export let iconOverwrite: keyof typeof possibleIcons | null = null;
 
-    let element: HTMLAnchorElement;
-    // if (element && $selectedTags.length == 1 && $selectedTags.includes(name.toLowerCase())) {
-    //     console.log("scroll!")
-    // }
+    export let collapsed = ($page.data as PageData).collapsedTags.some(t => t.tag == name.toLowerCase());
 
-    selectedTags.subscribe(tags => {
+    let element: HTMLAnchorElement;
+
+    selectedTags.subscribe((tags) => {
         if (tags.length == 1 && tags.includes(name.toLowerCase())) {
             setTimeout(() => {
-                element?.scrollIntoView({ block: "nearest" })
+                element?.scrollIntoView({ block: "nearest" });
             }, 100);
         }
-    })
+    });
 
-    $: icon = iconOverwrite || ($page.data as PageData).tagIcons.find((t) => t.tag == name .toLowerCase()|| name.toLowerCase().substring(name.toLowerCase().lastIndexOf("/") + 1) == t.tag)?.icon as keyof typeof possibleIcons;
+    $: icon =
+        iconOverwrite ||
+        (($page.data as PageData).tagIcons.find(
+            (t) =>
+                t.tag == name.toLowerCase() ||
+                name
+                    .toLowerCase()
+                    .substring(name.toLowerCase().lastIndexOf("/") + 1) == t.tag
+        )?.icon as keyof typeof possibleIcons);
 </script>
 
 <SidebarButton
     {indent}
     {count}
-    icon={icon ? icon : "mdiFolderOutline"}
+    icon={icon ? icon : collapsed ? "mdiFolderHidden" : "mdiFolderOutline"}
     on:click={(e) => {
         // @ts-ignore
         if (e.detail.altKey) {
             if ($selectedTags.includes(name.toLowerCase()))
-                selectedTags.set($selectedTags.filter((t) => t != name.toLowerCase()));
+                selectedTags.set(
+                    $selectedTags.filter((t) => t != name.toLowerCase())
+                );
             else selectedTags.set([...$selectedTags, name.toLowerCase()]);
         } else {
             selectedTags.set([name.toLowerCase()]);
+        }
+    }}
+    on:contextmenu={({ detail }) => {
+        detail.preventDefault();
+
+        if (collapsed) {
+            collapsed = false
+            fetch(`/api/cluster/${$page.data.cluster.name}/tags/collapsed`, {
+                method: "DELETE",
+                body: JSON.stringify({ tag: name.toLowerCase() }),
+            }).then(() => {
+                invalidate("tags");
+            });
+        } else {
+            collapsed = true
+            fetch(`/api/cluster/${$page.data.cluster.name}/tags/collapsed`, {
+                method: "POST",
+                body: JSON.stringify({ tag: name.toLowerCase() }),
+            }).then(() => {
+                invalidate("tags");
+            });
         }
     }}
     active={$selectedTags.includes(name.toLowerCase())}
@@ -54,7 +85,7 @@
     {nameOverwrite.replace(/.+\//, "")}
 </SidebarButton>
 
-{#if children}
+{#if children && !collapsed}
     {#each children.sort((a, b) => a.name.localeCompare(b.name)) as c}
         <svelte:self
             indent={indent + 1}

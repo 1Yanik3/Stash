@@ -1,5 +1,5 @@
 <script>
-    import "../app.scss";
+    import "../styles/app.scss";
 
     import { controller, settings } from "$lib/stores";
     import Controller from "./Controller.svelte";
@@ -7,12 +7,4 @@
 
 <Controller bind:this={$controller} />
 
-<div class:eink={$settings.eink}>
-    <slot />
-</div>
-
-<style>
-    .eink {
-        background: #fff;
-    }
-</style>
+<slot />

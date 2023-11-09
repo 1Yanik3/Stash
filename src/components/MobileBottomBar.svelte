@@ -3,7 +3,7 @@
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
 </script>
 
-<main class:eink={$settings.eink}>
+<main>
     <!-- Cluster Section (Clusters and Settings) -->
     <SidebarButton
         icon="mdiMenu"
@@ -46,10 +46,6 @@
 
         .spacer {
             flex: 1;
-        }
-
-        &.eink {
-            background: #fff;
         }
     }
 </style>

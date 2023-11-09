@@ -87,41 +87,42 @@
     });
 </script>
 
-<main class:mobile={$settings.mobileLayout} class:eink={$settings.eink}>
-    {#if !$settings.mobileLayout}
-        <section id="navigationSection">
-            <NavigationSection />
-        </section>
+<main class:mobile={$settings.mobileLayout}>
+
+    {#if !$isFullscreen && !$settings.mobileLayout}
+        <NavigationSection />
     {/if}
 
-    <section id="imageGallerySection">
-        <DropFile
-            {onDrop}
-            onEnter={() => {
-                fileOver = true;
-                visibleMedium.set(null);
-            }}
-            onLeave={() => (fileOver = false)}
-        >
-            {#if fileOver || uploadProgress != null}
-                <div class="dropZone">
-                    <Icon name="mdiFileUpload" size={3} />
-                    {#if uploadProgress}
-                        <span
-                            >uploading {uploadProgress?.done} out of {uploadProgress?.from}
-                            ({uploadPercentage}%)</span
-                        >
-                    {:else}
-                        <span>Drop to upload</span>
-                    {/if}
-                </div>
-            {:else}
-                <ImageGrid />
-            {/if}
-        </DropFile>
+    {#if !$isFullscreen}
+        <section id="imageGallerySection">
+            <DropFile
+                {onDrop}
+                onEnter={() => {
+                    fileOver = true;
+                    visibleMedium.set(null);
+                }}
+                onLeave={() => (fileOver = false)}
+            >
+                {#if fileOver || uploadProgress != null}
+                    <div class="dropZone">
+                        <Icon name="mdiFileUpload" size={3} />
+                        {#if uploadProgress}
+                            <span
+                                >uploading {uploadProgress?.done} out of {uploadProgress?.from}
+                                ({uploadPercentage}%)</span
+                            >
+                        {:else}
+                            <span>Drop to upload</span>
+                        {/if}
+                    </div>
+                {:else}
+                    <ImageGrid />
+                {/if}
+            </DropFile>
 
-        <div style:opacity={$opacity} class="transitionBox" />
-    </section>
+            <div style:opacity={$opacity} class="transitionBox" />
+        </section>    
+    {/if}
 
     {#if $actionBar}
         <section class="actionBar">
@@ -130,7 +131,7 @@
     {:else if $visibleMedium && !$settings.mobileLayout}
         <section
             id="mediaPlayerSection"
-            style={$isFullscreen ? "grid-column: 1 / span 3" : ""}
+            style={$isFullscreen ? "grid-column: span 3; width: 100vw; max-width: 100vw" : ""}
         >
             <Toolbar />
             <MediaViewer />
@@ -146,11 +147,11 @@
         // height: fit-content;
         overflow: scroll;
 
-        #navigationSection {
-            width: 234px;
-        }
+        background: $color-dark-level-base;
+        overflow-y: auto;
 
         #imageGallerySection {
+            overflow: scroll;
             padding: 1em;
             min-width: 350px;
             flex-grow: 1;
@@ -163,7 +164,7 @@
                 left: 300px; // TODO
                 right: 0;
                 bottom: 0;
-                background: #303030;
+                background: $color-dark-level-base;
                 z-index: 10;
                 pointer-events: none;
             }
@@ -186,9 +187,6 @@
                     margin-top: 0.5em;
                 }
             }
-
-            background: hsl(0, 0%, 19%);
-            overflow-y: auto;
         }
 
         #mediaPlayerSection {
@@ -203,12 +201,6 @@
         &.mobile {
             #imageGallerySection {
                 min-width: unset;
-            }
-        }
-
-        &.eink {
-            #imageGallerySection {
-                background: #fff;
             }
         }
     }

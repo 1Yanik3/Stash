@@ -20,12 +20,8 @@
             styles.push(["height", width]);
         }
 
-        if ($settings.eink) {
-            styles.push(["filter", "#444"]);
-        } else {
-            // @ts-ignore
-            styles.push(["fill", color !== null ? color : "currentColor"]);
-        }
+        // @ts-ignore
+        styles.push(["fill", color !== null ? color : "currentColor"]);
 
         return styles.reduce((cur, item) => {
             return `${cur} ${item[0]}:${item[1]};`;

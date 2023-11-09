@@ -35,16 +35,6 @@
                 return s;
             })}
     />
-
-    <span>E-Ink</span>
-    <SettingsPopupToggle
-        state={$settings.eink}
-        on:toggle={(e) =>
-            settings.update((s) => {
-                s.eink = e.detail;
-                return s;
-            })}
-    />
 </main>
 
 <style lang="scss">

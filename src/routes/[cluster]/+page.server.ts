@@ -25,8 +25,17 @@ export const load: PageServerLoad = async ({ parent, depends }) => {
         }
     })
 
+    const collapsedTags = await prisma.collapsedTags.findMany({
+        where: {
+            Cluster: {
+                id: parentData.cluster.id
+            }
+        }
+    })
+
     return {
         counters,
-        stories
+        stories,
+        collapsedTags
     }
 }

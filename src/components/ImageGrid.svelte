@@ -42,6 +42,27 @@
                 </SidebarButton>
             {/if}
 
+            {#each pageData.tags
+                .filter((t) => t.tag
+                        .join("/")
+                        .toLowerCase()
+                        .startsWith($selectedTags[0].toString()))
+                .filter((t) => t.tag
+                        .join("/")
+                        .toLowerCase() != $selectedTags[0].toString())
+                .sort((a, b) => a.tag
+                        .join("/")
+                        .localeCompare(b.tag.join("/"))) as { tag }}
+                <SidebarButton
+                    card
+                    icon="mdiFolderArrowDownOutline"
+                    on:click={() =>
+                        selectedTags.set([tag.join("/").toLowerCase()])}
+                >
+                    {tag.slice(-1)}
+                </SidebarButton>
+            {/each}
+
             <!-- {#each (
                 pageData.group.children.sort((a, b) => collator.compare(a.name, b.name))
             ) as child}
@@ -84,7 +105,7 @@
 
     #collectionGroups {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         margin-top: -0.5em;
         margin-left: -0.5em;
         margin-right: -0.5em;

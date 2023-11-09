@@ -26,8 +26,10 @@ model Clusters {
 
   sortOrder Int @default(0)
 
-  stories Story[]
-  Media   Media[]
+  stories       Story[]
+  Media         Media[]
+  CollapsedTags CollapsedTags[]
+  @@index([name])
 }
 
 model Media {
@@ -55,6 +57,15 @@ model Media {
 model TagIcons {
   tag  String @unique
   icon String
+}
+
+model CollapsedTags {
+  tag String @unique
+
+  Cluster    Clusters @relation(fields: [clustersId], references: [id])
+  clustersId Int
+
+  @@index([tag])
 }
 
 model GroupedIntoNames {

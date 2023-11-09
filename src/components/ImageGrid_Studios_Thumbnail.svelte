@@ -139,11 +139,10 @@ class:sub
             margin-left: 0.75em;
 
             .tag {
-                background: hsl(0, 0%, 25%);
+                background: $color-dark-level-2;
                 padding: 0.3em 0.4em;
-                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-                border-radius: 3px;
-
+                border: 1px solid $border-color-1;
+                border-radius: 5px;
                 margin-right: 0.25em;
             }
         }
