@@ -23,7 +23,7 @@
 >
     <section>
         {#if $settings.windowControlsSpacer}
-            <span style="height: 0.5em; pointer-events: none" />
+            <span style="height: 1.5em; pointer-events: none" />
         {/if}
 
         <SidebarButton
