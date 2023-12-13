@@ -245,7 +245,7 @@
         .button {
             display: flex;
             position: fixed;
-            left: 0;
+            left: 60px;
             top: 0;
             width: calc(100vw - 2em);
             padding: 1em;

@@ -6,11 +6,9 @@
         settings,
         traverse,
     } from "$lib/stores";
-    import { goto, invalidate } from "$app/navigation";
+    import { invalidate } from "$app/navigation";
     import { page } from "$app/stores";
     import { setMethods, sortingMethods } from "../../types";
-
-    import Icon from "../../components/Icon.svelte";
 
     import type { LayoutData } from "./$types";
     import SidebarButton from "./SidebarButton.svelte";

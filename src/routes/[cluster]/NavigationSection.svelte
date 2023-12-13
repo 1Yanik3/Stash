@@ -27,71 +27,43 @@
         let tagData: TagData = [];
         rawData
             .sort((a, b) => a.tag.length - b.tag.length)
-            .forEach(
-                ({
-                    tag,
-                    direct_count,
-                    indirect_count
-                }) => {
-                    const addAt = (at: TagData, i: number) => {
-                        if (!tag[i]) return;
+            .forEach(({ tag, direct_count, indirect_count }) => {
+                const addAt = (at: TagData, i: number) => {
+                    if (!tag[i]) return;
 
-                        const parent = at.find((t) => t.name == tag[i]);
+                    const parent = at.find((t) => t.name == tag[i]);
 
-                        if (parent) {
-                            // Add as child
-                            addAt(parent.children, i + 1);
-                        } else {
-                            // Add as new
-                            const children: TagData = [];
-                            at.push({
-                                name: tag[i],
-                                count: $traverse
-                                    ? direct_count + indirect_count
-                                    : direct_count,
-                                children
-                            });
-                            addAt(children, i + 1);
-                        }
-                    };
+                    if (parent) {
+                        // Add as child
+                        addAt(parent.children, i + 1);
+                    } else {
+                        // Add as new
+                        const children: TagData = [];
+                        at.push({
+                            name: tag[i],
+                            count: $traverse
+                                ? direct_count + indirect_count
+                                : direct_count,
+                            children,
+                        });
+                        addAt(children, i + 1);
+                    }
+                };
 
-                    addAt(tagData, 0);
-                }
-            );
+                addAt(tagData, 0);
+            });
 
         // TODO
         return tagData.sort((a, b) =>
             $page.params.cluster == "Camp Buddy"
                 ? b.name.localeCompare(a.name)
-                : b.count - a.count
+                : b.count - a.count,
         );
     }
 </script>
 
-<main class:mobile={$settings.mobileLayout}>
-    {#if $page.data.cluster.type == "stories"}
-        <SidebarSection title="Books">
-            <SidebarButton
-                icon="mdiFileDocument"
-                on:click={() => storyTab.set(null)}
-                active={!$storyTab}
-            >
-                Stories
-            </SidebarButton>
-        </SidebarSection>
-
-        <SidebarSection title="Comics">
-            {#each ["Tab S7", "Razr 40"] as device_id}
-                <SidebarButton
-                    icon="mdiFileImage"
-                    on:click={() => storyTab.set(device_id)}
-                    active={$storyTab == device_id}
-                >
-                    {device_id}
-                </SidebarButton>
-            {/each}
-        </SidebarSection>
-    {:else}
+{#if $page.data.cluster.type != "stories"}
+    <main class:mobile={$settings.mobileLayout}>
         <div>
             <!-- Statics -->
             <SidebarSection horizontal>
@@ -149,10 +121,23 @@
         <div>
             <!-- TODO: Cluster settings -->
             {#key pageData.tagsHash}
-            {#if pageData.tags}
-                {@const orderDataHierarchicallyOnlyPeople = orderDataHierarchically(pageData.tags.filter((t) => ["Solo", "Two", "Group"].includes(t.tag[0])))}
-                {@const orderDataHierarchicallyExceptPeople = orderDataHierarchically(pageData.tags.filter((t) => !["Solo", "Two", "Group"].includes(t.tag[0])))}
-                    
+                {#if pageData.tags}
+                    {@const orderDataHierarchicallyOnlyPeople =
+                        orderDataHierarchically(
+                            pageData.tags.filter((t) =>
+                                ["Solo", "Two", "Group"].includes(t.tag[0]),
+                            ),
+                        )}
+                    {@const orderDataHierarchicallyExceptPeople =
+                        orderDataHierarchically(
+                            pageData.tags.filter(
+                                (t) =>
+                                    !["Solo", "Two", "Group"].includes(
+                                        t.tag[0],
+                                    ),
+                            ),
+                        )}
+
                     <!-- TODO: This should be a setting -->
                     {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
                         <SidebarSection title="People">
@@ -181,8 +166,8 @@
                 {/if}
             {/key}
         </div>
-    {/if}
-</main>
+    </main>
+{/if}
 
 <style lang="scss">
     main {

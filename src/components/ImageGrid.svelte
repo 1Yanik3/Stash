@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { selectedTags, storyTab } from "$lib/stores";
+    import { selectedTags, storyTab, viewMode } from "$lib/stores";
 
     import ImageGridPage from "./ImageGrid_Page.svelte";
     import ImageGridStories from "./ImageGrid_Stories.svelte";
-    import ImageGridStoriesComics from "./ImageGrid_Stories_Comics.svelte";
     import ImageGridCollection from "./ImageGrid_Collection.svelte";
 
     import ImageGridStudios from "./ImageGrid_Studios.svelte";
@@ -11,6 +10,7 @@
 
     import type { PageData } from "../routes/[cluster]/$types";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
+    import ImageGridTable from "./ImageGrid_Table.svelte";
     $: pageData = $page.data as PageData;
 
     const pageSize = 50;
@@ -19,11 +19,7 @@
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
     <ImageGridCollection />
 {:else if pageData.cluster.type == "stories"}
-    {#if $storyTab == null}
-        <ImageGridStories />
-    {:else}
-        <ImageGridStoriesComics />
-    {/if}
+    <ImageGridStories />
 {:else}
     {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups">
@@ -74,25 +70,31 @@
     {/if}
 
     <section>
-        {#each new Array(Math.ceil(pageData.media.length / pageSize)) as _, i}
-            {#if pageData.cluster.type == "withName"}
-                <ImageGridStudios
-                    media={pageData.media.slice(
-                        i * pageSize,
-                        (i + 1) * pageSize
-                    )}
-                    {i}
-                />
-            {:else}
-                <ImageGridPage
-                    media={pageData.media.slice(
-                        i * pageSize,
-                        (i + 1) * pageSize
-                    )}
-                    {i}
-                />
-            {/if}
-        {/each}
+        {#if $viewMode == "table"}
+            <ImageGridTable
+                media={pageData.media}
+            />
+        {:else}
+            {#each new Array(Math.ceil(pageData.media.length / pageSize)) as _, i}
+                {#if pageData.cluster.type == "withName"}
+                    <ImageGridStudios
+                        media={pageData.media.slice(
+                            i * pageSize,
+                            (i + 1) * pageSize
+                        )}
+                        {i}
+                    />
+                {:else}
+                    <ImageGridPage
+                        media={pageData.media.slice(
+                            i * pageSize,
+                            (i + 1) * pageSize
+                        )}
+                        {i}
+                    />
+                {/if}
+            {/each}
+        {/if}
     </section>
 {/if}
 

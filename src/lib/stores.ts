@@ -18,6 +18,7 @@ export let traverse = writable(false)
 export let activeSortingMethod = writable(sortingMethods[3])
 export let activeSetMethod = writable(setMethods[0])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
+export let viewMode: Writable<"normal" | "table"> = writable("normal")
 
 export let controller: Writable<Controller> = writable()
 

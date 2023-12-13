@@ -43,23 +43,23 @@
                     "progress",
                     (e) => {
                         uploadPercentage = Math.round(
-                            (e.loaded / e.total) * 100
+                            (e.loaded / e.total) * 100,
                         );
                         console.log({ uploadPercentage });
                         // console.log("Uploaded " + e.loaded + " bytes of " + e.total + " (" + (e.loaded / e.total) * 100 + ")")
                     },
-                    false
+                    false,
                 );
                 ajax.addEventListener("load", resolve, false);
                 ajax.addEventListener(
                     "error",
                     () => console.log("Error"),
-                    false
+                    false,
                 );
                 ajax.addEventListener(
                     "abort",
                     () => console.log("Aborted"),
-                    false
+                    false,
                 );
                 ajax.open("POST", `/api/cluster/${$page.params.cluster}/media`);
                 ajax.send(data);
@@ -88,7 +88,6 @@
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
-
     {#if !$isFullscreen && !$settings.mobileLayout}
         <NavigationSection />
     {/if}
@@ -107,10 +106,10 @@
                     <div class="dropZone">
                         <Icon name="mdiFileUpload" size={3} />
                         {#if uploadProgress}
-                            <span
-                                >uploading {uploadProgress?.done} out of {uploadProgress?.from}
-                                ({uploadPercentage}%)</span
-                            >
+                            <span>
+                                uploading {uploadProgress?.done} out of {uploadProgress?.from}
+                                ({uploadPercentage}%)
+                            </span>
                         {:else}
                             <span>Drop to upload</span>
                         {/if}
@@ -120,8 +119,10 @@
                 {/if}
             </DropFile>
 
-            <div style:opacity={$opacity} class="transitionBox" />
-        </section>    
+            {#if $page.data.cluster.type != "stories"}
+                <div style:opacity={$opacity} class="transitionBox" />
+            {/if}
+        </section>
     {/if}
 
     {#if $actionBar}
@@ -131,7 +132,9 @@
     {:else if $visibleMedium && !$settings.mobileLayout}
         <section
             id="mediaPlayerSection"
-            style={$isFullscreen ? "grid-column: span 3; width: 100vw; max-width: 100vw" : ""}
+            style={$isFullscreen
+                ? "grid-column: span 3; width: 100vw; max-width: 100vw"
+                : ""}
         >
             <Toolbar />
             <MediaViewer />
@@ -155,6 +158,7 @@
             padding: 1em;
             min-width: 350px;
             flex-grow: 1;
+            flex-basis: 0;
 
             position: relative;
 

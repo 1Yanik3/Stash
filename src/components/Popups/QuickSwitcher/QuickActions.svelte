@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { invalidate, invalidateAll } from "$app/navigation";
+    import { invalidate } from "$app/navigation";
     import { page } from "$app/stores";
     import {
         controller,
         selectedMediaIds,
         selectedTags,
-    } from "../../../lib/stores";
+        viewMode,
+    } from "$lib/stores";
     import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte";
 
     type functionalitiesType = {
@@ -49,6 +50,24 @@
             },
         });
 
+        if ($page.data.cluster.type == "withName") {
+            if ($viewMode == "table")
+                functionalities.push({
+                    name: "View Mode: Normal",
+                    async function() {
+                        $viewMode = "normal";
+                    },
+                });
+
+            if ($viewMode == "normal")
+                functionalities.push({
+                    name: "View Mode: Table",
+                    async function() {
+                        $viewMode = "table";
+                    },
+                });
+        }
+
         functionalities.push({
             name: "Rename Tag",
             async function() {
@@ -56,11 +75,11 @@
                     "What tag do you want to rename?",
                     $selectedTags.length == 1
                         ? ($selectedTags[0] as string)
-                        : undefined
+                        : undefined,
                 );
                 const newName = await $controller.prompt(
                     "Enter new name:",
-                    oldName || ""
+                    oldName || "",
                 );
 
                 await fetch(
@@ -71,7 +90,7 @@
                             oldName,
                             newName,
                         }),
-                    }
+                    },
                 );
 
                 invalidate("media-and-tags");
