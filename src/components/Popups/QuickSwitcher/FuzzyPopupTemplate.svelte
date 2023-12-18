@@ -19,7 +19,10 @@
 
     let searcher: any = null;
     let results: T[];
-    $: results = (searcher?.search(value).slice(0, $settings.mobileLayout ? 16 : 8) as T) || [];
+    $: results =
+        (searcher
+            ?.search(value)
+            .slice(0, $settings.mobileLayout ? 16 : 8) as T) || [];
     $: console.log(results);
     promise.then((data) => {
         searcher = new FuzzySearch(data, searchAttributes, {
@@ -45,7 +48,7 @@
         if (event.key == "Enter") {
             if (!disableClose) {
                 dispatch("close");
-                $controller.setPopup(null)
+                $controller.setPopup(null);
             }
             dispatch("selected", results[selectedIndex]);
         }
@@ -66,26 +69,47 @@
         />
 
         {#each results as result, i}
-            <div class:active={i == selectedIndex}>
+            <div
+                class:active={i == selectedIndex}
+                on:click={() => {
+                    if (!disableClose) {
+                        dispatch("close");
+                        $controller.setPopup(null);
+                    }
+                    dispatch("selected", results[i]);
+                }}
+            >
                 <slot {result} />
             </div>
         {/each}
 
         {#if $settings.mobileLayout}
             <div class="mobileNavigationButtons">
-                <SidebarButton card icon="mdiArrowUp" on:click={() => {
-                    if (selectedIndex > 0) selectedIndex--;
-                }}/>
-                <SidebarButton card icon="mdiArrowDown" on:click={() => {
-                    if (selectedIndex <= results.length) selectedIndex++;
-                }}/>
-                <SidebarButton card icon="mdiKeyboardReturn" on:click={() => {
-                    if (!disableClose) {
-                        dispatch("close");
-                        $controller.setPopup(null)
-                    }
-                    dispatch("selected", results[selectedIndex]);
-                }}/>
+                <SidebarButton
+                    card
+                    icon="mdiArrowUp"
+                    on:click={() => {
+                        if (selectedIndex > 0) selectedIndex--;
+                    }}
+                />
+                <SidebarButton
+                    card
+                    icon="mdiArrowDown"
+                    on:click={() => {
+                        if (selectedIndex <= results.length) selectedIndex++;
+                    }}
+                />
+                <SidebarButton
+                    card
+                    icon="mdiKeyboardReturn"
+                    on:click={() => {
+                        if (!disableClose) {
+                            dispatch("close");
+                            $controller.setPopup(null);
+                        }
+                        dispatch("selected", results[selectedIndex]);
+                    }}
+                />
             </div>
         {/if}
     </main>
@@ -120,8 +144,10 @@
 
             &.mobileNavigationButtons {
                 position: absolute;
-                bottom: 1em;
-                right: 1em;
+                bottom: 10px;
+                right: 10px;
+                background: hsl(0, 0%, 9%);
+                border: 1px solid hsl(0, 0%, 15%);
             }
         }
     }

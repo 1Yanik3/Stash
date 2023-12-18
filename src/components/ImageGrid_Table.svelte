@@ -30,6 +30,7 @@
     };
     $: processedMedia = getProcessedMedia(media);
 
+    // TODO: Remove duplication
     const handleTagsKeyDown = (e: KeyboardEvent, medium: Media) => {
         const value: string = (e.target as any).value;
         if (e.key == "Enter" && value) {
@@ -47,6 +48,8 @@
                     const tmp = medium;
                     tmp?.tags.push(value);
                     medium = tmp;
+
+                    (e.target as any).value = "";
 
                     if (isInUnsorted) {
                         removeTagFromMedia("show_unsorted", medium);

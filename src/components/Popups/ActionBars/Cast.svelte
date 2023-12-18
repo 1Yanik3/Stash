@@ -43,8 +43,9 @@
     onMount(async () => {
         if (!browser) return;
 
-        const pairingCode = await $controller.prompt("Enter pairing code:") || "";
-        const url = `wss://pubSub.any.gay/${pairingCode}`
+        const pairingCode =
+            (await $controller.prompt("Enter pairing code:")) || "";
+        const url = `wss://pubSub.any.gay/${pairingCode}`;
         socket = new WebSocket(url);
 
         socket.addEventListener("open", () => {
@@ -61,61 +62,65 @@
             });
         });
         socket.addEventListener("message", (event) => {
-            console.log(event.data)
+            console.log(event.data);
             if (event.data.startsWith("progress-video: ")) {
                 playbackProgress = Number(
-                    event.data.replace("progress-video: ", "")
+                    event.data.replace("progress-video: ", ""),
                 );
             }
             if (event.data.startsWith("audio-position: ")) {
                 currentTime = Number(
-                    event.data.replace("audio-position: ", "")
+                    event.data.replace("audio-position: ", ""),
                 );
             }
             if (event.data.startsWith("duration-video: ")) {
                 playbackDuration = Number(
-                    event.data.replace("duration-video: ", "")
+                    event.data.replace("duration-video: ", ""),
                 );
             }
         });
         socket.addEventListener("close", () => {
-            window.alert("close")
+            window.alert("close");
             socket = socket = new WebSocket(url);
         });
         socket.addEventListener("error", () => {
-            window.alert("error")
+            window.alert("error");
             socket = socket = new WebSocket(url);
         });
     });
 </script>
 
-
 {#if $visibleMedium && $visibleMedium.type.startsWith("video") && audioDestination == "local"}
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video src="https://stash.hera.lan/file/{$visibleMedium?.id}" bind:currentTime bind:paused={audioPaused} autoplay style="display: none"></video>
+    <video
+        src="https://stash.hera.lan/file/{$visibleMedium?.id}"
+        bind:currentTime
+        bind:paused={audioPaused}
+        autoplay
+        style="display: none"
+    ></video>
 {/if}
-
 
 <main>
     <section class="first">
-        <span on:click={() => {
-            sendMessage("blank")
-            visibleMedium.set(null)
-            $controller.setActionBar(null)
-        }}>
+        <span
+            on:click={() => {
+                sendMessage("blank");
+                visibleMedium.set(null);
+                $controller.setActionBar(null);
+            }}
+        >
             <Icon name="mdiClose" size={0.8} />
         </span>
 
         <span
             on:click={() => {
-                sendMessage(blank ? "unblank" : "blank")
-                blank = !blank
+                sendMessage(blank ? "unblank" : "blank");
+                blank = !blank;
             }}
         >
             <Icon
-                name={blank
-                    ? "mdiProjectorScreenOff"
-                    : "mdiProjectorScreen"}
+                name={blank ? "mdiProjectorScreenOff" : "mdiProjectorScreen"}
                 size={0.8}
             />
         </span>
@@ -169,7 +174,6 @@
             >
                 <Icon name="mdiFastForward60" size={0.8} />
             </span>
-
         {/if}
     </section>
 
@@ -193,7 +197,14 @@
             }}
             transition:fade={{ duration: 100 }}
         >
-            <Icon name={audioDestination === "mute" ? "mdiVolumeMute" : audioDestination === "local" ? "mdiSpeaker" : "mdiCastAudio"} size={0.8} />
+            <Icon
+                name={audioDestination === "mute"
+                    ? "mdiVolumeMute"
+                    : audioDestination === "local"
+                      ? "mdiSpeaker"
+                      : "mdiCastAudio"}
+                size={0.8}
+            />
         </span>
 
         <span on:click={() => $controller.goToPreviousMedia()}>
@@ -205,7 +216,13 @@
     </section>
 
     {#if $visibleMedium?.type.startsWith("video")}
-        <div class="playbackStatus" style:height="{((playbackProgress / playbackDuration) * 100)}%" />
+        <div class="playbackStatus" on:click={e => {
+            sendMessage(`control-video: seek-${(e.clientY / window.innerHeight) * playbackDuration}`)
+        }}>
+            <div
+                style:height="{(playbackProgress / playbackDuration) * 100}%"
+            />
+        </div>
     {/if}
 </main>
 
@@ -246,7 +263,9 @@
             margin: 0.25em;
             border-radius: 0.35em;
 
-            transition: background 100ms, border 100ms;
+            transition:
+                background 100ms,
+                border 100ms;
             border: 1px solid transparent;
 
             @media (hover: hover) and (pointer: fine) {
@@ -258,11 +277,20 @@
         }
 
         .playbackStatus {
-            width: 3px;
-            background: hsl(0, 0%, 22%);
             position: absolute;
             top: 0;
             right: 0;
+
+            height: 100vh;
+            width: 3px;
+
+            cursor: pointer;
+
+            div {
+                width: 3px;
+                transition: height 150ms;
+                background: hsl(0, 0%, 22%);
+            }
         }
     }
 </style>
