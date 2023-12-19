@@ -139,6 +139,7 @@
         text-decoration: none;
 
         -webkit-tap-highlight-color: transparent;
+        -webkit-app-region: no-drag;
 
         cursor: pointer;
 

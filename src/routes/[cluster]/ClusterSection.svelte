@@ -131,6 +131,7 @@
         width: 64px;
         &.windowControlsSpacer {
             width: 77px;
+            padding: 1em 0;
         }
 
         section {
@@ -140,47 +141,12 @@
             flex-direction: column;
         }
 
-        // For desktop Electron app
         -webkit-app-region: drag;
-
-        // TODO: Reduce duplication
-        // span,
-        // a {
-        //     // For desktop Electron app
-        //     -webkit-app-region: no-drag;
-
-        //     cursor: pointer;
-
-        //     width: 45px;
-        //     height: 37px;
-
-        //     display: flex;
-        //     justify-content: center;
-        //     align-items: center;
-
-        //     margin: 0.25em;
-        //     border-radius: 0.35em;
-
-        //     transition: background 100ms, border 100ms;
-        //     border: 1px solid transparent;
-        //     -webkit-tap-highlight-color: transparent;
-
-        //     @media (hover: hover) and (pointer: fine) {
-        //         &:not(.disabled):hover {
-        //             background: hsl(0, 0%, 22%);
-        //             border: 1px solid hsl(0, 0%, 24%);
-        //         }
-        //     }
-        // }
 
         span.disabled {
             pointer-events: none;
             filter: opacity(0.5);
         }
-        // a.active {
-        //     background: hsl(0, 0%, 24%);
-        //     border: 1px solid hsl(0, 0%, 33%);
-        // }
 
         &.mobile {
             width: 100%;
@@ -188,16 +154,6 @@
             display: flex;
             flex-direction: column;
             gap: 1em;
-
-            // TODO
-            // span,
-            // a {
-            //     width: calc(100vw - 48px);
-            //     justify-content: space-between;
-            //     padding-left: 8px;
-            //     padding-right: 8px;
-            //     text-decoration: none;
-            // }
         }
     }
 </style>
