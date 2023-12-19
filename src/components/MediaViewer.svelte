@@ -32,6 +32,23 @@
             pad(date.getSeconds())
         );
     }
+
+    let showMouse = true;
+    let mouseTimer: NodeJS.Timeout;
+
+    function handleMouseMove() {
+        showMouse = true;
+        clearTimeout(mouseTimer);
+        if ($isFullscreen)
+            mouseTimer = setTimeout(() => {
+                showMouse = false;
+            }, 1500);
+    }
+
+    function handleMouseLeave() {
+        showMouse = true;
+        clearTimeout(mouseTimer);
+    }
 </script>
 
 {#if $visibleMedium}
@@ -49,7 +66,7 @@
 
                             const newName = await $controller.prompt(
                                 "Enter new name:",
-                                $visibleMedium.name
+                                $visibleMedium.name,
                             );
                             if (newName) {
                                 $visibleMedium.name = newName;
@@ -60,7 +77,7 @@
                                         body: JSON.stringify({
                                             name: newName,
                                         }),
-                                    }
+                                    },
                                 );
                             }
                         }}
@@ -99,6 +116,8 @@
                     if (e.offsetX > width / 2) $controller.goToNextMedia();
                 }
             }}
+            on:mousemove={handleMouseMove}
+            on:mouseleave={handleMouseLeave}
         >
             {#if $visibleMedium.type.startsWith("image")}
                 <img
@@ -111,6 +130,7 @@
                         if (!$settings.touchNavigationButtons)
                             isZoomedIn = !isZoomedIn;
                     }}
+                    style={showMouse ? "" : "cursor: none"}
                 />
             {:else if $visibleMedium.type.startsWith("video")}
                 <video
@@ -122,8 +142,10 @@
                         if (video.duration <= 5) video.loop = true;
                     }}
                     crossorigin="use-credentials"
-                    ><track kind="captions" /></video
+                    style={showMouse ? "" : "cursor: none"}
                 >
+                    <track kind="captions" />
+                </video>
             {:else}
                 <span>{$visibleMedium.name}</span>
             {/if}

@@ -232,6 +232,10 @@
 
                 cursor: pointer;
             }
+
+            button {
+                outline: none;
+            }
         }
 
         &.fullscreen {
