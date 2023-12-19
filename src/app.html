@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/icons/web/favicon.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="manifest" href="/manifest.json">
-		<title>Stash</title>
-		%sveltekit.head%
-	</head>
-	<body>
-		%sveltekit.body%
-	</body>
-	<script>
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register("/worker.js");
-		}
-	</script>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%sveltekit.assets%/icons/web/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Stash</title>
+    %sveltekit.head%
+  </head>
+  <body>
+    %sveltekit.body%
+  </body>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/worker.js")
+    }
+  </script>
 </html>

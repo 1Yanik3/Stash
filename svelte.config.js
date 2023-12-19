@@ -1,29 +1,30 @@
 import preprocess from "svelte-preprocess"
-import adapter from '@sveltejs/adapter-node'
+
+import adapter from "@sveltejs/adapter-node"
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   onwarn: (warning, handler) => {
-    if (warning.code.startsWith('a11y-')) {
-      return;
+    if (warning.code.startsWith("a11y-")) {
+      return
     }
-    handler(warning);
+    handler(warning)
   },
-  
+
   kit: {
     adapter: adapter(),
     csrf: {
-      checkOrigin: false,
+      checkOrigin: false
     }
   },
 
   preprocess: [
     preprocess({
       scss: {
-        prependData: '@use "src/styles/variables.scss" as *;',
-      },
-    }),
-  ],
+        prependData: '@use "src/styles/variables.scss" as *;'
+      }
+    })
+  ]
 }
 
 export default config

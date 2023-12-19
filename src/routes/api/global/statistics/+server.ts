@@ -1,24 +1,24 @@
-import type { RequestHandler } from './$types'
+import { PrismaClient } from "@prisma/client"
 
-import { PrismaClient } from '@prisma/client'
+import type { RequestHandler } from "./$types"
+
 const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async () => {
-    const clusters = await prisma.clusters.findMany()
+  const clusters = await prisma.clusters.findMany()
 
-    let output: any[] = []
+  let output: any[] = []
 
-    for (const i in clusters) {
-        const cluster = clusters[i]
+  for (const i in clusters) {
+    const cluster = clusters[i]
 
-        output.push({
-            id: cluster.id,
-            mediaCount:
-                await prisma.media.count({ where: { group: { cluster } } })
-                    +
-                await prisma.story.count({ where: { cluster } })
-        })
-    }
+    output.push({
+      id: cluster.id,
+      mediaCount:
+        (await prisma.media.count({ where: { group: { cluster } } })) +
+        (await prisma.story.count({ where: { cluster } }))
+    })
+  }
 
-    return new Response(JSON.stringify(output))
+  return new Response(JSON.stringify(output))
 }

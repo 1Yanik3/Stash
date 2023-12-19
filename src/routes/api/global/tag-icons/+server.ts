@@ -1,42 +1,44 @@
-import { error, json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
+import { PrismaClient } from "@prisma/client"
+import { error, json } from "@sveltejs/kit"
 
-import { PrismaClient } from '@prisma/client'
+import type { RequestHandler } from "./$types"
+
 const prisma = new PrismaClient()
 
-export const GET: RequestHandler = async () => json(await prisma.tagIcons.findMany({
-    orderBy: {
+export const GET: RequestHandler = async () =>
+  json(
+    await prisma.tagIcons.findMany({
+      orderBy: {
         tag: "asc"
-    }
-}))
+      }
+    })
+  )
 
 export const POST: RequestHandler = async ({ request }) => {
-    const { tag, icon } = await request.json()
+  const { tag, icon } = await request.json()
 
-    if (!tag || !icon)
-        throw error(400)
+  if (!tag || !icon) throw error(400)
 
-    await prisma.tagIcons.create({
-        data: {
-            tag,
-            icon
-        }
-    })
+  await prisma.tagIcons.create({
+    data: {
+      tag,
+      icon
+    }
+  })
 
-    return new Response(null, { status: 201 })
+  return new Response(null, { status: 201 })
 }
 
 export const DELETE: RequestHandler = async ({ request }) => {
-    const { tag } = await request.json()
+  const { tag } = await request.json()
 
-    if (!tag)
-        throw error(404)
+  if (!tag) throw error(404)
 
-    await prisma.tagIcons.delete({
-        where: {
-            tag
-        }
-    })
+  await prisma.tagIcons.delete({
+    where: {
+      tag
+    }
+  })
 
-    return new Response(null, { status: 200 })
+  return new Response(null, { status: 200 })
 }

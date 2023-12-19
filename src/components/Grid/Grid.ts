@@ -3,8 +3,9 @@
  * Copyright (c) 2021-present NAVER Corp.
  * MIT license
  */
-import Grid from './Grid.svelte'
-import { GRID_METHODS } from '@egjs/grid'
+import { GRID_METHODS } from "@egjs/grid"
+
+import Grid from "./Grid.svelte"
 
 export default /*#__PURE__*/ (() => {
   const prototype = Grid.prototype

@@ -1,7 +1,9 @@
-import type { Media, Story } from "@prisma/client"
-import { persisted } from 'svelte-local-storage-store'
+import { persisted } from "svelte-local-storage-store"
 import type { Writable } from "svelte/store"
 import { writable } from "svelte/store"
+
+import type { Media, Story } from "@prisma/client"
+
 import QuickActionsCast from "../components/Popups/ActionBars/Cast.svelte"
 import type Controller from "../routes/Controller.svelte"
 import { setMethods, sortingMethods } from "../types"
@@ -22,10 +24,10 @@ export let viewMode: Writable<"normal" | "table"> = writable("normal")
 
 export let controller: Writable<Controller> = writable()
 
-export let settings = persisted('settings', {
-    windowControlsSpacer: false,
-    touchNavigationButtons: false,
-    mobileLayout: false
+export let settings = persisted("settings", {
+  windowControlsSpacer: false,
+  touchNavigationButtons: false,
+  mobileLayout: false
 })
 
 export let detailsVisible: Writable<boolean> = writable(false)
@@ -36,6 +38,6 @@ export let storyTab: Writable<string | null> = writable(null)
 export let isFullscreen: Writable<boolean> = writable(false)
 
 export const actionBars = {
-    "Cast": QuickActionsCast
+  Cast: QuickActionsCast
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)

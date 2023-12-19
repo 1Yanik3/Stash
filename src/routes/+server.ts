@@ -1,3 +1,4 @@
-import type { RequestHandler } from './$types'
+import type { RequestHandler } from "./$types"
 
-export const GET: RequestHandler = ({ url }) => Response.redirect(`${url.origin.replace(":80", "")}/People`)
+export const GET: RequestHandler = ({ url }) =>
+  Response.redirect(`${url.origin.replace(":80", "")}/People`)

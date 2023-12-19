@@ -1,35 +1,39 @@
-import type { RequestHandler } from './$types'
+import { PrismaClient } from "@prisma/client"
 
-import { PrismaClient } from '@prisma/client'
+import type { RequestHandler } from "./$types"
+
 const prisma = new PrismaClient()
 
 export const POST: RequestHandler = async ({ request, params }) => {
-    const { oldName, newName } = await request.json()
+  const { oldName, newName } = await request.json()
 
-    if (!oldName || !newName) return new Response(null, { status: 400 })
+  if (!oldName || !newName) return new Response(null, { status: 400 })
 
-    const mediaToUpdate = await prisma.media.findMany({
-        where: {
-            cluster: {
-                name: params.cluster
-            },
-            tags: {
-                has: oldName.toLocaleLowerCase()
-            }
-        }
-    })
-
-    for (const i in mediaToUpdate) {
-        const media = mediaToUpdate[i]
-        await prisma.media.update({
-            where: {
-                id: media.id
-            },
-            data: {
-                tags: [...media.tags.filter(tag => tag !== oldName.toLocaleLowerCase()), newName.toLocaleLowerCase()]
-            }
-        })
+  const mediaToUpdate = await prisma.media.findMany({
+    where: {
+      cluster: {
+        name: params.cluster
+      },
+      tags: {
+        has: oldName.toLocaleLowerCase()
+      }
     }
+  })
 
-    return new Response()
+  for (const i in mediaToUpdate) {
+    const media = mediaToUpdate[i]
+    await prisma.media.update({
+      where: {
+        id: media.id
+      },
+      data: {
+        tags: [
+          ...media.tags.filter(tag => tag !== oldName.toLocaleLowerCase()),
+          newName.toLocaleLowerCase()
+        ]
+      }
+    })
+  }
+
+  return new Response()
 }

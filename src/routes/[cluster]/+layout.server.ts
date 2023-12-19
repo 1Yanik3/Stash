@@ -1,15 +1,14 @@
-import type { LayoutServerLoad } from './$types'
+import type { LayoutServerLoad } from "./$types"
 
 export const load: LayoutServerLoad = async ({ parent, params, depends }) => {
-    depends("cluster")
+  depends("cluster")
 
-    const data = await parent()
+  const data = await parent()
 
-    const cluster = data.clusters.find(c => c.name == params.cluster) || data.clusters[0]
+  const cluster =
+    data.clusters.find(c => c.name == params.cluster) || data.clusters[0]
 
-    return {
-        cluster
-    }
-
-
+  return {
+    cluster
+  }
 }
