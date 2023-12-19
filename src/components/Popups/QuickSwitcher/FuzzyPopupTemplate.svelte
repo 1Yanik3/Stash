@@ -22,7 +22,8 @@
     $: results =
         (searcher
             ?.search(value)
-            .slice(0, $settings.mobileLayout ? 16 : 8) as T) || [];
+            .filter((d: any) => typeof d != "string" || d != ".DS_STORE")
+            .slice(0, $settings.mobileLayout ? 15 : 10) as T) || [];
     $: console.log(results);
     promise.then((data) => {
         searcher = new FuzzySearch(data, searchAttributes, {
