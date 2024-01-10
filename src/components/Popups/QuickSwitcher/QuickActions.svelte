@@ -35,6 +35,23 @@
                 },
             });
 
+        if ($selectedMediaIds.length)
+            functionalities.push({
+                name: "Remove tag",
+                async function() {
+                    // TODO: Add autocomplete
+                    const tagToDelete = await $controller.prompt("Enter tag to remove: ");
+
+                    for (const i in $selectedMediaIds) {
+                        await fetch(`/api/media/${$selectedMediaIds[i]}/tag/${tagToDelete}`, {
+                            method: "DELETE",
+                        }).catch(console.error);
+                    }
+
+                    invalidate("media-and-tags");
+                },
+            });
+
         functionalities.push({
             name: "Import",
             async function() {
