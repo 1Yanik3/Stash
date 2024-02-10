@@ -1,70 +1,206 @@
 <script lang="ts">
-    export let onDrop: any
-    export let onEnter: Function | null = null
-    export let onLeave: Function | null = null
-    export let accept: "files" = "files"
+  import { invalidate } from "$app/navigation"
+  import { page } from "$app/stores"
+  import { selectedTags, uploadPopupOpen, visibleMedium } from "$lib/stores"
+  import Popup from "../reusables/Popup.svelte"
+  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Icon from "./Icon.svelte"
+  import TagInputField from "./Tags/TagInputField.svelte"
 
-    let input: any
+  let tags: String[] = []
+  selectedTags.subscribe(() => (tags = $selectedTags))
+  uploadPopupOpen.subscribe(() => {
+    tags = $selectedTags
+    uploadProgress = 0
+    uploadPercentage = 0
+    files = []
+  })
 
-    const isFileTransfer = (e: DragEvent) => e.dataTransfer?.types.includes("Files")
+  let uploadProgress = 0
+  let uploadPercentage = 0
+  let files: File[] = []
 
-    const handleEnter = (e: DragEvent) => {
-        if (!onEnter) return
+  const onEnter = (e: DragEvent) => {
+    if (!isFileTransfer(e)) return
+    $uploadPopupOpen = true
+  }
 
-        if (accept == "files" && isFileTransfer(e))
-            onEnter()
+  const onLeave = (e: DragEvent) => {
+    if (e.pageY != 0 && e.pageX != 0) return
+    $uploadPopupOpen = false
+  }
 
+  const isFileTransfer = (e: DragEvent) =>
+    e.dataTransfer?.types.includes("Files")
+
+  const handleDrop = (e: DragEvent) => {
+    if (!isFileTransfer(e)) return
+
+    const items = Array.from(e.dataTransfer?.items || [])
+    files = files.concat(items.map((d: any) => d.getAsFile()))
+  }
+
+  const upload = async () => {
+    for (const i in files) {
+      uploadPercentage = 0
+
+      const data = new FormData()
+      data.append("file", files[i])
+      data.append("selectedTags", tags.join(","))
+
+      await new Promise(resolve => {
+        var ajax = new XMLHttpRequest()
+        ajax.upload.addEventListener(
+          "progress",
+          e => {
+            uploadPercentage = Math.round((e.loaded / e.total) * 100)
+            console.log({ uploadPercentage })
+          },
+          false
+        )
+        ajax.addEventListener("load", resolve, false)
+        ajax.addEventListener("error", () => console.log("Error"), false)
+        ajax.addEventListener("abort", () => console.log("Aborted"), false)
+        ajax.open("POST", `/api/cluster/${$page.params.cluster}/media`)
+        ajax.send(data)
+      })
+
+      uploadProgress++
+      console.log({ uploadProgress })
     }
 
-    const handleLeave = () => {
-        if (onLeave) { onLeave() }
-    }
-
-    const handleDrop = (e: DragEvent) => {
-        
-        if (accept == "files") {
-
-            if (!isFileTransfer(e)) {
-                return
-            }
-
-            const items = Array.from(e.dataTransfer?.items || [])
-            onDrop(items.map((d: any) => d.getAsFile()))
-
-        }
-
-    }
-
-    const handleChange = (e: any) => {
-        e.preventDefault()
-        onDrop(Array.from(e.target.files))
-    }
+    $uploadPopupOpen = false
+    invalidate("media-and-tags")
+  }
 </script>
-  
-<div
-    id="zone"
-    on:drop|preventDefault|stopPropagation={handleDrop}
-    on:dragover|preventDefault={() => {}}
-    on:dragenter={handleEnter}
-    on:dragleave={handleLeave}
-  >
-<slot/>
-    </div>
-<input
-    id="hidden-input"
-    type="file"
-    on:change={handleChange}
-    bind:this={input}
-    multiple
+
+<svelte:document
+  on:dragenter|preventDefault={onEnter}
+  on:dragleave|preventDefault={onLeave}
 />
-  
-<style>
-    #zone {
-        width: 100%;
-        height: 100%;
+
+{#if $uploadPopupOpen}
+  <Popup title="Upload Files" on:close={() => ($uploadPopupOpen = false)}>
+    <main>
+      <section>
+        <div
+          class="dropZone"
+          on:drop|preventDefault={handleDrop}
+          on:dragover|preventDefault={() => {}}
+        >
+          <Icon name="mdiFileUpload" size={2.5} />
+          <span>Drop or click to upload</span>
+        </div>
+
+        <div class="tags">
+          {#each tags as tag}
+            <span
+              on:contextmenu|preventDefault={() =>
+                (tags = tags.filter(t => t != tag))}>{tag}</span
+            >
+          {/each}
+          {#if tags.length == 0}
+            <span>No Tag</span>
+          {/if}
+          <div style="margin-top: 10px; margin-left: 3px">
+            <TagInputField
+              on:selected={({ detail }) => (tags = tags.concat([detail]))}
+            />
+          </div>
+        </div>
+      </section>
+
+      <div class="files">
+        <b>Filename</b>
+        <b>Status</b>
+        {#each files as f, i}
+          <span>{f.name}</span>
+          <span>
+            {#if uploadProgress == i}
+              {uploadPercentage}
+            {/if}
+            {#if uploadProgress < i}
+              Done
+            {/if}
+          </span>
+        {/each}
+      </div>
+
+      <div class="actions">
+        <SidebarButton card icon="mdiUpload" on:click={upload}>
+          Upload
+        </SidebarButton>
+      </div>
+    </main>
+  </Popup>
+{/if}
+
+<slot />
+
+<input id="hidden-input" type="file" bind:value={files} multiple />
+
+<style lang="scss">
+  main {
+    section {
+      display: grid;
+      grid-template-columns: repeat(2, 300px);
+      padding: 1em;
+      gap: 1em;
+
+      .dropZone {
+        padding: 1em;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25em;
+
+        border: 1px dashed hsl(0, 0%, 24%);
+        cursor: pointer;
+      }
+
+      .tags {
+        span {
+          background: $color-dark-level-2;
+          padding: 0.3em 0.5em;
+          margin: 0.15em;
+          border: 1px solid $color-dark-level-1;
+          border-radius: 3px;
+
+          margin-right: 0.25em;
+
+          cursor: pointer;
+        }
+        input {
+          margin-left: 0.25em;
+          width: 2em;
+
+          transition: width 200ms;
+
+          &:focus {
+            width: 7em;
+          }
+        }
+      }
+    }
+    .files {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.25em;
+      span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
     }
 
-    #hidden-input {
-        display: none;
+    .actions {
+      display: flex;
+      justify-content: right;
     }
+  }
+
+  #hidden-input {
+    display: none;
+  }
 </style>

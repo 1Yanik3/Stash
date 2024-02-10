@@ -19,61 +19,6 @@
     import { tweened } from "svelte/motion";
     import NavigationSection from "./NavigationSection.svelte";
 
-    //#region Uploader
-
-    let fileOver = false;
-    let uploadProgress: null | { done: number; from: number } = null;
-    let uploadPercentage = 0;
-
-    const onDrop = async (files: File[]) => {
-        for (const i in files) {
-            uploadProgress = {
-                done: +i,
-                from: files.length,
-            };
-            uploadPercentage = 0;
-
-            const data = new FormData();
-            data.append("file", files[i]);
-            data.append("selectedTags", $selectedTags.join(","));
-
-            await new Promise((resolve) => {
-                var ajax = new XMLHttpRequest();
-                ajax.upload.addEventListener(
-                    "progress",
-                    (e) => {
-                        uploadPercentage = Math.round(
-                            (e.loaded / e.total) * 100,
-                        );
-                        console.log({ uploadPercentage });
-                        // console.log("Uploaded " + e.loaded + " bytes of " + e.total + " (" + (e.loaded / e.total) * 100 + ")")
-                    },
-                    false,
-                );
-                ajax.addEventListener("load", resolve, false);
-                ajax.addEventListener(
-                    "error",
-                    () => console.log("Error"),
-                    false,
-                );
-                ajax.addEventListener(
-                    "abort",
-                    () => console.log("Aborted"),
-                    false,
-                );
-                ajax.open("POST", `/api/cluster/${$page.params.cluster}/media`);
-                ajax.send(data);
-            });
-        }
-
-        fileOver = false;
-        uploadProgress = null;
-
-        invalidate("media-and-tags");
-    };
-
-    //#endregion
-
     const opacity = tweened(0, { duration: 200 });
     let previousMediaHash = "";
     page.subscribe((a) => {
@@ -94,30 +39,11 @@
 
     {#if !$isFullscreen}
         <section id="imageGallerySection">
-            <DropFile
-                {onDrop}
-                onEnter={() => {
-                    fileOver = true;
-                    visibleMedium.set(null);
-                }}
-                onLeave={() => (fileOver = false)}
-            >
-                {#if fileOver || uploadProgress != null}
-                    <div class="dropZone">
-                        <Icon name="mdiFileUpload" size={3} />
-                        {#if uploadProgress}
-                            <span>
-                                uploading {uploadProgress?.done} out of {uploadProgress?.from}
-                                ({uploadPercentage}%)
-                            </span>
-                        {:else}
-                            <span>Drop to upload</span>
-                        {/if}
-                    </div>
-                {:else}
-                    <ImageGrid />
-                {/if}
+            <DropFile>
+                <ImageGrid />
             </DropFile>
+            
+            <ImageGrid />
 
             {#if $page.data.cluster.type != "stories"}
                 <div style:opacity={$opacity} class="transitionBox" />
@@ -145,9 +71,6 @@
 <style lang="scss">
     main {
         display: flex;
-
-        // height: 100vh;
-        // height: fit-content;
         overflow: scroll;
 
         background: $color-dark-level-base;
@@ -172,30 +95,11 @@
                 z-index: 10;
                 pointer-events: none;
             }
-
-            .dropZone {
-                box-shadow: inset 0.7px 0.7px 0.7px
-                    rgba($color: #fff, $alpha: 0.15);
-                background: #444;
-                height: 100%;
-                width: 100%;
-
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-
-                pointer-events: none;
-
-                span {
-                    margin-top: 0.5em;
-                }
-            }
         }
 
         #mediaPlayerSection {
-            max-width: 480px;
-            min-width: 500px;
+            max-width: 1000px;
+            min-width: 300px;
         }
 
         .actionBar {

@@ -23,6 +23,9 @@
         if (selectionIndex >= 0) dispatch("selected", results[selectionIndex])
         else dispatch("selected", value)
         break
+      case "Tab":
+        dispatch("selected", results[0])
+        break
       default:
         selectionIndex = -1
         break

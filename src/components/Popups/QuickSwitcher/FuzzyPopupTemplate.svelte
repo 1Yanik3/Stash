@@ -137,8 +137,8 @@
             border: 1px solid transparent;
 
             background: transparent;
+            transition: background 150ms;
             &.active {
-                transition: background 150ms;
                 background: #303030;
                 border: 1px solid hsl(0, 0%, 24%);
             }

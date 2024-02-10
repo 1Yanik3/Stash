@@ -22,6 +22,8 @@ export let activeSetMethod = writable(setMethods[0])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 export let viewMode: Writable<"normal" | "table"> = writable("normal")
 
+export let uploadPopupOpen = writable(false)
+
 export let controller: Writable<Controller> = writable()
 
 export let settings = persisted("settings", {

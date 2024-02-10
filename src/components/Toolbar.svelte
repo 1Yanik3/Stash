@@ -143,7 +143,9 @@
       >
     {/each}
     {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
-      <TagInputField on:selected={({ detail }) => addTagToMedia(detail)} />
+      <TagInputField
+        on:selected={({ detail }) => addTagToMedia(detail.toLowerCase())}
+      />
     {/if}
   </div>
 

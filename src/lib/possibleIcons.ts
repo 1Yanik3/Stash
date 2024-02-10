@@ -22,6 +22,45 @@ const extraIcons = {
           5.4 * extraIconStrokeWidthMultiplier
         }" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path>
     `,
+  extraCuf: `
+  <path d="M56 64a24 11 0 0 1-24 10A24 11 0 0 1 8 64a24 11 0 0 1 24-11 24 11 0 0 1 24 11Z" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke"></path><path d="M8 65v28c0 5 11 10 24 10s24-5 24-10V65" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke" stroke-miterlimit="4" stroke-dasharray="none"></path><rect width="17.2" height="15.9" x="26.4" y="80.7" rx="5.3" ry="5.3" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></rect><path d="M36 89H20" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path><circle cx="49.7" cy="86.4" r="2.6" fill="#000" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></circle><circle cx="13.6" cy="87.2" r="2.6" fill="#000" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></circle><path d="M91 38a11 24 0 0 1 11 24 11 24 0 0 1-11 24 11 24 0 0 1-10-24 11 24 0 0 1 10-24z" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke"></path><path d="M93 86h27c6 0 11-11 11-24s-5-24-11-24H93" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></path><rect width="17.2" height="15.9" x="-67.5" y="108.5" rx="5.3" ry="5.3" transform="rotate(-90)" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></rect><path d="M116 58v16" fill="none" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path><circle cx="-44.2" cy="114.1" r="2.6" transform="rotate(-90)" fill="#000" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></circle><circle cx="-80.3" cy="115" r="2.6" transform="rotate(-90)" fill="#000" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" paint-order="markers fill stroke"></circle><rect width="15.9" height="9.5" x="-100.5" y="61.9" rx="3.2" ry="3.2" transform="rotate(-90)" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><rect width="15.9" height="9.5" x="-139.8" y="1.4" rx="3.2" ry="3.2" transform="rotate(-120)" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><rect width="15.9" height="9.5" x="-92.6" y="-125.9" rx="3.2" ry="3.2" transform="scale(-1)" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><rect width="15.9" height="9.5" x="-36.8" y="-157.5" rx="3.2" ry="3.2" transform="rotate(150)" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><rect width="15.9" height="9.5" x="-111.1" y="105.6" rx="3.2" ry="3.2" transform="rotate(-90)" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><path d="M119 89c0 2-2 4-5 4h-8c-3 0-5-2-5-4M58 71c3 0 5 3 5 6v8c0 3-2 5-5 5" fill="none" fill-opacity="1" stroke-width="${
+    4.3 * extraIconStrokeWidthMultiplier
+  }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></path>
+    `,
   extraGag: `
         <circle cx="67.2" cy="88.4" r="17.6" opacity="1" fill="none" fill-opacity="1" fill-rule="nonzero" stroke-width="${
           5.3 * extraIconStrokeWidthMultiplier
@@ -91,6 +130,19 @@ const extraIcons = {
         }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1" paint-order="markers fill stroke"></rect><path d="M8 48c1-9 9-14 18-13m27 82c-4 9-13 12-21 8" fill="none" stroke-width="${
           5.3 * extraIconStrokeWidthMultiplier
         }" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path>
+    `,
+  extraSkir: `
+    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135.5 135.5" id="icon-skirt"><path d="M40 24h24v-3h10v3h23v8H74v2H64v-2H40Z" fill="none" stroke-width="${
+      5.3 * extraIconStrokeWidthMultiplier
+    }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path><path d="m97 32 22 74c-41 12-58 12-100 0l21-74" fill="none" stroke-width="${
+      5.3 * extraIconStrokeWidthMultiplier
+    }" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path><path d="m53 32-11 79" fill="none" stroke-width="${
+      5.3 * extraIconStrokeWidthMultiplier
+    }" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path><path d="M69 37v79" fill="none" stroke-width="${
+      5.3 * extraIconStrokeWidthMultiplier
+    }" stroke-linecap="butt" stroke-linejoin="miter" stroke-opacity="1" stroke-miterlimit="4" stroke-dasharray="none"></path><path d="m85 32 10 79" fill="none" stroke-width="${
+      5.3 * extraIconStrokeWidthMultiplier
+    }" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="none" stroke-opacity="1"></path></symbol>
     `,
   extraDil: `
         <path d="M90 105s-10 5-18 0c-9-5-18-14-25-15-7 0-22 4-21 18 0 10 3 15 12 17 8 2 10 2 19-1l33-9" fill="none" stroke-width="${
