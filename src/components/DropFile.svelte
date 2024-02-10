@@ -10,10 +10,10 @@
   let tags: String[] = []
   selectedTags.subscribe(() => (tags = $selectedTags))
   uploadPopupOpen.subscribe(() => {
-    tags = $selectedTags
-    uploadProgress = 0
-    uploadPercentage = 0
-    files = []
+    if (tags) tags = $selectedTags
+    if (uploadProgress) uploadProgress = 0
+    if (uploadPercentage) uploadPercentage = 0
+    if (files) files = []
   })
 
   let uploadProgress = 0
