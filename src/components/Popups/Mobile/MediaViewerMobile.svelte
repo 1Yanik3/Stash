@@ -6,8 +6,8 @@
 
 {#if !$actionBar}
 <main>
-    <Toolbar />
     <MediaViewer />
+    <Toolbar />
 </main>
 {/if}
 
