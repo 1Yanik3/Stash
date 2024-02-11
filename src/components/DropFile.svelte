@@ -58,7 +58,7 @@
           "progress",
           e => {
             uploadPercentage = Math.round((e.loaded / e.total) * 100)
-            console.log({ uploadPercentage })
+            console.log({ uploadPercentage, loaded: e.loaded, total: e.total })
           },
           false
         )
@@ -88,7 +88,7 @@
     <main>
       <section>
         <div
-          class="dropZone"
+          class="dropZone" 
           on:drop|preventDefault={handleDrop}
           on:dragover|preventDefault={() => {}}
         >
@@ -123,7 +123,7 @@
             {#if uploadProgress == i}
               {uploadPercentage}
             {/if}
-            {#if uploadProgress < i}
+            {#if uploadProgress > i}
               Done
             {/if}
           </span>
