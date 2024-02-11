@@ -2,18 +2,22 @@
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
   import { selectedTags, uploadPopupOpen, visibleMedium } from "$lib/stores"
+  import { onMount } from "svelte"
   import Popup from "../reusables/Popup.svelte"
   import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
   import Icon from "./Icon.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
 
   let tags: String[] = []
-  selectedTags.subscribe(() => (tags = $selectedTags))
-  uploadPopupOpen.subscribe(() => {
-    if (tags) tags = $selectedTags
-    if (uploadProgress) uploadProgress = 0
-    if (uploadPercentage) uploadPercentage = 0
-    if (files) files = []
+
+  onMount(() => {
+    selectedTags.subscribe(() => (tags = $selectedTags))
+    uploadPopupOpen.subscribe(() => {
+      if (tags) tags = $selectedTags
+      if (uploadProgress) uploadProgress = 0
+      if (uploadPercentage) uploadPercentage = 0
+      if (files) files = []
+    })
   })
 
   let uploadProgress = 0
