@@ -42,8 +42,6 @@
             <DropFile>
                 <ImageGrid />
             </DropFile>
-            
-            <ImageGrid />
 
             {#if $page.data.cluster.type != "stories"}
                 <div style:opacity={$opacity} class="transitionBox" />
