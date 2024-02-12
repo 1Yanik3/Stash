@@ -45,9 +45,12 @@
 
           for (const i in $selectedMediaIds) {
             await fetch(
-              `/api/media/${$selectedMediaIds[i]}/tag/${tagToDelete}`,
+              `/api/media/${$selectedMediaIds[i]}/tag`,
               {
-                method: "DELETE"
+                method: "DELETE",
+                body: JSON.stringify({
+                    name: tagToDelete
+                })
               }
             ).catch(console.error)
           }

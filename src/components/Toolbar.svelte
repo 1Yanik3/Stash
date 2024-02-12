@@ -44,8 +44,11 @@
   }
 
   const removeTagFromMedia = (tag: string) => {
-    fetch(`/api/media/${$visibleMedium?.id}/tag/${tag}`, {
-      method: "DELETE"
+    fetch(`/api/media/${$visibleMedium?.id}/tag`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        name: tag
+      })
     }).then(() => {
       if (!$visibleMedium) return
       const tmp = $visibleMedium
