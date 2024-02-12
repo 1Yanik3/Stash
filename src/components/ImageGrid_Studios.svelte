@@ -1,7 +1,6 @@
 <script lang="ts">
     import { invalidate } from "$app/navigation";
     import type { Media } from "@prisma/client";
-    import { onMount } from "svelte";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
