@@ -1,9 +1,10 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "$lib/server/prisma"
+
 import { json } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
 
-const prisma = new PrismaClient()
+// TODO: Do we still use this?
 
 export const GET: RequestHandler = async () => {
   const data = await prisma.clusters.findMany({

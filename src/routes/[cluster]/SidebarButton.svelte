@@ -2,7 +2,6 @@
     import { createEventDispatcher } from "svelte";
     import Icon from "../../components/Icon.svelte";
     import type { possibleIcons } from "$lib/possibleIcons";
-    import { settings } from "$lib/stores";
 
     let isDraggingOver = false;
 
@@ -12,7 +11,7 @@
     export let icon: keyof typeof possibleIcons | null = null;
     export let iconNoTyping: string | null = null;
     export let indent: number = 0;
-    export let count: number | null = null;
+    export let count: number | "" | null = null;
     export let active: boolean = false;
     export let href: string | null = null;
 
@@ -87,6 +86,7 @@
         dispatch("contextmenu", e);
     }}
     on:click={(e) => {
+        console.time("navigation")
         dispatch("click", e);
         // TODO
         // if (tag) {

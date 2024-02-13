@@ -1,9 +1,7 @@
 import { setMethods } from "$lib/../types"
+import prisma from "$lib/server/prisma"
 
-import { PrismaClient } from "@prisma/client"
 import { type RequestHandler, json } from "@sveltejs/kit"
-
-const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async ({ params, request, url }) => {
   const activeSetMethod =

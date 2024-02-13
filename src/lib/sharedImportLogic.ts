@@ -1,8 +1,5 @@
 import { execSync } from "child_process"
-
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import prisma from "./server/prisma"
 
 export default async (filename: string, mediaId: string) => {
   console.time("media post request: get metadata")

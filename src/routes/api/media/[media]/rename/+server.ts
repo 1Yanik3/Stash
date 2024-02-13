@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
-import type { RequestHandler } from "@sveltejs/kit"
+import prisma from "$lib/server/prisma"
 
-const prisma = new PrismaClient()
+import type { RequestHandler } from "@sveltejs/kit"
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   await prisma.media.update({

@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
-
-const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async ({ params }) =>
   new Response(

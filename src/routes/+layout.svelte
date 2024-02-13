@@ -1,7 +1,7 @@
 <script>
     import "../styles/app.scss";
 
-    import { controller, settings } from "$lib/stores";
+    import { controller } from "$lib/stores";
     import Controller from "./Controller.svelte";
 </script>
 

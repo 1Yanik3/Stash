@@ -3,12 +3,10 @@ import { setMethods, sortingMethods } from "$lib/../types"
 import sharedImportLogic from "$lib/sharedImportLogic"
 import fs from "fs/promises"
 
-import { type Media, Prisma, PrismaClient } from "@prisma/client"
 import { json } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
-
-const prisma = new PrismaClient()
+import prisma from "$lib/server/prisma"
 
 export const GET: RequestHandler = async ({ params, request }) => {
   const searchParams = new URL(request.url).searchParams

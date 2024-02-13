@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from "../../routes/[cluster]/$types"
   import { page } from "$app/stores"
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, onMount } from "svelte"
   import FuzzySearch from "fuzzy-search"
 
   let value: string
@@ -32,7 +32,11 @@
     }
   }
 
-  $: searcher = new FuzzySearch(($page.data as PageData).tags, ["tag"], {
+  let tags: Awaited<PageData["streamed_page"]["tags"]> = []
+  onMount(async () => {
+    tags = await ($page.data as PageData).streamed_page.tags
+  })
+  $: searcher = new FuzzySearch(tags, ["tag"], {
     caseSensitive: false,
     sort: true
   })

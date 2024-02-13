@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
-import { error, type RequestHandler } from "@sveltejs/kit"
+import prisma from "$lib/server/prisma"
 
-const prisma = new PrismaClient()
+import { type RequestHandler, error } from "@sveltejs/kit"
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   const { name } = await request.json()
@@ -21,29 +20,28 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 }
 
 export const DELETE: RequestHandler = async ({ params, request }) => {
-    const { name } = await request.json()
+  const { name } = await request.json()
 
-    if (!name) {
-        throw error(400, "No tag name supplied")
-    }
-
-    const media = await prisma.media.findUniqueOrThrow({
-      where: {
-        id: params.media
-      }
-    })
-  
-    await prisma.media.update({
-      data: {
-        tags: media.tags
-          .map(t => t.toLowerCase())
-          .filter(t => t !== name.toLowerCase())
-      },
-      where: {
-        id: media.id
-      }
-    })
-  
-    return new Response()
+  if (!name) {
+    throw error(400, "No tag name supplied")
   }
-  
+
+  const media = await prisma.media.findUniqueOrThrow({
+    where: {
+      id: params.media
+    }
+  })
+
+  await prisma.media.update({
+    data: {
+      tags: media.tags
+        .map(t => t.toLowerCase())
+        .filter(t => t !== name.toLowerCase())
+    },
+    where: {
+      id: media.id
+    }
+  })
+
+  return new Response()
+}

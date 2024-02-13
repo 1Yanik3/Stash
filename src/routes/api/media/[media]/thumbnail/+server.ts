@@ -1,11 +1,8 @@
+import prisma from "$lib/server/prisma"
 import ffmpeg from "fluent-ffmpeg"
 import fs from "fs/promises"
 
-import { PrismaClient } from "@prisma/client"
-
 import type { RequestHandler } from "./$types"
-
-const prisma = new PrismaClient()
 
 export const GET: RequestHandler = async ({ params }) => {
   try {

@@ -1,145 +1,144 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import { afterNavigate, goto, invalidate } from "$app/navigation";
-    import { page } from "$app/stores";
-    import {
-        actionBar,
-        actionBars,
-        controller,
-        imageSuffixParameter,
-        selectedMediaIds,
-        selectedTags,
-        settings,
-        visibleMedium,
-    } from "$lib/stores";
-    import { onMount } from "svelte";
-    import CreateStoryPopup from "../components/Popups/CreateStoryPopup.svelte";
-    import ClusterSectionMobile from "../components/Popups/Mobile/ClusterSectionMobile.svelte";
-    import MediaViewerMobile from "../components/Popups/Mobile/MediaViewerMobile.svelte";
-    import NavigationSectionMobile from "../components/Popups/Mobile/NavigationSectionMobile.svelte";
-    import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte";
-    import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte";
-    import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte";
-    import QuickSwitch from "../components/Popups/QuickSwitcher/QuickSwitch.svelte";
-    import ReplaceVideoThumbnail from "../components/Popups/ReplaceVideoThumbnail.svelte";
-    import SettingsPopup from "../components/Popups/SettingsPopup/index.svelte";
-    import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte";
-    import Shortcut from "../reusables/Shortcut.svelte";
-    import type { PageData } from "./[cluster]/$types";
+  import { browser } from "$app/environment"
+  import { afterNavigate, goto, invalidate } from "$app/navigation"
+  import { page } from "$app/stores"
+  import {
+    actionBar,
+    actionBars,
+    imageSuffixParameter,
+    selectedMediaIds,
+    selectedTags,
+    settings,
+    visibleMedium
+  } from "$lib/stores"
+  import { onMount } from "svelte"
+  import CreateStoryPopup from "../components/Popups/CreateStoryPopup.svelte"
+  import ClusterSectionMobile from "../components/Popups/Mobile/ClusterSectionMobile.svelte"
+  import MediaViewerMobile from "../components/Popups/Mobile/MediaViewerMobile.svelte"
+  import NavigationSectionMobile from "../components/Popups/Mobile/NavigationSectionMobile.svelte"
+  import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte"
+  import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte"
+  import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte"
+  import QuickSwitch from "../components/Popups/QuickSwitcher/QuickSwitch.svelte"
+  import ReplaceVideoThumbnail from "../components/Popups/ReplaceVideoThumbnail.svelte"
+  import SettingsPopup from "../components/Popups/SettingsPopup/index.svelte"
+  import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte"
+  import Shortcut from "../reusables/Shortcut.svelte"
+  import type { PageData } from "./[cluster]/$types"
 
-    $: pageData = $page.data as PageData;
+  $: pageData = $page.data as PageData
 
-    afterNavigate(() => {
-        selectedMediaIds.set([]);
-        selectedTags.set([]);
-        visibleMedium.set(null);
-    });
+  afterNavigate(() => {
+    selectedMediaIds.set([])
+    selectedTags.set([])
+    visibleMedium.set(null)
+  })
 
+  visibleMedium.subscribe(() => {
+    imageSuffixParameter.set("")
+  })
+  selectedTags.subscribe(() => {
+    if (!browser) return
+    invalidate("media-and-tags")
+  })
+
+  onMount(() => {
     visibleMedium.subscribe(() => {
-        imageSuffixParameter.set("");
-    });
-    selectedTags.subscribe(() => {
-        if (!browser) return;
-        invalidate("media-and-tags");
-    });
+      if ($settings.mobileLayout) {
+        setPopup($visibleMedium ? "Media Viewer Mobile" : null)
+      }
+    })
+  })
 
-    onMount(() => {
-        visibleMedium.subscribe(() => {
-            if ($settings.mobileLayout) {
-                setPopup($visibleMedium ? "Media Viewer Mobile" : null);
-            }
-        });
-    });
+  export const goToPreviousMedia = async () => {
+    if (!$visibleMedium) return
 
-    export const goToPreviousMedia = () => {
-        if (!$visibleMedium) return;
+    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+      m => m.id == $visibleMedium?.id
+    )
 
-        const mediaIndex = pageData.media.findIndex(
-            (m) => m.id == $visibleMedium?.id
-        );
+    if (mediaIndex > 0)
+      visibleMedium.set((await pageData.streamed_page.media)[mediaIndex - 1])
+  }
 
-        if (mediaIndex > 0) visibleMedium.set(pageData.media[mediaIndex - 1]);
-    };
+  export const goToNextMedia = async () => {
+    if (!$visibleMedium) return
 
-    export const goToNextMedia = () => {
-        if (!$visibleMedium) return;
+    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+      m => m.id == $visibleMedium?.id
+    )
 
-        const mediaIndex = pageData.media.findIndex(
-            (m) => m.id == $visibleMedium?.id
-        );
+    if (mediaIndex < (await pageData.streamed_page.media).length - 1)
+      visibleMedium.set((await pageData.streamed_page.media)[mediaIndex + 1])
+  }
 
-        if (mediaIndex < pageData.media.length - 1)
-            visibleMedium.set(pageData.media[mediaIndex + 1]);
-    };
+  //#region Prompt
 
-    //#region Prompt
+  let prompt_visible = false
+  let prompt_question = ""
+  let prompt_value = ""
+  let prompt_callback = (b: boolean) => {}
+  export const prompt = (
+    question: string,
+    placeholder = ""
+  ): Promise<string | null> =>
+    new Promise(resolve => {
+      prompt_question = question
+      prompt_value = placeholder
 
-    let prompt_visible = false;
-    let prompt_question = "";
-    let prompt_value = "";
-    let prompt_callback = (b: boolean) => {};
-    export const prompt = (
-        question: string,
-        placeholder = ""
-    ): Promise<string | null> =>
-        new Promise((resolve) => {
-            prompt_question = question;
-            prompt_value = placeholder;
+      prompt_callback = (b: boolean) => {
+        if (b) resolve(prompt_value)
+        else resolve(null)
+        prompt_visible = false
+      }
 
-            prompt_callback = (b: boolean) => {
-                if (b) resolve(prompt_value);
-                else resolve(null);
-                prompt_visible = false;
-            };
+      prompt_visible = true
+    })
 
-            prompt_visible = true;
-        });
+  //#endregion
 
-    //#endregion
+  const shift = true,
+    control = true,
+    alt = true,
+    opt = true,
+    meta = true
 
-    const shift = true,
-        control = true,
-        alt = true,
-        opt = true,
-        meta = true;
+  const popups = {
+    "Quick Actions": QuickActions,
+    "Quick Actions Import": QuickActionsImport,
+    "Quick Switch": QuickSwitch,
+    Shortcuts: ShortcutPopup,
+    Settings: SettingsPopup,
+    "Replace Video Thumbnail": ReplaceVideoThumbnail,
+    "Create Story": CreateStoryPopup,
+    "Cluster Section Mobile": ClusterSectionMobile,
+    "Navigation Section Mobile": NavigationSectionMobile,
+    "Media Viewer Mobile": MediaViewerMobile
+  } as const
 
-    const popups = {
-        "Quick Actions": QuickActions,
-        "Quick Actions Import": QuickActionsImport,
-        "Quick Switch": QuickSwitch,
-        Shortcuts: ShortcutPopup,
-        Settings: SettingsPopup,
-        "Replace Video Thumbnail": ReplaceVideoThumbnail,
-        "Create Story": CreateStoryPopup,
-        "Cluster Section Mobile": ClusterSectionMobile,
-        "Navigation Section Mobile": NavigationSectionMobile,
-        "Media Viewer Mobile": MediaViewerMobile,
-    } as const;
-
-    let popup: keyof typeof popups | null = null;
-    export const setPopup = (newPopup: typeof popup) => (popup = newPopup);
-    export const setActionBar = (
-        newActionBar: keyof typeof actionBars | null
-    ) => actionBar.set(newActionBar);
+  let popup: keyof typeof popups | null = null
+  export const setPopup = (newPopup: typeof popup) => (popup = newPopup)
+  export const setActionBar = (newActionBar: keyof typeof actionBars | null) =>
+    actionBar.set(newActionBar)
 </script>
 
 {#if popup}
-    <svelte:component this={popups[popup]} />
+  <svelte:component this={popups[popup]} />
 {/if}
 
 <Shortcut
-    meta
-    key="o"
-    action={() => {
-        popup = "Quick Switch";
-    }}
+  meta
+  key="o"
+  action={() => {
+    popup = "Quick Switch"
+  }}
 />
 <Shortcut
-    meta
-    key="k"
-    action={() => {
-        popup = "Quick Actions";
-    }}
+  meta
+  key="k"
+  action={() => {
+    popup = "Quick Actions"
+  }}
 />
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
 <Shortcut meta key="," action={() => (popup = "Settings")} />
@@ -172,38 +171,38 @@
 
 <!-- Go up by a cluster -->
 <Shortcut
-    shift
-    opt
-    key="ArrowUp"
-    action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(
-            (c) => c.id == pageData.cluster.id
-        );
-        if (currentClusterIndex == 0) return;
-        const newCluster = pageData.clusters[currentClusterIndex - 1];
-        goto(`/${newCluster.name}`);
-    }}
+  shift
+  opt
+  key="ArrowUp"
+  action={() => {
+    const currentClusterIndex = pageData.clusters.findIndex(
+      c => c.id == pageData.cluster.id
+    )
+    if (currentClusterIndex == 0) return
+    const newCluster = pageData.clusters[currentClusterIndex - 1]
+    goto(`/${newCluster.name}`)
+  }}
 />
 
 <!-- Go down by a cluster -->
 <Shortcut
-    shift
-    opt
-    key="ArrowDown"
-    action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(
-            (c) => c.id == pageData.cluster.id
-        );
-        if (currentClusterIndex >= pageData.clusters.length - 1) return;
-        const cluster = pageData.clusters[currentClusterIndex + 1];
-        goto(`/${cluster.name}`);
-    }}
+  shift
+  opt
+  key="ArrowDown"
+  action={() => {
+    const currentClusterIndex = pageData.clusters.findIndex(
+      c => c.id == pageData.cluster.id
+    )
+    if (currentClusterIndex >= pageData.clusters.length - 1) return
+    const cluster = pageData.clusters[currentClusterIndex + 1]
+    goto(`/${cluster.name}`)
+  }}
 />
 
 {#if prompt_visible}
-    <PromptPopup
-        bind:value={prompt_value}
-        text={prompt_question}
-        on:result={(e) => prompt_callback(e.detail)}
-    />
+  <PromptPopup
+    bind:value={prompt_value}
+    text={prompt_question}
+    on:result={e => prompt_callback(e.detail)}
+  />
 {/if}
