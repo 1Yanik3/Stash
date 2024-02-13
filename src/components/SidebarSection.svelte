@@ -29,7 +29,7 @@
         display: grid;
         margin-top: 0.5em;
         max-width: 100%;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
     span {
         display: block;

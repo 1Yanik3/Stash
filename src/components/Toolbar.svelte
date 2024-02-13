@@ -15,8 +15,11 @@
   import Icon from "./Icon.svelte"
   import { invalidate } from "$app/navigation"
   import TagInputField from "./Tags/TagInputField.svelte"
+  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
+
+  let dropdownVisible = false
 
   const addTagToMedia = (value: string) => {
     fetch(`/api/media/${$visibleMedium?.id}/tag`, {
@@ -118,23 +121,6 @@
     <button on:click={() => visibleMedium.set(null)}>
       <Icon name="mdiClose" size={0.8} />
     </button>
-
-    <button
-      on:click={() => {
-        isFullscreen.set(!$isFullscreen)
-        if ($isFullscreen) {
-          document.documentElement.requestFullscreen()
-        } else {
-          document.exitFullscreen()
-        }
-      }}
-    >
-      <Icon name="mdiFullscreen" size={0.8} />
-    </button>
-
-    <button on:click={() => detailsVisible.set(!$detailsVisible)}>
-      <Icon name="mdiInformationOutline" size={0.8} />
-    </button>
   </section>
 
   <div>
@@ -153,32 +139,83 @@
   </div>
 
   <section>
-    <button on:click={replaceWithLocalMedia} title="Replace file content">
-      <Icon name="mdiFileReplace" size={0.8} />
+    <button
+      on:click={() => {
+        isFullscreen.set(!$isFullscreen)
+        if ($isFullscreen) {
+          document.documentElement.requestFullscreen()
+        } else {
+          document.exitFullscreen()
+        }
+      }}
+    >
+      <Icon name="mdiFullscreen" size={0.8} />
     </button>
 
-    <!-- TODO: Timestamp picker (in frontend, using video element) -->
-    {#if $visibleMedium?.type.startsWith("video")}
-      <button on:click={replaceThumbnail} title="Replace file thumbnail">
-        <Icon name="mdiFileReplaceOutline" size={0.8} />
-      </button>
-    {/if}
-
-    <!-- <button on:click={() => upscalePopup_open = true}>
-            <Icon name="mdiResize" size={0.8}/>
-        </button> -->
-
     <button
-      on:click={() =>
-        window.open(
-          `${$page.data.serverURL}/file/${$visibleMedium?.id}`,
-          "_blank"
-        )}
+      on:click={() => {
+        dropdownVisible = !dropdownVisible
+      }}
     >
-      <Icon name="mdiOpenInNew" size={0.8} />
+      <Icon name="mdiDotsVertical" size={0.8} />
     </button>
   </section>
 </main>
+
+<div
+  class="moreActionsDropdown"
+  style:display={dropdownVisible ? "block" : "none"}
+>
+  <SidebarButton
+    icon="mdiInformationOutline"
+    on:click={() => {
+      detailsVisible.set(!$detailsVisible)
+      dropdownVisible = false
+    }}
+  >
+    Show Details
+  </SidebarButton>
+
+  <SidebarButton
+    icon="mdiFileReplace"
+    on:click={() => {
+      replaceWithLocalMedia()
+      dropdownVisible = false
+    }}
+  >
+    Replace file content
+  </SidebarButton>
+
+  <!-- TODO: Timestamp picker (in frontend, using video element) -->
+  {#if $visibleMedium?.type.startsWith("video")}
+    <SidebarButton
+      icon="mdiFileReplaceOutline"
+      on:click={() => {
+        replaceThumbnail()
+        dropdownVisible = false
+      }}
+    >
+      Replace file thumbnail
+    </SidebarButton>
+  {/if}
+
+  <!-- <button on:click={() => upscalePopup_open = true}>
+    <Icon name="mdiResize" size={0.8}/>
+  </button> -->
+
+  <SidebarButton
+    icon="mdiOpenInNew"
+    on:click={() => {
+      window.open(
+        `${$page.data.serverURL}/file/${$visibleMedium?.id}`,
+        "_blank"
+      )
+      dropdownVisible = false
+    }}
+  >
+    Open in new tab
+  </SidebarButton>
+</div>
 
 <style lang="scss">
   main {
@@ -228,23 +265,46 @@
     }
 
     &.fullscreen {
+      justify-content: right;
       box-shadow: none;
       position: absolute;
       z-index: 5;
-      left: 0;
+      right: 0;
       &.windowControlsSpacer {
         left: 4.625em;
       }
       top: 0;
 
       div,
-      section:last-child,
-      button:not(:nth-child(2)) {
+      section {
         display: none;
+      }
+
+      section:last-of-type {
+        display: flex;
+
+        :last-child {
+          display: none;
+        }
       }
 
       background: none;
       border-bottom: none;
     }
+  }
+
+  .moreActionsDropdown {
+    position: absolute;
+    right: 0.5em;
+    top: 2.75em;
+    z-index: 10;
+    padding: 5px 0;
+
+    background: $color-dark-level-base;
+    border: 1px solid $border-color-1;
+    border-radius: 0.5em;
+    box-shadow:
+      rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,
+      rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
   }
 </style>

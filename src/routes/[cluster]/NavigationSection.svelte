@@ -87,6 +87,16 @@
                 >
                     Unsorted
                 </SidebarButton>
+                <SidebarButton
+                    hidden
+                    icon="mdiTrashCanOutline"
+                    on:click={() => {
+                        selectedTags.set(["SHOW_TRASHED"]);
+                    }}
+                    active={$selectedTags[0] == "SHOW_TRASHED"}
+                >
+                    Unsorted
+                </SidebarButton>
             </SidebarSection>
         </div>
 

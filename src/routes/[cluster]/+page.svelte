@@ -96,7 +96,7 @@
         }
 
         #mediaPlayerSection {
-            max-width: 1000px;
+            max-width: min(1000px, 40vw);
             min-width: 300px;
         }
 
