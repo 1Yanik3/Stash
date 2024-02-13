@@ -87,34 +87,6 @@
                 >
                     Unsorted
                 </SidebarButton>
-
-                <SidebarButton
-                    hidden
-                    icon="mdiImageOutline"
-                    on:click={() => {
-                        if ($mediaTypeFilter == "image")
-                            mediaTypeFilter.set("");
-                        else mediaTypeFilter.set("image");
-                        invalidate("media-and-tags");
-                    }}
-                    active={$mediaTypeFilter == "image"}
-                >
-                    Image
-                </SidebarButton>
-
-                <SidebarButton
-                    hidden
-                    icon="mdiVideoOutline"
-                    on:click={() => {
-                        if ($mediaTypeFilter == "video")
-                            mediaTypeFilter.set("");
-                        else mediaTypeFilter.set("video");
-                        invalidate("media-and-tags");
-                    }}
-                    active={$mediaTypeFilter == "video"}
-                >
-                    Video
-                </SidebarButton>
             </SidebarSection>
         </div>
 

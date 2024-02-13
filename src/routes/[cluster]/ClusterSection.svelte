@@ -4,7 +4,8 @@
     activeSetMethod,
     controller,
     settings,
-    traverse
+    traverse,
+    mediaTypeFilter
   } from "$lib/stores"
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
@@ -44,6 +45,41 @@
     >
       Sorting Method
     </SidebarButton>
+
+    {#if $mediaTypeFilter == ""}
+      <SidebarButton
+        hidden={!$settings.mobileLayout}
+        icon="mdiMultimedia"
+        on:click={() => {
+          mediaTypeFilter.set("image")
+          invalidate("media-and-tags")
+        }}
+      >
+        Image
+      </SidebarButton>
+    {:else if $mediaTypeFilter == "image"}
+      <SidebarButton
+        hidden={!$settings.mobileLayout}
+        icon="mdiImageOutline"
+        on:click={() => {
+          mediaTypeFilter.set("video")
+          invalidate("media-and-tags")
+        }}
+      >
+        Image
+      </SidebarButton>
+    {:else if $mediaTypeFilter == "video"}
+      <SidebarButton
+        hidden={!$settings.mobileLayout}
+        icon="mdiVideoOutline"
+        on:click={() => {
+          mediaTypeFilter.set("")
+          invalidate("media-and-tags")
+        }}
+      >
+        Image
+      </SidebarButton>
+    {/if}
 
     <SidebarButton
       hidden={!$settings.mobileLayout}
