@@ -28,10 +28,10 @@
   {/if}
 
   {#if $actionBar}
-    <section class="actionBar">
-      <svelte:component this={actionBars[$actionBar]} />
-    </section>
-  {:else if $visibleMedium && !$settings.mobileLayout}
+    <svelte:component this={actionBars[$actionBar]} />
+  {/if}
+
+  {#if $visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
     <section
       id="mediaPlayerSection"
       style={$isFullscreen
@@ -65,10 +65,6 @@
     #mediaPlayerSection {
       max-width: min(1000px, 40vw);
       min-width: 40vw;
-    }
-
-    .actionBar {
-      width: 64px;
     }
 
     &.mobile {

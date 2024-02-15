@@ -46,6 +46,34 @@
       Sorting Method
     </SidebarButton>
 
+    <SidebarButton
+      hidden={!$settings.mobileLayout}
+      disabled={pageData.cluster.type == "stories"}
+      on:click={() => {
+        traverse.set(!$traverse)
+        invalidate("media-and-tags")
+      }}
+      icon={$traverse ? "mdiHook" : "mdiHookOff"}
+    >
+      Traverse
+    </SidebarButton>
+
+    <SidebarButton
+      hidden={!$settings.mobileLayout}
+      disabled={["collection", "stories"].includes(pageData.cluster.type)}
+      on:click={() => {
+        activeSetMethod.set(
+          setMethods[
+            (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
+          ]
+        )
+        invalidate("media-and-tags")
+      }}
+      icon={$activeSetMethod.icon}
+    >
+      Set Method ({$activeSetMethod.title})
+    </SidebarButton>
+
     {#if $mediaTypeFilter == ""}
       <SidebarButton
         hidden={!$settings.mobileLayout}
@@ -80,34 +108,6 @@
         Image
       </SidebarButton>
     {/if}
-
-    <SidebarButton
-      hidden={!$settings.mobileLayout}
-      disabled={pageData.cluster.type == "stories"}
-      on:click={() => {
-        traverse.set(!$traverse)
-        invalidate("media-and-tags")
-      }}
-      icon={$traverse ? "mdiHook" : "mdiHookOff"}
-    >
-      Traverse
-    </SidebarButton>
-
-    <SidebarButton
-      hidden={!$settings.mobileLayout}
-      disabled={["collection", "stories"].includes(pageData.cluster.type)}
-      on:click={() => {
-        activeSetMethod.set(
-          setMethods[
-            (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
-          ]
-        )
-        invalidate("media-and-tags")
-      }}
-      icon={$activeSetMethod.icon}
-    >
-      Set Method ({$activeSetMethod.title})
-    </SidebarButton>
   </section>
 
   <section>

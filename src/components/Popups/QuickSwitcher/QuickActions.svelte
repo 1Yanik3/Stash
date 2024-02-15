@@ -2,6 +2,7 @@
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
   import {
+    actionBar,
     controller,
     selectedMediaIds,
     selectedTags,
@@ -44,15 +45,12 @@
           const tagToDelete = await $controller.prompt("Enter tag to remove: ")
 
           for (const i in $selectedMediaIds) {
-            await fetch(
-              `/api/media/${$selectedMediaIds[i]}/tag`,
-              {
-                method: "DELETE",
-                body: JSON.stringify({
-                    name: tagToDelete
-                })
-              }
-            ).catch(console.error)
+            await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
+              method: "DELETE",
+              body: JSON.stringify({
+                name: tagToDelete
+              })
+            }).catch(console.error)
           }
 
           invalidate("media-and-tags")
@@ -80,6 +78,21 @@
         $controller.setActionBar("Cast")
       }
     })
+
+    if ($actionBar == "AutoScroll")
+      functionalities.push({
+        name: "Disable Auto Scroll",
+        async function() {
+          $controller.setActionBar(null)
+        }
+      })
+    else
+      functionalities.push({
+        name: "Enable Auto Scroll",
+        async function() {
+          $controller.setActionBar("AutoScroll")
+        }
+      })
 
     if ($page.data.cluster.type == "withName") {
       if ($viewMode == "table")

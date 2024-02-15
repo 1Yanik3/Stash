@@ -5,6 +5,7 @@ import { writable } from "svelte/store"
 import type { Media, Story } from "@prisma/client"
 
 import QuickActionsCast from "../components/Popups/ActionBars/Cast.svelte"
+import AutoScroll from "../components/Popups/ActionBars/AutoScroll.svelte"
 import type Controller from "../routes/Controller.svelte"
 import { setMethods, sortingMethods } from "../types"
 
@@ -40,6 +41,7 @@ export let storyTab: Writable<string | null> = writable(null)
 export let isFullscreen: Writable<boolean> = writable(false)
 
 export const actionBars = {
-  Cast: QuickActionsCast
+  Cast: QuickActionsCast,
+  AutoScroll: AutoScroll
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
