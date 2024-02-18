@@ -15,19 +15,18 @@ import type { PageLoad } from "./$types"
 const loadMedia = (fetch: Function, cluster: string): Promise<Media[]> =>
   new Promise(async resolve => {
     const mediaRequest = await fetch(
-      `/api/cluster/${cluster}/media
-        ?traverse=${get(traverse).toString()}
-        &tags=${get(selectedTags).join(",")}
-        &activeSortingMethod=${
-          cluster == "Camp Buddy"
-            ? sortingMethods.findIndex(
-                a => a.icon == "mdiSortAlphabeticalAscending"
-              )
-            : sortingMethods.indexOf(get(activeSortingMethod))
-        }
-        &activeSetMethod=${setMethods.indexOf(get(activeSetMethod))}
-        &mediaTypeFilter=${get(mediaTypeFilter)}
-    `.replace(/ /g, "")
+      `/api/cluster/${cluster}/media?${new URLSearchParams({
+        traverse: get(traverse).toString(),
+        tags: get(selectedTags).join(","),
+        activeSortingMethod: (cluster == "Camp Buddy"
+          ? sortingMethods.findIndex(
+              a => a.icon == "mdiSortAlphabeticalAscending"
+            )
+          : sortingMethods.indexOf(get(activeSortingMethod))
+        ).toString(),
+        activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
+        mediaTypeFilter: get(mediaTypeFilter)
+      }).toString()}`
     )
     resolve(await mediaRequest.json())
   })
@@ -45,11 +44,11 @@ const loadTags = (
 > =>
   new Promise(async resolve => {
     const tagRequest = await fetch(
-      `/api/cluster/${cluster}/tags
-        ?tags=${get(selectedTags).join(",")}
-        &activeSetMethod=${setMethods.indexOf(get(activeSetMethod))}
-        &mediaTypeFilter=${get(mediaTypeFilter)}
-    `.replace(/ /g, "")
+      `/api/cluster/${cluster}/tags?${new URLSearchParams({
+        tags: get(selectedTags).join(","),
+        activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
+        mediaTypeFilter: get(mediaTypeFilter)
+      }).toString()}`
     )
 
     resolve(await tagRequest.json())

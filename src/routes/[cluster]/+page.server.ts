@@ -1,11 +1,6 @@
 import prisma from "$lib/server/prisma"
-import { resolve } from "path"
 
-import type {
-  PageServerData,
-  PageServerLoad,
-  PageServerParentData
-} from "./$types"
+import type { PageServerLoad, PageServerParentData } from "./$types"
 
 const loadCounters = async () => {
   return (
