@@ -1,240 +1,229 @@
 <script lang="ts">
-    import {
-        controller,
-        detailsVisible,
-        imageSuffixParameter,
-        isFullscreen,
-        settings,
-        visibleMedium,
-    } from "$lib/stores";
-    import Icon from "./Icon.svelte";
-    import { page } from "$app/stores";
+  import {
+    controller,
+    detailsVisible,
+    imageSuffixParameter,
+    isFullscreen,
+    settings,
+    visibleMedium
+  } from "$lib/stores"
+  import Icon from "./Icon.svelte"
+  import { page } from "$app/stores"
 
-    let imageElement: HTMLElement;
-    let isZoomedIn = false;
+  let imageElement: HTMLElement
+  let isZoomedIn = false
 
-    let video: HTMLVideoElement;
+  let video: HTMLVideoElement
 
-    function toIsoString(date: Date) {
-        const pad = (num: number) => (num < 10 ? "0" : "") + num;
+  function toIsoString(date: Date) {
+    const pad = (num: number) => (num < 10 ? "0" : "") + num
 
-        return (
-            date.getFullYear() +
-            "-" +
-            pad(date.getMonth() + 1) +
-            "-" +
-            pad(date.getDate()) +
-            " " +
-            pad(date.getHours()) +
-            ":" +
-            pad(date.getMinutes()) +
-            ":" +
-            pad(date.getSeconds())
-        );
-    }
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      " " +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds())
+    )
+  }
 
-    let showMouse = true;
-    let mouseTimer: NodeJS.Timeout;
+  let showMouse = true
+  let mouseTimer: NodeJS.Timeout
 
-    function handleMouseMove() {
-        showMouse = true;
-        clearTimeout(mouseTimer);
-        if ($isFullscreen)
-            mouseTimer = setTimeout(() => {
-                showMouse = false;
-            }, 1500);
-    }
+  function handleMouseMove() {
+    showMouse = true
+    clearTimeout(mouseTimer)
+    if ($isFullscreen)
+      mouseTimer = setTimeout(() => {
+        showMouse = false
+      }, 1500)
+  }
 
-    function handleMouseLeave() {
-        showMouse = true;
-        clearTimeout(mouseTimer);
-    }
+  function handleMouseLeave() {
+    showMouse = true
+    clearTimeout(mouseTimer)
+  }
 </script>
 
 {#if $visibleMedium}
-    <main
-        class:detailsVisible={$detailsVisible}
-        class:fullscreen={$isFullscreen}
-    >
-        {#if $detailsVisible}
-            <div id="details">
-                {#key $visibleMedium}
-                    <span
-                        style="grid-column: span 2; cursor: pointer"
-                        on:mousedown={async () => {
-                            if (!$visibleMedium) return;
+  <main class:detailsVisible={$detailsVisible} class:fullscreen={$isFullscreen}>
+    {#if $detailsVisible}
+      <div id="details">
+        {#key $visibleMedium}
+          <span
+            role="button"
+            style="grid-column: span 2; cursor: pointer"
+            on:mousedown={async () => {
+              if (!$visibleMedium) return
 
-                            const newName = await $controller.prompt(
-                                "Enter new name:",
-                                $visibleMedium.name,
-                            );
-                            if (newName) {
-                                $visibleMedium.name = newName;
-                                fetch(
-                                    `/api/media/${$visibleMedium.id}/rename`,
-                                    {
-                                        method: "PUT",
-                                        body: JSON.stringify({
-                                            name: newName,
-                                        }),
-                                    },
-                                );
-                            }
-                        }}
-                    >
-                        <Icon name="mdiFormTextbox" />
-                        <span>{$visibleMedium.name}</span>
-                    </span>
-
-                    <span>
-                        <Icon name="mdiMoveResize" />
-                        <span
-                            >{$visibleMedium.width}x{$visibleMedium.height}</span
-                        >
-                    </span>
-
-                    <span>
-                        <Icon name="mdiCalendar" />
-                        <span>{toIsoString(new Date($visibleMedium.date))}</span
-                        >
-                    </span>
-                {/key}
-            </div>
-        {/if}
-
-        <div
-            id="media"
-            class:darkened={$isFullscreen}
-            class:isZoomedIn
-            on:click={(e) => {
-                if ($settings.touchNavigationButtons) {
-                    const { width } = (
-                        imageElement || video
-                    ).getBoundingClientRect();
-
-                    if (e.offsetX < width / 2) $controller.goToPreviousMedia();
-                    if (e.offsetX > width / 2) $controller.goToNextMedia();
-                }
+              const newName = await $controller.prompt(
+                "Enter new name:",
+                $visibleMedium.name
+              )
+              if (newName) {
+                $visibleMedium.name = newName
+                fetch(`/api/media/${$visibleMedium.id}/rename`, {
+                  method: "PUT",
+                  body: JSON.stringify({
+                    name: newName
+                  })
+                })
+              }
             }}
-            on:mousemove={handleMouseMove}
-            on:mouseleave={handleMouseLeave}
+          >
+            <Icon name="mdiFormTextbox" />
+            <span>{$visibleMedium.name}</span>
+          </span>
+
+          <span>
+            <Icon name="mdiMoveResize" />
+            <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
+          </span>
+
+          <span>
+            <Icon name="mdiCalendar" />
+            <span>{toIsoString(new Date($visibleMedium.date))}</span>
+          </span>
+        {/key}
+      </div>
+    {/if}
+
+    <div
+      id="media"
+      class:darkened={$isFullscreen}
+      class:isZoomedIn
+      on:click={e => {
+        if ($settings.touchNavigationButtons) {
+          const { width } = (imageElement || video).getBoundingClientRect()
+
+          if (e.offsetX < width / 2) $controller.goToPreviousMedia()
+          if (e.offsetX > width / 2) $controller.goToNextMedia()
+        }
+      }}
+      on:mousemove={handleMouseMove}
+      on:mouseleave={handleMouseLeave}
+    >
+      {#if $visibleMedium.type.startsWith("image")}
+        <img
+          bind:this={imageElement}
+          src={`${$page.data.serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
+          crossorigin="use-credentials"
+          alt={$visibleMedium.name}
+          class:isZoomedIn
+          on:click={e => {
+            if (!$settings.touchNavigationButtons) isZoomedIn = !isZoomedIn
+          }}
+          style={showMouse ? "" : "cursor: none"}
+        />
+      {:else if $visibleMedium.type.startsWith("video")}
+        <video
+          src={`${$page.data.serverURL}/file/${$visibleMedium.id}`}
+          controls
+          autoplay
+          bind:this={video}
+          on:playing={() => {
+            if (video.duration <= 5) video.loop = true
+          }}
+          crossorigin="use-credentials"
+          style={showMouse ? "" : "cursor: none"}
         >
-            {#if $visibleMedium.type.startsWith("image")}
-                <img
-                    bind:this={imageElement}
-                    src={`${$page.data.serverURL}/file/${$visibleMedium.id}${$imageSuffixParameter}`}
-                    crossorigin="use-credentials"
-                    alt={$visibleMedium.name}
-                    class:isZoomedIn
-                    on:click={(e) => {
-                        if (!$settings.touchNavigationButtons)
-                            isZoomedIn = !isZoomedIn;
-                    }}
-                    style={showMouse ? "" : "cursor: none"}
-                />
-            {:else if $visibleMedium.type.startsWith("video")}
-                <video
-                    src={`${$page.data.serverURL}/file/${$visibleMedium.id}`}
-                    controls
-                    autoplay
-                    bind:this={video}
-                    on:playing={() => {
-                        if (video.duration <= 5) video.loop = true;
-                    }}
-                    crossorigin="use-credentials"
-                    style={showMouse ? "" : "cursor: none"}
-                >
-                    <track kind="captions" />
-                </video>
-            {:else}
-                <span>{$visibleMedium.name}</span>
-            {/if}
-        </div>
-    </main>
+          <track kind="captions" />
+        </video>
+      {:else}
+        <span>{$visibleMedium.name}</span>
+      {/if}
+    </div>
+  </main>
 {/if}
 
 <style lang="scss">
-    #details {
-        padding: 0.7em;
-        background: $color-dark-level-1;
-        border-bottom: 1px solid $border-color-base;
+  #details {
+    padding: 0.7em;
+    background: $color-dark-level-1;
+    border-bottom: 1px solid $border-color-base;
 
-        display: grid;
-        gap: 0.5em;
-        grid-template-columns: 1fr 1fr;
-        // grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+    display: grid;
+    gap: 0.5em;
+    grid-template-columns: 1fr 1fr;
+    // grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
 
-        & > span {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            span {
-                margin-left: 0.5em;
-            }
-        }
+    & > span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
+        margin-left: 0.5em;
+      }
+    }
+  }
+
+  main {
+    // TODO: Make more elegant
+    height: calc(100vh - 42px);
+    border-left: 1px solid $border-color-base;
+    display: grid;
+    grid-template-rows: 1fr;
+    &.detailsVisible {
+      grid-template-rows: auto 1fr;
+    }
+    overflow: scroll;
+  }
+
+  #media {
+    background: $color-dark-level-base;
+    &.darkened {
+      background: #000;
     }
 
-    main {
-        // TODO: Make more elegant
-        height: calc(100vh - 42px);
-        border-left: 1px solid $border-color-base;
-        display: grid;
-        grid-template-rows: 1fr;
-        &.detailsVisible {
-            grid-template-rows: auto 1fr;
-        }
-        overflow: scroll;
+    width: 100%;
+    height: calc(100vh - 42px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.isZoomedIn {
+      align-items: baseline;
     }
 
+    img {
+      cursor: zoom-in;
+    }
+
+    img,
+    video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      outline: none;
+    }
+
+    img.isZoomedIn {
+      cursor: zoom-out;
+      max-width: unset;
+      max-height: unset;
+    }
+  }
+
+  main.fullscreen {
+    & {
+      height: 100%;
+    }
     #media {
-        background: $color-dark-level-base;
-        &.darkened {
-            background: #000;
-        }
+      height: 100%;
 
-        width: 100%;
-        height: calc(100vh - 42px);
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &.isZoomedIn {
-            align-items: baseline;
-        }
-
-        img {
-            cursor: zoom-in;
-        }
-
-        img,
-        video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            outline: none;
-        }
-
-        img.isZoomedIn {
-            cursor: zoom-out;
-            max-width: unset;
-            max-height: unset;
-        }
+      img,
+      video {
+        height: 100vh;
+        width: 100vw;
+        max-height: 100vh;
+        max-width: 100vw;
+      }
     }
-
-    main.fullscreen {
-        & {
-            height: 100%;
-        }
-        #media {
-            height: 100%;
-
-            img,
-            video {
-                height: 100vh;
-                width: 100vw;
-                max-height: 100vh;
-                max-width: 100vw;
-            }
-        }
-    }
+  }
 </style>

@@ -22,7 +22,7 @@
   const updateMediaIfChangesExist = async (
     newData: Promise<Awaited<typeof pageData.streamed_page.media>>
   ) => {
-    const newHash = await md5(JSON.stringify(await newData))
+    const newHash = await md5(JSON.stringify((await newData).map(m => m.id)))
     if (newHash == lastHash) return
 
     media = await newData

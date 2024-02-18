@@ -151,9 +151,11 @@
       {/if}
 
       <SidebarSection title="Tags">
-        {#each orderDataHierarchicallyExceptPeople as d}
-          <SidebarHierarchyEntry {...d} />
-        {/each}
+        {#key tags}
+          {#each orderDataHierarchicallyExceptPeople as d}
+            <SidebarHierarchyEntry {...d} />
+          {/each}
+        {/key}
       </SidebarSection>
     </div>
   </main>
