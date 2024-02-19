@@ -9,6 +9,9 @@
   } from "$lib/stores"
   import Icon from "./Icon.svelte"
   import { page } from "$app/stores"
+  import type { PageData } from "../routes/[cluster]/$types"
+
+  $: pageData = $page.data as PageData
 
   let imageElement: HTMLElement
   let isZoomedIn = false
@@ -49,6 +52,20 @@
     showMouse = true
     clearTimeout(mouseTimer)
   }
+
+  let preloadedImageUrl = ""
+  const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
+    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+      m => m.id == $visibleMedium?.id
+    )
+
+    if (mediaIndex < (await pageData.streamed_page.media).length - 1)
+      preloadedImageUrl = `${pageData.serverURL}/file/${
+        (await pageData.streamed_page.media)[mediaIndex + 1].id
+      }${$imageSuffixParameter}`
+    else preloadedImageUrl = ""
+  }
+  $: updatePreloadedImageUrl($visibleMedium)
 </script>
 
 {#if $visibleMedium}
@@ -140,6 +157,14 @@
       {/if}
     </div>
   </main>
+
+  {#if preloadedImageUrl}
+    <link
+      rel="prefetch"
+      href={preloadedImageUrl}
+      crossorigin="use-credentials"
+    />
+  {/if}
 {/if}
 
 <style lang="scss">
