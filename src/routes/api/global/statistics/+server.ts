@@ -2,22 +2,33 @@ import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
 
-// TODO: Do we still use this?
-
 export const GET: RequestHandler = async () => {
-  const clusters = await prisma.clusters.findMany()
+  const clusters = await prisma.clusters.findMany({
+    include: {
+      _count: {
+        select: {
+          Media: true,
+          stories: true
+        }
+      }
+    },
+    orderBy: {
+        sortOrder: 'asc'
+    }
+  })
 
-  let output: any[] = []
-
-  for (const i in clusters) {
-    const cluster = clusters[i]
-
-    output.push({
+  const output = {
+    media_count: clusters.reduce(
+      (acc, cluster) => acc + cluster._count.Media,
+      0
+    ),
+    clusters: clusters.map(cluster => ({
       id: cluster.id,
-      mediaCount:
-        (await prisma.media.count({ where: { group: { cluster } } })) +
-        (await prisma.story.count({ where: { cluster } }))
-    })
+      name: cluster.name,
+      icon: cluster.icon,
+      type: cluster.type,
+      media_count: cluster._count.Media || cluster._count.stories
+    }))
   }
 
   return new Response(JSON.stringify(output))

@@ -1,87 +1,106 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
-    import Icon from "../../../Icon.svelte";
-    import * as Icons from "@mdi/js"
-    import { page } from "$app/stores";
-    import type { PageData } from "../../../../routes/[cluster]/$types";
+  import { onMount } from "svelte"
+  import { fade } from "svelte/transition"
+  import Icon from "../../../Icon.svelte"
+  import { page } from "$app/stores"
+  import type { PageData } from "../../../../routes/[cluster]/$types"
+  import type { $Enums } from "@prisma/client"
 
-    $: pageData = $page.data as PageData
+  $: pageData = $page.data as PageData
 
-    let data: { id: number, mediaCount: number }[] = []
+  // TODO: Make this type dynamic?
+  let data: {
+    media_count: number
+    clusters: {
+      id: number
+      name: string
+      icon: string
+      type: $Enums.ClusterType
+      media_count: number
+    }[]
+  } = {
+    media_count: -1,
+    clusters: []
+  }
 
-    onMount(async () => {
-        data = await (await fetch("/api/global/statistics")).json()
-    });
-
-    const getIcon = (name: string) => (Icons as any)[`mdi${name.substring(0, 1).toUpperCase() + name.substring(1)}`] || Icons.mdiPackageVariant
-
+  onMount(async () => {
+    data = await (await fetch("/api/global/statistics")).json()
+  })
 </script>
 
 <main in:fade>
-    <div class="header">
-        <span>Media Count</span>
-        <span>Storage Usage</span>
-        <span class="bigNumber"> 12'551 </span>
-        <span class="bigNumber"> 56.2 GB </span>
-    </div>
+  <div class="header">
+    <span>Media Count</span>
+    <span>Storage Usage</span>
+    <span class="bigNumber"> {data.media_count} </span>
+    <span class="bigNumber"> 56.2 GB </span>
+  </div>
 
-    {#each pageData.clusters as c}
-        <section>
-            <div>
-                <Icon path={getIcon(c.icon)} size={1.5} />
-                <b>{c.name}</b>
-            </div>
+  {#each data.clusters as c}
+    <section>
+      <div>
+        <Icon nameAlt={c.icon} size={1.5} />
+        <b>{c.name}</b>
+      </div>
 
-            <div>
-                <span>Media Count</span>
-                <span class="bigNumber"> {data.find(d => d.id == c.id)?.mediaCount} </span>
-                <!-- <span style="margin-top: 1em">Storage Usage</span>
+      <div>
+        <span>
+          {#if c.type == "stories"}
+            Stories
+          {:else}
+            Media
+          {/if} Count
+        </span>
+        <span class="bigNumber">
+          {c.media_count}
+        </span>
+        <!-- <span style="margin-top: 1em">Storage Usage</span>
                 <span class="bigNumber"> 10.2 GB </span> -->
-                <span>​</span>
-                <span>​</span>
-            </div>
-        </section>
-    {/each}
+        <span>​</span>
+        <span>​</span>
+      </div>
+    </section>
+  {/each}
 </main>
 
 <style lang="scss">
-    .header {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        margin: 1em;
-        margin-bottom: 2em;
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 1em;
+    margin-bottom: 2em;
 
-        .bigNumber {
-            font-size: 2.75em;
-        }
+    .bigNumber {
+      font-size: 2.75em;
+    }
+  }
+
+  section {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin-top: 1em;
+
+    padding: 1em;
+    background: hsl(0, 0%, 7%);
+    border-radius: 0.6em;
+    border: 1px solid hsl(0, 0%, 17%);
+    box-shadow:
+      rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+
+    b {
+      font-size: 1.5em;
     }
 
-    section {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        margin-top: 1em;
-
-        padding: 1em;
-        background: hsl(0, 0%, 7%);
-        border-radius: 0.6em;
-        border: 1px solid hsl(0, 0%, 17%);
-        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
-            rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
-
-        b {
-            font-size: 1.5em;
-        }
-
-        .bigNumber {
-            font-size: 1.5em;
-        }
-
-        div {
-            // display: grid;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    .bigNumber {
+      font-size: 1.5em;
     }
+
+    div {
+      // display: grid;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
 </style>

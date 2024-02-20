@@ -44,6 +44,8 @@
         grid-template-columns: auto 1fr;
         grid-template-rows: 23em;
 
+        width: 640px;
+
         section {
             gap: 2em;
             padding: 1em;
