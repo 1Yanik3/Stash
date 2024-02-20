@@ -3,7 +3,6 @@
   import { page } from "$app/stores"
   import {
     controller,
-    detailsVisible,
     imageSuffixParameter,
     isFullscreen,
     settings,
@@ -194,7 +193,7 @@
   <SidebarButton
     icon="mdiInformationOutline"
     on:click={() => {
-      detailsVisible.set(!$detailsVisible)
+      $controller.setPopup("Media Details")
       dropdownVisible = false
     }}
   >

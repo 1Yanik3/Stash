@@ -25,6 +25,7 @@
   import ShortcutPopup from "../components/Popups/ShortcutPopup.svelte"
   import Shortcut from "../reusables/Shortcut.svelte"
   import type { PageData } from "./[cluster]/$types"
+  import MediaDetailsPopup from "../components/Popups/MediaDetailsPopup.svelte"
 
   $: pageData = $page.data as PageData
 
@@ -113,7 +114,8 @@
     "Create Story": CreateStoryPopup,
     "Cluster Section Mobile": ClusterSectionMobile,
     "Navigation Section Mobile": NavigationSectionMobile,
-    "Media Viewer Mobile": MediaViewerMobile
+    "Media Viewer Mobile": MediaViewerMobile,
+    "Media Details": MediaDetailsPopup
   } as const
 
   let popup: keyof typeof popups | null = null

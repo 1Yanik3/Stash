@@ -34,7 +34,6 @@ export let settings = persisted("settings", {
   mobileLayout: false
 })
 
-export let detailsVisible: Writable<boolean> = writable(false)
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)
 export let storyTab: Writable<string | null> = writable(null)
 

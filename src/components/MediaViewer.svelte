@@ -1,13 +1,11 @@
 <script lang="ts">
   import {
     controller,
-    detailsVisible,
     imageSuffixParameter,
     isFullscreen,
     settings,
     visibleMedium
   } from "$lib/stores"
-  import Icon from "./Icon.svelte"
   import { page } from "$app/stores"
   import type { PageData } from "../routes/[cluster]/$types"
 
@@ -17,24 +15,6 @@
   let isZoomedIn = false
 
   let video: HTMLVideoElement
-
-  function toIsoString(date: Date) {
-    const pad = (num: number) => (num < 10 ? "0" : "") + num
-
-    return (
-      date.getFullYear() +
-      "-" +
-      pad(date.getMonth() + 1) +
-      "-" +
-      pad(date.getDate()) +
-      " " +
-      pad(date.getHours()) +
-      ":" +
-      pad(date.getMinutes()) +
-      ":" +
-      pad(date.getSeconds())
-    )
-  }
 
   let showMouse = true
   let mouseTimer: NodeJS.Timeout
@@ -69,48 +49,7 @@
 </script>
 
 {#if $visibleMedium}
-  <main class:detailsVisible={$detailsVisible} class:fullscreen={$isFullscreen}>
-    {#if $detailsVisible}
-      <div id="details">
-        {#key $visibleMedium}
-          <span
-            role="button"
-            style="grid-column: span 2; cursor: pointer"
-            on:mousedown={async () => {
-              if (!$visibleMedium) return
-
-              const newName = await $controller.prompt(
-                "Enter new name:",
-                $visibleMedium.name
-              )
-              if (newName) {
-                $visibleMedium.name = newName
-                fetch(`/api/media/${$visibleMedium.id}/rename`, {
-                  method: "PUT",
-                  body: JSON.stringify({
-                    name: newName
-                  })
-                })
-              }
-            }}
-          >
-            <Icon name="mdiFormTextbox" />
-            <span>{$visibleMedium.name}</span>
-          </span>
-
-          <span>
-            <Icon name="mdiMoveResize" />
-            <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
-          </span>
-
-          <span>
-            <Icon name="mdiCalendar" />
-            <span>{toIsoString(new Date($visibleMedium.date))}</span>
-          </span>
-        {/key}
-      </div>
-    {/if}
-
+  <main class:fullscreen={$isFullscreen}>
     <div
       id="media"
       class:darkened={$isFullscreen}
@@ -168,26 +107,6 @@
 {/if}
 
 <style lang="scss">
-  #details {
-    padding: 0.7em;
-    background: $color-dark-level-1;
-    border-bottom: 1px solid $border-color-base;
-
-    display: grid;
-    gap: 0.5em;
-    grid-template-columns: 1fr 1fr;
-    // grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
-
-    & > span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      span {
-        margin-left: 0.5em;
-      }
-    }
-  }
-
   main {
     // TODO: Make more elegant
     height: calc(100vh - 42px);
