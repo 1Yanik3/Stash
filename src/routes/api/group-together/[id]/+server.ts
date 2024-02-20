@@ -12,3 +12,18 @@ export const GET: RequestHandler = async ({ params }) =>
       })
     )?.name || "Unknown"
   )
+
+export const PUT: RequestHandler = async ({ params, request }) => {
+  const { name }: { name: string } = await request.json()
+
+  await prisma.groupedIntoNames.update({
+    where: {
+      id: +params.id
+    },
+    data: {
+      name
+    }
+  })
+
+  return new Response()
+}

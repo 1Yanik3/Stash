@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { invalidate } from "$app/navigation";
+    import { invalidate, invalidateAll } from "$app/navigation";
     import type { Media } from "@prisma/client";
     import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
     import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
@@ -63,7 +63,7 @@
                             fetch(`/api/group-together`, {
                                 method: "POST",
                                 body: JSON.stringify(selectedMedia),
-                            }).then(() => invalidate("media-and-tags"));
+                            }).then(() => invalidateAll());
                         }}>Group</SidebarButton
                     >
                     <SidebarButton
