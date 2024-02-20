@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedTags, storyTab, viewMode } from "$lib/stores"
+  import { selectedTags, viewMode } from "$lib/stores"
 
   import ImageGridPage from "./ImageGrid_Page.svelte"
   import ImageGridStories from "./ImageGrid_Stories.svelte"

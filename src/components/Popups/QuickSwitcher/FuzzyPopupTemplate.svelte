@@ -12,6 +12,7 @@
   export let promise: Promise<TAsArray>
   export let searchAttributes: string[]
   export let disableClose = false
+  export let conditionAttribute: keyof T | null = null
 
   let inputBox: HTMLInputElement
   let selectedIndex = 0
@@ -26,10 +27,16 @@
       .slice(0, $settings.mobileLayout ? 15 : 10) as T) || []
   $: console.log(results)
   promise.then(data => {
-    searcher = new FuzzySearch(data, searchAttributes, {
-      caseSensitive: false,
-      sort: true
-    })
+    searcher = new FuzzySearch(
+      data.filter(t =>
+        conditionAttribute == null ? true : t[conditionAttribute]
+      ),
+      searchAttributes,
+      {
+        caseSensitive: false,
+        sort: true
+      }
+    )
   })
 
   const dispatch = createEventDispatcher<{
@@ -119,9 +126,7 @@
 <style lang="scss">
   main {
     display: grid;
-    // width: 30em;
     max-width: 100%;
-    max-height: 20.5em;
 
     input {
       padding: 0.5em;
