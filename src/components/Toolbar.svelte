@@ -124,6 +124,31 @@
   </section>
 
   <div>
+    <button
+      on:click={() => {
+        fetch(`/api/media/${$visibleMedium?.id}/favourited`, {
+          method: "PUT",
+          body: JSON.stringify({
+            favourited: !$visibleMedium?.favourited
+          })
+        })
+          .then(() => {
+            if (!$visibleMedium) return
+            const tmp = $visibleMedium
+            tmp.favourited = !$visibleMedium?.favourited
+            visibleMedium.set(tmp)
+
+            invalidate("media-and-tags")
+          })
+          .catch(console.error)
+      }}
+    >
+      {#if $visibleMedium?.favourited}
+        <Icon name="mdiStar" size={0.8} />
+      {:else}
+        <Icon name="mdiStarOutline" size={0.8} />
+      {/if}
+    </button>
     {#each $visibleMedium?.tags || [] as tag}
       <span
         class="tag"

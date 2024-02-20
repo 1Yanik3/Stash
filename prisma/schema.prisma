@@ -29,7 +29,16 @@ model Clusters {
   stories       Story[]
   Media         Media[]
   CollapsedTags CollapsedTags[]
+
   @@index([name])
+}
+
+enum CountAttribute {
+  solo
+  two
+  three
+  group
+  unknown
 }
 
 model Media {
@@ -42,6 +51,9 @@ model Media {
   height Int
   width  Int
   tags   String[]
+
+  favourited     Boolean        @default(false)
+  countAttribute CountAttribute @default(unknown)
 
   // Link to cluster
   cluster    Clusters? @relation(fields: [clustersId], references: [id])

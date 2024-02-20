@@ -1,122 +1,125 @@
 <script lang="ts">
-    import { selectedMediaIds, visibleMedium } from "$lib/stores";
-    
-    import type { Media } from "@prisma/client";
-    import IntersectionObserver from '../reusables/IntersectionObserver.svelte';
-    import { page } from "$app/stores";
+  import { selectedMediaIds, visibleMedium } from "$lib/stores"
 
-    export let i: number
-    export let medium: Media
-    export let disableActive = false
+  import type { Media } from "@prisma/client"
+  import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
+  import { page } from "$app/stores"
+  import Icon from "./Icon.svelte"
 
-    const dragStartHandler = (e: DragEvent) => {
-        e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
+  export let i: number
+  export let medium: Media
+  export let disableActive = false
+
+  const dragStartHandler = (e: DragEvent) => {
+    e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
+  }
+
+  let element: HTMLDivElement
+  // visibleMedium.subscribe(async () => {
+  //     if (!element) return
+
+  //     const r = element.getBoundingClientRect()
+  //     if ($visibleMedium == medium && !(
+  //         r.top >= 210 &&
+  //         r.bottom <= (window.innerHeight - 210)
+  //     )) {
+  //         element.scrollIntoView({
+  //             block: "nearest",
+  //             behavior: "smooth"
+  //         })
+  //     }
+  // })
+
+  const leftClick = (e: MouseEvent) => {
+    if (e.metaKey) {
+      visibleMedium.set(null)
+      if ($selectedMediaIds.includes(medium.id))
+        selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
+      else selectedMediaIds.set([...$selectedMediaIds, medium.id])
+    } else {
+      selectedMediaIds.set([])
+      visibleMedium.set(medium)
     }
-
-    let element: HTMLDivElement
-    // visibleMedium.subscribe(async () => {
-    //     if (!element) return
-
-    //     const r = element.getBoundingClientRect()
-    //     if ($visibleMedium == medium && !(
-    //         r.top >= 210 &&
-    //         r.bottom <= (window.innerHeight - 210)
-    //     )) {
-    //         element.scrollIntoView({
-    //             block: "nearest",
-    //             behavior: "smooth"
-    //         })
-    //     }
-    // })
-
-    const leftClick = (e: MouseEvent) => {
-        if (e.metaKey) {
-            visibleMedium.set(null)
-            if ($selectedMediaIds.includes(medium.id))
-                selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
-            else
-                selectedMediaIds.set([...$selectedMediaIds, medium.id])
-        } else {
-            selectedMediaIds.set([])
-            visibleMedium.set(medium)
-        }
-    }
-
+  }
 </script>
 
 <IntersectionObserver
-    on:click={e => leftClick(e.detail)}
-    once={true}
-    top={500}
-    let:intersecting
-    style={`position: relative`}
+  on:click={e => leftClick(e.detail)}
+  once={true}
+  top={500}
+  let:intersecting
+  style={`position: relative`}
 >
-    <div
-        on:dragstart|stopPropagation={dragStartHandler}
-        bind:this={element}
-        class:selected={$selectedMediaIds.includes(medium.id)}
+  <div
+    on:dragstart|stopPropagation={dragStartHandler}
+    bind:this={element}
+    class:selected={$selectedMediaIds.includes(medium.id)}
+  >
+    <svg
+      viewBox={`0 0 ${medium.width} ${medium.height}`}
+      xmlns="http://www.w3.org/2000/svg"
     >
+      <rect width={medium.width} height={medium.height} x="0" y="0" />
+    </svg>
 
-        <svg
-            viewBox={`0 0 ${medium.width} ${medium.height}`}
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <rect width={medium.width} height={medium.height} x="0" y="0"/>
-        </svg>
+    {#if intersecting || i == 0}
+      {#await new Promise(resolve => resolve(true)) then}
+        <img
+          src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
+          alt={medium.name}
+          class:active={!disableActive && $visibleMedium == medium}
+          crossorigin="use-credentials"
+        />
+      {/await}
 
-
-        {#if (intersecting) || i == 0}
-
-            {#await new Promise(resolve => resolve(true)) then }
-                <img
-                    src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
-                    alt={medium.name}
-                    class:active={!disableActive && $visibleMedium == medium}
-                    crossorigin="use-credentials"
-                >
-            {/await}
-            
-        {/if}
-    </div>
+      {#if medium.favourited}
+        <div style="position: absolute; bottom: 0.25em; right: 0.25em;">
+          <Icon name="mdiStar" size={0.8} />
+        </div>
+      {/if}
+    {/if}
+  </div>
 </IntersectionObserver>
 
 <style lang="scss">
+  div {
+    scroll-margin: 11px;
+    // height: calc(100% - 2px);
+    // position: relative;
 
-    div {
-        scroll-margin: 11px;
-        // height: calc(100% - 2px);
-        // position: relative;
-
-        &.selected img {
-            outline: 3px solid hsl(0, 0%, 36%);
-        }
+    &.selected img {
+      outline: 3px solid hsl(0, 0%, 36%);
     }
+  }
 
-    img {
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
+  img {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-        border-radius: 3px;
-        box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
+    border-radius: 3px;
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
 
-        transition: filter 200ms, transform 200ms;
+    transition:
+      filter 200ms,
+      transform 200ms;
 
-        @media (hover: hover) and (pointer: fine) {
-            &:hover {
-                filter: brightness(0.85);
-                transform: scale(1.04);
-            }
-        }
-        &.active {
-            transform: scale(1.04);
-        }
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        filter: brightness(0.85);
+        transform: scale(1.04);
+      }
     }
-
+    &.active {
+      transform: scale(1.04);
+    }
+  }
 </style>

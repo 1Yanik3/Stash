@@ -1,6 +1,7 @@
 import {
   activeSetMethod,
   activeSortingMethod,
+  favouritesOnly,
   mediaTypeFilter,
   selectedTags,
   traverse
@@ -25,7 +26,8 @@ const loadMedia = (fetch: Function, cluster: string): Promise<Media[]> =>
           : sortingMethods.indexOf(get(activeSortingMethod))
         ).toString(),
         activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-        mediaTypeFilter: get(mediaTypeFilter)
+        mediaTypeFilter: get(mediaTypeFilter),
+        favouritesOnly: get(favouritesOnly).toString()
       }).toString()}`
     )
     resolve(await mediaRequest.json())
@@ -47,7 +49,8 @@ const loadTags = (
       `/api/cluster/${cluster}/tags?${new URLSearchParams({
         tags: get(selectedTags).join(","),
         activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-        mediaTypeFilter: get(mediaTypeFilter)
+        mediaTypeFilter: get(mediaTypeFilter),
+        favouritesOnly: get(favouritesOnly).toString()
       }).toString()}`
     )
 

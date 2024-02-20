@@ -3,11 +3,12 @@ import prisma from "$lib/server/prisma"
 
 import { type RequestHandler, json } from "@sveltejs/kit"
 
-export const GET: RequestHandler = async ({ params, request, url }) => {
+export const GET: RequestHandler = async ({ params, url }) => {
   const activeSetMethod =
     setMethods[+(url.searchParams.get("activeSetMethod") || 0)]
   const tags = url.searchParams.get("tags")?.split(",") || []
   const mediaTypeFilter = url.searchParams.get("mediaTypeFilter") || ""
+  const favouritesOnly = url.searchParams.get("favouritesOnly") == "true"
 
   let typeFilter: string = ``
   if (mediaTypeFilter)
@@ -26,6 +27,11 @@ export const GET: RequestHandler = async ({ params, request, url }) => {
                   .join(" AND ")}
             )
         `
+  const favouriteFilter = favouritesOnly
+    ? /*sql*/ `
+                AND "Media"."favourited" = true
+            `
+    : ""
 
   return json(
     await prisma.$queryRawUnsafe(/*sql*/ `
@@ -37,6 +43,7 @@ export const GET: RequestHandler = async ({ params, request, url }) => {
                 WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
                 ${typeFilter}
                 ${tagsFilter}
+                ${favouriteFilter}
             ) subq
             GROUP BY tag
         )

@@ -11,6 +11,7 @@ import { setMethods, sortingMethods } from "../types"
 
 export let clusterIndex: Writable<number> = writable(1)
 
+export let favouritesOnly: Writable<boolean> = writable(false)
 export let visibleMedium: Writable<Media | null> = writable(null)
 export let imageSuffixParameter: Writable<String> = writable("")
 

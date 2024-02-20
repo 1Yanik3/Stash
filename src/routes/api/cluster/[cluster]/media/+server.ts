@@ -1,4 +1,5 @@
 import { setMethods, sortingMethods } from "$lib/../types"
+import prisma from "$lib/server/prisma"
 // import { ExifParserFactory } from "ts-exif-parser"
 import sharedImportLogic from "$lib/sharedImportLogic"
 import fs from "fs/promises"
@@ -6,7 +7,6 @@ import fs from "fs/promises"
 import { json } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
-import prisma from "$lib/server/prisma"
 
 export const GET: RequestHandler = async ({ params, request }) => {
   const searchParams = new URL(request.url).searchParams
@@ -17,6 +17,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
   const activeSetMethod =
     setMethods[+(searchParams.get("activeSetMethod") || 0)]
   const mediaTypeFilter = searchParams.get("mediaTypeFilter") || ""
+  const favouritesOnly = searchParams.get("favouritesOnly") == "true"
 
   let typeFilter: string = ``
   if (mediaTypeFilter)
@@ -65,6 +66,12 @@ export const GET: RequestHandler = async ({ params, request }) => {
                 )
             `
 
+  const favouriteFilter = favouritesOnly
+    ? /*sql*/ `
+            AND "Media"."favourited" = true
+        `
+    : ""
+
   const query = /*sql*/ `
         SELECT m.*
         FROM (
@@ -74,6 +81,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
             WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
             ${typeFilter}
             ${tagsFilter}
+            ${favouriteFilter}
         ) AS m
         ORDER BY ${activeSortingMethod.orderBy}
     `

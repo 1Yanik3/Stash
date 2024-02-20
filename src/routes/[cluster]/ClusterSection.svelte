@@ -5,7 +5,8 @@
     controller,
     settings,
     traverse,
-    mediaTypeFilter
+    mediaTypeFilter,
+    favouritesOnly
   } from "$lib/stores"
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
@@ -108,6 +109,17 @@
         Image
       </SidebarButton>
     {/if}
+
+    <SidebarButton
+      hidden={!$settings.mobileLayout}
+      icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
+      on:click={() => {
+        favouritesOnly.set(!$favouritesOnly)
+        invalidate("media-and-tags")
+      }}
+    >
+      Favourited
+    </SidebarButton>
   </section>
 
   <section>
