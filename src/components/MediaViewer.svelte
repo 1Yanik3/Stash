@@ -3,6 +3,7 @@
     controller,
     imageSuffixParameter,
     isFullscreen,
+    media_store,
     settings,
     visibleMedium
   } from "$lib/stores"
@@ -35,13 +36,13 @@
 
   let preloadedImageUrl = ""
   const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
-    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+    const mediaIndex = $media_store.findIndex(
       m => m.id == $visibleMedium?.id
     )
 
-    if (mediaIndex < (await pageData.streamed_page.media).length - 1)
+    if (mediaIndex < $media_store.length - 1)
       preloadedImageUrl = `${pageData.serverURL}/file/${
-        (await pageData.streamed_page.media)[mediaIndex + 1].id
+        $media_store[mediaIndex + 1].id
       }${$imageSuffixParameter}`
     else preloadedImageUrl = ""
   }

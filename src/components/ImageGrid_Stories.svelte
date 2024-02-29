@@ -34,7 +34,7 @@
     }, 0)
   }
 
-  let story: (typeof pageData.stories)[number] | null = null
+  let story: Awaited<typeof pageData.streamed.stories>[number] | null = null
   let chapters: string[] = []
 
   let serif = false
@@ -44,7 +44,9 @@
   let scrollElement: HTMLDivElement
   let scrollElementSpacer: HTMLDivElement
 
-  const selectStory = async (_story: (typeof pageData.stories)[number]) => {
+  const selectStory = async (
+    _story: Awaited<typeof pageData.streamed.stories>[number]
+  ) => {
     story = _story
     chapters = extractHeaders(story.content)
 
@@ -171,16 +173,18 @@
   </main>
 {:else}
   <main class="stories-grid">
-    {#each pageData.stories as story}
-      <div class="story" on:click={() => selectStory(story)}>
-        <div class="title">
-          {story.title}
+    {#await pageData.streamed.stories then stories}
+      {#each stories as story}
+        <div class="story" on:click={() => selectStory(story)}>
+          <div class="title">
+            {story.title}
+          </div>
+          <div class="date">
+            {new Date(story.date).toISOString().slice(0, 10)}
+          </div>
         </div>
-        <div class="date">
-          {new Date(story.date).toISOString().slice(0, 10)}
-        </div>
-      </div>
-    {/each}
+      {/each}
+    {/await}
   </main>
 
   <!-- Add new story -->

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedTags, viewMode } from "$lib/stores"
+  import { selectedTags, viewMode, media_store, pageSize } from "$lib/stores"
 
   import ImageGridPage from "./ImageGrid_Page.svelte"
   import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -11,24 +11,8 @@
   import type { PageData } from "../routes/[cluster]/$types"
   import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
-  import type { Media } from "@prisma/client"
   import { md5 } from "hash-wasm"
   $: pageData = $page.data as PageData
-
-  const pageSize = 50
-
-  let media: Media[] = []
-  let lastHash = ""
-  const updateMediaIfChangesExist = async (
-    newData: Promise<Awaited<typeof pageData.streamed_page.media>>
-  ) => {
-    const newHash = await md5(JSON.stringify((await newData).map(m => m.id)))
-    if (newHash == lastHash) return
-
-    media = await newData
-    lastHash = newHash
-  }
-  $: updateMediaIfChangesExist(pageData.streamed_page.media)
 </script>
 
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
@@ -76,25 +60,25 @@
   {/if}
 
   <section>
-    {#key lastHash}
-      {#if $viewMode == "table"}
-        <ImageGridTable {media} />
-      {:else}
-        {#each new Array(Math.ceil(media.length / pageSize)) as _, i}
+    {#if $viewMode == "table"}
+      <ImageGridTable media={$media_store} />
+    {:else}
+      {#each new Array(Math.ceil($media_store.length / pageSize)) as _, i}
+        {#key $media_store.slice(i * pageSize, (i + 1) * pageSize).join()}
           {#if pageData.cluster.type == "withName"}
             <ImageGridStudios
-              media={media.slice(i * pageSize, (i + 1) * pageSize)}
+              media={$media_store.slice(i * pageSize, (i + 1) * pageSize)}
               {i}
             />
           {:else}
             <ImageGridPage
-              media={media.slice(i * pageSize, (i + 1) * pageSize)}
+              media={$media_store.slice(i * pageSize, (i + 1) * pageSize)}
               {i}
             />
           {/if}
-        {/each}
-      {/if}
-    {/key}
+        {/key}
+      {/each}
+    {/if}
   </section>
 {/if}
 

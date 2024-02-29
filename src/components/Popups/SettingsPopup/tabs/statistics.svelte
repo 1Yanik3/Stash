@@ -31,9 +31,10 @@
 <main in:fade>
   <div class="header">
     <span>Media Count</span>
-    <span>Storage Usage</span>
+    <span></span>
+    <!-- <span>Storage Usage</span> -->
     <span class="bigNumber"> {data.media_count} </span>
-    <span class="bigNumber"> 56.2 GB </span>
+    <!-- <span class="bigNumber"> 56.2 GB </span> -->
   </div>
 
   {#each data.clusters as c}

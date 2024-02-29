@@ -2,6 +2,7 @@ import { setMethods, sortingMethods } from "$lib/../types"
 import prisma from "$lib/server/prisma"
 // import { ExifParserFactory } from "ts-exif-parser"
 import sharedImportLogic from "$lib/sharedImportLogic"
+import { pageSize } from "$lib/stores"
 import fs from "fs/promises"
 
 import { json } from "@sveltejs/kit"
@@ -18,6 +19,10 @@ export const GET: RequestHandler = async ({ params, request }) => {
     setMethods[+(searchParams.get("activeSetMethod") || 0)]
   const mediaTypeFilter = searchParams.get("mediaTypeFilter") || ""
   const favouritesOnly = searchParams.get("favouritesOnly") == "true"
+  const offset = searchParams.get("favouritesOnly")
+    ? //   @ts-ignore
+      +searchParams.get("offset")
+    : 0
 
   let typeFilter: string = ``
   if (mediaTypeFilter)
@@ -82,6 +87,8 @@ export const GET: RequestHandler = async ({ params, request }) => {
             ${typeFilter}
             ${tagsFilter}
             ${favouriteFilter}
+            LIMIT ${pageSize}
+            OFFSET ${offset}
         ) AS m
         ORDER BY ${activeSortingMethod.orderBy}
     `

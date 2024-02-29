@@ -45,3 +45,6 @@ export const actionBars = {
   AutoScroll: AutoScroll
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
+
+export const pageSize = 50
+export let media_store: Writable<Media[]> = writable([])

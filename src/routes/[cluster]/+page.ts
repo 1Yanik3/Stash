@@ -1,37 +1,13 @@
 import {
   activeSetMethod,
-  activeSortingMethod,
   favouritesOnly,
   mediaTypeFilter,
   selectedTags,
-  traverse
 } from "$lib/stores"
 import { get } from "svelte/store"
 
-import type { Media } from "@prisma/client"
-
-import { setMethods, sortingMethods } from "../../types"
+import { setMethods } from "../../types"
 import type { PageLoad } from "./$types"
-
-const loadMedia = (fetch: Function, cluster: string): Promise<Media[]> =>
-  new Promise(async resolve => {
-    const mediaRequest = await fetch(
-      `/api/cluster/${cluster}/media?${new URLSearchParams({
-        traverse: get(traverse).toString(),
-        tags: get(selectedTags).join(","),
-        activeSortingMethod: (cluster == "Camp Buddy"
-          ? sortingMethods.findIndex(
-              a => a.icon == "mdiSortAlphabeticalAscending"
-            )
-          : sortingMethods.indexOf(get(activeSortingMethod))
-        ).toString(),
-        activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-        mediaTypeFilter: get(mediaTypeFilter),
-        favouritesOnly: get(favouritesOnly).toString()
-      }).toString()}`
-    )
-    resolve(await mediaRequest.json())
-  })
 
 const loadTags = (
   fetch: Function,
@@ -60,7 +36,6 @@ const loadTags = (
 export const load: PageLoad = async ({ params, fetch, depends, data }) => {
   depends("media-and-tags")
 
-  let media = loadMedia(fetch, params.cluster)
   let tags = loadTags(fetch, params.cluster)
 
   // TODO: Make more elegant
@@ -68,16 +43,14 @@ export const load: PageLoad = async ({ params, fetch, depends, data }) => {
     return {
       ...data,
       streamed_page: {
-        tags,
-        media
+        tags
       }
     }
 
   return {
     ...data,
     streamed_page: {
-      tags,
-      media
+      tags
     }
   }
 }

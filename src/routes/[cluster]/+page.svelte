@@ -8,10 +8,81 @@
     actionBar,
     actionBars,
     isFullscreen,
+    media_store,
+    selectedTags,
     settings,
-    visibleMedium
+    traverse,
+    visibleMedium,
+    activeSortingMethod,
+    favouritesOnly,
+    mediaTypeFilter,
+    activeSetMethod
   } from "$lib/stores"
   import NavigationSection from "./NavigationSection.svelte"
+  import { beforeNavigate, onNavigate } from "$app/navigation"
+  import type { Media } from "@prisma/client"
+  import { setMethods, sortingMethods } from "../../types"
+  import { page } from "$app/stores"
+  import About from "../../components/Popups/SettingsPopup/tabs/about.svelte"
+  import { onMount } from "svelte"
+
+  const loadMedia = (cluster: string, offset = 0): Promise<Media[]> =>
+    new Promise(async resolve => {
+      const mediaRequest = await fetch(
+        `/api/cluster/${cluster}/media?${new URLSearchParams({
+          traverse: $traverse.toString(),
+          tags: $selectedTags.join(","),
+          activeSetMethod: setMethods.indexOf($activeSetMethod).toString(),
+          mediaTypeFilter: $mediaTypeFilter,
+          favouritesOnly: $favouritesOnly.toString(),
+          activeSortingMethod: (cluster == "Camp Buddy"
+            ? sortingMethods.findIndex(
+                a => a.icon == "mdiSortAlphabeticalAscending"
+              )
+            : sortingMethods.indexOf($activeSortingMethod)
+          ).toString(),
+          offset: offset.toString()
+        }).toString()}`
+      )
+      resolve(await mediaRequest.json())
+    })
+
+  const resetMedia = async (cluster = $page.params.cluster) => {
+    media_store.set([])
+    media_store.set(await loadMedia(cluster, 0))
+  }
+  onMount(() => {
+    traverse.subscribe(() => {
+      resetMedia()
+    })
+    selectedTags.subscribe(() => {
+      resetMedia()
+    })
+    activeSetMethod.subscribe(() => {
+      resetMedia()
+    })
+    favouritesOnly.subscribe(() => {
+      resetMedia()
+    })
+    mediaTypeFilter.subscribe(() => {
+      resetMedia()
+    })
+    activeSortingMethod.subscribe(() => {
+      resetMedia()
+    })
+  })
+
+  beforeNavigate(({ to }) => {
+    if (to?.params) resetMedia(to.params.cluster)
+  })
+
+  const onscroll = (e: Event) => {
+    const target = e.target as HTMLDivElement
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500)
+        loadMedia($page.params.cluster, $media_store.length).then(newMedia =>
+            media_store.update(oldMedia => [...oldMedia, ...newMedia])
+        )
+  }
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
@@ -20,7 +91,7 @@
   {/if}
 
   {#if !$isFullscreen}
-    <section id="imageGallerySection">
+    <section id="imageGallerySection" on:scroll={onscroll}>
       <DropFile>
         <ImageGrid />
       </DropFile>

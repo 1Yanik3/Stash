@@ -2,32 +2,21 @@
   import { JustifiedGrid } from "./Grid/Grids/JustifiedGrid"
 
   import GridThumbnail from "../components/GridThumbnail.svelte"
-  import IntersectionObserver from "../reusables/IntersectionObserver.svelte"
   import type { Media } from "@prisma/client"
-  import { page } from "$app/stores"
 
   export let media: Media[]
   export let i: number
 </script>
 
-<IntersectionObserver
-  once={true}
-  top={750}
-  let:intersecting
-  delay={i > 0 ? 300 : 0}
+<JustifiedGrid
+  autoResize={true}
+  useResizeObserver={true}
+  defaultDirection="start"
+  gap={14}
+  sizeRange={[150, 500]}
+  useTransform={true}
 >
-  {#if intersecting}
-    <JustifiedGrid
-      autoResize={true}
-      useResizeObserver={true}
-      defaultDirection="start"
-      gap={14}
-      sizeRange={[150, 500]}
-      useTransform={true}
-    >
-      {#each media as medium}
-        <GridThumbnail {medium} {i} />
-      {/each}
-    </JustifiedGrid>
-  {/if}
-</IntersectionObserver>
+  {#each media as medium}
+    <GridThumbnail {medium} {i} />
+  {/each}
+</JustifiedGrid>

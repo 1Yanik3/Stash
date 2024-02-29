@@ -6,6 +6,7 @@
     actionBar,
     actionBars,
     imageSuffixParameter,
+    media_store,
     selectedMediaIds,
     selectedTags,
     settings,
@@ -54,23 +55,23 @@
   export const goToPreviousMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+    const mediaIndex = $media_store.findIndex(
       m => m.id == $visibleMedium?.id
     )
 
     if (mediaIndex > 0)
-      visibleMedium.set((await pageData.streamed_page.media)[mediaIndex - 1])
+      visibleMedium.set($media_store[mediaIndex - 1])
   }
 
   export const goToNextMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = (await pageData.streamed_page.media).findIndex(
+    const mediaIndex = $media_store.findIndex(
       m => m.id == $visibleMedium?.id
     )
 
-    if (mediaIndex < (await pageData.streamed_page.media).length - 1)
-      visibleMedium.set((await pageData.streamed_page.media)[mediaIndex + 1])
+    if (mediaIndex < $media_store.length - 1)
+      visibleMedium.set($media_store[mediaIndex + 1])
   }
 
   //#region Prompt

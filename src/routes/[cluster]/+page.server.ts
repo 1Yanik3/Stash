@@ -2,12 +2,13 @@ import prisma from "$lib/server/prisma"
 
 import type { PageServerLoad, PageServerParentData } from "./$types"
 
-const loadCounters = async () => {
+const loadCounters = async (clusterName: string) => {
   return (
     (await prisma.$queryRaw`
         SELECT COUNT(*) AS untagged_count
         FROM "Media"
-        WHERE NOT EXISTS (
+        WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = ${clusterName})
+        AND NOT EXISTS (
                 SELECT 1
                 FROM unnest("Media"."tags") AS t(tag)
                 WHERE tag IN ('Solo', 'Two', 'Group')
@@ -42,10 +43,10 @@ const loadCollapsedTags = (parent: Promise<PageServerParentData>) =>
     )
   })
 
-export const load: PageServerLoad = async ({ parent, depends, url }) => {
+export const load: PageServerLoad = ({ parent, depends, params }) => {
   depends("tags")
 
-  const counters = loadCounters()
+  const counters = loadCounters(params.cluster)
   const stories = loadStories(parent())
   const collapsedTags = loadCollapsedTags(parent())
 
