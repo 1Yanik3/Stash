@@ -7,19 +7,19 @@ export const sortingMethods: Array<{
 }> = [
   {
     icon: "mdiSortAlphabeticalAscending",
-    orderBy: `m."name" ASC, m."id" ASC`
+    orderBy: `"Media"."name" ASC, "Media"."id" ASC`
   },
   {
     icon: "mdiSortAlphabeticalDescending",
-    orderBy: `m."name" DESC, m."id" DESC`
+    orderBy: `"Media"."name" DESC, "Media"."id" DESC`
   },
   {
     icon: "mdiSortCalendarAscending",
-    orderBy: `m."date" ASC, m."name" ASC, m."id" ASC`
+    orderBy: `"Media"."date" ASC, "Media"."name" ASC, "Media"."id" ASC`
   },
   {
     icon: "mdiSortCalendarDescending",
-    orderBy: `m."date" DESC, m."name" DESC, m."id" DESC`
+    orderBy: `"Media"."date" DESC, "Media"."name" DESC, "Media"."id" DESC`
   },
   // TODO: Add a seed (so that no reload happens when I change a tag)
   {

@@ -78,19 +78,16 @@ export const GET: RequestHandler = async ({ params, request }) => {
     : ""
 
   const query = /*sql*/ `
-        SELECT m.*
-        FROM (
-            SELECT DISTINCT "Media".*
-            FROM "Media",
-            unnest("Media"."tags") AS t(tag) 
-            WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
-            ${typeFilter}
-            ${tagsFilter}
-            ${favouriteFilter}
-            LIMIT ${pageSize}
-            OFFSET ${offset}
-        ) AS m
+        SELECT DISTINCT "Media".*
+        FROM "Media",
+        unnest("Media"."tags") AS t(tag) 
+        WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
+        ${typeFilter}
+        ${tagsFilter}
+        ${favouriteFilter}
         ORDER BY ${activeSortingMethod.orderBy}
+        LIMIT ${pageSize}
+        OFFSET ${offset}
     `
 
   return json(await prisma.$queryRawUnsafe(query))
