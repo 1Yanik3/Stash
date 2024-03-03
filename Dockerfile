@@ -12,7 +12,7 @@ RUN npm prune --production
 FROM ghcr.io/max-lt/nginx-jwt-module:latest
 WORKDIR /app
 
-RUN apk add --no-cache nodejs-current ffmpeg exiftool
+RUN apk add --no-cache nodejs-current ffmpeg exiftool yt-dlp
 
 # Setup nginx
 RUN apk add nginx
