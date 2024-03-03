@@ -27,6 +27,7 @@
   import Shortcut from "../reusables/Shortcut.svelte"
   import type { PageData } from "./[cluster]/$types"
   import MediaDetailsPopup from "../components/Popups/MediaDetailsPopup.svelte"
+  import QuickActionsImportFromUrl from "../components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
 
   $: pageData = $page.data as PageData
 
@@ -55,20 +56,15 @@
   export const goToPreviousMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = $media_store.findIndex(
-      m => m.id == $visibleMedium?.id
-    )
+    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
 
-    if (mediaIndex > 0)
-      visibleMedium.set($media_store[mediaIndex - 1])
+    if (mediaIndex > 0) visibleMedium.set($media_store[mediaIndex - 1])
   }
 
   export const goToNextMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = $media_store.findIndex(
-      m => m.id == $visibleMedium?.id
-    )
+    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
 
     if (mediaIndex < $media_store.length - 1)
       visibleMedium.set($media_store[mediaIndex + 1])
@@ -108,6 +104,7 @@
   const popups = {
     "Quick Actions": QuickActions,
     "Quick Actions Import": QuickActionsImport,
+    "Quick Actions Import from URL": QuickActionsImportFromUrl,
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
     Settings: SettingsPopup,

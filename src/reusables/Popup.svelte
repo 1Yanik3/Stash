@@ -58,9 +58,19 @@
         {/if}
       </div>
     {/if}
-    <div id="content">
+    <div
+      id="content"
+      class:hasActions={$$slots.actionsLeft || $$slots.actionsRight}
+    >
       <slot />
     </div>
+    {#if $$slots.actionsLeft || $$slots.actionsRight}
+      <div class="actions">
+        <slot name="actionsLeft" />
+        <div class="spacer"></div>
+        <slot name="actionsRight" />
+      </div>
+    {/if}
   </section>
 </main>
 
@@ -120,6 +130,10 @@
 
       #content {
         padding: 0.5em;
+
+        &.hasActions {
+          box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+        }
       }
 
       &.bottomSheet {
@@ -133,6 +147,15 @@
         border-bottom-right-radius: 0;
         width: 100vw;
         max-width: 100vw;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5em;
+        .spacer {
+          flex-grow: 1;
+        }
       }
     }
 

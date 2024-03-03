@@ -88,7 +88,7 @@
     <main>
       <section>
         <div
-          class="dropZone" 
+          class="dropZone"
           on:drop|preventDefault={handleDrop}
           on:dragover|preventDefault={() => {}}
         >
@@ -174,16 +174,6 @@
           margin-right: 0.25em;
 
           cursor: pointer;
-        }
-        input {
-          margin-left: 0.25em;
-          width: 2em;
-
-          transition: width 200ms;
-
-          &:focus {
-            width: 7em;
-          }
         }
       }
     }

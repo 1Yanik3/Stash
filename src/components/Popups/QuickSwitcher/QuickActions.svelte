@@ -76,6 +76,14 @@
         condition: true
       },
       {
+        name: "Import from URL",
+        icon: "mdiCloudDownload",
+        async action() {
+          $controller.setPopup("Quick Actions Import from URL")
+        },
+        condition: true
+      },
+      {
         name: "Cast",
         icon: "mdiCast",
         async action() {
