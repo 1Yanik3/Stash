@@ -24,7 +24,9 @@
         else dispatch("selected", value)
         break
       case "Tab":
+        e.preventDefault()
         dispatch("selected", results[0])
+        value = ""
         break
       default:
         selectionIndex = -1

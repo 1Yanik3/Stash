@@ -26,8 +26,7 @@
         name: "Add tag",
         icon: "mdiTagPlus",
         async action() {
-          const newTag = await $controller.prompt().text("Enter new tag:")
-          console.info(newTag)
+          const newTag = await $controller.prompt().tag("Enter new tag:")
           if (!newTag) return
 
           for (const i in $selectedMediaIds) {

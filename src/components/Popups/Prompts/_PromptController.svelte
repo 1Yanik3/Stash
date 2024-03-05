@@ -1,5 +1,6 @@
 <script lang="ts">
   import SelectPromptPopup from "./SelectPromptPopup.svelte"
+  import TagSearchPromptPopup from "./TagSearchPromptPopup.svelte"
   import TextPromptPopup from "./TextPromptPopup.svelte"
 
   export const prompt = {
@@ -19,6 +20,7 @@
           element.$destroy()
         })
       }),
+
     select: (
       question: string,
       options: string[],
@@ -31,6 +33,23 @@
             question,
             options,
             value: value || options[0]
+          }
+        })
+
+        element.$on("result", ({ detail }) => {
+          if (detail != null) resolve(detail)
+          else resolve(null)
+          element.$destroy()
+        })
+      }),
+
+    tag: (question: string, value = ""): Promise<string | null> =>
+      new Promise(resolve => {
+        const element = new TagSearchPromptPopup({
+          target: document.body,
+          props: {
+            question,
+            value
           }
         })
 
