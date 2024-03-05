@@ -74,12 +74,8 @@
     tags = await newData
     lastHash = newHash
 
-    orderDataHierarchicallyOnlyPeople = orderDataHierarchically(
-      tags.filter(t => ["Solo", "Two", "Group"].includes(t.tag[0]))
-    )
-
     orderDataHierarchicallyExceptPeople = orderDataHierarchically(
-      tags.filter(t => !["Solo", "Two", "Group"].includes(t.tag[0]))
+      tags.filter(t => !["Solo", "Two", "Three", "Group"].includes(t.tag[0]))
     )
   }
   $: updateTagsIfChangesExist(pageData.streamed_page.tags)
@@ -127,9 +123,31 @@
       <!-- TODO: Cluster settings -->
       {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
         <SidebarSection title="People">
-          {#each orderDataHierarchicallyOnlyPeople as { name, count, children }}
-            <SidebarHierarchyEntry {name} {count} {children} />
-          {/each}
+          <SidebarHierarchyEntry
+            name="Solo"
+            count={tags.find(t => t.tag[0] == "Solo")?.direct_count || 0}
+            iconOverwrite="mdiAccount"
+            children={[]}
+          />
+          <SidebarHierarchyEntry
+            name="Two"
+            count={tags.find(t => t.tag[0] == "Two")?.direct_count || 0}
+            iconOverwrite="mdiAccountMultiple"
+            children={[]}
+          />
+          <SidebarHierarchyEntry
+            name="Three"
+            count={tags.find(t => t.tag[0] == "Three")?.direct_count || 0}
+            iconOverwrite="mdiAccountGroup"
+            children={[]}
+          />
+          <SidebarHierarchyEntry
+            name="Group"
+            count={tags.find(t => t.tag[0] == "Group")?.direct_count || 0}
+            iconOverwrite="mdiAccountMultiplePlus"
+            children={[]}
+          />
+
           {#await pageData.streamed.counters}
             <SidebarHierarchyEntry
               name="PEOPLE_COUNT_UNKNOWN"

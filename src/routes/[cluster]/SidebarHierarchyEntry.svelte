@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { selectedTags } from "$lib/stores"
+  import { selectedMediaIds, selectedTags } from "$lib/stores"
   import type { possibleIcons } from "$lib/possibleIcons"
   import type { PageData } from "./$types"
   import SidebarButton from "./SidebarButton.svelte"
@@ -62,6 +62,7 @@
       else selectedTags.set([...$selectedTags, name.toLowerCase()])
     } else {
       selectedTags.set([name.toLowerCase()])
+      selectedMediaIds.set([])
     }
   }}
   on:contextmenu={({ detail }) => {

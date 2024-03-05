@@ -19,11 +19,10 @@
     activeSetMethod
   } from "$lib/stores"
   import NavigationSection from "./NavigationSection.svelte"
-  import { beforeNavigate, onNavigate } from "$app/navigation"
+  import { beforeNavigate } from "$app/navigation"
   import type { Media } from "@prisma/client"
   import { setMethods, sortingMethods } from "../../types"
   import { page } from "$app/stores"
-  import About from "../../components/Popups/SettingsPopup/tabs/about.svelte"
   import { onMount } from "svelte"
 
   const loadMedia = (cluster: string, offset = 0): Promise<Media[]> =>

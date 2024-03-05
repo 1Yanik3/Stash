@@ -11,7 +11,7 @@ const loadCounters = async (clusterName: string) => {
         AND NOT EXISTS (
                 SELECT 1
                 FROM unnest("Media"."tags") AS t(tag)
-                WHERE tag IN ('Solo', 'Two', 'Group')
+                WHERE tag IN ('Solo', 'Two', 'Three', 'Group')
         )
     `) as any
   )[0] as { untagged_count: number }
