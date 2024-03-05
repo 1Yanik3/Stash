@@ -27,7 +27,8 @@
   onMount(async () => {
     if (!browser) return
 
-    const pairingCode = (await $controller.prompt("Enter pairing code:")) || ""
+    const pairingCode =
+      (await $controller.prompt().text("Enter pairing code:")) || ""
     const url = `wss://pubSub.any.gay/${pairingCode}`
     socket = new WebSocket(url)
 
@@ -195,7 +196,9 @@
       class="playbackStatus"
       on:click={e => {
         sendMessage(
-          `control-video: seek-${(e.clientY / window.innerHeight) * playbackDuration}`
+          `control-video: seek-${
+            (e.clientY / window.innerHeight) * playbackDuration
+          }`
         )
       }}
     >

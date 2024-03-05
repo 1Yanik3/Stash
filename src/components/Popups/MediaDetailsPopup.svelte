@@ -34,7 +34,7 @@
           on:click={async () => {
             if (!$visibleMedium) return
 
-            const newName = await $controller.prompt(
+            const newName = await $controller.prompt().text(
               "Enter new name:",
               $visibleMedium.name
             )

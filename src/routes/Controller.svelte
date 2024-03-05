@@ -17,7 +17,6 @@
   import ClusterSectionMobile from "../components/Popups/Mobile/ClusterSectionMobile.svelte"
   import MediaViewerMobile from "../components/Popups/Mobile/MediaViewerMobile.svelte"
   import NavigationSectionMobile from "../components/Popups/Mobile/NavigationSectionMobile.svelte"
-  import PromptPopup from "../components/Popups/Prompts/PromptPopup.svelte"
   import QuickActions from "../components/Popups/QuickSwitcher/QuickActions.svelte"
   import QuickActionsImport from "../components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickSwitch from "../components/Popups/QuickSwitcher/QuickSwitch.svelte"
@@ -28,6 +27,7 @@
   import type { PageData } from "./[cluster]/$types"
   import MediaDetailsPopup from "../components/Popups/MediaDetailsPopup.svelte"
   import QuickActionsImportFromUrl from "../components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
+  import PromptController from "../components/Popups/Prompts/_PromptController.svelte"
 
   $: pageData = $page.data as PageData
 
@@ -53,6 +53,9 @@
     })
   })
 
+  export let promptController: PromptController
+  export const prompt = () => promptController.prompt
+
   export const goToPreviousMedia = async () => {
     if (!$visibleMedium) return
 
@@ -69,31 +72,6 @@
     if (mediaIndex < $media_store.length - 1)
       visibleMedium.set($media_store[mediaIndex + 1])
   }
-
-  //#region Prompt
-
-  let prompt_visible = false
-  let prompt_question = ""
-  let prompt_value = ""
-  let prompt_callback = (b: boolean) => {}
-  export const prompt = (
-    question: string,
-    placeholder = ""
-  ): Promise<string | null> =>
-    new Promise(resolve => {
-      prompt_question = question
-      prompt_value = placeholder
-
-      prompt_callback = (b: boolean) => {
-        if (b) resolve(prompt_value)
-        else resolve(null)
-        prompt_visible = false
-      }
-
-      prompt_visible = true
-    })
-
-  //#endregion
 
   const shift = true,
     control = true,
@@ -122,6 +100,8 @@
     actionBar.set(newActionBar)
 </script>
 
+<PromptController bind:this={promptController} />
+
 {#if popup}
   <svelte:component this={popups[popup]} />
 {/if}
@@ -146,28 +126,6 @@
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />
 <Shortcut key="." action={goToNextMedia} />
-
-<!-- Go up by a group -->
-<!-- <Shortcut
-    opt
-    key="ArrowUp"
-    action={() => {
-        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == pageData.group?.id)
-        if (currentGroupIndex == 0) return;
-        goto(flattenedGroups[currentGroupIndex - 1].id.toString())
-    }}
-/> -->
-
-<!-- Go down by a group -->
-<!-- <Shortcut
-    opt
-    key="ArrowDown"
-    action={() => {
-        const currentGroupIndex = flattenedGroups.findIndex(g => g.id == pageData.group?.id);
-        if (currentGroupIndex >= flattenedGroups.length - 1) return;
-        goto(flattenedGroups[currentGroupIndex + 1].id.toString())
-    }}
-/> -->
 
 <!-- Go up by a cluster -->
 <Shortcut
@@ -198,11 +156,3 @@
     goto(`/${cluster.name}`)
   }}
 />
-
-{#if prompt_visible}
-  <PromptPopup
-    bind:value={prompt_value}
-    text={prompt_question}
-    on:result={e => prompt_callback(e.detail)}
-  />
-{/if}

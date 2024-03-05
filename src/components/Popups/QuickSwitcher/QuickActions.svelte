@@ -5,6 +5,7 @@
   import {
     actionBar,
     controller,
+    media_store,
     selectedMediaIds,
     selectedTags,
     uploadPopupOpen,
@@ -25,7 +26,9 @@
         name: "Add tag",
         icon: "mdiTagPlus",
         async action() {
-          const newTag = await $controller.prompt("Enter new tag: ")
+          const newTag = await $controller.prompt().text("Enter new tag:")
+          console.info(newTag)
+          if (!newTag) return
 
           for (const i in $selectedMediaIds) {
             await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
@@ -34,9 +37,10 @@
                 name: newTag
               })
             }).catch(console.error)
+            $media_store
+              .find(m => m.id == $selectedMediaIds[i])
+              ?.tags.push(newTag)
           }
-
-          invalidate("media-and-tags")
         },
         condition: $selectedMediaIds.length > 0
       },
@@ -44,8 +48,13 @@
         name: "Remove tag",
         icon: "mdiTagRemove",
         async action() {
-          // TODO: Add autocomplete
-          const tagToDelete = await $controller.prompt("Enter tag to remove: ")
+          const tagsInSelectedMedia =
+            $media_store.find(m => m.id == $selectedMediaIds[0])?.tags || []
+
+          const tagToDelete = await $controller
+            .prompt()
+            .select("Enter tag to remove: ", tagsInSelectedMedia)
+          if (tagToDelete == null) return
 
           for (const i in $selectedMediaIds) {
             await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
@@ -54,8 +63,10 @@
                 name: tagToDelete
               })
             }).catch(console.error)
+
+            const media = $media_store.find(m => m.id == $selectedMediaIds[i])
+            if (media) media.tags = media.tags.filter(t => t != tagToDelete)
           }
-          invalidate("media-and-tags")
         },
         condition: $selectedMediaIds.length > 0
       },
@@ -129,14 +140,18 @@
         name: "Rename Tag",
         icon: "mdiTagEdit",
         async action() {
-          const oldName = await $controller.prompt(
-            "What tag do you want to rename?",
-            $selectedTags.length == 1 ? ($selectedTags[0] as string) : undefined
-          )
-          const newName = await $controller.prompt(
-            "Enter new name:",
-            oldName || ""
-          )
+          const oldName = await $controller
+            .prompt()
+            .select(
+              "What tag do you want to rename?",
+              $selectedTags as string[]
+            )
+          if (!oldName) return
+
+          const newName = await $controller
+            .prompt()
+            .text("Enter new name:", oldName || "")
+          if (!newName) return
 
           await fetch(`/api/cluster/${$page.data.cluster.name}/tags/rename`, {
             method: "POST",
