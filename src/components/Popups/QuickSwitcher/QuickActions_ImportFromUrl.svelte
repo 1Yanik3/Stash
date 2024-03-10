@@ -4,13 +4,17 @@
   import Popup from "../../../reusables/Popup.svelte"
   import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte"
   import type { Metadata } from "../../../routes/api/yt-dlp/scan/+server"
+  import TagInputField from "../../Tags/TagInputField.svelte"
 
   let url = ""
   let metadata: Metadata | null = null
+  let loading = false
+
+  let tags: String[] = []
+  $: tags = $selectedTags
 
   const searchUrl = async () => {
     console.log("search")
-    // TODO: Add loading screen
     const response = await fetch(`/api/yt-dlp/scan`, {
       method: "POST",
       body: JSON.stringify({ url })
@@ -20,6 +24,7 @@
 
   const download = async () => {
     if (!metadata) return
+    loading = true
     const response = await fetch(`/api/yt-dlp/download`, {
       method: "POST",
       body: JSON.stringify({
@@ -31,12 +36,11 @@
         ext: metadata.ext,
         _type: metadata._type,
         cluster: $page.params.cluster,
-        tags: $selectedTags // TODO add tag selector
+        tags
       })
     })
-    // TODO: Progress bar
-    if (response.ok)
-        $controller.setPopup(null)
+    loading = false
+    if (response.ok) $controller.setPopup(null)
   }
 </script>
 
@@ -58,6 +62,22 @@
       </div>
 
       <!-- TODO: Add tag selector like in the upload popup -->
+      <div class="tags">
+        {#each tags as tag}
+          <span
+            on:contextmenu|preventDefault={() =>
+              (tags = tags.filter(t => t != tag))}>{tag}</span
+          >
+        {/each}
+        {#if tags.length == 0}
+          <span>No Tag</span>
+        {/if}
+        <div style="margin-top: 10px; margin-left: 3px">
+          <TagInputField
+            on:selected={({ detail }) => (tags = tags.concat([detail]))}
+          />
+        </div>
+      </div>
     {/if}
   </main>
 
@@ -65,7 +85,7 @@
     <SidebarButton
       card
       icon="mdiDownload"
-      disabled={!metadata}
+      disabled={!metadata || loading}
       on:click={download}
     >
       Download
@@ -98,6 +118,21 @@
       }
       & > span {
         margin: 0 1em;
+      }
+    }
+
+    .tags {
+      padding: 0.5em;
+      span {
+        background: $color-dark-level-2;
+        padding: 0.3em 0.5em;
+        margin: 0.15em;
+        border: 1px solid $color-dark-level-1;
+        border-radius: 3px;
+
+        margin-right: 0.25em;
+
+        cursor: pointer;
       }
     }
   }
