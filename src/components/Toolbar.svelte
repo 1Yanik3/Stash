@@ -253,6 +253,8 @@
     justify-content: space-between;
     align-items: center;
 
+    -webkit-app-region: drag;
+
     div {
       display: flex;
       .tag {
