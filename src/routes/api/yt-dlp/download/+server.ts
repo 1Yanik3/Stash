@@ -24,8 +24,8 @@ export const POST: RequestHandler = async ({ request }) => {
       name: title,
       type: `${_type}/${ext}`,
       createdDate: new Date(timestamp * 1000),
-      width: +resolution.split("x")[0],
-      height: +resolution.split("x")[1],
+      width: +resolution ?+resolution.split("x")[0] : 0,
+      height: +resolution ?+resolution.split("x")[1] : 0,
       cluster: {
         connect: {
           name: cluster
