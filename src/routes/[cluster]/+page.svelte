@@ -1,8 +1,8 @@
 <script lang="ts">
-  import DropFile from "../../components/DropFile.svelte"
-  import ImageGrid from "../../components/ImageGrid.svelte"
-  import MediaViewer from "../../components/MediaViewer.svelte"
-  import Toolbar from "../../components/Toolbar.svelte"
+  import DropFile from "$components/DropFile.svelte"
+  import ImageGrid from "$components/ImageGrid.svelte"
+  import MediaViewer from "$components/MediaViewer.svelte"
+  import Toolbar from "$components/Toolbar.svelte"
 
   import {
     actionBar,
@@ -27,6 +27,7 @@
 
   const loadMedia = (cluster: string, offset = 0): Promise<Media[]> =>
     new Promise(async resolve => {
+      console.log({ offset })
       const mediaRequest = await fetch(
         `/api/cluster/${cluster}/media?${new URLSearchParams({
           traverse: $traverse.toString(),
@@ -75,12 +76,20 @@
     if (to?.params) resetMedia(to.params.cluster)
   })
 
+  let isLoadingNextPage = false
   const onscroll = (e: Event) => {
+    if (isLoadingNextPage) return
     const target = e.target as HTMLDivElement
-    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500)
-        loadMedia($page.params.cluster, $media_store.length).then(newMedia =>
-            media_store.update(oldMedia => [...oldMedia, ...newMedia])
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500) {
+      isLoadingNextPage = true
+      loadMedia($page.params.cluster, $media_store.length)
+        .then(newMedia =>
+          media_store.update(oldMedia => [...oldMedia, ...newMedia])
         )
+        .then(() => {
+          isLoadingNextPage = false
+        })
+    }
   }
 </script>
 

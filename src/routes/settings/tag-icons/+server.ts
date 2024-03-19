@@ -4,15 +4,6 @@ import { error, json } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
 
-export const GET: RequestHandler = async () =>
-  json(
-    await prisma.tagIcons.findMany({
-      orderBy: {
-        tag: "asc"
-      }
-    })
-  )
-
 export const POST: RequestHandler = async ({ request }) => {
   const { tag, icon } = await request.json()
 

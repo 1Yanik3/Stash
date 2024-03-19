@@ -4,7 +4,7 @@
         mobileBottomBarVisible,
         settings,
     } from "$lib/stores";
-    import MobileBottomBar from "../../components/MobileBottomBar.svelte";
+    import MobileBottomBar from "$components/MobileBottomBar.svelte";
 
     import ClusterSection from "./ClusterSection.svelte";
 </script>

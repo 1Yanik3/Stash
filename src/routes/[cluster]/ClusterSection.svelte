@@ -28,7 +28,7 @@
 
     <SidebarButton
       hidden={!$settings.mobileLayout}
-      disabled={["collection", "stories"].includes(pageData.cluster.type)}
+      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
       on:click={() => {
         activeSortingMethod.set(
           sortingMethods[
@@ -49,7 +49,7 @@
 
     <SidebarButton
       hidden={!$settings.mobileLayout}
-      disabled={pageData.cluster.type == "stories"}
+      disabled={pageData.cluster?.type == "stories"}
       on:click={() => {
         traverse.set(!$traverse)
         invalidate("media-and-tags")
@@ -61,7 +61,7 @@
 
     <SidebarButton
       hidden={!$settings.mobileLayout}
-      disabled={["collection", "stories"].includes(pageData.cluster.type)}
+      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
       on:click={() => {
         activeSetMethod.set(
           setMethods[
@@ -128,7 +128,7 @@
         hidden={!$settings.mobileLayout}
         iconNoTyping={c.icon}
         href="/{c.name}"
-        active={c.id == pageData.cluster.id}
+        active={c.id == pageData.cluster?.id}
       >
         {c.name}
       </SidebarButton>
@@ -147,7 +147,8 @@
     <SidebarButton
       hidden={!$settings.mobileLayout}
       icon="mdiCog"
-      on:click={() => $controller.setPopup("Settings")}
+      href="/settings"
+      active={$page.url.pathname.startsWith("/settings")}
     >
       Settings
     </SidebarButton>
@@ -189,11 +190,6 @@
     }
 
     -webkit-app-region: drag;
-
-    span.disabled {
-      pointer-events: none;
-      filter: opacity(0.5);
-    }
 
     &.mobile {
       width: 100%;

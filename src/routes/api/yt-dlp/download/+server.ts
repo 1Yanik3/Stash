@@ -18,14 +18,14 @@ export const POST: RequestHandler = async ({ request }) => {
     tags
   } = await request.json()
 
-  // TODO: Create the database entry for the video
+  // Create the database entry for the video
   const { id: mediaId } = await prisma.media.create({
     data: {
       name: title,
       type: `${_type}/${ext}`,
       createdDate: new Date(timestamp * 1000),
-      width: +resolution ?+resolution.split("x")[0] : 0,
-      height: +resolution ?+resolution.split("x")[1] : 0,
+      width: +resolution ? +resolution.split("x")[0] : 0,
+      height: +resolution ? +resolution.split("x")[1] : 0,
       cluster: {
         connect: {
           name: cluster
@@ -35,15 +35,17 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   })
 
-  // TODO: Download the video with yt-dlp, store it in the right location
+  // Download the video with yt-dlp, store it in the right location
   await runCommand(`yt-dlp -o ./media/${mediaId} ${url}`).catch(e => {
     throw error(500, JSON.stringify(e))
   })
 
-  // TODO: Download the thumbnail
-  await runCommand(`curl ${thumbnail} -o ./thumbnails/${mediaId}.webp`).catch(e => {
-    throw error(500, JSON.stringify(e))
-  })
+  // Download the thumbnail
+  await runCommand(`curl ${thumbnail} -o ./thumbnails/${mediaId}.webp`).catch(
+    e => {
+      throw error(500, JSON.stringify(e))
+    }
+  )
 
   return new Response()
 }

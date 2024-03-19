@@ -1,7 +1,7 @@
 <script lang="ts">
   import { md5 } from "hash-wasm"
 
-  import SidebarSection from "../../components/SidebarSection.svelte"
+  import SidebarSection from "$components/SidebarSection.svelte"
   import SidebarButton from "./SidebarButton.svelte"
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
