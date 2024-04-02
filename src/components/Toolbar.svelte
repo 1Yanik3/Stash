@@ -253,7 +253,8 @@
     justify-content: space-between;
     align-items: center;
 
-    -webkit-app-region: drag;
+    // TODO: Still make click interractions possible even with dragging
+    // -webkit-app-region: drag;
 
     div {
       display: flex;
