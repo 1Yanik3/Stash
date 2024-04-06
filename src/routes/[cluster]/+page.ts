@@ -2,7 +2,7 @@ import {
   activeSetMethod,
   favouritesOnly,
   mediaTypeFilter,
-  selectedTags,
+  selectedTags
 } from "$lib/stores"
 import { get } from "svelte/store"
 

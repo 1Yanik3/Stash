@@ -1,7 +1,8 @@
+import prisma from "$lib/server/prisma"
+
 import { json } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
-import prisma from "$lib/server/prisma"
 
 // TODO
 export const GET: RequestHandler = async ({ params }) =>

@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
       }
     },
     orderBy: {
-        sortOrder: 'asc'
+      sortOrder: "asc"
     }
   })
 

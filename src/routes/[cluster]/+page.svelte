@@ -16,7 +16,8 @@
     activeSortingMethod,
     favouritesOnly,
     mediaTypeFilter,
-    activeSetMethod
+    activeSetMethod,
+    seed
   } from "$lib/stores"
   import NavigationSection from "./NavigationSection.svelte"
   import { beforeNavigate } from "$app/navigation"
@@ -25,9 +26,14 @@
   import { page } from "$app/stores"
   import { onMount } from "svelte"
 
+  let isCurrentlyLoadingNewMedia = false
   const loadMedia = (cluster: string, offset = 0): Promise<Media[]> =>
     new Promise(async resolve => {
-      console.log({ offset })
+      if (isCurrentlyLoadingNewMedia) return
+
+      isCurrentlyLoadingNewMedia = true
+      console.log("Loading new media", { offset })
+
       const mediaRequest = await fetch(
         `/api/cluster/${cluster}/media?${new URLSearchParams({
           traverse: $traverse.toString(),
@@ -41,10 +47,14 @@
               )
             : sortingMethods.indexOf($activeSortingMethod)
           ).toString(),
-          offset: offset.toString()
+          offset: offset.toString(),
+          seed: $seed.toString()
         }).toString()}`
       )
-      resolve(await mediaRequest.json())
+
+      const data = await mediaRequest.json()
+      isCurrentlyLoadingNewMedia = false
+      resolve(data)
     })
 
   const resetMedia = async (cluster = $page.params.cluster) => {
@@ -70,25 +80,22 @@
     activeSortingMethod.subscribe(() => {
       resetMedia()
     })
+    seed.subscribe(() => {
+      resetMedia()
+    })
   })
 
   beforeNavigate(({ to }) => {
     if (to?.params) resetMedia(to.params.cluster)
   })
 
-  let isLoadingNextPage = false
   const onscroll = (e: Event) => {
-    if (isLoadingNextPage) return
+    if (isCurrentlyLoadingNewMedia) return
     const target = e.target as HTMLDivElement
     if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500) {
-      isLoadingNextPage = true
-      loadMedia($page.params.cluster, $media_store.length)
-        .then(newMedia =>
-          media_store.update(oldMedia => [...oldMedia, ...newMedia])
-        )
-        .then(() => {
-          isLoadingNextPage = false
-        })
+      loadMedia($page.params.cluster, $media_store.length).then(newMedia =>
+        media_store.update(oldMedia => [...oldMedia, ...newMedia])
+      )
     }
   }
 </script>

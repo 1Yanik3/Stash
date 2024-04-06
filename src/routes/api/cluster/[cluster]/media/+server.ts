@@ -23,6 +23,10 @@ export const GET: RequestHandler = async ({ params, request }) => {
     ? //   @ts-ignore
       +searchParams.get("offset")
     : 0
+  const seed = searchParams.get("seed")
+    ? //   @ts-ignore
+      +searchParams.get("seed")
+    : Math.random()
 
   let typeFilter: string = ``
   if (mediaTypeFilter)
@@ -77,11 +81,21 @@ export const GET: RequestHandler = async ({ params, request }) => {
         `
     : ""
 
+  // When random
+  if (activeSortingMethod.icon == "mdiSort")
+    await prisma.$executeRawUnsafe(/*sql*/ `
+    SELECT setseed(${seed});
+  `)
+
   const query = /*sql*/ `
-        SELECT DISTINCT "Media".*
+        SELECT ${
+          activeSortingMethod.icon == "mdiSort" ? "" : "DISTINCT"
+        } "Media".*
         FROM "Media",
         unnest("Media"."tags") AS t(tag) 
-        WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
+        WHERE "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${
+          params.cluster
+        }')
         ${typeFilter}
         ${tagsFilter}
         ${favouriteFilter}

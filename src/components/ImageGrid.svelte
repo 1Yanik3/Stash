@@ -11,8 +11,36 @@
   import type { PageData } from "../routes/[cluster]/$types"
   import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
+  import { onMount } from "svelte"
   import { md5 } from "hash-wasm"
+
   $: pageData = $page.data as PageData
+
+  let previousMediaStoreHash = ""
+  const calculatePages = async () => {
+    if (!$media_store.length) return
+
+    const currentMediaStoreHash = await md5($media_store.map(m => m.id).join())
+    if (currentMediaStoreHash == previousMediaStoreHash) {
+      console.log(
+        "skipping updating media grid, as the hash is the same as previously"
+      )
+    } else {
+      previousMediaStoreHash = currentMediaStoreHash
+
+      console.log("updating media grid")
+      pages = Array.from(
+        { length: Math.ceil($media_store.length / pageSize) },
+        (_, i) => $media_store.slice(i * pageSize, (i + 1) * pageSize)
+      )
+    }
+  }
+
+  let pages: (typeof $media_store)[] = []
+
+  onMount(() => {
+    media_store.subscribe(calculatePages)
+  })
 </script>
 
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
@@ -63,21 +91,15 @@
     {#if $viewMode == "table"}
       <ImageGridTable media={$media_store} />
     {:else}
-      {#each new Array(Math.ceil($media_store.length / pageSize)) as _, i}
-        {#key $media_store.slice(i * pageSize, (i + 1) * pageSize).join()}
+      {#key previousMediaStoreHash}
+        {#each pages as page, i}
           {#if pageData.cluster.type == "withName"}
-            <ImageGridStudios
-              media={$media_store.slice(i * pageSize, (i + 1) * pageSize)}
-              {i}
-            />
+            <ImageGridStudios media={page} {i} />
           {:else}
-            <ImageGridPage
-              media={$media_store.slice(i * pageSize, (i + 1) * pageSize)}
-              {i}
-            />
+            <ImageGridPage media={page} {i} />
           {/if}
-        {/key}
-      {/each}
+        {/each}
+      {/key}
     {/if}
   </section>
 {/if}

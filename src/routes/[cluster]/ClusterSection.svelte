@@ -6,7 +6,8 @@
     settings,
     traverse,
     mediaTypeFilter,
-    favouritesOnly
+    favouritesOnly,
+    seed
   } from "$lib/stores"
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
@@ -40,7 +41,7 @@
       }}
       on:contextmenu={({ detail }) => {
         detail.preventDefault()
-        invalidate("media-and-tags")
+        seed.set(Math.random())
       }}
       icon={$activeSortingMethod.icon}
     >
@@ -52,7 +53,6 @@
       disabled={pageData.cluster?.type == "stories"}
       on:click={() => {
         traverse.set(!$traverse)
-        invalidate("media-and-tags")
       }}
       icon={$traverse ? "mdiHook" : "mdiHookOff"}
     >
@@ -68,7 +68,6 @@
             (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
           ]
         )
-        invalidate("media-and-tags")
       }}
       icon={$activeSetMethod.icon}
     >
@@ -81,7 +80,6 @@
         icon="mdiMultimedia"
         on:click={() => {
           mediaTypeFilter.set("image")
-          invalidate("media-and-tags")
         }}
       >
         Image
@@ -92,7 +90,6 @@
         icon="mdiImageOutline"
         on:click={() => {
           mediaTypeFilter.set("video")
-          invalidate("media-and-tags")
         }}
       >
         Image
@@ -103,7 +100,6 @@
         icon="mdiVideoOutline"
         on:click={() => {
           mediaTypeFilter.set("")
-          invalidate("media-and-tags")
         }}
       >
         Image
@@ -115,7 +111,6 @@
       icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
       on:click={() => {
         favouritesOnly.set(!$favouritesOnly)
-        invalidate("media-and-tags")
       }}
     >
       Favourited
