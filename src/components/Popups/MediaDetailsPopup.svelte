@@ -21,6 +21,23 @@
       pad(date.getSeconds())
     )
   }
+
+  const rename = async (suggestedName = $visibleMedium?.name) => {
+    if (!$visibleMedium) return
+
+    const newName = await $controller
+      .prompt()
+      .text("Enter new name", suggestedName)
+    if (newName) {
+      $visibleMedium.name = newName
+      fetch(`/api/media/${$visibleMedium.id}/rename`, {
+        method: "PUT",
+        body: JSON.stringify({
+          name: newName
+        })
+      })
+    }
+  }
 </script>
 
 <Popup title="Media Details">
@@ -29,24 +46,45 @@
       <div>
         <Icon name="mdiFormTextbox" />
         <span>{$visibleMedium.name}</span>
-        <Button
-          icon="mdiPencil"
-          on:click={async () => {
-            if (!$visibleMedium) return
+        {#if $visibleMedium.name.endsWith(".mp4")}
+          <Button
+            icon="mdiCreation"
+            styleOverride="margin-right: -1em"
+            on:click={async () => {
+              if (!$visibleMedium) return
 
-            const newName = await $controller.prompt().text(
-              "Enter new name:",
-              $visibleMedium.name
-            )
-            if (newName) {
-              $visibleMedium.name = newName
-              fetch(`/api/media/${$visibleMedium.id}/rename`, {
-                method: "PUT",
+              const request = await fetch("/api/ai/prompt", {
+                method: "POST",
                 body: JSON.stringify({
-                  name: newName
+                  prompt: `
+                    extract the plain title from this filename.
+                    - Answer inline
+                    - Do NOT output extra commentary, descriptions, notes, or context
+                    - Do not output the name of the production company
+                    - Do not rephrase or change the title
+                    - Output without quotation marks.
+                    - If the filename mentions the names of people, add then to the end in brackets separated by a comma
+                    - Your output should look something like this: "<TITLE> (<PERSON 1>, <PERSON 2>)"
+                    "${$visibleMedium.name}"
+                  `.replace(/^\s+|\s+$/gm, '')
                 })
               })
-            }
+
+              if (!request.ok) {
+                console.error(await request.text())
+                window.alert("Failed to get title from filename")
+                return
+              }
+
+              rename(await request.text())
+            }}
+          />
+        {/if}
+        <Button
+          icon="mdiPencil"
+          on:click={() => {
+            if (!$visibleMedium) return
+            rename($visibleMedium.name)
           }}
         />
       </div>

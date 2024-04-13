@@ -13,7 +13,7 @@
     }
   }
 
-  let inputElement: HTMLInputElement
+  let inputElement: HTMLTextAreaElement
   onMount(() => {
     inputElement.focus()
   })
@@ -25,11 +25,21 @@
 >
   <label>
     <span>{question}:</span>
-    <input
+    <textarea
+      name="text"
+      rows="3"
+      wrap="soft"
       bind:this={inputElement}
-      type="text"
       bind:value
       on:keydown={onInput}
     />
   </label>
 </PromptFramework>
+
+<style lang="scss">
+  label {
+    display: grid;
+    gap: 0.5em;
+    min-width: 300px;
+  }
+</style>

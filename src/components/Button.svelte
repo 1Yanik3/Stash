@@ -27,6 +27,7 @@
   export let card = false
   export let highlighted = false
   export let disabled = false
+  export let styleOverride: string = ""
 
   const dispatch = createEventDispatcher()
 
@@ -84,7 +85,7 @@
 <a
   bind:this={element}
   {href}
-  style={`padding-left: ${0.75 + indent}em`}
+  style={`padding-left: ${0.75 + indent}em;${styleOverride}`}
   class:active={active || (href && href == $page.url.pathname)}
   class:hidden={hidden || !$$slots.default}
   class:right
