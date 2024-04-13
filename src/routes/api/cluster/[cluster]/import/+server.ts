@@ -10,7 +10,11 @@ import type { RequestHandler } from "./$types"
 const importFolderPath = "./importables"
 
 export const GET: RequestHandler = async () =>
-  json((await fs.readdir(importFolderPath)).filter(f => !f.startsWith(".")))
+  json(
+    (await fs.readdir(importFolderPath, { withFileTypes: true }))
+      .filter(f => f.isFile() && !f.name.startsWith("."))
+      .map(f => f.name)
+  )
 
 export const POST: RequestHandler = async ({ params, request }) => {
   const {
