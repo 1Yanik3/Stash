@@ -112,6 +112,14 @@
     <UpscalePopup bind:isVisible={upscalePopup_open} {replaceMedia}/>
 {/key} -->
 
+<Shortcut
+  meta
+  key="i"
+  action={() => {
+    $controller.setPopup("Media Details")
+  }}
+/>
+
 <main
   class:fullscreen={$isFullscreen}
   class:windowControlsSpacer={$settings.windowControlsSpacer}

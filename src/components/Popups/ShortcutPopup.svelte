@@ -5,38 +5,19 @@
 
 <Popup title="Shortcuts">
     <main>
-        <!-- <b>Groups</b>
+        <b>Global</b>
         <div>
-            <span>Rename group</span>
-            <Key key="r" />
+            <span>Open Settings</span>
+            <Key key="command" />
+            <Key key="," />
         </div>
         <div>
-            <span>Create group</span>
-            <Key key="c" />
-        </div> -->
-
-        <b>Media Viewer</b>
-        <div>
-            <span>Toggle Fullscreen</span>
-            <Key key="f" />
-        </div>
-        <div>
-            <span>Toggle Serif (Stories)</span>
-            <Key key="option" />
-            <Key key="s" />
+            <span>Open Shortcuts</span>
+            <Key key="command" />
+            <Key key="/" />
         </div>
 
         <b>Navigation</b>
-        <!-- <div>
-            <span>Previous Group</span>
-            <Key key="option" />
-            <Key key="arrowUp" />
-        </div>
-        <div>
-            <span>Next Group</span>
-            <Key key="option" />
-            <Key key="arrowDown" />
-        </div> -->
         <div>
             <span>Previous Cluster</span>
             <Key key="shift" />
@@ -50,16 +31,20 @@
             <Key key="arrowDown" />
         </div>
 
-        <b>Global</b>
+        <b>Media Viewer</b>
         <div>
-            <span>Open Settings</span>
-            <Key key="command" />
-            <Key key="," />
+            <span>Toggle Fullscreen</span>
+            <Key key="f" />
         </div>
         <div>
-            <span>Open Shortcuts</span>
-            <Key key="command" />
-            <Key key="/" />
+            <span>Show details</span>
+            <Key key="meta" />
+            <Key key="i" />
+        </div>
+        <div>
+            <span>Toggle Serif (Stories)</span>
+            <Key key="option" />
+            <Key key="s" />
         </div>
     </main>
 </Popup>
