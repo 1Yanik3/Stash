@@ -1,11 +1,11 @@
-import { MISTRAL_API_KEY } from "$env/static/private"
+import { env } from "$env/dynamic/private"
 
 import MistralClient from "@mistralai/mistralai"
 import { error } from "@sveltejs/kit"
 
 import type { RequestHandler } from "./$types"
 
-const client = new MistralClient(MISTRAL_API_KEY)
+const client = new MistralClient(env["MISTRAL_API_KEY"])
 
 export const POST: RequestHandler = async ({ request }) => {
   let { prompt, model } = await request.json()
