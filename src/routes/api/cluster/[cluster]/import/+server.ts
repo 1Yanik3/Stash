@@ -10,7 +10,7 @@ import type { RequestHandler } from "./$types"
 const importFolderPath = "./importables"
 
 export const GET: RequestHandler = async () =>
-  json(await fs.readdir(importFolderPath))
+  json((await fs.readdir(importFolderPath)).filter(f => !f.startsWith(".")))
 
 export const POST: RequestHandler = async ({ params, request }) => {
   const {
