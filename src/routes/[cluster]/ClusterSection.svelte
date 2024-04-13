@@ -14,7 +14,7 @@
   import { setMethods, sortingMethods } from "../../types"
 
   import type { LayoutData } from "./$types"
-  import SidebarButton from "./SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
   $: pageData = $page.data as LayoutData
 </script>
 
@@ -27,7 +27,7 @@
       <span style="height: 1.5em; pointer-events: none" />
     {/if}
 
-    <SidebarButton
+    <Button
       hidden={!$settings.mobileLayout}
       disabled={["collection", "stories"].includes(pageData.cluster?.type)}
       on:click={() => {
@@ -46,9 +46,9 @@
       icon={$activeSortingMethod.icon}
     >
       Sorting Method
-    </SidebarButton>
+    </Button>
 
-    <SidebarButton
+    <Button
       hidden={!$settings.mobileLayout}
       disabled={pageData.cluster?.type == "stories"}
       on:click={() => {
@@ -57,9 +57,9 @@
       icon={$traverse ? "mdiHook" : "mdiHookOff"}
     >
       Traverse
-    </SidebarButton>
+    </Button>
 
-    <SidebarButton
+    <Button
       hidden={!$settings.mobileLayout}
       disabled={["collection", "stories"].includes(pageData.cluster?.type)}
       on:click={() => {
@@ -72,10 +72,10 @@
       icon={$activeSetMethod.icon}
     >
       Set Method ({$activeSetMethod.title})
-    </SidebarButton>
+    </Button>
 
     {#if $mediaTypeFilter == ""}
-      <SidebarButton
+      <Button
         hidden={!$settings.mobileLayout}
         icon="mdiMultimedia"
         on:click={() => {
@@ -83,9 +83,9 @@
         }}
       >
         Image
-      </SidebarButton>
+      </Button>
     {:else if $mediaTypeFilter == "image"}
-      <SidebarButton
+      <Button
         hidden={!$settings.mobileLayout}
         icon="mdiImageOutline"
         on:click={() => {
@@ -93,9 +93,9 @@
         }}
       >
         Image
-      </SidebarButton>
+      </Button>
     {:else if $mediaTypeFilter == "video"}
-      <SidebarButton
+      <Button
         hidden={!$settings.mobileLayout}
         icon="mdiVideoOutline"
         on:click={() => {
@@ -103,10 +103,10 @@
         }}
       >
         Image
-      </SidebarButton>
+      </Button>
     {/if}
 
-    <SidebarButton
+    <Button
       hidden={!$settings.mobileLayout}
       icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
       on:click={() => {
@@ -114,39 +114,39 @@
       }}
     >
       Favourited
-    </SidebarButton>
+    </Button>
   </section>
 
   <section>
     {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
-      <SidebarButton
+      <Button
         hidden={!$settings.mobileLayout}
         iconNoTyping={c.icon}
         href="/{c.name}"
         active={c.id == pageData.cluster?.id}
       >
         {c.name}
-      </SidebarButton>
+      </Button>
     {/each}
   </section>
 
   <section>
     {#if !$settings.mobileLayout}
-      <SidebarButton
+      <Button
         hidden
         icon="mdiKeyboard"
         on:click={() => $controller.setPopup("Shortcuts")}
       />
     {/if}
 
-    <SidebarButton
+    <Button
       hidden={!$settings.mobileLayout}
       icon="mdiCog"
       href="/settings"
       active={$page.url.pathname.startsWith("/settings")}
     >
       Settings
-    </SidebarButton>
+    </Button>
   </section>
 </main>
 

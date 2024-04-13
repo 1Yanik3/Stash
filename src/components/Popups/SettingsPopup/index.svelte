@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Popup from "../../../reusables/Popup.svelte";
+    import Popup from "$reusables/Popup.svelte";
     import Sidebar from "./components/Sidebar.svelte";
     import Jobs from "./tabs/jobs.svelte";
     import Statistics from "./tabs/statistics.svelte";

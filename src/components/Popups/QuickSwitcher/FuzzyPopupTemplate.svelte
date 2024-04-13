@@ -2,9 +2,9 @@
   import { controller, settings } from "$lib/stores"
 
   import FuzzySearch from "fuzzy-search"
-  import Popup from "../../../reusables/Popup.svelte"
+  import Popup from "$reusables/Popup.svelte"
   import { createEventDispatcher, onMount } from "svelte"
-  import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
 
   type T = $$Generic<Record>
   type TAsArray = Array<T>
@@ -13,6 +13,7 @@
   export let searchAttributes: string[]
   export let disableClose = false
   export let conditionAttribute: keyof T | null = null
+export let placeholder = ""
 
   let inputBox: HTMLInputElement
   let selectedIndex = 0
@@ -74,6 +75,7 @@
       bind:value
       on:keydown={e => onInput(e)}
       bind:this={inputBox}
+      {placeholder}
     />
 
     {#each results as result, i}
@@ -93,21 +95,21 @@
 
     {#if $settings.mobileLayout}
       <div class="mobileNavigationButtons">
-        <SidebarButton
+        <Button
           card
           icon="mdiArrowUp"
           on:click={() => {
             if (selectedIndex > 0) selectedIndex--
           }}
         />
-        <SidebarButton
+        <Button
           card
           icon="mdiArrowDown"
           on:click={() => {
             if (selectedIndex <= results.length) selectedIndex++
           }}
         />
-        <SidebarButton
+        <Button
           card
           icon="mdiKeyboardReturn"
           on:click={() => {

@@ -9,12 +9,12 @@
     visibleMedium
   } from "$lib/stores"
   import selectFiles from "select-files"
-  import Shortcut from "../reusables/Shortcut.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
   import type { PageData } from "../routes/[cluster]/$types"
   import Icon from "./Icon.svelte"
   import { invalidate } from "$app/navigation"
   import TagInputField from "./Tags/TagInputField.svelte"
-  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Button from "./Button.svelte"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
 
@@ -190,7 +190,7 @@
   class="moreActionsDropdown"
   style:display={dropdownVisible ? "block" : "none"}
 >
-  <SidebarButton
+  <Button
     icon="mdiInformationOutline"
     on:click={() => {
       $controller.setPopup("Media Details")
@@ -198,9 +198,9 @@
     }}
   >
     Show Details
-  </SidebarButton>
+  </Button>
 
-  <SidebarButton
+  <Button
     icon="mdiFileReplace"
     on:click={() => {
       replaceWithLocalMedia()
@@ -208,11 +208,11 @@
     }}
   >
     Replace file content
-  </SidebarButton>
+  </Button>
 
   <!-- TODO: Timestamp picker (in frontend, using video element) -->
   {#if $visibleMedium?.type.startsWith("video")}
-    <SidebarButton
+    <Button
       icon="mdiFileReplaceOutline"
       on:click={() => {
         replaceThumbnail()
@@ -220,14 +220,14 @@
       }}
     >
       Replace file thumbnail
-    </SidebarButton>
+    </Button>
   {/if}
 
   <!-- <button on:click={() => upscalePopup_open = true}>
     <Icon name="mdiResize" size={0.8}/>
   </button> -->
 
-  <SidebarButton
+  <Button
     icon="mdiOpenInNew"
     on:click={() => {
       window.open(
@@ -238,7 +238,7 @@
     }}
   >
     Open in new tab
-  </SidebarButton>
+  </Button>
 </div>
 
 <style lang="scss">

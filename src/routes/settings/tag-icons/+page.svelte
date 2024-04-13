@@ -2,7 +2,7 @@
   import { invalidate, invalidateAll } from "$app/navigation"
   import Icon from "$components/Icon.svelte"
   import { controller } from "$lib/stores"
-  import SidebarButton from "../../[cluster]/SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -52,9 +52,9 @@
 
 <main>
   <div class="actions">
-    <SidebarButton card icon="mdiPlus" on:click={addNewTag}>
+    <Button card icon="mdiPlus" on:click={addNewTag}>
       Add new Tag
-    </SidebarButton>
+    </Button>
     <!-- TODO: Edit Button -->
   </div>
 
@@ -64,7 +64,7 @@
       <Icon name={icon} />
       <input bind:value={icon} readonly />
       <div class="entryActions">
-        <SidebarButton icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
+        <Button icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
       </div>
     {/each}
   </div>

@@ -1,14 +1,17 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
-  import { selectedTags, uploadPopupOpen, visibleMedium } from "$lib/stores"
+  import { selectedTags, uploadPopupOpen } from "$lib/stores"
   import { onMount } from "svelte"
-  import Popup from "../reusables/Popup.svelte"
-  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Popup from "$reusables/Popup.svelte"
+  import Button from "./Button.svelte"
   import Icon from "./Icon.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
+  import Key from "./Key.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
 
   let tags: String[] = []
+  let tagInputElement: TagInputField
 
   onMount(() => {
     selectedTags.subscribe(() => (tags = $selectedTags))
@@ -20,6 +23,7 @@
     })
   })
 
+  let uploadStarted = false
   let uploadProgress = 0
   let uploadPercentage = 0
   let files: File[] = []
@@ -45,6 +49,8 @@
   }
 
   const upload = async () => {
+    uploadStarted = true
+
     for (const i in files) {
       uploadPercentage = 0
 
@@ -83,10 +89,12 @@
   on:dragleave|preventDefault={onLeave}
 />
 
+<Shortcut shift key="T" action={() => tagInputElement.focus()} />
+
 {#if $uploadPopupOpen}
   <Popup title="Upload Files" on:close={() => ($uploadPopupOpen = false)}>
     <main>
-      <section>
+      {#if !uploadStarted}
         <div
           class="dropZone"
           on:drop|preventDefault={handleDrop}
@@ -95,8 +103,22 @@
           <Icon name="mdiFileUpload" size={2.5} />
           <span>Drop or click to upload</span>
         </div>
+      {/if}
 
-        <div class="tags">
+      <div class="tags">
+        <b>Tags</b>
+        <div class="tagsHeader">
+          <TagInputField
+            bind:this={tagInputElement}
+            alwaysExpanded
+            on:selected={({ detail }) => (tags = tags.concat([detail]))}
+          />
+          <div>
+            <Key key="shift" />
+            <Key key="T" />
+          </div>
+        </div>
+        <div class="tagsList">
           {#each tags as tag}
             <span
               on:contextmenu|preventDefault={() =>
@@ -106,36 +128,41 @@
           {#if tags.length == 0}
             <span>No Tag</span>
           {/if}
-          <div style="margin-top: 10px; margin-left: 3px">
-            <TagInputField
-              on:selected={({ detail }) => (tags = tags.concat([detail]))}
-            />
-          </div>
         </div>
-      </section>
+      </div>
 
       <div class="files">
-        <b>Filename</b>
+        <b>Files</b>
         <b>Status</b>
         {#each files as f, i}
           <span>{f.name}</span>
           <span>
-            {#if uploadProgress == i}
-              {uploadPercentage}
-            {/if}
-            {#if uploadProgress > i}
-              Done
+            {#if uploadStarted}
+              {#if uploadProgress == i}
+                {uploadPercentage}
+              {/if}
+              {#if uploadProgress > i}
+                Done
+              {/if}
             {/if}
           </span>
         {/each}
       </div>
-
-      <div class="actions">
-        <SidebarButton card icon="mdiUpload" on:click={upload}>
-          Upload
-        </SidebarButton>
-      </div>
     </main>
+
+    <svelte:fragment slot="actionsLeft">
+      <Button card on:click={() => ($uploadPopupOpen = false)}>Cancel</Button>
+    </svelte:fragment>
+
+    <svelte:fragment slot="actionsRight">
+      <Button
+        card
+        highlighted
+        icon="mdiUpload"
+        on:click={upload}
+        shortcut={{ modifier: "meta", key: "enter" }}
+      />
+    </svelte:fragment>
   </Popup>
 {/if}
 
@@ -145,25 +172,44 @@
 
 <style lang="scss">
   main {
-    section {
-      display: grid;
-      grid-template-columns: repeat(2, 300px);
+    display: grid;
+    padding: 0.5em;
+    gap: 1.5em;
+
+    .dropZone {
       padding: 1em;
-      gap: 1em;
 
-      .dropZone {
-        padding: 1em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25em;
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25em;
+      border: 1px dashed hsl(0, 0%, 24%);
+      cursor: pointer;
+    }
 
-        border: 1px dashed hsl(0, 0%, 24%);
-        cursor: pointer;
+    .tags {
+      display: grid;
+      gap: 0.5em;
+
+      b {
+        font-weight: 500;
+        font-size: 1.1em;
       }
 
-      .tags {
+      .tagsHeader {
+        display: flex;
+        justify-content: space-between;
+
+        div {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .tagsList {
+        display: flex;
+
         span {
           background: $color-dark-level-2;
           padding: 0.3em 0.5em;
@@ -177,20 +223,23 @@
         }
       }
     }
+
     .files {
       display: grid;
+      align-items: end;
       grid-template-columns: 1fr auto;
       gap: 0.25em;
+
+      b:first-child {
+        font-weight: 500;
+        font-size: 1.1em;
+      }
+
       span {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
       }
-    }
-
-    .actions {
-      display: flex;
-      justify-content: right;
     }
   }
 

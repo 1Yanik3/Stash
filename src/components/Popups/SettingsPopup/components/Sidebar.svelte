@@ -1,60 +1,60 @@
 <script lang="ts">
-    import SidebarButton from "../../../../routes/[cluster]/SidebarButton.svelte";
+    import Button from "$components/Button.svelte";
 
     export let activeTab: string;
 </script>
 
 <main>
     <span>
-        <SidebarButton
+        <Button
             on:click={() => (activeTab = "general")}
             active={activeTab == "general"}
             icon="mdiCog"
         >
             General
-        </SidebarButton>
+        </Button>
     </span>
 
     <span>
-        <SidebarButton
+        <Button
             on:click={() => (activeTab = "jobs")}
             active={activeTab == "jobs"}
             icon="mdiSync"
         >
             Jobs
-        </SidebarButton>
+        </Button>
     </span>
 
     <span>
-        <SidebarButton
+        <Button
             on:click={() => (activeTab = "tag-icons")}
             active={activeTab == "tag-icons"}
             icon="mdiTagSearch"
         >
             Tag Icons
-        </SidebarButton>
+        </Button>
     </span>
 
     <div style="flex-grow: 1" />
 
     <span>
-        <SidebarButton
+        <Button
             on:click={() => (activeTab = "statistics")}
             active={activeTab == "statistics"}
             icon="mdiChartBar"
         >
             Statistics
-        </SidebarButton>
+        </Button>
     </span>
 
     <span>
-        <SidebarButton
+        <Button
             on:click={() => (activeTab = "about")}
             active={activeTab == "about"}
             icon="mdiInformationOutline"
         >
             About
-        </SidebarButton>
+        </Button>
     </span>
 </main>
 

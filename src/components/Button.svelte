@@ -1,10 +1,10 @@
 <script lang="ts">
-  // TODO: Move to $components
-
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, type ComponentProps } from "svelte"
   import Icon from "$components/Icon.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"
   import { page } from "$app/stores"
+  import Key from "$components/Key.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
 
   let isDraggingOver = false
 
@@ -17,6 +17,10 @@
   export let count: number | "" | null = null
   export let active: boolean = false
   export let href: string | null = null
+  export let shortcut: {
+      modifier: Exclude<Exclude<ComponentProps<Shortcut>["modifier"], null>, undefined>
+      key: string
+  } | null = null
 
   export let hidden = false
   export let right = false
@@ -124,6 +128,12 @@
     <span>
       <slot />
     </span>
+    {#if shortcut}
+      <div style="display: flex;margin-left: 5px">
+        <Key compact key={shortcut.modifier} />
+        <Key compact key={shortcut.key} />
+      </div>
+    {/if}
   </div>
 
   {#if count}
@@ -132,6 +142,10 @@
     </div>
   {/if}
 </a>
+
+{#if shortcut}
+    <Shortcut modifier={shortcut.modifier} key={shortcut.key} action={() => dispatch('click')} />
+{/if}
 
 <style lang="scss">
   a {

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import SidebarButton from "../../../../routes/[cluster]/SidebarButton.svelte";
+    import Button from "$components/Button.svelte";
 </script>
 
 <main in:fade>
@@ -8,8 +8,8 @@
         <div class="job">
             <span class="title">Trash</span>
             <div class="action">
-                <SidebarButton card icon="mdiTrashCanOutline"
-                    >Clear Trash</SidebarButton
+                <Button card icon="mdiTrashCanOutline"
+                    >Clear Trash</Button
                 >
             </div>
 
@@ -21,8 +21,8 @@
         <div class="job">
             <span class="title">Missing Date extraction</span>
             <div class="action">
-                <SidebarButton card icon="mdiScanner"
-                    >Retry extraction</SidebarButton
+                <Button card icon="mdiScanner"
+                    >Retry extraction</Button
                 >
             </div>
 
@@ -58,12 +58,5 @@
                 margin-left: 0.25em;
             }
         }
-    }
-
-    .centered {
-        display: grid;
-        gap: 1em;
-        justify-content: center;
-        align-items: center;
     }
 </style>

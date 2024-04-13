@@ -2,8 +2,8 @@
     import { invalidateAll } from "$app/navigation";
     import { page } from "$app/stores";
     import { controller, visibleMedium } from "$lib/stores";
-    import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../../routes/[cluster]/SidebarButton.svelte";
+    import Popup from "$reusables/Popup.svelte";
+    import Button from "$components/Button.svelte";
 
     let videoElement: HTMLVideoElement;
 
@@ -75,7 +75,7 @@
             crossorigin="use-credentials"
         />
         <div class="actions">
-            <SidebarButton card on:click={replace}>Replace Screenshot</SidebarButton>
+            <Button card on:click={replace}>Replace Screenshot</Button>
         </div>
     </main>
 </Popup>

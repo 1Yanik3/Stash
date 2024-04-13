@@ -23,7 +23,7 @@
   import ReplaceVideoThumbnail from "$components/Popups/ReplaceVideoThumbnail.svelte"
   import SettingsPopup from "$components/Popups/SettingsPopup/index.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
-  import Shortcut from "../reusables/Shortcut.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
   import type { PageData } from "./[cluster]/$types"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
@@ -121,7 +121,7 @@
   }}
 />
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
-<Shortcut meta key="," action={() => (popup = "Settings")} />
+<Shortcut meta key="," action={() => goto('/settings')} />
 
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />

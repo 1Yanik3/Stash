@@ -2,7 +2,7 @@
   import { md5 } from "hash-wasm"
 
   import SidebarSection from "$components/SidebarSection.svelte"
-  import SidebarButton from "./SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   import { page } from "$app/stores"
@@ -86,7 +86,7 @@
     <div>
       <!-- Statics -->
       <SidebarSection horizontal>
-        <SidebarButton
+        <Button
           hidden
           icon="mdiBookshelf"
           on:click={() => {
@@ -95,8 +95,8 @@
           active={$selectedTags.length == 0}
         >
           All
-        </SidebarButton>
-        <SidebarButton
+        </Button>
+        <Button
           hidden
           icon="mdiArchiveOutline"
           on:click={() => {
@@ -105,8 +105,8 @@
           active={$selectedTags[0] == "SHOW_UNSORTED"}
         >
           Unsorted
-        </SidebarButton>
-        <SidebarButton
+        </Button>
+        <Button
           hidden
           icon="mdiTrashCanOutline"
           on:click={() => {
@@ -115,7 +115,7 @@
           active={$selectedTags[0] == "SHOW_TRASHED"}
         >
           Unsorted
-        </SidebarButton>
+        </Button>
       </SidebarSection>
     </div>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { controller, visibleMedium } from "$lib/stores"
-  import Popup from "../../reusables/Popup.svelte"
-  import SidebarButton from "../../routes/[cluster]/SidebarButton.svelte"
+  import Popup from "$reusables/Popup.svelte"
+  import Button from "../Button.svelte"
   import Icon from "../Icon.svelte"
 
   function toIsoString(date: Date) {
@@ -29,7 +29,7 @@
       <div>
         <Icon name="mdiFormTextbox" />
         <span>{$visibleMedium.name}</span>
-        <SidebarButton
+        <Button
           icon="mdiPencil"
           on:click={async () => {
             if (!$visibleMedium) return
@@ -54,7 +54,7 @@
       <section>
         <div>
           <b>Metadata</b>
-          <SidebarButton icon="mdiReload" />
+          <Button icon="mdiReload" />
         </div>
 
         <div>

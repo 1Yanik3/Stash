@@ -9,7 +9,7 @@
   } from "$lib/stores"
   import { page } from "$app/stores"
   import type { PageData } from "../routes/[cluster]/$types"
-  import Shortcut from "../reusables/Shortcut.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
 
   $: pageData = $page.data as PageData
 

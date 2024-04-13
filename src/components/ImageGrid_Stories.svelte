@@ -1,11 +1,11 @@
 <script lang="ts">
   import { controller, mobileBottomBarVisible, settings } from "$lib/stores"
   import SvelteMarkdown from "svelte-markdown"
-  import Shortcut from "../reusables/Shortcut.svelte"
-  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
+  import Button from "./Button.svelte"
   import { page } from "$app/stores"
   import type { PageData } from "../routes/[cluster]/$types"
-  import Popup from "../reusables/Popup.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
   let pageData = $page.data as PageData
 
@@ -105,14 +105,14 @@
 {#if chapterSelectionPopupOpen}
   <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
     {#each chapters as chapter}
-      <SidebarButton
+      <Button
         on:click={() => {
           goToChapter(chapter)
           chapterSelectionPopupOpen = false
         }}
       >
         {chapter}
-      </SidebarButton>
+      </Button>
     {/each}
   </Popup>
 {/if}
@@ -127,14 +127,14 @@
     <!-- Chapters -->
     <div class:buttonsHidden>
       <div class="button">
-        <SidebarButton icon="mdiArrowLeft" on:click={() => (story = null)} />
+        <Button icon="mdiArrowLeft" on:click={() => (story = null)} />
         <div
           class="spacer"
           on:mousedown|capture|stopPropagation={() => (buttonsHidden = true)}
         />
-        <SidebarButton icon="mdiFormatFont" on:click={() => (serif = !serif)} />
+        <Button icon="mdiFormatFont" on:click={() => (serif = !serif)} />
         {#if $settings.mobileLayout}
-          <SidebarButton
+          <Button
             icon="mdiFormatHeaderPound"
             on:click={() => (chapterSelectionPopupOpen = true)}
           />
@@ -142,7 +142,7 @@
       </div>
       <div class="chapters">
         {#each chapters as chapter, i}
-          <SidebarButton
+          <Button
             icon={null}
             on:click={e => {
               e.preventDefault()
@@ -157,7 +157,7 @@
                 >{chapter}</span
               >
             </div>
-          </SidebarButton>
+          </Button>
         {/each}
       </div>
     </div>

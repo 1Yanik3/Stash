@@ -1,8 +1,8 @@
 <script lang="ts">
     import { invalidate, invalidateAll } from "$app/navigation";
     import type { Media } from "@prisma/client";
-    import IntersectionObserver from "../reusables/IntersectionObserver.svelte";
-    import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
+    import IntersectionObserver from "$reusables/IntersectionObserver.svelte";
+    import Button from "./Button.svelte";
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte";
 
     export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>;
@@ -54,7 +54,7 @@
         <main>
             {#if selectedMedia.length}
                 <div class="groupActions">
-                    <SidebarButton
+                    <Button
                         card
                         icon="mdiGroup"
                         disabled={selectedMedia.length <= 1}
@@ -64,13 +64,13 @@
                                 method: "POST",
                                 body: JSON.stringify(selectedMedia),
                             }).then(() => invalidateAll());
-                        }}>Group</SidebarButton
+                        }}>Group</Button
                     >
-                    <SidebarButton
+                    <Button
                         card
                         icon="mdiUngroup"
                         disabled={selectedMedia.length > 1}
-                        >Ungroup</SidebarButton
+                        >Ungroup</Button
                     >
                 </div>
             {/if}

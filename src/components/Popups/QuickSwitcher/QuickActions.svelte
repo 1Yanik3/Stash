@@ -176,6 +176,7 @@
   conditionAttribute="condition"
   let:result
   on:selected={({ detail }) => detail.action()}
+  placeholder="Search..."
 >
   <span>{result.name}</span>
   <Icon name={result.icon} size={0.8} />

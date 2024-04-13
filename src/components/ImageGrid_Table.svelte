@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidate } from "$app/navigation"
   import type { Media } from "@prisma/client"
-  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Button from "./Button.svelte"
   import ImageGridTableRow from "./ImageGrid_Table_Row.svelte"
 
   export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>

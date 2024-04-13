@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import Popup from "../../../reusables/Popup.svelte"
-  import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte"
+  import Popup from "$reusables/Popup.svelte"
+  import Button from "$components/Button.svelte"
 
   const dispatch = createEventDispatcher()
 </script>
@@ -10,7 +10,7 @@
   <slot />
 
   <svelte:fragment slot="actionsLeft">
-    <SidebarButton
+    <Button
       card
       icon={null}
       on:click={() => {
@@ -18,12 +18,12 @@
       }}
     >
       Cancel
-    </SidebarButton>
+    </Button>
   </svelte:fragment>
 
   <svelte:fragment slot="actionsRight">
-    <SidebarButton card icon={null} highlighted on:click={() => dispatch("ok")}>
+    <Button card icon={null} highlighted on:click={() => dispatch("ok")}>
       Ok
-    </SidebarButton>
+    </Button>
   </svelte:fragment>
 </Popup>

@@ -4,6 +4,7 @@
     export let meta = false
     export let control = false
     export let shift = false
+    export let modifier: "alt" | "opt" | "meta"| "control" | "shift" | null = null
 
     export let key: string
 
@@ -15,19 +16,19 @@
         }
 
         if (
-            (alt || opt)
+            (alt || opt || modifier == "alt" || modifier == "opt")
             ? !e.altKey
             : e.altKey
         ) return
 
         if (
-            shift
+            (shift || modifier == "shift")
             ? !e.shiftKey
             : e.shiftKey
         ) return
 
         if (
-            (control || meta)
+            (control || meta || modifier == "control" || modifier == "meta")
             ? !(e.metaKey || e.ctrlKey)
             : e.metaKey
         ) return

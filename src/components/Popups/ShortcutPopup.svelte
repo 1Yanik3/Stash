@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Popup from "../../reusables/Popup.svelte";
+    import Popup from "$reusables/Popup.svelte";
     import Key from '../Key.svelte';
 </script>
 

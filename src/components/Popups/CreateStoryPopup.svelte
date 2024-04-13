@@ -1,7 +1,7 @@
 <script lang="ts">
     import { mdiSend } from "@mdi/js";
-    import Popup from "../../reusables/Popup.svelte";
-    import SidebarButton from "../../routes/[cluster]/SidebarButton.svelte";
+    import Popup from "$reusables/Popup.svelte";
+    import Button from "../Button.svelte";
     import { page } from "$app/stores";
     import type { PageData } from "../../routes/[cluster]/$types";
     $: pageData = $page.data as PageData
@@ -46,7 +46,7 @@
         <textarea bind:value={content} id="contentTextarea" cols="50" rows="20"></textarea>
 
         <div style="display: flex; justify-content: right">
-            <SidebarButton card on:click={submitStory} icon={mdiSend}>Create</SidebarButton>
+            <Button card on:click={submitStory} icon="mdiSend">Create</Button>
         </div>
     </main>
 

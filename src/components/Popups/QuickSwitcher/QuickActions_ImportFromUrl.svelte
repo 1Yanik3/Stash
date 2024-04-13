@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import { controller, selectedTags } from "$lib/stores"
-  import Popup from "../../../reusables/Popup.svelte"
-  import SidebarButton from "../../../routes/[cluster]/SidebarButton.svelte"
+  import Popup from "$reusables/Popup.svelte"
+  import Button from "$components/Button.svelte"
   import type { Metadata } from "../../../routes/api/yt-dlp/scan/+server"
   import TagInputField from "../../Tags/TagInputField.svelte"
 
@@ -48,7 +48,7 @@
   <main>
     <div class="inputField">
       <input type="url" placeholder="https://..." bind:value={url} />
-      <SidebarButton icon="mdiSearchWeb" on:click={searchUrl} />
+      <Button icon="mdiSearchWeb" on:click={searchUrl} />
     </div>
 
     {#if metadata}
@@ -82,14 +82,14 @@
   </main>
 
   <svlete:fragment slot="actionsRight">
-    <SidebarButton
+    <Button
       card
       icon="mdiDownload"
       disabled={!metadata || loading}
       on:click={download}
     >
       Download
-    </SidebarButton>
+    </Button>
   </svlete:fragment>
 </Popup>
 

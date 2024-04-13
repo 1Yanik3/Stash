@@ -1,4 +1,5 @@
 import prisma from "$lib/server/prisma"
+import { CollapsedTags, Story } from "@prisma/client"
 
 import type { PageServerLoad, PageServerParentData } from "./$types"
 
@@ -17,7 +18,7 @@ const loadCounters = async (clusterName: string) => {
   )[0] as { untagged_count: number }
 }
 
-const loadStories = (parent: Promise<PageServerParentData>) =>
+const loadStories = (parent: Promise<PageServerParentData>): Promise<Story[]> =>
   new Promise(async resolve =>
     resolve(
       await prisma.story.findMany({
@@ -30,7 +31,7 @@ const loadStories = (parent: Promise<PageServerParentData>) =>
     )
   )
 
-const loadCollapsedTags = (parent: Promise<PageServerParentData>) =>
+const loadCollapsedTags = (parent: Promise<PageServerParentData>): Promise<CollapsedTags[]> =>
   new Promise(async resolve => {
     resolve(
       await prisma.collapsedTags.findMany({

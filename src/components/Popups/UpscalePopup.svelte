@@ -1,10 +1,10 @@
 <script lang="ts">
-    import Popup from "../../reusables/Popup.svelte"
+    import Popup from "$reusables/Popup.svelte"
 
     import { visibleMedium } from '$lib/stores'
-    import SidebarButton from "../../routes/[cluster]/[group]/SidebarButton.svelte"
+    import Button from "$components/Button.svelte"
     import { mdiBicyclePennyFarthing, mdiBrushVariant, mdiCancel, mdiFloppyVariant } from "@mdi/js"
-    import ImageCompare from "../../reusables/ImageCompare.svelte"
+    import ImageCompare from "$reusables/ImageCompare.svelte"
     import { Stretch } from 'svelte-loading-spinners'
 
     export let isVisible = true
@@ -70,9 +70,9 @@
                 <div class="side">
                     <span>Before</span>
 
-                    <SidebarButton card on:click={() => isVisible = false} icon={mdiCancel}>
+                    <Button card on:click={() => isVisible = false} icon="mdiCancel">
                         Keep Old
-                    </SidebarButton>
+                    </Button>
                 </div>
 
 
@@ -85,9 +85,9 @@
                 <div class="side">
                     <span style="text-align: right">After</span>
 
-                    <SidebarButton card on:click={upscalePopup_keepNewFunction} icon={mdiFloppyVariant}>
+                    <Button card on:click={upscalePopup_keepNewFunction} icon="mdiFloppyVariant">
                         Keep New
-                    </SidebarButton>
+                    </Button>
                 </div>
 
             </section>
@@ -97,12 +97,12 @@
 
             <div class="centered">
                 <div>
-                    <SidebarButton card on:click={() => startUpscale("normal")} icon={mdiBicyclePennyFarthing}>
+                    <Button card on:click={() => startUpscale("normal")} icon="mdiBicyclePennyFarthing">
                         Normal Upscale
-                    </SidebarButton>
-                    <SidebarButton card on:click={() => startUpscale("anime")} icon={mdiBrushVariant}>
+                    </Button>
+                    <Button card on:click={() => startUpscale("anime")} icon="mdiBrushVariant">
                         Anime Upscale
-                    </SidebarButton>
+                    </Button>
                 </div>
             </div>
 

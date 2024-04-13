@@ -6,8 +6,14 @@
 
   let value: string
   let focused = false
+  export let alwaysExpanded = false
 
   let selectionIndex = -1
+  let inputElement: HTMLInputElement
+
+  export function focus() {
+    inputElement.focus()
+  }
 
   const dispatch = createEventDispatcher()
 
@@ -50,11 +56,13 @@
 
 <main>
   <input
+    bind:this={inputElement}
     type="text"
     on:focusin={() => (focused = true)}
     on:focusout={() => (focused = false)}
     bind:value
     on:keydown|stopPropagation={handleKeyDown}
+    class:alwaysExpanded
   />
 
   {#if value?.length > 0 && focused}
@@ -79,7 +87,8 @@
       width: $height;
       transition: width 200ms;
 
-      &:focus {
+      &:focus,
+      &.alwaysExpanded {
         width: $width;
       }
     }

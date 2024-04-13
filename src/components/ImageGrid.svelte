@@ -9,7 +9,7 @@
   import { page } from "$app/stores"
 
   import type { PageData } from "../routes/[cluster]/$types"
-  import SidebarButton from "../routes/[cluster]/SidebarButton.svelte"
+  import Button from "./Button.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
   import { onMount } from "svelte"
   import { md5 } from "hash-wasm"
@@ -51,7 +51,7 @@
   {#if pageData.cluster.type == "collection"}
     <div id="collectionGroups">
       {#if $selectedTags.length == 1 && $selectedTags[0].includes("/")}
-        <SidebarButton
+        <Button
           card
           icon="mdiFolderArrowUpOutline"
           on:click={() =>
@@ -60,7 +60,7 @@
             ])}
         >
           {$selectedTags[0].replace(/\/.+$/, "")}
-        </SidebarButton>
+        </Button>
       {/if}
 
       {#await pageData.streamed_page.tags then tags}
@@ -75,13 +75,13 @@
           .sort((a, b) => a.tag
               .join("/")
               .localeCompare(b.tag.join("/"))) as { tag }}
-          <SidebarButton
+          <Button
             card
             icon="mdiFolderArrowDownOutline"
             on:click={() => selectedTags.set([tag.join("/").toLowerCase()])}
           >
             {tag.slice(-1)}
-          </SidebarButton>
+          </Button>
         {/each}
       {/await}
     </div>

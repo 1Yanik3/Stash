@@ -2,7 +2,7 @@
   import { isFullscreen, mobileBottomBarVisible, settings } from "$lib/stores"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
   import ClusterSection from "../[cluster]/ClusterSection.svelte"
-  import SidebarButton from "../[cluster]/SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
@@ -17,22 +17,22 @@
 
   <!-- TODO: Mobile support -->
   <section class="navigationSection">
-    <SidebarButton icon="mdiToggleSwitch" href="/settings/general">
+    <Button icon="mdiToggleSwitch" href="/settings/general">
       General
-    </SidebarButton>
-    <SidebarButton icon="mdiSync" href="/settings/jobs">Jobs</SidebarButton>
-    <SidebarButton icon="mdiTagSearch" href="/settings/tag-icons">
+    </Button>
+    <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
+    <Button icon="mdiTagSearch" href="/settings/tag-icons">
       Tag Icons
-    </SidebarButton>
+    </Button>
 
     <div class="divider" />
 
-    <SidebarButton icon="mdiChartBar" href="/settings/statistics">
+    <Button icon="mdiChartBar" href="/settings/statistics">
       Statistics
-    </SidebarButton>
-    <SidebarButton icon="mdiInformationOutline" href="/settings/about">
+    </Button>
+    <Button icon="mdiInformationOutline" href="/settings/about">
       About
-    </SidebarButton>
+    </Button>
   </section>
 
   <div class="content">

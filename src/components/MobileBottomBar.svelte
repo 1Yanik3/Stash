@@ -1,11 +1,11 @@
 <script lang="ts">
     import { controller, settings } from "../lib/stores";
-    import SidebarButton from "../routes/[cluster]/SidebarButton.svelte";
+    import Button from "./Button.svelte";
 </script>
 
 <main>
     <!-- Cluster Section (Clusters and Settings) -->
-    <SidebarButton
+    <Button
         icon="mdiMenu"
         card
         on:click={() => $controller.setPopup("Cluster Section Mobile")}
@@ -13,7 +13,7 @@
 
     <!-- Navigation Section (Tags) -->
     <!-- or mdiAnimation -->
-    <SidebarButton
+    <Button
         icon="mdiTagMultiple"
         card
         on:click={() => $controller.setPopup("Navigation Section Mobile")}
@@ -22,14 +22,14 @@
     <div class="spacer" />
 
     <!-- Quick Switch -->
-    <SidebarButton
+    <Button
         icon="mdiTabSearch"
         card
         on:click={() => $controller.setPopup("Quick Switch")}
     />
 
     <!-- Quick Actions -->
-    <SidebarButton
+    <Button
         icon="mdiConsoleLine"
         card
         on:click={() => $controller.setPopup("Quick Actions")}

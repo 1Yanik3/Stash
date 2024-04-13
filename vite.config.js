@@ -7,7 +7,8 @@ const config = {
   resolve: {
     alias: {
       $lib: path.resolve("./src/lib"),
-      $components: path.resolve("./src/components")
+      $components: path.resolve("./src/components"),
+      $reusables: path.resolve("./src/reusables")
     }
   },
   plugins: [sveltekit()],

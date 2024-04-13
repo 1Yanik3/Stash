@@ -3,7 +3,7 @@
   import { selectedMediaIds, selectedTags } from "$lib/stores"
   import type { possibleIcons } from "$lib/possibleIcons"
   import type { PageData } from "./$types"
-  import SidebarButton from "./SidebarButton.svelte"
+  import Button from "$components/Button.svelte"
   import { invalidate } from "$app/navigation"
   import { onMount } from "svelte"
 
@@ -50,7 +50,7 @@
     )?.icon as keyof typeof possibleIcons)
 </script>
 
-<SidebarButton
+<Button
   {indent}
   {count}
   icon={icon ? icon : collapsed ? "mdiFolderHidden" : "mdiFolderOutline"}
@@ -90,7 +90,7 @@
   bind:element
 >
   {nameOverwrite.replace(/.+\//, "")}
-</SidebarButton>
+</Button>
 
 {#if children && !collapsed}
   {#each children.sort((a, b) => a.name.localeCompare(b.name)) as c}

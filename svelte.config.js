@@ -17,7 +17,8 @@ const config = {
       checkOrigin: false
     },
     alias: {
-      $components: "src/components"
+      $components: "src/components",
+      $reusables: "src/reusables"
     }
   },
 
