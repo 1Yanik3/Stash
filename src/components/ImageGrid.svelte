@@ -16,27 +16,21 @@
 
   $: pageData = $page.data as PageData
 
+  let pages: { hash: string; media: typeof $media_store }[] = []
+
   let previousMediaStoreHash = ""
   const calculatePages = async () => {
     if (!$media_store.length) return
 
-    const currentMediaStoreHash = await md5($media_store.map(m => m.id).join())
-    if (currentMediaStoreHash == previousMediaStoreHash) {
-      console.log(
-        "skipping updating media grid, as the hash is the same as previously"
-      )
-    } else {
-      previousMediaStoreHash = currentMediaStoreHash
+    // For each page
+    for (let i = 0; i < Math.ceil($media_store.length / pageSize); i++) {
+      const page = $media_store.slice(i * pageSize, (i + 1) * pageSize)
+      const hash = await md5(page.map(m => m.id).join())
 
-      console.log("updating media grid")
-      pages = Array.from(
-        { length: Math.ceil($media_store.length / pageSize) },
-        (_, i) => $media_store.slice(i * pageSize, (i + 1) * pageSize)
-      )
+      // If the page has changed, update it
+      if (pages[i]?.hash != hash) pages[i] = { hash, media: page }
     }
   }
-
-  let pages: (typeof $media_store)[] = []
 
   onMount(() => {
     media_store.subscribe(calculatePages)
@@ -92,11 +86,11 @@
       <ImageGridTable media={$media_store} />
     {:else}
       {#key previousMediaStoreHash}
-        {#each pages as page, i}
+        {#each pages as { media, hash }, i (hash)}
           {#if pageData.cluster.type == "withName"}
-            <ImageGridStudios media={page} {i} />
+            <ImageGridStudios {media} {i} />
           {:else}
-            <ImageGridPage media={page} {i} />
+            <ImageGridPage {media} {i} />
           {/if}
         {/each}
       {/key}
