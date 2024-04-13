@@ -13,6 +13,7 @@
   import ImageGridTable from "./ImageGrid_Table.svelte"
   import { onMount } from "svelte"
   import { md5 } from "hash-wasm"
+  import { beforeNavigate } from "$app/navigation"
 
   $: pageData = $page.data as PageData
 
@@ -34,6 +35,10 @@
 
   onMount(() => {
     media_store.subscribe(calculatePages)
+  })
+
+  beforeNavigate(() => {
+    pages = []
   })
 </script>
 

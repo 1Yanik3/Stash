@@ -20,7 +20,7 @@
     seed
   } from "$lib/stores"
   import NavigationSection from "./NavigationSection.svelte"
-  import { beforeNavigate } from "$app/navigation"
+  import { afterNavigate, beforeNavigate } from "$app/navigation"
   import type { Media } from "@prisma/client"
   import { setMethods, sortingMethods } from "../../types"
   import { page } from "$app/stores"
@@ -58,7 +58,6 @@
     })
 
   const resetMedia = async (cluster = $page.params.cluster) => {
-    media_store.set([])
     media_store.set(await loadMedia(cluster, 0))
   }
   onMount(() => {
@@ -85,7 +84,7 @@
     })
   })
 
-  beforeNavigate(({ to }) => {
+  afterNavigate(({ to }) => {
     if (to?.params) resetMedia(to.params.cluster)
   })
 
