@@ -89,9 +89,9 @@
   on:dragleave|preventDefault={onLeave}
 />
 
-<Shortcut shift key="T" action={() => tagInputElement.focus()} />
-
 {#if $uploadPopupOpen}
+  <Shortcut shift key="T" action={() => tagInputElement.focus()} />
+
   <Popup title="Upload Files" on:close={() => ($uploadPopupOpen = false)}>
     <main>
       {#if !uploadStarted}

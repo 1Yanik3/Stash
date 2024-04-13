@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   if (!prompt) throw error(400)
 
-  if (!model) model = "open-mixtral-8x7b"
+  if (!model) model = "mistral-small"
 
   const chatResponse = await client.chat({
     model,
