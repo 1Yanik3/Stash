@@ -60,7 +60,8 @@
                     extract the plain title from this filename.
                     - Answer inline, without quotation marks.
                     - Do not output extra commentary or description.
-                    - Do NOT output the production company, studio, category, resolutions, or other metadata.
+                    - Do not output the production company, studio, category, resolutions, or other metadata.
+                    - If the title is in caps, convert it to title case.
                     - If the filename mentions the names of people, add all of them to the end in brackets separated by a comma, so that the end result looks something like this: "<TITLE> (<PERSON 1>, <PERSON 2>)".
                     - Except if you only have names and no title, output the names in the same format but without the brackets.
                     "${$visibleMedium.name}"
