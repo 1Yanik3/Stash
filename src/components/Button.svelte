@@ -18,8 +18,11 @@
   export let active: boolean = false
   export let href: string | null = null
   export let shortcut: {
-      modifier: Exclude<Exclude<ComponentProps<Shortcut>["modifier"], null>, undefined>
-      key: string
+    modifier: Exclude<
+      Exclude<ComponentProps<Shortcut>["modifier"], null>,
+      undefined
+    >
+    key: string
   } | null = null
 
   export let hidden = false
@@ -27,6 +30,7 @@
   export let card = false
   export let highlighted = false
   export let disabled = false
+  export let noMargin = false
   export let styleOverride: string = ""
 
   const dispatch = createEventDispatcher()
@@ -90,6 +94,7 @@
   class:hidden={hidden || !$$slots.default}
   class:right
   class:highlighted
+  class:noMargin
   on:contextmenu={e => {
     dispatch("contextmenu", e)
   }}
@@ -145,7 +150,11 @@
 </a>
 
 {#if shortcut}
-    <Shortcut modifier={shortcut.modifier} key={shortcut.key} action={() => dispatch('click')} />
+  <Shortcut
+    modifier={shortcut.modifier}
+    key={shortcut.key}
+    action={() => dispatch("click")}
+  />
 {/if}
 
 <style lang="scss">
@@ -163,7 +172,9 @@
     justify-content: space-between;
 
     padding: 0.5em 0.75em;
-    margin: 0.15em 0.5em;
+    &:not(.noMargin) {
+      margin: 0.15em 0.5em;
+    }
     border-radius: 0.35em;
 
     transition:

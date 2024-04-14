@@ -64,7 +64,7 @@
                     - If the filename mentions the names of people, add all of them to the end in brackets separated by a comma, so that the end result looks something like this: "<TITLE> (<PERSON 1>, <PERSON 2>)".
                     - Except if you only have names and no title, output the names in the same format but without the brackets.
                     "${$visibleMedium.name}"
-                  `.replace(/^\s+|\s+$/gm, '')
+                  `.replace(/^\s+|\s+$/gm, "")
                 })
               })
 
@@ -80,6 +80,7 @@
         {/if}
         <Button
           icon="mdiPencil"
+          noMargin
           on:click={() => {
             if (!$visibleMedium) return
             rename($visibleMedium.name)
@@ -90,7 +91,13 @@
       <section>
         <div>
           <b>Metadata</b>
-          <Button icon="mdiReload" />
+          <!-- TODO -->
+          <Button icon="mdiReload" noMargin />
+        </div>
+
+        <div>
+          <Icon name="mdiIdentifier" />
+          <span>{$visibleMedium.id}</span>
         </div>
 
         <div>
@@ -111,6 +118,7 @@
   main {
     display: grid;
     gap: 0.75em;
+    padding: 1em;
 
     div {
       display: flex;
@@ -128,13 +136,15 @@
       div:first-child {
         justify-content: space-between;
         margin-bottom: -10px;
+        margin-right: 0;
         b {
+          font-weight: 500;
           font-size: 1.1em;
         }
       }
-      div:not(:first-child) {
-        margin-left: 1em;
-      }
+      //   div {
+      //     margin: 0 1em;
+      //   }
     }
   }
 </style>
