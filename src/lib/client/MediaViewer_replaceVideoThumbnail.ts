@@ -60,7 +60,7 @@ export default async () => {
     return
   }
 
-  fetch(`/api/media/${mediaId}/thumbnail`, {
+  await fetch(`/api/media/${mediaId}/thumbnail`, {
     method: "POST",
     body: data
   }).then(async () => {
