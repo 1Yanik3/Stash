@@ -5,6 +5,7 @@
     isFullscreen,
     media_store,
     settings,
+    videoElement,
     visibleMedium
   } from "$lib/stores"
   import { page } from "$app/stores"
@@ -17,6 +18,7 @@
   let isZoomedIn = false
 
   let video: HTMLVideoElement
+  $: videoElement.set(video)
 
   let showMouse = true
   let mouseTimer: NodeJS.Timeout

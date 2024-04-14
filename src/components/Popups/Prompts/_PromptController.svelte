@@ -2,6 +2,7 @@
   import SelectPromptPopup from "./SelectPromptPopup.svelte"
   import TagSearchPromptPopup from "./TagSearchPromptPopup.svelte"
   import TextPromptPopup from "./TextPromptPopup.svelte"
+  import NotifyPromptPopup from "./NotifyPromptPopup.svelte"
 
   export const prompt = {
     text: (question: string, value = ""): Promise<string | null> =>
@@ -56,6 +57,21 @@
         element.$on("result", ({ detail }) => {
           if (detail != null) resolve(detail)
           else resolve(null)
+          element.$destroy()
+        })
+      }),
+
+    notify: (text: string): Promise<boolean> =>
+      new Promise(resolve => {
+        const element = new NotifyPromptPopup({
+          target: document.body,
+          props: {
+            text
+          }
+        })
+
+        element.$on("result", ({ detail }) => {
+          resolve(detail)
           element.$destroy()
         })
       })

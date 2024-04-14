@@ -15,6 +15,7 @@
   import { invalidate } from "$app/navigation"
   import TagInputField from "./Tags/TagInputField.svelte"
   import Button from "./Button.svelte"
+  import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
 
@@ -95,8 +96,7 @@
 
   const replaceThumbnail = () => {
     if (!browser) return
-
-    $controller.setPopup("Replace Video Thumbnail")
+    MediaViewer_replaceVideoThumbnail()
   }
 </script>
 

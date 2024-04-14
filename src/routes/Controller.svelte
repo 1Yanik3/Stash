@@ -20,7 +20,6 @@
   import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
-  import ReplaceVideoThumbnail from "$components/Popups/ReplaceVideoThumbnail.svelte"
   import SettingsPopup from "$components/Popups/SettingsPopup/index.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -86,7 +85,6 @@
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
     Settings: SettingsPopup,
-    "Replace Video Thumbnail": ReplaceVideoThumbnail,
     "Create Story": CreateStoryPopup,
     "Cluster Section Mobile": ClusterSectionMobile,
     "Navigation Section Mobile": NavigationSectionMobile,
@@ -121,7 +119,7 @@
   }}
 />
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
-<Shortcut meta key="," action={() => goto('/settings')} />
+<Shortcut meta key="," action={() => goto("/settings")} />
 
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />

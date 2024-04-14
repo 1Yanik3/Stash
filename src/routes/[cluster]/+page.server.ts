@@ -1,4 +1,5 @@
 import prisma from "$lib/server/prisma"
+
 import { CollapsedTags, Story } from "@prisma/client"
 
 import type { PageServerLoad, PageServerParentData } from "./$types"
@@ -31,7 +32,9 @@ const loadStories = (parent: Promise<PageServerParentData>): Promise<Story[]> =>
     )
   )
 
-const loadCollapsedTags = (parent: Promise<PageServerParentData>): Promise<CollapsedTags[]> =>
+const loadCollapsedTags = (
+  parent: Promise<PageServerParentData>
+): Promise<CollapsedTags[]> =>
   new Promise(async resolve => {
     resolve(
       await prisma.collapsedTags.findMany({

@@ -1,10 +1,10 @@
 import prisma from "$lib/server/prisma"
+import sharedImportLogic from "$lib/server/sharedImportLogic"
 import fs from "fs/promises"
 import mime from "mime-types"
 
 import { json } from "@sveltejs/kit"
 
-import sharedImportLogic from "../../../../../lib/sharedImportLogic"
 import type { RequestHandler } from "./$types"
 
 const importFolderPath = "./importables"

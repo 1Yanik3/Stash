@@ -1,7 +1,7 @@
 import { setMethods, sortingMethods } from "$lib/../types"
 import prisma from "$lib/server/prisma"
 // import { ExifParserFactory } from "ts-exif-parser"
-import sharedImportLogic from "$lib/sharedImportLogic"
+import sharedImportLogic from "$lib/server/sharedImportLogic"
 import { pageSize } from "$lib/stores"
 import fs from "fs/promises"
 
