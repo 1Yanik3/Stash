@@ -49,7 +49,7 @@
         {#if $visibleMedium.name.endsWith(".mp4")}
           <Button
             icon="mdiCreation"
-            styleOverride="margin-right: -1em"
+            noMargin
             on:click={async () => {
               if (!$visibleMedium) return
 

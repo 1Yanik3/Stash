@@ -1,4 +1,4 @@
-import { controller, videoElement, visibleMedium } from "$lib/stores"
+import { controller, thumbnailSuffixParameter, videoElement, visibleMedium } from "$lib/stores"
 import { get } from "svelte/store"
 
 const dataURItoBlob = (dataURI: string) => {
@@ -55,10 +55,20 @@ export default async () => {
   const data = new FormData()
   data.append("file", blob, "frame.png")
 
-  fetch(`/api/media/${get(visibleMedium)?.id}/thumbnail`, {
+  let mediaId = get(visibleMedium)?.id
+  if (!mediaId) {
+    return
+  }
+
+  fetch(`/api/media/${mediaId}/thumbnail`, {
     method: "POST",
     body: data
   }).then(async () => {
     get(controller).setPopup(null)
+  })
+
+  thumbnailSuffixParameter.set({
+    mediaId,
+    suffix: Math.random().toString(16).substring(2, 8)
   })
 }

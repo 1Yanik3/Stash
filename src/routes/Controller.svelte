@@ -1,6 +1,11 @@
 <script lang="ts">
   import { browser } from "$app/environment"
-  import { afterNavigate, goto, invalidate } from "$app/navigation"
+  import {
+    afterNavigate,
+    beforeNavigate,
+    goto,
+    invalidate
+  } from "$app/navigation"
   import { page } from "$app/stores"
   import {
     actionBar,
@@ -10,6 +15,7 @@
     selectedMediaIds,
     selectedTags,
     settings,
+    thumbnailSuffixParameter,
     visibleMedium
   } from "$lib/stores"
   import { onMount } from "svelte"
@@ -29,6 +35,10 @@
   import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
 
   $: pageData = $page.data as PageData
+
+  beforeNavigate(() => {
+    thumbnailSuffixParameter.set(null)
+  })
 
   afterNavigate(() => {
     selectedMediaIds.set([])

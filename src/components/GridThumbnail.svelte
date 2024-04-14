@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedMediaIds, visibleMedium } from "$lib/stores"
+  import { selectedMediaIds, thumbnailSuffixParameter, visibleMedium } from "$lib/stores"
 
   import type { Media } from "@prisma/client"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
@@ -41,6 +41,16 @@
       visibleMedium.set(medium)
     }
   }
+
+  let suffix = ""
+  thumbnailSuffixParameter.subscribe(() => {
+    if ($thumbnailSuffixParameter == null) {
+        suffix = ""
+        return
+    }
+    if ($thumbnailSuffixParameter.mediaId == medium.id)
+        suffix = `?${$thumbnailSuffixParameter.suffix}`
+  })
 </script>
 
 <IntersectionObserver
@@ -65,7 +75,7 @@
     {#if intersecting || i == 0}
       {#await new Promise(resolve => resolve(true)) then}
         <img
-          src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail`}
+          src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail${suffix}`}
           alt={medium.name}
           class:active={!disableActive && $visibleMedium == medium}
           crossorigin="use-credentials"
