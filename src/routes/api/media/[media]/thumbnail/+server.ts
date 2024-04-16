@@ -1,32 +1,15 @@
+import generateThumbnail from "$lib/server/generateThumbnail"
 import getMetadataFromFile from "$lib/server/getMetadataFromFile"
 import prisma from "$lib/server/prisma"
-import ffmpeg from "fluent-ffmpeg"
 import fs from "fs/promises"
 
 import type { RequestHandler } from "./$types"
 
-const targetSize = 500
 const thumbnailRoot = "./thumbnails"
 const mediaRoot = "./media"
 
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const { height, width } = await getMetadataFromFile(
-      `${mediaRoot}/${params.media}`
-    )
-
-    if (height > 1000 && width > 1000) {
-      await fs.rename(
-        `${thumbnailRoot}/${params.media}.webp`,
-        `${thumbnailRoot}/${params.media}.original.webp`
-      )
-
-      await generateThumbnail(
-        `${thumbnailRoot}/${params.media}.original.webp`,
-        `${thumbnailRoot}/${params.media}.webp`
-      )
-    }
-
     return new Response(
       await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
     )
@@ -53,7 +36,15 @@ export const POST: RequestHandler = async ({ request, params }) => {
   const file = data.get("file") as File
   const fileBuffer = Buffer.from(await file.arrayBuffer())
 
-  await fs.writeFile(`${thumbnailRoot}/${params.media}.webp`, fileBuffer)
+  await fs.writeFile(
+    `${thumbnailRoot}/${params.media}.original.webp`,
+    fileBuffer
+  )
+
+  await generateThumbnail(
+    `${thumbnailRoot}/${params.media}.original.webp`,
+    `${thumbnailRoot}/${params.media}.webp`
+  )
 
   return new Response()
 }
@@ -90,25 +81,3 @@ const createThumbnail = async ({ media }: { media: string }) => {
     outputOptions
   )
 }
-
-const generateThumbnail = (
-  inputFile: string,
-  outputFile: string,
-  outputOptions: any = []
-) =>
-  new Promise((resolve, reject) => {
-    console.log({ inputFile, outputFile, outputOptions })
-    try {
-      ffmpeg()
-        .input(inputFile)
-        .complexFilter([
-          `scale=w=${targetSize}:h=${targetSize}:force_original_aspect_ratio=decrease`
-        ])
-        .output(outputFile)
-        .on("end", resolve)
-        .outputOptions(outputOptions)
-        .run()
-    } catch (error: any) {
-      reject(error)
-    }
-  })
