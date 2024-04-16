@@ -3,6 +3,7 @@
   import TagSearchPromptPopup from "./TagSearchPromptPopup.svelte"
   import TextPromptPopup from "./TextPromptPopup.svelte"
   import NotifyPromptPopup from "./NotifyPromptPopup.svelte"
+  import CodePromptPopup from "./CodePromptPopup.svelte"
 
   export const prompt = {
     text: (question: string, value = ""): Promise<string | null> =>
@@ -64,6 +65,21 @@
     notify: (text: string): Promise<boolean> =>
       new Promise(resolve => {
         const element = new NotifyPromptPopup({
+          target: document.body,
+          props: {
+            text
+          }
+        })
+
+        element.$on("result", ({ detail }) => {
+          resolve(detail)
+          element.$destroy()
+        })
+      }),
+
+    code: (text: string): Promise<boolean> =>
+      new Promise(resolve => {
+        const element = new CodePromptPopup({
           target: document.body,
           props: {
             text

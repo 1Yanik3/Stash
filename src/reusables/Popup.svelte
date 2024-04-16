@@ -47,12 +47,7 @@
         {:else}
           <h2>{title}</h2>
 
-          <button
-            on:click={() => {
-              dispatch("close")
-              $controller.setPopup(null)
-            }}
-          >
+          <button on:click={() => dispatch("close")}>
             <Icon name="mdiClose" />
           </button>
         {/if}

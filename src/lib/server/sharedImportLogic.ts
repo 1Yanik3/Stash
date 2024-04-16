@@ -1,5 +1,6 @@
 import { execSync } from "child_process"
 
+import getMetadataFromFile from "./getMetadataFromFile"
 import prisma from "./prisma"
 
 export default async (filename: string, mediaId: string) => {
@@ -9,8 +10,8 @@ export default async (filename: string, mediaId: string) => {
     /(20\d\d)-?([01]\d)-?([0123]\d)/
   )
 
-  const [{ ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate }] =
-    JSON.parse(execSync(`exiftool -j ${`./media/${mediaId}`}`).toString())
+  const { ImageWidth, ImageHeight, Rotation, CreateDate, FileModifyDate } =
+    await getMetadataFromFile(`./media/${mediaId}`)
   const height = [90, 270, -90, -270].includes(Rotation)
     ? ImageWidth
     : ImageHeight
@@ -27,15 +28,6 @@ export default async (filename: string, mediaId: string) => {
     if (date > new Date(0)) return date
     else return false
   }
-
-  console.log(
-    convertToDate(CreateDate) ||
-      (createdDateMatchFromFilename
-        ? new Date(
-            `${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`
-          )
-        : convertToDate(FileModifyDate) || new Date(0))
-  )
 
   console.timeEnd("media post request: get metadata")
   console.time("media post request: store metadata")

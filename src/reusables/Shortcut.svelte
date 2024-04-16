@@ -11,7 +11,7 @@
     export let action: Function
 
     let handler = (e: KeyboardEvent) => {
-        if (e.target instanceof HTMLInputElement) {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
             return
         }
 
