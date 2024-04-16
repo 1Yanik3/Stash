@@ -12,5 +12,7 @@
   on:cancel={() => dispatch("result", false)}
   on:ok={() => dispatch("result", true)}
 >
-  <code>{text}</code>
+  <pre>
+    <code>{text}</code>
+  </pre>
 </PromptFramework>
