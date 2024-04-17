@@ -39,9 +39,7 @@
 
   let preloadedImageUrl = ""
   const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
-    const mediaIndex = $media_store.findIndex(
-      m => m.id == $visibleMedium?.id
-    )
+    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
 
     if (mediaIndex < $media_store.length - 1)
       preloadedImageUrl = `${pageData.serverURL}/file/${
@@ -120,13 +118,10 @@
 <style lang="scss">
   main {
     // TODO: Make more elegant
-    height: calc(100vh - 42px);
+    height: calc(100vh - 48px);
     border-left: 1px solid $border-color-base;
     display: grid;
     grid-template-rows: 1fr;
-    &.detailsVisible {
-      grid-template-rows: auto 1fr;
-    }
     overflow: scroll;
   }
 
@@ -137,7 +132,7 @@
     }
 
     width: 100%;
-    height: calc(100vh - 42px);
+    height: calc(100vh - 48px);
 
     display: flex;
     align-items: center;
