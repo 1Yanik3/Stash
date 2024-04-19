@@ -59,8 +59,8 @@
       data.append("selectedTags", tags.join(","))
 
       await new Promise(resolve => {
-        var ajax = new XMLHttpRequest()
-        ajax.upload.addEventListener(
+        let ajax = new XMLHttpRequest()
+        ajax.addEventListener(
           "progress",
           e => {
             uploadPercentage = Math.round((e.loaded / e.total) * 100)
