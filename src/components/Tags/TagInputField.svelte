@@ -40,6 +40,7 @@
     }
   }
 
+//   TODO: this should be all and not just some of the tags (aka: should ignore filters)
   let tags: Awaited<PageData["streamed_page"]["tags"]> = []
   onMount(async () => {
     tags = await ($page.data as PageData).streamed_page.tags

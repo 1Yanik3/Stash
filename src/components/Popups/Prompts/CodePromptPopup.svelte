@@ -16,3 +16,9 @@
     <code>{text}</code>
   </pre>
 </PromptFramework>
+
+<style>
+    pre {
+        overflow-y: auto;
+    }
+</style>

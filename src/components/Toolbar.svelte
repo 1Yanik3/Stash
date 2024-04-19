@@ -16,6 +16,7 @@
   import TagInputField from "./Tags/TagInputField.svelte"
   import Button from "./Button.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
+  import TagChip from "./Tags/TagChip.svelte"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
 
@@ -157,11 +158,7 @@
       {/if}
     </button>
     {#each $visibleMedium?.tags || [] as tag}
-      <span
-        class="tag"
-        on:contextmenu|preventDefault={() => removeTagFromMedia(tag)}
-        >{tag}</span
-      >
+      <TagChip {tag} on:contextmenu={() => removeTagFromMedia(tag)} />
     {/each}
     {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
       <TagInputField
@@ -266,17 +263,6 @@
 
     div {
       display: flex;
-      .tag {
-        background: $color-dark-level-2;
-        padding: 0.3em 0.5em;
-        margin: 0.15em;
-        border: 1px solid $color-dark-level-1;
-        border-radius: 3px;
-
-        margin-right: 0.25em;
-
-        cursor: pointer;
-      }
     }
 
     section {

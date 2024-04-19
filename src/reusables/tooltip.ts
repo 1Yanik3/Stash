@@ -1,46 +1,48 @@
 import Tooltip from "./Tooltip.svelte"
 
-export function tooltip(element: HTMLElement) {
-  let div
-  let title: string
+export function tooltip(
+  element: HTMLElement,
+  options: { title: string; position: "top" | "bottom" | "left" | "right", enabled?: boolean }
+) {
   let tooltipComponent: Tooltip
-  function mouseEnter(event: MouseEvent) {
-    // NOTE: remove the `title` attribute, to prevent showing the default browser tooltip
-    // remember to set it back on `mouseleave`
-    // title = element.getAttribute('title');
-    title = "asd"
-    element.removeAttribute("title")
+
+  const distanceFromElement = 3
+
+  const mouseEnter = (event: MouseEvent) => {
+    if (options.enabled === false) return
+
+    let x = element.getBoundingClientRect().x
+    let y = element.getBoundingClientRect().y
+
+    if (options.position == "bottom") {
+      y += element.getBoundingClientRect().height + distanceFromElement
+      x += element.getBoundingClientRect().width / 2
+    }
+
+    // TODO: Other directions
 
     tooltipComponent = new Tooltip({
       props: {
-        title: title,
-        x: element.getBoundingClientRect().x + 35,
-        y: element.getBoundingClientRect().y
+        title: options.title,
+        position: options.position,
+        x,
+        y
       },
       target: document.body
     })
   }
-  function mouseMove(event: MouseEvent) {
-    // tooltipComponent.$set({
-    // 	x: event.pageX,
-    // 	y: event.pageY,
-    // })
-  }
-  function mouseLeave() {
+
+  const mouseLeave = () => {
     tooltipComponent.$destroy()
-    // NOTE: restore the `title` attribute
-    element.setAttribute("title", title)
   }
 
   element.addEventListener("mouseenter", mouseEnter)
   element.addEventListener("mouseleave", mouseLeave)
-  element.addEventListener("mousemove", mouseMove)
 
   return {
     destroy() {
       element.removeEventListener("mouseenter", mouseEnter)
       element.removeEventListener("mouseleave", mouseLeave)
-      element.removeEventListener("mousemove", mouseMove)
     }
   }
 }
