@@ -18,17 +18,19 @@
   const dispatch = createEventDispatcher()
 </script>
 
-<span
-  on:click|preventDefault={() => dispatch("click")}
-  on:contextmenu|preventDefault={() => dispatch("contextmenu")}
-  use:tooltip={{ title: tag, position: "bottom", enabled: !!icon }}
->
-  {#if icon}
-    <Icon name={icon} />
-  {:else}
-    {tag}
-  {/if}
-</span>
+{#key tag}
+  <span
+    on:click|preventDefault={() => dispatch("click")}
+    on:contextmenu|preventDefault={() => dispatch("contextmenu")}
+    use:tooltip={{ title: tag, position: "bottom", enabled: !!icon }}
+  >
+    {#if icon}
+      <Icon name={icon} />
+    {:else}
+      {tag}
+    {/if}
+  </span>
+{/key}
 
 <style lang="scss">
   span {
