@@ -80,6 +80,7 @@
     }
 
     $uploadPopupOpen = false
+    uploadStarted = false
     invalidate("media-and-tags")
   }
 </script>

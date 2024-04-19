@@ -24,7 +24,7 @@
     if (!$media_store.length) return
 
     // For each page
-    for (let i = 0; i < Math.ceil($media_store.length / pageSize); i++) {
+    for (let i = 0; i < Math.max(Math.ceil($media_store.length / pageSize), pages.length); i++) {
       const page = $media_store.slice(i * pageSize, (i + 1) * pageSize)
       const hash = await md5(page.map(m => m.id).join())
 
