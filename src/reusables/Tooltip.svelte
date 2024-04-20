@@ -20,18 +20,24 @@
 
 <style lang="scss">
   div {
-    background: hsl(0, 0%, 11%);
-    border: 1px solid hsl(0, 0%, 17%);
-    border-radius: 0.35em;
-    padding: 0.5em;
     position: absolute;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
+    padding: 0.5em;
+
+    background: hsl(0, 0%, 11%);
+    border: 1px solid hsl(0, 0%, 17%);
+    border-radius: 0.35em;
 
     &.direction-bottom {
       transform: translateX(-50%);
+    }
+
+    &.direction-right {
+      transform: translateY(-50%);
     }
   }
 </style>

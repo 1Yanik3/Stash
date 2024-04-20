@@ -15,8 +15,8 @@
 <style lang="scss">
   .wrapper {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 100%;
 
     main {
@@ -29,10 +29,10 @@
         grid-template-columns: auto 1fr;
 
         img {
-          height: 4em;
-          border-radius: 0.65em;
           grid-row: span 2;
+          height: 4em;
           margin-right: 0.75em;
+          border-radius: 0.65em;
         }
 
         b {

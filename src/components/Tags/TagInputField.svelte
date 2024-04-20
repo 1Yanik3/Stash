@@ -40,7 +40,7 @@
     }
   }
 
-//   TODO: this should be all and not just some of the tags (aka: should ignore filters)
+  //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
   let tags: Awaited<PageData["streamed_page"]["tags"]> = []
   onMount(async () => {
     tags = await ($page.data as PageData).streamed_page.tags
@@ -84,8 +84,8 @@
     position: relative;
 
     input {
-      height: $height;
       width: $height;
+      height: $height;
       transition: width 200ms;
 
       &:focus,
@@ -105,12 +105,14 @@
       border: 1px solid $border-color-1;
 
       span {
+        overflow: hidden;
         display: block;
+
         padding: 0.5em;
 
-        overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
         transition: background 150ms;
 
         &.active {

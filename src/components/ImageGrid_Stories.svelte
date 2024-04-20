@@ -150,10 +150,10 @@
             }}
           >
             <div
-              style="opacity: 0.5; display: grid; grid-template-columns: auto 1fr; gap: 0.5em"
+              style=" display: grid; grid-template-columns: auto 1fr; gap: 0.5em;opacity: 0.5"
             >
               <span>{i + 1}</span>
-              <span style="text-overflow: ellipsis; overflow: hidden"
+              <span style=" overflow: hidden;text-overflow: ellipsis"
                 >{chapter}</span
               >
             </div>
@@ -200,13 +200,13 @@
     gap: 0.5em;
 
     .story {
+      cursor: pointer;
+
       padding: 0.5em;
 
       background: hsl(0, 0%, 13%);
       border: 1px solid hsl(0, 0%, 24%);
       border-radius: 0.35em;
-
-      cursor: pointer;
 
       &:hover {
         background: hsl(0, 0%, 22%);
@@ -219,11 +219,14 @@
       }
 
       .date {
-        font-size: 14px;
-        opacity: 0.8;
         display: flex;
         justify-content: center;
+
         margin: 0.25em;
+
+        font-size: 14px;
+
+        opacity: 0.8;
       }
     }
   }
@@ -236,35 +239,39 @@
       );
 
     .button {
-      display: flex;
       position: fixed;
-      left: 60px;
       top: 0;
+      left: 60px;
+
+      display: flex;
+
       width: calc(100vw - 2em);
       padding: 1em;
       padding-bottom: 0;
     }
 
     .chapters {
-      margin-top: 50vh;
       transform: translate(0, -50%);
+      margin-top: 50vh;
       margin-right: 3em;
     }
 
     .content {
+      scrollbar-width: none;
+
+      overflow: scroll;
+
       max-height: calc(100vh);
       margin-top: -1em;
-      overflow: scroll;
       padding: 1em 0;
       padding-top: 3em;
 
-      scrollbar-width: none;
       &:not(:last-child)::-webkit-scrollbar {
         display: none;
       }
 
       &.serif {
-        font-family: "EB Garamond", Arial;
+        font-family: "EB Garamond", Arial, serif;
         font-size: 120%;
       }
 
@@ -276,14 +283,15 @@
 
     &.is-mobile {
       grid-template-columns: 1fr;
+
       .chapters {
         display: none;
       }
 
       .button {
+        left: 0;
         padding-bottom: 1em;
         background: #303030;
-        left: 0;
 
         .spacer {
           flex-grow: 1;
@@ -291,8 +299,9 @@
       }
 
       .buttonsHidden {
-        opacity: 0;
         pointer-events: none;
+        opacity: 0;
+
         .button {
           background: transparent !important;
         }

@@ -24,7 +24,11 @@
     if (!$media_store.length) return
 
     // For each page
-    for (let i = 0; i < Math.max(Math.ceil($media_store.length / pageSize), pages.length); i++) {
+    for (
+      let i = 0;
+      i < Math.max(Math.ceil($media_store.length / pageSize), pages.length);
+      i++
+    ) {
       const page = $media_store.slice(i * pageSize, (i + 1) * pageSize)
       const hash = await md5(page.map(m => m.id).join())
 
@@ -113,9 +117,10 @@
   #collectionGroups {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
     margin-top: -0.5em;
-    margin-left: -0.5em;
     margin-right: -0.5em;
     margin-bottom: 0.5em;
+    margin-left: -0.5em;
   }
 </style>

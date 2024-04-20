@@ -209,25 +209,24 @@
 
 <style lang="scss">
   // TODO: Reduce redundancy
+
   main {
     display: grid;
-    justify-content: space-between;
+    grid-template-rows: repeat(3, 1fr);
     align-items: center;
     justify-content: center;
-    grid-template-rows: repeat(3, 1fr);
-    height: calc(100% - 1em);
-    width: 64px;
 
+    width: 64px;
+    height: calc(100% - 1em);
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
     border-left: 1px solid hsl(0, 0%, 22%);
 
-    width: 64px;
-
     section.first {
       align-self: start;
     }
+
     section.last {
       align-self: end;
     }
@@ -235,22 +234,23 @@
     span {
       cursor: pointer;
 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       width: 45px;
       height: 37px;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
       margin: 0.25em;
+
+      border: 1px solid transparent;
       border-radius: 0.35em;
 
       transition:
         background 100ms,
         border 100ms;
-      border: 1px solid transparent;
 
       @media (hover: hover) and (pointer: fine) {
+
         &:not(.disabled):hover {
           background: hsl(0, 0%, 22%);
           border: 1px solid hsl(0, 0%, 24%);
@@ -259,19 +259,19 @@
     }
 
     .playbackStatus {
+      cursor: pointer;
+
       position: absolute;
       top: 0;
       right: 0;
 
-      height: 100vh;
       width: 3px;
-
-      cursor: pointer;
+      height: 100vh;
 
       div {
         width: 3px;
-        transition: height 150ms;
         background: hsl(0, 0%, 22%);
+        transition: height 150ms;
       }
     }
   }

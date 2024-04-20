@@ -8,14 +8,17 @@ export const ssr = true
 export const load: LayoutServerLoad = async ({ url }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts1", url.pathname)
 
-  const tagIcons = (await prisma.tagIcons.findMany({
-    orderBy: {
-      tag: "asc"
-    }
-  })) as {
-    tag: string
-    icon: keyof typeof possibleIcons
-  }[]
+  let tagIcons = {} as { [icon in keyof typeof possibleIcons]: string[] }
+  ;(
+    (await prisma.tagIcons.findMany({
+      orderBy: {
+        tag: "asc"
+      }
+    })) as { icon: keyof typeof possibleIcons; tag: string }[]
+  ).forEach(({ icon, tag }) => {
+    if (!tagIcons[icon]) tagIcons[icon] = []
+    tagIcons[icon].push(tag)
+  })
 
   let serverURL = "https://stash.hera.lan"
   if (url.hostname == "stash.any.gay") serverURL = "https://stash.any.gay"

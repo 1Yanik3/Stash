@@ -181,26 +181,28 @@
 
 <style lang="scss">
   main {
-    height: 100vh;
-    width: 234px;
     overflow: hidden;
 
-    border-right: 1px solid $border-color-base;
+    width: 234px;
+    height: 100vh;
+
     background: $color-dark-level-1;
+    border-right: 1px solid $border-color-base;
 
     & > :nth-child(2) {
-      overflow: scroll;
       scrollbar-width: none;
+      scroll-padding: 38px;
+      overflow: scroll;
+      height: calc(100% - 60px);
+
       &::-webkit-scrollbar {
         display: none;
       }
-      height: calc(100% - 60px);
-      scroll-padding: 38px;
     }
 
     &.mobile {
-      height: 80vh;
       width: 100%;
+      height: 80vh;
       border: none;
     }
   }

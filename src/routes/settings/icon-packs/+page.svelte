@@ -2,6 +2,4 @@
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
 </script>
 
-<SettingsPageHeader title="Jobs" />
-
-<span>TODO</span>
+<SettingsPageHeader title="Icon Packs" />

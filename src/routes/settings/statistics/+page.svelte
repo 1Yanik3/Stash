@@ -1,11 +1,7 @@
 <script lang="ts">
-    
+  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
 </script>
 
-<main>
-    Settings: Statistics
-</main>
+<SettingsPageHeader title="Statistics" />
 
-<style lang="scss">
-    
-</style>
+<span>TODO</span>

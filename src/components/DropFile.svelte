@@ -64,7 +64,11 @@
           "progress",
           e => {
             uploadPercentage = Math.round((e.loaded / e.total) * 100)
-            console.log({ uploadPercentage, loaded: e.loaded, total: e.total })
+            console.log({
+              uploadPercentage,
+              loaded: e.loaded,
+              total: e.total
+            })
           },
           false
         )
@@ -174,19 +178,20 @@
 <style lang="scss">
   main {
     display: grid;
-    padding: 0.5em;
     gap: 1.5em;
+    padding: 0.5em;
 
     .dropZone {
-      padding: 1em;
+      cursor: pointer;
 
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 0.25em;
+      align-items: center;
+
+      padding: 1em;
 
       border: 1px dashed hsl(0, 0%, 24%);
-      cursor: pointer;
     }
 
     .tags {
@@ -194,8 +199,8 @@
       gap: 0.5em;
 
       b {
-        font-weight: 500;
         font-size: 1.1em;
+        font-weight: 500;
       }
 
       .tagsHeader {
@@ -207,39 +212,39 @@
           align-items: center;
         }
       }
+    }
+
+    .files {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.25em;
+      align-items: end;
+
+      b:first-child {
+        font-size: 1.1em;
+        font-weight: 500;
+      }
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       .tagsList {
         display: flex;
 
         span {
-          background: $color-dark-level-2;
-          padding: 0.3em 0.5em;
+          cursor: pointer;
+
           margin: 0.15em;
+          margin-right: 0.25em;
+          padding: 0.3em 0.5em;
+
+          background: $color-dark-level-2;
           border: 1px solid $color-dark-level-1;
           border-radius: 3px;
-
-          margin-right: 0.25em;
-
-          cursor: pointer;
         }
-      }
-    }
-
-    .files {
-      display: grid;
-      align-items: end;
-      grid-template-columns: 1fr auto;
-      gap: 0.25em;
-
-      b:first-child {
-        font-weight: 500;
-        font-size: 1.1em;
-      }
-
-      span {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
       }
     }
   }

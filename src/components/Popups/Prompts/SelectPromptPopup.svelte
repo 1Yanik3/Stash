@@ -15,7 +15,7 @@
 >
   <label>
     <span>{question}:</span>
-    <select bind:value={value}>
+    <select bind:value>
       {#each options as option}
         <option value={option}>{option}</option>
       {/each}

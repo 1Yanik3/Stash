@@ -117,26 +117,29 @@
 
 <style lang="scss">
   main {
-    // TODO: Make more elegant
-    height: calc(100vh - 48px);
-    border-left: 1px solid $border-color-base;
+    overflow: scroll;
     display: grid;
     grid-template-rows: 1fr;
-    overflow: scroll;
+    // TODO: Make more elegant
+    height: calc(100vh - 48px);
+
+    border-left: 1px solid $border-color-base;
   }
 
   #media {
-    background: $color-dark-level-base;
-    &.darkened {
-      background: #000;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     width: 100%;
     height: calc(100vh - 48px);
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: $color-dark-level-base;
+
+    &.darkened {
+      background: #000;
+    }
+
     &.isZoomedIn {
       align-items: baseline;
     }
@@ -161,18 +164,17 @@
   }
 
   main.fullscreen {
-    & {
-      height: 100%;
-    }
+    height: 100%;
+
     #media {
       height: 100%;
 
       img,
       video {
-        height: 100vh;
         width: 100vw;
-        max-height: 100vh;
         max-width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
       }
     }
   }

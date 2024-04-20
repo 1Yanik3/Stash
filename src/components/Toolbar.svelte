@@ -248,15 +248,16 @@
 
 <style lang="scss">
   main {
-    border-left: 1px solid $border-color-base;
-    border-bottom: 1px solid $border-color-base;
-    padding: 0.35em;
-    min-width: calc(100% - 4em);
-    background: $color-dark-level-1;
-
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+
+    min-width: calc(100% - 4em);
+    padding: 0.35em;
+
+    background: $color-dark-level-1;
+    border-bottom: 1px solid $border-color-base;
+    border-left: 1px solid $border-color-base;
 
     // TODO: Still make click interractions possible even with dragging
     // -webkit-app-region: drag;
@@ -270,14 +271,14 @@
       align-items: center;
 
       div {
-        height: 30px;
-        width: 30px;
+        cursor: pointer;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        cursor: pointer;
+        width: 30px;
+        height: 30px;
       }
 
       button {
@@ -286,15 +287,20 @@
     }
 
     &.fullscreen {
-      justify-content: right;
-      box-shadow: none;
       position: absolute;
       z-index: 5;
+      top: 0;
       right: 0;
+
+      justify-content: right;
+
+      background: none;
+      border-bottom: none;
+      box-shadow: none;
+
       &.windowControlsSpacer {
         left: 4.625em;
       }
-      top: 0;
 
       div,
       section {
@@ -308,17 +314,15 @@
           display: none;
         }
       }
-
-      background: none;
-      border-bottom: none;
     }
   }
 
   .moreActionsDropdown {
     position: absolute;
-    right: 0.5em;
-    top: 2.75em;
     z-index: 10;
+    top: 2.75em;
+    right: 0.5em;
+
     padding: 5px 0;
 
     background: $color-dark-level-base;

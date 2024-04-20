@@ -65,6 +65,10 @@
 </main>
 
 <style lang="scss">
+  .bigNumber {
+    font-size: 1.5em;
+  }
+
   .header {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -79,21 +83,18 @@
   section {
     display: grid;
     grid-template-columns: 1fr auto;
-    margin-top: 1em;
 
+    margin-top: 1em;
     padding: 1em;
+
     background: hsl(0, 0%, 7%);
-    border-radius: 0.6em;
     border: 1px solid hsl(0, 0%, 17%);
+    border-radius: 0.6em;
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 
     b {
-      font-size: 1.5em;
-    }
-
-    .bigNumber {
       font-size: 1.5em;
     }
 

@@ -2,7 +2,11 @@ import Tooltip from "./Tooltip.svelte"
 
 export function tooltip(
   element: HTMLElement,
-  options: { title: string; position: "top" | "bottom" | "left" | "right", enabled?: boolean }
+  options: {
+    title: string
+    position: "top" | "bottom" | "left" | "right"
+    enabled?: boolean
+  }
 ) {
   let tooltipComponent: Tooltip
 
@@ -17,6 +21,11 @@ export function tooltip(
     if (options.position == "bottom") {
       y += element.getBoundingClientRect().height + distanceFromElement
       x += element.getBoundingClientRect().width / 2
+    }
+
+    if (options.position == "right") {
+      y += element.getBoundingClientRect().height / 2
+      x += element.getBoundingClientRect().width + distanceFromElement
     }
 
     // TODO: Other directions

@@ -5,6 +5,7 @@
   import { page } from "$app/stores"
   import Key from "$components/Key.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
+  import { tooltip as tooltip_function } from "$reusables/tooltip"
 
   let isDraggingOver = false
 
@@ -32,6 +33,12 @@
   export let disabled = false
   export let noMargin = false
   export let styleOverride: string = ""
+
+  export let tooltip: Parameters<typeof tooltip_function>[1] = {
+    title: "",
+    position: "bottom",
+    enabled: false
+  }
 
   const dispatch = createEventDispatcher()
 
@@ -123,6 +130,7 @@
   class:isDraggingOver
   class:card
   class:disabled
+  use:tooltip_function={tooltip}
 >
   <div class="section">
     {#if (icon || iconNoTyping) != null}
@@ -158,13 +166,9 @@
 {/if}
 
 <style lang="scss">
+  @use "sass:color";
+
   a {
-    font-weight: 200;
-    text-decoration: none;
-
-    -webkit-tap-highlight-color: transparent;
-    -webkit-app-region: no-drag;
-
     cursor: pointer;
 
     display: flex;
@@ -172,39 +176,42 @@
     justify-content: space-between;
 
     padding: 0.5em 0.75em;
-    &:not(.noMargin) {
-      margin: 0.15em 0.5em;
-    }
+
+    font-weight: 200;
+    text-decoration: none;
+
+    border: 1px solid transparent;
     border-radius: 0.35em;
 
     transition:
       background 100ms,
       border 100ms;
-    border: 1px solid transparent;
+
+    -webkit-app-region: no-drag;
+    -webkit-tap-highlight-color: transparent;
+
+    &:not(.noMargin) {
+      margin: 0.15em 0.5em;
+    }
 
     &.card {
+      margin: 0.25em;
       background: hsl(0, 0%, 13%);
       border: 1px solid hsl(0, 0%, 24%);
-      margin: 0.25em;
     }
 
     &.disabled {
-      opacity: 75%;
       pointer-events: none;
+      opacity: 75%;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: $color-dark-level-2;
-        border: 1px solid $border-color-1;
-      }
-    }
     &.active {
       background: $color-dark-level-2;
       border: 1px solid $border-color-1;
+
       &:hover {
-        background: lighten($color-dark-level-2, $amount: 2%);
-        border: 1px solid lighten($border-color-1, $amount: 2%);
+        background: color.adjust($color-dark-level-2, $lightness: 2%);
+        border: 1px solid color.adjust($border-color-1, $lightness: 2%);
       }
     }
 
@@ -213,17 +220,19 @@
       border: 1px solid $border-color-1;
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
-          background: lighten($color-dark-level-3, $amount: 2%);
-          border: 1px solid lighten($border-color-1, $amount: 2%);
+          background: color.adjust($color-dark-level-3, $lightness: 2%);
+          border: 1px solid color.adjust($border-color-1, $lightness: 2%);
         }
       }
     }
 
     &.isDraggingOver {
-      background: lighten($color-dark-level-2, $amount: 2%);
-      border: 1px solid lighten($border-color-1, $amount: 2%);
+      background: color.adjust($color-dark-level-2, $lightness: 2%);
+      border: 1px solid color.adjust($border-color-1, $lightness: 2%);
     }
+
     .section {
       display: grid;
       grid-auto-flow: column;
@@ -232,31 +241,44 @@
       .spacer {
         margin-right: 0.35em;
       }
+
       span {
-        font-weight: 200;
-        white-space: nowrap;
-        text-overflow: ellipsis;
         overflow: hidden;
+        font-weight: 200;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 
     &.hidden {
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+
       .section {
+
         .spacer {
           margin-right: unset;
         }
       }
+
       span {
         display: none;
       }
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+
+      &:hover {
+        background: $color-dark-level-2;
+        border: 1px solid $border-color-1;
       }
     }
   }

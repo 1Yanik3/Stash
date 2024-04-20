@@ -13,7 +13,7 @@
   export let searchAttributes: string[]
   export let disableClose = false
   export let conditionAttribute: keyof T | null = null
-export let placeholder = ""
+  export let placeholder = ""
 
   let inputBox: HTMLInputElement
   let selectedIndex = 0
@@ -131,20 +131,23 @@ export let placeholder = ""
     max-width: 100%;
 
     input {
-      padding: 0.5em;
       margin-bottom: 1em;
+      padding: 0.5em;
     }
 
     div {
       display: flex;
       justify-content: space-between;
+
       margin: 0 0.15em;
-      border-radius: 0.35em;
       padding: 0.4em;
-      border: 1px solid transparent;
 
       background: transparent;
+      border: 1px solid transparent;
+      border-radius: 0.35em;
+
       transition: background 150ms;
+
       &.active {
         background: #303030;
         border: 1px solid hsl(0, 0%, 24%);
@@ -152,8 +155,9 @@ export let placeholder = ""
 
       &.mobileNavigationButtons {
         position: absolute;
-        bottom: 10px;
         right: 10px;
+        bottom: 10px;
+
         background: hsl(0, 0%, 9%);
         border: 1px solid hsl(0, 0%, 15%);
       }

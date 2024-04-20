@@ -17,22 +17,19 @@
 
   <!-- TODO: Mobile support -->
   <section class="navigationSection">
-    <Button icon="mdiToggleSwitch" href="/settings/general">
-      General
-    </Button>
+    <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
     <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
-    <Button icon="mdiTagSearch" href="/settings/tag-icons">
-      Tag Icons
-    </Button>
+    <Button icon="mdiTagMultiple" href="/settings/icon-assignments"
+      >Icon Assignments</Button
+    >
+    <Button icon="mdiImageMultiple" href="/settings/icon-packs"
+      >Icon Packs</Button
+    >
 
     <div class="divider" />
 
-    <Button icon="mdiChartBar" href="/settings/statistics">
-      Statistics
-    </Button>
-    <Button icon="mdiInformationOutline" href="/settings/about">
-      About
-    </Button>
+    <Button icon="mdiChartBar" href="/settings/statistics">Statistics</Button>
+    <Button icon="mdiInformationOutline" href="/settings/about">About</Button>
   </section>
 
   <div class="content">
@@ -48,25 +45,24 @@
   main {
     display: grid;
     grid-template-columns: auto auto 1fr;
-
-    height: 100vh;
     width: 100%;
+    height: 100vh;
 
     .clusterSection {
-      height: 100vh;
       display: flex;
+      height: 100vh;
     }
 
     .navigationSection {
-      width: 234px;
       overflow: hidden;
-      padding: 5px 0;
-
-      border-right: 1px solid $border-color-base;
-      background: $color-dark-level-1;
-
       display: flex;
       flex-direction: column;
+
+      width: 234px;
+      padding: 5px 0;
+
+      background: $color-dark-level-1;
+      border-right: 1px solid $border-color-base;
 
       .divider {
         flex-grow: 1;
@@ -80,8 +76,8 @@
     }
 
     .content {
-      padding: 1em;
       overflow-y: scroll;
+      padding: 1em;
     }
 
     &.mobile {

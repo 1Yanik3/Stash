@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { selectedMediaIds, thumbnailSuffixParameter, visibleMedium } from "$lib/stores"
+  import {
+    selectedMediaIds,
+    thumbnailSuffixParameter,
+    visibleMedium
+  } from "$lib/stores"
 
   import type { Media } from "@prisma/client"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
@@ -45,11 +49,11 @@
   let suffix = ""
   thumbnailSuffixParameter.subscribe(() => {
     if ($thumbnailSuffixParameter == null) {
-        suffix = ""
-        return
+      suffix = ""
+      return
     }
     if ($thumbnailSuffixParameter.mediaId == medium.id)
-        suffix = `?${$thumbnailSuffixParameter.suffix}`
+      suffix = `?${$thumbnailSuffixParameter.suffix}`
   })
 </script>
 
@@ -83,7 +87,7 @@
       {/await}
 
       {#if medium.favourited}
-        <div style="position: absolute; bottom: 0.25em; right: 0.25em;">
+        <div style="position: absolute; right: 0.25em; bottom: 0.25em;">
           <Icon name="mdiStar" size={0.8} />
         </div>
       {/if}
@@ -92,26 +96,17 @@
 </IntersectionObserver>
 
 <style lang="scss">
-  div {
-    scroll-margin: 11px;
-    // height: calc(100% - 2px);
-    // position: relative;
-
-    &.selected img {
-      outline: 3px solid hsl(0, 0%, 36%);
-    }
-  }
-
   img {
-    width: 100%;
-    height: 100%;
     cursor: pointer;
 
     position: absolute;
     top: 0;
-    left: 0;
     right: 0;
     bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
 
     border-radius: 3px;
     box-shadow:
@@ -122,14 +117,26 @@
       filter 200ms,
       transform 200ms;
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        filter: brightness(0.85);
-        transform: scale(1.04);
-      }
-    }
     &.active {
       transform: scale(1.04);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+
+      &:hover {
+        transform: scale(1.04);
+        filter: brightness(0.85);
+      }
+    }
+  }
+
+  div {
+    scroll-margin: 11px;
+    // height: calc(100% - 2px);
+    // position: relative;
+
+    &.selected img {
+      outline: 3px solid hsl(0, 0%, 36%);
     }
   }
 </style>

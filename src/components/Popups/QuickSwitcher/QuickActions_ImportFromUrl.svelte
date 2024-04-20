@@ -101,6 +101,7 @@
     .inputField {
       display: flex;
       width: 400px;
+
       input {
         flex-grow: 1;
         padding: 12px;
@@ -110,12 +111,14 @@
     .metadata {
       display: grid;
       gap: 0.5em;
+
       img {
-        width: 400px;
         aspect-ratio: 16 / 9;
+        width: 400px;
         object-fit: cover;
         border-radius: 0.5em;
       }
+
       & > span {
         margin: 0 1em;
       }
@@ -123,16 +126,17 @@
 
     .tags {
       padding: 0.5em;
+
       span {
-        background: $color-dark-level-2;
-        padding: 0.3em 0.5em;
+        cursor: pointer;
+
         margin: 0.15em;
+        margin-right: 0.25em;
+        padding: 0.3em 0.5em;
+
+        background: $color-dark-level-2;
         border: 1px solid $color-dark-level-1;
         border-radius: 3px;
-
-        margin-right: 0.25em;
-
-        cursor: pointer;
       }
     }
   }

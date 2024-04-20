@@ -131,28 +131,29 @@
 
 <style lang="scss">
   main {
-    display: flex;
     overflow: scroll;
-
-    background: $color-dark-level-base;
     overflow-y: auto;
+    display: flex;
+    background: $color-dark-level-base;
 
     #imageGallerySection {
-      overflow: scroll;
-      padding: 1em;
-      min-width: 350px;
-      flex-grow: 1;
-      flex-basis: 0;
-
       position: relative;
+
+      overflow: scroll;
+      flex-basis: 0;
+      flex-grow: 1;
+
+      min-width: 350px;
+      padding: 1em;
     }
 
     #mediaPlayerSection {
-      max-width: min(1000px, 40vw);
       min-width: 40vw;
+      max-width: min(1000px, 40vw);
     }
 
     &.mobile {
+
       #imageGallerySection {
         min-width: unset;
       }

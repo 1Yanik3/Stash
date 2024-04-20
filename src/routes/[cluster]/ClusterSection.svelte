@@ -24,7 +24,7 @@
 >
   <section>
     {#if $settings.windowControlsSpacer}
-      <span style="height: 1.5em; pointer-events: none" />
+      <span style=" pointer-events: none;height: 1.5em" />
     {/if}
 
     <Button
@@ -142,7 +142,7 @@
     <Button
       hidden={!$settings.mobileLayout}
       icon="mdiCog"
-      href="/settings"
+      href="/settings/general"
       active={$page.url.pathname.startsWith("/settings")}
     >
       Settings
@@ -153,25 +153,29 @@
 <style lang="scss">
   main {
     display: grid;
-    justify-content: center;
-    align-items: center;
     grid-auto-rows: 1fr;
+    align-items: center;
+    justify-content: center;
 
-    &:not(.mobile) {
-      & > :first-child {
-        align-self: start;
-      }
-      & > :last-child {
-        align-self: end;
-      }
-    }
-
+    width: 64px;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
     border-right: 1px solid $border-color-base;
 
-    width: 64px;
+    -webkit-app-region: drag;
+
+    &:not(.mobile) {
+
+      & > :first-child {
+        align-self: start;
+      }
+
+      & > :last-child {
+        align-self: end;
+      }
+    }
+
     &.windowControlsSpacer {
       width: 77px;
       padding: 1em 0;
@@ -179,18 +183,17 @@
 
     section {
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    -webkit-app-region: drag;
-
     &.mobile {
-      width: 100%;
-      border-right: none;
       display: block;
       gap: 1em;
+      width: 100%;
+      border-right: none;
+
       section {
         display: block;
       }

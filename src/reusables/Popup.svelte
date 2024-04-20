@@ -73,15 +73,15 @@
   main {
     position: fixed;
     z-index: 99;
-
-    width: 100vw;
-    height: 100vh;
     top: 0;
     left: 0;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
+    width: 100vw;
+    height: 100vh;
 
     background: hsla(0, 0%, 0%, 30%);
 
@@ -99,8 +99,8 @@
 
       #header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         padding: 0.5em;
 
         h2 {
@@ -114,12 +114,13 @@
         .centralBlob {
           width: 48px;
           height: 4px;
-          border-radius: 2px;
-          opacity: 40%;
-          background: hsl(0, 0%, 50%);
           margin: auto;
           margin-top: 4px;
           margin-bottom: 4px;
+
+          opacity: 40%;
+          background: hsl(0, 0%, 50%);
+          border-radius: 2px;
         }
       }
 
@@ -133,21 +134,24 @@
 
       &.bottomSheet {
         align-self: flex-end;
-        border-bottom: none;
-        border-left: none;
-        border-right: none;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+
         width: 100vw;
         max-width: 100vw;
+
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
       }
 
       .actions {
         display: flex;
         justify-content: space-between;
         padding: 0.5em;
+
         .spacer {
           flex-grow: 1;
         }
@@ -155,14 +159,18 @@
     }
 
     &.mobile {
+
       section {
+        display: grid;
+        align-content: start;
+
         width: 100vw;
         max-width: 100vw;
         // height: 100vh;
         max-height: 100vh;
+
         border: none;
-        display: grid;
-        align-content: start;
+
         #content {
           justify-content: center;
         }

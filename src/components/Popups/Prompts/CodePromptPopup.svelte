@@ -18,7 +18,7 @@
 </PromptFramework>
 
 <style>
-    pre {
-        overflow-y: auto;
-    }
+  pre {
+    overflow-y: auto;
+  }
 </style>

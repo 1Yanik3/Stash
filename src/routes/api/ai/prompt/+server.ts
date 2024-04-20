@@ -19,5 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
     messages: [{ role: "user", content: prompt }]
   })
 
-  return new Response(chatResponse.choices[0].message.content, { status: 200 })
+  return new Response(chatResponse.choices[0].message.content, {
+    status: 200
+  })
 }

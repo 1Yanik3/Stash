@@ -31,9 +31,8 @@
   main {
     position: fixed;
     z-index: 99;
-
-    bottom: 1em;
     right: 1em;
+    bottom: 1em;
 
     background: $color-dark-level-base;
     border: 1px solid $border-color-1;

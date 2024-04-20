@@ -34,17 +34,17 @@
 
 <style lang="scss">
   span {
-    background: $color-dark-level-2;
-    padding: 0.3em 0.5em;
-    margin: 0.15em;
-    border: 1px solid $color-dark-level-1;
-    border-radius: 3px;
-
-    margin-right: 0.25em;
-
     cursor: pointer;
 
     display: flex;
     align-items: center;
+
+    margin: 0.15em;
+    margin-right: 0.25em;
+    padding: 0.3em 0.5em;
+
+    background: $color-dark-level-2;
+    border: 1px solid $color-dark-level-1;
+    border-radius: 3px;
   }
 </style>

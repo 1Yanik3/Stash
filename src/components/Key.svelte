@@ -46,24 +46,24 @@
 
 <style lang="scss">
   main {
-    height: 1.75em;
-    width: 1.75em;
-    margin-left: 0.25em;
-
-    background: hsl(0, 0%, 7%);
-    border-radius: 5px;
-    border: 1px solid hsl(0, 0%, 17%);
-    box-shadow:
-      rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
-      rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
-
     display: flex;
     align-items: center;
     justify-content: center;
 
+    width: 1.75em;
+    height: 1.75em;
+    margin-left: 0.25em;
+
+    background: hsl(0, 0%, 7%);
+    border: 1px solid hsl(0, 0%, 17%);
+    border-radius: 5px;
+    box-shadow:
+      rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+
     &.compact {
-      height: 1.25em;
       width: 1.25em;
+      height: 1.25em;
       margin-left: 0.2em;
       border-radius: 4px;
     }

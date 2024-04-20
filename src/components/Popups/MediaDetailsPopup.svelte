@@ -136,8 +136,8 @@
 
     div {
       display: flex;
-      align-items: center;
       gap: 0.5em;
+      align-items: center;
 
       span {
         flex-grow: 1;
@@ -147,13 +147,15 @@
     section {
       display: grid;
       gap: 1em;
+
       div:first-child {
         justify-content: space-between;
-        margin-bottom: -10px;
         margin-right: 0;
+        margin-bottom: -10px;
+
         b {
-          font-weight: 500;
           font-size: 1.1em;
+          font-weight: 500;
         }
       }
       //   div {

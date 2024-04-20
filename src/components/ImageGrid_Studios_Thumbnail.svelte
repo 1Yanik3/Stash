@@ -70,44 +70,37 @@
 
 <style lang="scss">
   main {
+    user-select: none;
+
     display: grid;
     grid-template-columns: 10em 1fr;
     grid-template-rows: 1fr auto;
-    user-select: none;
 
     padding: 1em;
+
     border: 1px solid transparent;
     border-radius: 0.5em;
+
+    transition: all 200ms;
 
     &.sub {
       margin-left: 3em;
     }
 
-    transition: all 200ms;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: #212121;
-        box-shadow:
-          rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
-          rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
-        border: 1px solid hsl(0, 0%, 22%);
-      }
-    }
     &.active {
       background: #212121;
+      border: 1px solid hsl(0, 0%, 22%);
       box-shadow:
         rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
         rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
-      border: 1px solid hsl(0, 0%, 22%);
     }
 
     &.selected {
       background: hsl(0, 0%, 27%);
+      border: 1px solid hsl(0, 0%, 36%);
       box-shadow:
         rgba(68, 68, 68, 0.2) 0px 1px 3px 0px,
         rgba(68, 68, 68, 0.12) 0px 1px 2px 0px;
-      border: 1px solid hsl(0, 0%, 36%);
     }
 
     .thumb {
@@ -118,10 +111,11 @@
       display: flex;
       flex-direction: column;
       gap: 0.25em;
+
       margin: 0.5em;
-      margin-left: 0.75em;
       margin-top: 0;
       margin-bottom: 0;
+      margin-left: 0.75em;
 
       b {
         font-weight: bold;
@@ -130,15 +124,16 @@
 
     .tags {
       gap: 0.5em;
-      margin-left: 0.75em;
       margin-bottom: 5.5px;
+      margin-left: 0.75em;
 
       .tag {
-        background: $color-dark-level-2;
+        margin-right: 0.25em;
         padding: 0.3em 0.4em;
+
+        background: $color-dark-level-2;
         border: 1px solid $border-color-1;
         border-radius: 5px;
-        margin-right: 0.25em;
       }
     }
 
@@ -150,9 +145,21 @@
       .details {
         margin-left: 0;
       }
+
       .tags {
-        margin-left: 0;
         margin-top: 0.5em;
+        margin-left: 0;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+
+      &:hover {
+        background: #212121;
+        border: 1px solid hsl(0, 0%, 22%);
+        box-shadow:
+          rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
+          rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
       }
     }
   }
