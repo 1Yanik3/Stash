@@ -42,7 +42,9 @@ export function tooltip(
   }
 
   const mouseLeave = () => {
-    tooltipComponent.$destroy()
+    try {
+      tooltipComponent.$destroy()
+    } catch {}
   }
 
   element.addEventListener("mouseenter", mouseEnter)

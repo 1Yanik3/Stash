@@ -5,15 +5,10 @@
   import type { PageData } from "../../routes/[cluster]/$types"
   import Icon from "$components/Icon.svelte"
   import { tooltip } from "$reusables/tooltip"
+  import getIconForTagName from "$lib/getIconForTagName"
 
   export let tag: string
-
-  $: icon = ($page.data as PageData).tagIcons.find(
-    t =>
-      t.tag == tag.toLowerCase() ||
-      tag.toLowerCase().substring(tag.toLowerCase().lastIndexOf("/") + 1) ==
-        t.tag
-  )?.icon as keyof typeof possibleIcons
+  const icon = getIconForTagName(tag)
 
   const dispatch = createEventDispatcher()
 </script>
@@ -25,7 +20,7 @@
     use:tooltip={{ title: tag, position: "bottom", enabled: !!icon }}
   >
     {#if icon}
-      <Icon name={icon} />
+      <Icon name={$icon} />
     {:else}
       {tag}
     {/if}

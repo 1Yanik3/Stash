@@ -1,6 +1,22 @@
 import prisma from "$lib/server/prisma"
 
-import type { RequestHandler } from "@sveltejs/kit"
+import { type RequestHandler, json } from "@sveltejs/kit"
+
+export const GET: RequestHandler = async ({ params }) =>
+  json(
+    (
+      await prisma.collapsedTags.findMany({
+        where: {
+          Cluster: {
+            name: params.cluster
+          }
+        },
+        select: {
+          tag: true
+        }
+      })
+    ).map(({ tag }) => tag)
+  )
 
 export const POST: RequestHandler = async ({ request, params }) => {
   const { tag } = await request.json()

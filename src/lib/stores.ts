@@ -16,6 +16,9 @@ export let media_store: Writable<Media[]> = writable([])
 // Constants
 export const pageSize = 50
 
+// Page Data
+export let collapsedTags: Writable<string[]> = writable([])
+
 // Navigation and Layout
 export let clusterIndex: Writable<number> = writable(1)
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)

@@ -1,11 +1,5 @@
 <script lang="ts">
-  import { browser } from "$app/environment"
-  import {
-    afterNavigate,
-    beforeNavigate,
-    goto,
-    invalidate
-  } from "$app/navigation"
+  import { afterNavigate, beforeNavigate, goto } from "$app/navigation"
   import { page } from "$app/stores"
   import {
     actionBar,
@@ -33,8 +27,18 @@
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
   import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
+  import MediaController from "$lib/controllers/MediaController"
+  import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
 
   $: pageData = $page.data as PageData
+
+  export const mediaController = new MediaController()
+  export const collapsedTagsController = new CollapsedTagsController()
+
+  onMount(() => {
+    mediaController.init()
+    collapsedTagsController.init()
+  })
 
   beforeNavigate(() => {
     thumbnailSuffixParameter.set(null)
@@ -48,10 +52,6 @@
 
   visibleMedium.subscribe(() => {
     imageSuffixParameter.set("")
-  })
-  selectedTags.subscribe(() => {
-    if (!browser) return
-    invalidate("media-and-tags")
   })
 
   onMount(() => {

@@ -1,11 +1,18 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { selectedMediaIds, selectedTags } from "$lib/stores"
+  import {
+    collapsedTags,
+    controller,
+    selectedMediaIds,
+    selectedTags
+  } from "$lib/stores"
   import type { possibleIcons } from "$lib/possibleIcons"
   import type { PageData } from "./$types"
   import Button from "$components/Button.svelte"
   import { invalidate } from "$app/navigation"
   import { onMount } from "svelte"
+  import getIconForTagName from "$lib/getIconForTagName"
+  import { readable } from "svelte/store"
 
   type TagData = {
     name: string
@@ -20,15 +27,7 @@
   export let nameOverwrite = name
   export let iconOverwrite: keyof typeof possibleIcons | null = null
 
-  export let collapsed: boolean | null = null
-  onMount(() => {
-    // TODO: Test
-    if (collapsed == null) {
-      ;($page.data as PageData).streamed.collapsedTags.then(collapsedTags => {
-        collapsed = collapsedTags.some(t => t.tag == name.toLowerCase())
-      })
-    }
-  })
+  $: collapsed = $collapsedTags.includes(name.toLowerCase())
 
   let element: HTMLAnchorElement
 
@@ -40,20 +39,13 @@
     }
   })
 
-  $: icon =
-    iconOverwrite ||
-    (($page.data as PageData).tagIcons.find(
-      t =>
-        t.tag == name.toLowerCase() ||
-        name.toLowerCase().substring(name.toLowerCase().lastIndexOf("/") + 1) ==
-          t.tag
-    )?.icon as keyof typeof possibleIcons)
+  let icon = iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
 </script>
 
 <Button
   {indent}
   {count}
-  icon={icon ? icon : collapsed ? "mdiFolderHidden" : "mdiFolderOutline"}
+  icon={$icon}
   on:click={e => {
     // @ts-ignore
     if (e.detail.altKey) {
@@ -67,24 +59,7 @@
   }}
   on:contextmenu={({ detail }) => {
     detail.preventDefault()
-
-    if (collapsed) {
-      collapsed = false
-      fetch(`/api/cluster/${$page.data.cluster.name}/tags/collapsed`, {
-        method: "DELETE",
-        body: JSON.stringify({ tag: name.toLowerCase() })
-      }).then(() => {
-        invalidate("tags")
-      })
-    } else {
-      collapsed = true
-      fetch(`/api/cluster/${$page.data.cluster.name}/tags/collapsed`, {
-        method: "POST",
-        body: JSON.stringify({ tag: name.toLowerCase() })
-      }).then(() => {
-        invalidate("tags")
-      })
-    }
+    $controller.collapsedTagsController.toggleCollapsedTag(name.toLowerCase())
   }}
   active={$selectedTags.includes(name.toLowerCase())}
   bind:element

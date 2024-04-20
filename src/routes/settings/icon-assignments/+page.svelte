@@ -7,7 +7,6 @@
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
 
   export let data: PageData
-  $: console.log(data.tagIcons)
 
   const addNewTag = async () => {
     const { ok, status, statusText, text } = await fetch(
