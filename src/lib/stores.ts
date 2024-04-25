@@ -20,7 +20,6 @@ export const pageSize = 50
 export let collapsedTags: Writable<string[]> = writable([])
 
 // Navigation and Layout
-export let clusterIndex: Writable<number> = writable(1)
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)
 export const actionBars = {
   Cast: QuickActionsCast,
