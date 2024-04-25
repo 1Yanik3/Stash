@@ -22,6 +22,12 @@
   let clusterSelectionDropdownVisible = false
   let filtersSelectionDropdownVisible = false
   let menuDropdownVisible = false
+
+  $: filterCount =
+    ($traverse ? 1 : 0) +
+    ($activeSetMethod.title == "AND" ? 1 : 0) +
+    ($mediaTypeFilter ? 1 : 0) +
+    ($favouritesOnly ? 1 : 0)
 </script>
 
 {#if clusterSelectionDropdownVisible}
@@ -192,8 +198,10 @@
     <span class="label"> Tags </span>
   </div>
 
+  <!-- Filter Section -->
   <div
     class="button"
+    class:active={filterCount}
     on:mousedown={() =>
       (filtersSelectionDropdownVisible = !filtersSelectionDropdownVisible)}
   >
@@ -201,13 +209,16 @@
       <div class="icon">
         <Icon name="mdiFilter" />
       </div>
-      <div class="dot">
-        <span>1</span>
-      </div>
+      {#if filterCount}
+        <div class="dot">
+          <span>{filterCount}</span>
+        </div>
+      {/if}
     </div>
     <span class="label"> Filters </span>
   </div>
 
+  <!-- Menu Section -->
   <div
     class="button"
     class:active={$page.url.pathname.startsWith("/settings")}
@@ -290,7 +301,6 @@
       }
 
       &.active {
-
         .label {
           font-weight: 700;
           opacity: 90%;
