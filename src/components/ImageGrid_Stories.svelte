@@ -50,6 +50,8 @@
     story = _story
     chapters = extractHeaders(story.content)
 
+    window.history.pushState({ storyOpen: true }, "")
+
     // await new Promise((resolve) => setTimeout(resolve, 100))
 
     // // scrollElementSpacer.style.height = `${contentElement.scrollHeight}px`
@@ -101,6 +103,8 @@
     }
   }
 </script>
+
+<svelte:window on:popstate={() => (story = null)} />
 
 {#if chapterSelectionPopupOpen}
   <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
