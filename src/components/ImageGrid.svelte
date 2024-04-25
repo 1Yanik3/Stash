@@ -21,7 +21,10 @@
 
   let previousMediaStoreHash = ""
   const calculatePages = async () => {
-    if (!$media_store.length) return
+    if (!$media_store.length) {
+      pages = []
+      return
+    }
 
     // For each page
     for (

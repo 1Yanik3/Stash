@@ -14,7 +14,6 @@
   } from "$lib/stores"
   import { onMount } from "svelte"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
-  import ClusterSectionMobile from "$components/Popups/Mobile/ClusterSectionMobile.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
   import NavigationSectionMobile from "$components/Popups/Mobile/NavigationSectionMobile.svelte"
   import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
@@ -96,7 +95,6 @@
     Shortcuts: ShortcutPopup,
     Settings: SettingsPopup,
     "Create Story": CreateStoryPopup,
-    "Cluster Section Mobile": ClusterSectionMobile,
     "Navigation Section Mobile": NavigationSectionMobile,
     "Media Viewer Mobile": MediaViewerMobile,
     "Media Details": MediaDetailsPopup
@@ -129,7 +127,7 @@
   }}
 />
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
-<Shortcut meta key="," action={() => goto("/settings")} />
+<Shortcut meta key="," action={() => goto("/settings/general")} />
 
 <!-- Media Navigation -->
 <Shortcut key="," action={goToPreviousMedia} />

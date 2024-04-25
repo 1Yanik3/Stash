@@ -1,50 +1,309 @@
 <script lang="ts">
-  import { controller, settings } from "../lib/stores"
+  import { page } from "$app/stores"
+  import {
+    activeSetMethod,
+    activeSortingMethod,
+    clusterIndex,
+    controller,
+    favouritesOnly,
+    mediaTypeFilter,
+    seed,
+    selectedTags,
+    traverse
+  } from "$lib/stores"
+  import Dropdown from "$reusables/Dropdown.svelte"
+  import type { PageData } from "../routes/[cluster]/$types"
+  import { setMethods, sortingMethods } from "../types"
   import Button from "./Button.svelte"
+  import Icon from "./Icon.svelte"
+
+  $: pageData = $page.data as PageData
+
+  let clusterSelectionDropdownVisible = false
+  let filtersSelectionDropdownVisible = false
+  let menuDropdownVisible = false
 </script>
 
+{#if clusterSelectionDropdownVisible}
+  <Dropdown bottom={84} left={8}>
+    {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
+      <Button
+        iconNoTyping={c.icon}
+        href="/{c.name}"
+        active={c.id == pageData.cluster?.id &&
+          !$page.url.pathname.startsWith("/settings")}
+        on:click={() => (clusterSelectionDropdownVisible = false)}
+      >
+        {c.name}
+      </Button>
+    {/each}
+  </Dropdown>
+{/if}
+
+{#if filtersSelectionDropdownVisible}
+  <Dropdown bottom={84} right={8}>
+    <Button
+      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
+      on:click={() => {
+        activeSortingMethod.set(
+          sortingMethods[
+            (sortingMethods.indexOf($activeSortingMethod) + 1) %
+              sortingMethods.length
+          ]
+        )
+      }}
+      on:contextmenu={({ detail }) => {
+        detail.preventDefault()
+        seed.set(Math.random())
+      }}
+      icon={$activeSortingMethod.icon}
+    >
+      Sorting Method
+    </Button>
+
+    <Button
+      disabled={pageData.cluster?.type == "stories"}
+      on:click={() => {
+        traverse.set(!$traverse)
+      }}
+      icon={$traverse ? "mdiHook" : "mdiHookOff"}
+    >
+      Traverse
+    </Button>
+
+    <Button
+      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
+      on:click={() => {
+        activeSetMethod.set(
+          setMethods[
+            (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
+          ]
+        )
+      }}
+      icon={$activeSetMethod.icon}
+    >
+      Set Method ({$activeSetMethod.title})
+    </Button>
+
+    {#if $mediaTypeFilter == ""}
+      <Button
+        icon="mdiMultimedia"
+        on:click={() => {
+          mediaTypeFilter.set("image")
+        }}
+      >
+        Image
+      </Button>
+    {:else if $mediaTypeFilter == "image"}
+      <Button
+        icon="mdiImageOutline"
+        on:click={() => {
+          mediaTypeFilter.set("video")
+        }}
+      >
+        Image
+      </Button>
+    {:else if $mediaTypeFilter == "video"}
+      <Button
+        icon="mdiVideoOutline"
+        on:click={() => {
+          mediaTypeFilter.set("")
+        }}
+      >
+        Image
+      </Button>
+    {/if}
+
+    <Button
+      icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
+      on:click={() => {
+        favouritesOnly.set(!$favouritesOnly)
+      }}
+    >
+      Favourited
+    </Button>
+  </Dropdown>
+{/if}
+
+{#if menuDropdownVisible}
+  <Dropdown bottom={84} right={8}>
+    <Button
+      icon="mdiCog"
+      href="/settings"
+      on:click={() => (menuDropdownVisible = false)}
+    >
+      Settings
+    </Button>
+
+    <Button
+      icon="mdiConsole"
+      on:click={() => {
+        $controller.setPopup("Quick Actions")
+        menuDropdownVisible = false
+      }}
+    >
+      Quick Actions
+    </Button>
+
+    <Button
+      icon="mdiMagnify"
+      on:click={() => {
+        $controller.setPopup("Quick Switch")
+        menuDropdownVisible = false
+      }}
+      on:click={() => (menuDropdownVisible = false)}
+    >
+      Quick Switch
+    </Button>
+  </Dropdown>
+{/if}
+
 <main>
-  <!-- Cluster Section (Clusters and Settings) -->
-  <Button
-    icon="mdiMenu"
-    card
-    on:click={() => $controller.setPopup("Cluster Section Mobile")}
-  />
+  <!-- Cluster Selection -->
+  <div
+    class="button"
+    class:active={!$page.url.pathname.startsWith("/settings")}
+    on:mousedown={() =>
+      (clusterSelectionDropdownVisible = !clusterSelectionDropdownVisible)}
+  >
+    <div class="iconContainer">
+      <div class="icon">
+        <Icon nameAlt={pageData.clusters[$clusterIndex].icon} />
+      </div>
+    </div>
+    <span class="label"> {pageData.clusters[$clusterIndex].name} </span>
+  </div>
 
-  <!-- Navigation Section (Tags) -->
-  <!-- or mdiAnimation -->
-  <Button
-    icon="mdiTagMultiple"
-    card
-    on:click={() => $controller.setPopup("Navigation Section Mobile")}
-  />
+  <!-- Tags Section -->
+  <div
+    class="button"
+    on:mousedown={() => $controller.setPopup("Navigation Section Mobile")}
+  >
+    <div class="iconContainer">
+      <div class="icon">
+        <Icon name="mdiTagMultiple" />
+      </div>
+      {#if $selectedTags.length > 0}
+        <div class="dot">
+          <span>{$selectedTags.length}</span>
+        </div>
+      {/if}
+    </div>
+    <span class="label"> Tags </span>
+  </div>
 
-  <div class="spacer" />
+  <div
+    class="button"
+    on:mousedown={() =>
+      (filtersSelectionDropdownVisible = !filtersSelectionDropdownVisible)}
+  >
+    <div class="iconContainer">
+      <div class="icon">
+        <Icon name="mdiFilter" />
+      </div>
+      <div class="dot">
+        <span>1</span>
+      </div>
+    </div>
+    <span class="label"> Filters </span>
+  </div>
 
-  <!-- Quick Switch -->
-  <Button
-    icon="mdiTabSearch"
-    card
-    on:click={() => $controller.setPopup("Quick Switch")}
-  />
-
-  <!-- Quick Actions -->
-  <Button
-    icon="mdiConsoleLine"
-    card
-    on:click={() => $controller.setPopup("Quick Actions")}
-  />
+  <div
+    class="button"
+    class:active={$page.url.pathname.startsWith("/settings")}
+    on:mousedown={() => (menuDropdownVisible = !menuDropdownVisible)}
+  >
+    <div class="iconContainer">
+      <div class="icon">
+        <Icon name="mdiMenu" />
+      </div>
+    </div>
+    <span class="label"> Menu </span>
+  </div>
 </main>
 
 <style lang="scss">
   main {
-    display: flex;
-    padding: 8px;
-    background: #212121;
-    border-top: 1px solid hsl(0, 0%, 30%); // 22
+    $background-color: mix($color-dark-level-1, $color-dark-level-2, 50%);
 
-    .spacer {
-      flex: 1;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    background: $background-color;
+
+    .button {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+
+      padding-top: 12px;
+      padding-bottom: 16px;
+
+      .iconContainer {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 64px;
+        height: 32px;
+
+        border-radius: 16px;
+
+        .icon {
+          opacity: 90%;
+        }
+
+        .dot {
+          position: absolute;
+          top: -4px;
+          right: 4px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          width: 16px;
+          height: 16px;
+
+          background: #bbb;
+          border-radius: 8px;
+
+          span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #000;
+          }
+        }
+      }
+
+      .label {
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 12px;
+        opacity: 90%;
+      }
+
+      &.active {
+
+        .label {
+          font-weight: 700;
+          opacity: 90%;
+        }
+
+        .iconContainer {
+          background: lighten($color: $background-color, $amount: 10%);
+
+          .icon {
+            opacity: 100%;
+          }
+        }
+      }
     }
   }
 </style>

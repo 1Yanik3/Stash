@@ -17,6 +17,7 @@
   import Button from "./Button.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
   import TagChip from "./Tags/TagChip.svelte"
+  import Dropdown from "$reusables/Dropdown.svelte"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
 
@@ -191,10 +192,7 @@
   </section>
 </main>
 
-<div
-  class="moreActionsDropdown"
-  style:display={dropdownVisible ? "block" : "none"}
->
+<Dropdown visible={dropdownVisible} top={44} right={8}>
   <Button
     icon="mdiInformationOutline"
     on:click={() => {
@@ -244,7 +242,7 @@
   >
     Open in new tab
   </Button>
-</div>
+</Dropdown>
 
 <style lang="scss">
   main {
@@ -315,21 +313,5 @@
         }
       }
     }
-  }
-
-  .moreActionsDropdown {
-    position: absolute;
-    z-index: 10;
-    top: 2.75em;
-    right: 0.5em;
-
-    padding: 5px 0;
-
-    background: $color-dark-level-base;
-    border: 1px solid $border-color-1;
-    border-radius: 0.5em;
-    box-shadow:
-      rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,
-      rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
   }
 </style>
