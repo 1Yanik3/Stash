@@ -1,5 +1,3 @@
-import { execSync } from "child_process"
-
 import getMetadataFromFile from "./getMetadataFromFile"
 import prisma from "./prisma"
 

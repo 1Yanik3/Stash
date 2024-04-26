@@ -40,7 +40,7 @@
   }
 </script>
 
-<Popup title="Media Details">
+<Popup title="Media Details" on:close={() => $controller.setPopup(null)}>
   {#if $visibleMedium}
     <main>
       <div>
@@ -104,8 +104,17 @@
                   .then($controller.prompt().code)
               }}
             />
-            <!-- TODO -->
-            <Button icon="mdiReload" noMargin />
+            <Button
+              icon="mdiReload"
+              noMargin
+              on:click={() => {
+                fetch(`/api/media/${$visibleMedium?.id}/metadata/reload`).then(
+                  () => {
+                    $controller.mediaController.updateMedia()
+                  }
+                )
+              }}
+            />
           </div>
         </div>
 

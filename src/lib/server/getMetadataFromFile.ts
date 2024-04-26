@@ -2,7 +2,7 @@ import { execSync } from "child_process"
 
 export default async (filename: string) => {
   const metadata = JSON.parse(
-    execSync(`exiftool -j ${filename}`).toString()
+    execSync(`exiftool -api LargeFileSupport=1 -j ${filename}`).toString()
   )[0] as CombinedType
 
   return new Chainable(metadata)
