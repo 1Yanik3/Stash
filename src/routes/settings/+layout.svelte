@@ -77,6 +77,8 @@
 
     .content {
       overflow-y: scroll;
+      width: calc(100vw - 2em);
+      height: calc(100vh - 2em);
       padding: 1em;
     }
 

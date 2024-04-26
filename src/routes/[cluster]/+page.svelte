@@ -1,8 +1,7 @@
 <script lang="ts">
   import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
-  import MediaViewer from "$components/MediaViewer.svelte"
-  import Toolbar from "$components/Toolbar.svelte"
+  import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
 
   import {
     actionBar,
@@ -40,15 +39,15 @@
   {/if}
 
   {#if $visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
-    <section
+    <!-- <section
       id="mediaPlayerSection"
       style={$isFullscreen
         ? "grid-column: span 3; width: 100vw; max-width: 100vw"
         : ""}
     >
       <Toolbar />
-      <MediaViewer />
-    </section>
+    </section> -->
+    <MediaViewer />
   {/if}
 </main>
 
@@ -68,11 +67,6 @@
 
       min-width: 350px;
       padding: 1em;
-    }
-
-    #mediaPlayerSection {
-      min-width: 40vw;
-      max-width: min(1000px, 40vw);
     }
 
     &.mobile {

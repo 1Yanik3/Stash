@@ -16,6 +16,7 @@
 
   $: pageData = $page.data as PageData
   $: ({ pages } = $controller?.mediaController ?? readable({ pages: [] }))
+  $: ({ tags } = $controller?.tagsController ?? readable({ tags: [] }))
 </script>
 
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
@@ -38,8 +39,8 @@
         </Button>
       {/if}
 
-      {#await pageData.streamed_page.tags then tags}
-        {#each tags
+      {#if $tags}
+        {#each $tags
           .filter(t => t.tag
               .join("/")
               .toLowerCase()
@@ -58,7 +59,7 @@
             {tag.slice(-1)}
           </Button>
         {/each}
-      {/await}
+      {/if}
     </div>
   {/if}
 

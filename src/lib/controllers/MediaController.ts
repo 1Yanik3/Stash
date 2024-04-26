@@ -35,9 +35,9 @@ export default class MediaController {
 
     media_store.subscribe(this.calculatePages)
 
-    afterNavigate(() => {
-      this.pages.set([])
-    })
+    // afterNavigate(() => {
+    //   this.pages.set([])
+    // })
 
     this.alreadyInitialized = true
   }
@@ -113,6 +113,8 @@ export default class MediaController {
       i++
     ) {
       const page = get(media_store).slice(i * pageSize, (i + 1) * pageSize)
+      if (!page.length) break
+
       const hash = await md5(page.map(m => m.id).join())
 
       // If the page has changed, update it
@@ -123,7 +125,6 @@ export default class MediaController {
     }
 
     if (hasChanges) {
-      this.pages.set([])
       this.pages.set(tmp_pages)
     }
   }

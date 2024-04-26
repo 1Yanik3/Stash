@@ -3,6 +3,8 @@
   import { page } from "$app/stores"
   import { createEventDispatcher, onMount } from "svelte"
   import FuzzySearch from "fuzzy-search"
+  import { controller } from "$lib/stores"
+  import { readable } from "svelte/store"
 
   let value: string
   let focused = false
@@ -41,11 +43,9 @@
   }
 
   //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
-  let tags: Awaited<PageData["streamed_page"]["tags"]> = []
-  onMount(async () => {
-    tags = await ($page.data as PageData).streamed_page.tags
-  })
-  $: searcher = new FuzzySearch(tags, ["tag"], {
+  $: ({ tags } = $controller?.tagsController ?? readable({ tags: [] }))
+
+  $: searcher = new FuzzySearch($tags, ["tag"], {
     caseSensitive: false,
     sort: true
   })
@@ -96,6 +96,7 @@
 
     .results {
       position: absolute;
+      z-index: 10;
       top: $height + 8px;
       left: 0;
 

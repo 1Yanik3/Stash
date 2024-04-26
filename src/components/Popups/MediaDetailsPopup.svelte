@@ -110,6 +110,7 @@
               on:click={() => {
                 fetch(`/api/media/${$visibleMedium?.id}/metadata/reload`).then(
                   () => {
+                    // TODO: Reload does not work
                     $controller.mediaController.updateMedia()
                   }
                 )

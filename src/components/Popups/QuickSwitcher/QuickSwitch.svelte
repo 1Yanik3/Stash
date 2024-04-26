@@ -1,17 +1,15 @@
 <script lang="ts">
-  import { page } from "$app/stores"
-  import { selectedTags } from "../../../lib/stores"
-  import type { PageData } from "../../../routes/[cluster]/$types"
+  import { get } from "svelte/store"
+  import { controller, selectedTags } from "$lib/stores"
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
-  $: pageData = $page.data as PageData
-  $: data = (async () => {
-    return await pageData.streamed_page.tags
+  const promise = (async () => {
+    return get($controller?.tagsController?.tags)
   })()
 </script>
 
 <FuzzyPopupTemplate
-  promise={data}
+  {promise}
   searchAttributes={["tag"]}
   let:result
   on:selected={({ detail }) => {

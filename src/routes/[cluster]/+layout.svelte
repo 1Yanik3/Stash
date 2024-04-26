@@ -23,7 +23,7 @@
   main {
     display: grid;
     grid-template-columns: auto 1fr;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
 
     section {

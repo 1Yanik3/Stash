@@ -10,12 +10,12 @@
   } from "$lib/stores"
   import selectFiles from "select-files"
   import Shortcut from "$reusables/Shortcut.svelte"
-  import type { PageData } from "../routes/[cluster]/$types"
-  import Icon from "./Icon.svelte"
-  import TagInputField from "./Tags/TagInputField.svelte"
-  import Button from "./Button.svelte"
+  import type { PageData } from "../../routes/[cluster]/$types"
+  import Icon from "../Icon.svelte"
+  import TagInputField from "../Tags/TagInputField.svelte"
+  import Button from "../Button.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
-  import TagChip from "./Tags/TagChip.svelte"
+  import TagChip from "../Tags/TagChip.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
@@ -257,7 +257,6 @@
 
     background: $color-dark-level-1;
     border-bottom: 1px solid $border-color-base;
-    border-left: 1px solid $border-color-base;
 
     // TODO: Still make click interractions possible even with dragging
     // -webkit-app-region: drag;

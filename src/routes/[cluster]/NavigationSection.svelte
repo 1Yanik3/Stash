@@ -1,84 +1,19 @@
 <script lang="ts">
-  import { md5 } from "hash-wasm"
-
   import SidebarSection from "$components/SidebarSection.svelte"
   import Button from "$components/Button.svelte"
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   import { page } from "$app/stores"
-  import { selectedTags, settings, traverse } from "$lib/stores"
+  import { controller, selectedTags, settings } from "$lib/stores"
 
   import type { PageData } from "./$types"
+  import { readable } from "svelte/store"
 
   $: pageData = $page.data as PageData
 
-  function orderDataHierarchically(
-    rawData: Awaited<typeof pageData.streamed_page.tags>
-  ) {
-    type TagData = {
-      name: string
-      count: number
-      children: TagData
-    }[]
-
-    let tagData: TagData = []
-    rawData
-      .sort((a, b) => a.tag.length - b.tag.length)
-      .forEach(({ tag, direct_count, indirect_count }) => {
-        const addAt = (at: TagData, i: number) => {
-          if (!tag[i]) return
-
-          const parent = at.find(t => t.name == tag[i])
-
-          if (parent) {
-            // Add as child
-            addAt(parent.children, i + 1)
-          } else {
-            // Add as new
-            const children: TagData = []
-            at.push({
-              name: tag[i],
-              count: $traverse ? direct_count + indirect_count : direct_count,
-              children
-            })
-            addAt(children, i + 1)
-          }
-        }
-
-        addAt(tagData, 0)
-      })
-
-    // TODO
-    return tagData.sort((a, b) =>
-      $page.params.cluster == "Camp Buddy"
-        ? b.name.localeCompare(a.name)
-        : b.count - a.count
-    )
-  }
-
-  let tags: Awaited<typeof pageData.streamed_page.tags> = []
-  let orderDataHierarchicallyOnlyPeople: ReturnType<
-    typeof orderDataHierarchically
-  > = []
-  let orderDataHierarchicallyExceptPeople: ReturnType<
-    typeof orderDataHierarchically
-  > = []
-  let lastHash = ""
-
-  const updateTagsIfChangesExist = async (
-    newData: Promise<Awaited<typeof pageData.streamed_page.tags>>
-  ) => {
-    const newHash = await md5(JSON.stringify(await newData))
-    if (newHash == lastHash) return
-
-    tags = await newData
-    lastHash = newHash
-
-    orderDataHierarchicallyExceptPeople = orderDataHierarchically(
-      tags.filter(t => !["Solo", "Two", "Three", "Group"].includes(t.tag[0]))
-    )
-  }
-  $: updateTagsIfChangesExist(pageData.streamed_page.tags)
+  $: ({ tags, hierarchicalTagsExceptPeople } =
+    $controller?.tagsController ??
+    readable({ tags: [], hierarchicalTagsExceptPeople: [] }))
 </script>
 
 {#if $page.data.cluster.type != "stories"}
@@ -125,25 +60,25 @@
         <SidebarSection title="People">
           <SidebarHierarchyEntry
             name="Solo"
-            count={tags.find(t => t.tag[0] == "Solo")?.direct_count || 0}
+            count={$tags?.find(t => t.tag[0] == "Solo")?.direct_count || 0}
             iconOverwrite="mdiAccount"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Two"
-            count={tags.find(t => t.tag[0] == "Two")?.direct_count || 0}
+            count={$tags?.find(t => t.tag[0] == "Two")?.direct_count || 0}
             iconOverwrite="mdiAccountMultiple"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Three"
-            count={tags.find(t => t.tag[0] == "Three")?.direct_count || 0}
+            count={$tags?.find(t => t.tag[0] == "Three")?.direct_count || 0}
             iconOverwrite="mdiAccountGroup"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Group"
-            count={tags.find(t => t.tag[0] == "Group")?.direct_count || 0}
+            count={$tags?.find(t => t.tag[0] == "Group")?.direct_count || 0}
             iconOverwrite="mdiAccountMultiplePlus"
             children={[]}
           />
@@ -169,11 +104,11 @@
       {/if}
 
       <SidebarSection title="Tags">
-        {#key tags}
-          {#each orderDataHierarchicallyExceptPeople as d}
+        {#if $hierarchicalTagsExceptPeople}
+          {#each $hierarchicalTagsExceptPeople as d}
             <SidebarHierarchyEntry {...d} />
           {/each}
-        {/key}
+        {/if}
       </SidebarSection>
     </div>
   </main>

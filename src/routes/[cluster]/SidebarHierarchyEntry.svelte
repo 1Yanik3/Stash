@@ -20,7 +20,7 @@
   export let count: number | ""
   export let children: TagData
   export let indent = 0
-  export let nameOverwrite = name
+  export let nameOverwrite = ""
   export let iconOverwrite: keyof typeof possibleIcons | null = null
 
   $: collapsed = $collapsedTags.includes(name.toLowerCase())
@@ -35,7 +35,7 @@
     }
   })
 
-  let icon = iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
+  $: icon = iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
 </script>
 
 <Button
@@ -60,7 +60,7 @@
   active={$selectedTags.includes(name.toLowerCase())}
   bind:element
 >
-  {nameOverwrite.replace(/.+\//, "")}
+  {(nameOverwrite || name).replace(/.+\//, "")}
 </Button>
 
 {#if children && !collapsed}

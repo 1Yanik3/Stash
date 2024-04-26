@@ -8,7 +8,10 @@ export default (
   outputOptions: any[] = []
 ) =>
   new Promise((resolve, reject) => {
-    console.log("Generating thumbnail with output options:", outputOptions.concat("-vframes 1"))
+    console.log(
+      "Generating thumbnail with output options:",
+      outputOptions.concat("-vframes 1")
+    )
     try {
       ffmpeg()
         .input(inputFile)

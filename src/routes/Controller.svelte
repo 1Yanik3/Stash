@@ -28,14 +28,17 @@
   import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
   import MediaController from "$lib/controllers/MediaController"
   import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
+  import TagsController from "$lib/controllers/TagsController"
 
   $: pageData = $page.data as PageData
 
   export const mediaController = new MediaController()
+  export const tagsController = new TagsController()
   export const collapsedTagsController = new CollapsedTagsController()
 
   onMount(() => {
     mediaController.init()
+    tagsController.init()
     collapsedTagsController.init()
   })
 
