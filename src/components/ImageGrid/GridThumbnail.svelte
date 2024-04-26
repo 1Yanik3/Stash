@@ -8,7 +8,7 @@
   import type { Media } from "@prisma/client"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
   import { page } from "$app/stores"
-  import Icon from "./Icon.svelte"
+  import Icon from "$components/Icon.svelte"
 
   export let i: number
   export let medium: Media

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidate, invalidateAll } from "$app/navigation"
+  import { invalidateAll } from "$app/navigation"
   import Icon from "$components/Icon.svelte"
   import { controller } from "$lib/stores"
   import Button from "$components/Button.svelte"

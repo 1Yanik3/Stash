@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Media } from "@prisma/client"
   import GridThumbnail from "./GridThumbnail.svelte"
-  import { invalidate } from "$app/navigation"
 
   export let medium: Media & { disabled?: Boolean; expanded?: Boolean }
   export let children: Media[] = []
@@ -29,7 +28,8 @@
           if (isInUnsorted) {
             removeTagFromMedia("show_unsorted", medium)
           } else {
-            invalidate("media-and-tags")
+            // TODO: Do I need to invalidate the Media as well?
+            // TODO: Invalidate Tags
           }
         })
         .catch(console.error)
@@ -46,7 +46,8 @@
       tmp.tags = tmp.tags.filter(t => t != tag)
       medium = tmp
 
-      invalidate("media-and-tags")
+      // TODO: Do I need to invalidate the Media as well?
+      // TODO: Invalidate Tags
     })
   }
 </script>

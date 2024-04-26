@@ -5,10 +5,9 @@ const targetSize = 500
 export default (
   inputFile: string,
   outputFile: string,
-  outputOptions: any = []
+  outputOptions: any[] = []
 ) =>
   new Promise((resolve, reject) => {
-    console.log({ inputFile, outputFile, outputOptions })
     try {
       ffmpeg()
         .input(inputFile)
@@ -17,7 +16,7 @@ export default (
         ])
         .output(outputFile)
         .on("end", resolve)
-        .outputOptions(outputOptions)
+        .outputOptions(outputOptions.concat("-vframes 1"))
         .run()
     } catch (error: any) {
       reject(error)

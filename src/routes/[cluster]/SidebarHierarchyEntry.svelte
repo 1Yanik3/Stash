@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from "$app/stores"
   import {
     collapsedTags,
     controller,
@@ -7,10 +6,7 @@
     selectedTags
   } from "$lib/stores"
   import type { possibleIcons } from "$lib/possibleIcons"
-  import type { PageData } from "./$types"
   import Button from "$components/Button.svelte"
-  import { invalidate } from "$app/navigation"
-  import { onMount } from "svelte"
   import getIconForTagName from "$lib/getIconForTagName"
   import { readable } from "svelte/store"
 

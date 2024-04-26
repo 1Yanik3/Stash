@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedTags, viewMode, media_store, pageSize } from "$lib/stores"
+  import { selectedTags, viewMode, media_store, controller } from "$lib/stores"
 
   import ImageGridPage from "./ImageGrid_Page.svelte"
   import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -8,45 +8,14 @@
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
   import { page } from "$app/stores"
 
-  import type { PageData } from "../routes/[cluster]/$types"
-  import Button from "./Button.svelte"
+  import type { PageData } from "../../routes/[cluster]/$types"
+  import Button from "$components/Button.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
-  import { onMount } from "svelte"
-  import { md5 } from "hash-wasm"
-  import { beforeNavigate } from "$app/navigation"
+  import { readable } from "svelte/store"
+  import { afterNavigate } from "$app/navigation"
 
   $: pageData = $page.data as PageData
-
-  let pages: { hash: string; media: typeof $media_store }[] = []
-
-  let previousMediaStoreHash = ""
-  const calculatePages = async () => {
-    if (!$media_store.length) {
-      pages = []
-      return
-    }
-
-    // For each page
-    for (
-      let i = 0;
-      i < Math.max(Math.ceil($media_store.length / pageSize), pages.length);
-      i++
-    ) {
-      const page = $media_store.slice(i * pageSize, (i + 1) * pageSize)
-      const hash = await md5(page.map(m => m.id).join())
-
-      // If the page has changed, update it
-      if (pages[i]?.hash != hash) pages[i] = { hash, media: page }
-    }
-  }
-
-  onMount(() => {
-    media_store.subscribe(calculatePages)
-  })
-
-  beforeNavigate(() => {
-    pages = []
-  })
+  $: ({ pages } = $controller?.mediaController ?? readable({ pages: [] }))
 </script>
 
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
@@ -96,16 +65,14 @@
   <section>
     {#if $viewMode == "table"}
       <ImageGridTable media={$media_store} />
-    {:else}
-      {#key previousMediaStoreHash}
-        {#each pages as { media, hash }, i (hash)}
-          {#if pageData.cluster.type == "withName"}
-            <ImageGridStudios {media} {i} />
-          {:else}
-            <ImageGridPage {media} {i} />
-          {/if}
-        {/each}
-      {/key}
+    {:else if $controller?.mediaController}
+      {#each $pages as { hash, media }, i (hash)}
+        {#if pageData.cluster.type == "withName"}
+          <ImageGridStudios {media} {i} />
+        {:else}
+          <ImageGridPage {media} {i} />
+        {/if}
+      {/each}
     {/if}
   </section>
 {/if}

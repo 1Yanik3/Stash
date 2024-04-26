@@ -12,7 +12,6 @@
   import Shortcut from "$reusables/Shortcut.svelte"
   import type { PageData } from "../routes/[cluster]/$types"
   import Icon from "./Icon.svelte"
-  import { invalidate } from "$app/navigation"
   import TagInputField from "./Tags/TagInputField.svelte"
   import Button from "./Button.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
@@ -42,7 +41,8 @@
         if (isInUnsorted) {
           removeTagFromMedia("show_unsorted")
         } else {
-          invalidate("media-and-tags")
+          // TODO: Do I need to invalidate the Media as well?
+          // TODO: Invalidate Tags
         }
       })
       .catch(console.error)
@@ -60,7 +60,8 @@
       tmp.tags = tmp.tags.filter(t => t != tag)
       visibleMedium.set(tmp)
 
-      invalidate("media-and-tags")
+      // TODO: Do I need to invalidate the Media as well?
+      // TODO: Invalidate Tags
     })
   }
 
@@ -147,7 +148,8 @@
             tmp.favourited = !$visibleMedium?.favourited
             visibleMedium.set(tmp)
 
-            invalidate("media-and-tags")
+            // TODO: Do I need to invalidate the Media as well?
+            // TODO: Invalidate Tags
           })
           .catch(console.error)
       }}

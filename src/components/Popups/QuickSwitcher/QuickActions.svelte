@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
   import type { possibleIcons } from "$lib/possibleIcons"
   import {
@@ -160,7 +159,8 @@
             })
           })
 
-          invalidate("media-and-tags")
+          // TODO: Do I need to invalidate the Media as well?
+          // TODO: Invalidate Tags
         },
         condition: $selectedTags.length > 0
       }

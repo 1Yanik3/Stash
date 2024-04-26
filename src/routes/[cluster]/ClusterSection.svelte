@@ -9,7 +9,6 @@
     favouritesOnly,
     seed
   } from "$lib/stores"
-  import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
   import { setMethods, sortingMethods } from "../../types"
 
@@ -37,7 +36,9 @@
               sortingMethods.length
           ]
         )
-        invalidate("media-and-tags")
+
+        // TODO: Do I need to invalidate the Media as well?
+        // TODO: Invalidate Tags
       }}
       on:contextmenu={({ detail }) => {
         detail.preventDefault()

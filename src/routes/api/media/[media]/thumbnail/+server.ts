@@ -66,7 +66,6 @@ const createThumbnail = async ({ media }: { media: string }) => {
 
   const outputOptions = duration
     ? [
-        "-vframes 1",
         `-ss ${
           duration > defaultDuration
             ? defaultDuration

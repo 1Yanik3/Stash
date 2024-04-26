@@ -3,7 +3,7 @@
   import GridThumbnail from "./GridThumbnail.svelte"
   import type { Media } from "@prisma/client"
   import { createEventDispatcher } from "svelte"
-  import Icon from "./Icon.svelte"
+  import Icon from "$components/Icon.svelte"
 
   const dispatch = createEventDispatcher()
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { invalidate, invalidateAll } from "$app/navigation"
+  import { invalidateAll } from "$app/navigation"
   import type { Media } from "@prisma/client"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
-  import Button from "./Button.svelte"
+  import Button from "$components/Button.svelte"
   import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
   export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
@@ -51,7 +51,7 @@
             icon="mdiGroup"
             disabled={selectedMedia.length <= 1}
             on:click={() => {
-              // TODO: Allow grouping of media
+              // TODO: Allow grouping of media with UI
               fetch(`/api/group-together`, {
                 method: "POST",
                 body: JSON.stringify(selectedMedia)
@@ -73,6 +73,7 @@
         />
 
         {#if medium.groupedIntoNamesId != null && medium.expanded}
+          <div style="grid-column: 1/-1;" />
           {#each getSortedMatchingMedia(medium) as subMedium}
             <ImageGridStudiosThumbnail
               sub
@@ -80,6 +81,7 @@
               bind:selectedMedia
             />
           {/each}
+          <div style="grid-column: 1/-1;" />
         {/if}
       {/each}
     </main>

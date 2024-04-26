@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/stores"
-  import type { possibleIcons } from "$lib/possibleIcons"
   import { createEventDispatcher } from "svelte"
-  import type { PageData } from "../../routes/[cluster]/$types"
   import Icon from "$components/Icon.svelte"
   import { tooltip } from "$reusables/tooltip"
   import getIconForTagName from "$lib/getIconForTagName"
@@ -19,7 +16,7 @@
     on:contextmenu|preventDefault={() => dispatch("contextmenu")}
     use:tooltip={{ title: tag, position: "bottom", enabled: !!icon }}
   >
-    {#if icon}
+    {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden"}
       <Icon name={$icon} />
     {:else}
       {tag}

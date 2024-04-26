@@ -2,9 +2,9 @@
   import { controller, mobileBottomBarVisible, settings } from "$lib/stores"
   import SvelteMarkdown from "svelte-markdown"
   import Shortcut from "$reusables/Shortcut.svelte"
-  import Button from "./Button.svelte"
+  import Button from "$components/Button.svelte"
   import { page } from "$app/stores"
-  import type { PageData } from "../routes/[cluster]/$types"
+  import type { PageData } from "../../routes/[cluster]/$types"
   import Popup from "$reusables/Popup.svelte"
 
   let pageData = $page.data as PageData

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation"
   import { page } from "$app/stores"
-  import { selectedTags, uploadPopupOpen } from "$lib/stores"
+  import { controller, selectedTags, uploadPopupOpen } from "$lib/stores"
   import { onMount } from "svelte"
   import Popup from "$reusables/Popup.svelte"
   import Button from "./Button.svelte"
@@ -85,7 +84,8 @@
 
     $uploadPopupOpen = false
     uploadStarted = false
-    invalidate("media-and-tags")
+    $controller.mediaController.updateMedia()
+    // TODO: invalidate Tags
   }
 </script>
 

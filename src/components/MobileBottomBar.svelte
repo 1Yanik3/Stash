@@ -3,7 +3,6 @@
   import {
     activeSetMethod,
     activeSortingMethod,
-    clusterIndex,
     controller,
     favouritesOnly,
     mediaTypeFilter,
@@ -174,10 +173,15 @@
   >
     <div class="iconContainer">
       <div class="icon">
-        <Icon nameAlt={pageData.clusters.find(c => c.id == pageData.cluster?.id)?.icon} />
+        <Icon
+          nameAlt={pageData.clusters.find(c => c.id == pageData.cluster?.id)
+            ?.icon}
+        />
       </div>
     </div>
-    <span class="label"> {pageData.clusters.find(c => c.id == pageData.cluster?.id)?.name} </span>
+    <span class="label">
+      {pageData.clusters.find(c => c.id == pageData.cluster?.id)?.name}
+    </span>
   </div>
 
   <!-- Tags Section -->
@@ -301,6 +305,7 @@
       }
 
       &.active {
+
         .label {
           font-weight: 700;
           opacity: 90%;

@@ -1,3 +1,4 @@
+import { afterNavigate } from "$app/navigation"
 import { page } from "$app/stores"
 import {
   activeSetMethod,
@@ -5,12 +6,13 @@ import {
   favouritesOnly,
   mediaTypeFilter,
   media_store,
+  pageSize,
   seed,
   selectedTags,
-  settings,
   traverse
 } from "$lib/stores"
-import { get } from "svelte/store"
+import { md5 } from "hash-wasm"
+import { StoresValues, Writable, get, writable } from "svelte/store"
 
 import { Media } from "@prisma/client"
 
@@ -21,33 +23,30 @@ export default class MediaController {
   public init = () => {
     if (this.alreadyInitialized) {
       console.log("MediaController already initialized!")
+      return
     }
-    traverse.subscribe(() => {
-      this.resetMedia()
+    selectedTags.subscribe(this.updateMedia)
+    traverse.subscribe(this.updateMedia)
+    activeSetMethod.subscribe(this.updateMedia)
+    favouritesOnly.subscribe(this.updateMedia)
+    mediaTypeFilter.subscribe(this.updateMedia)
+    activeSortingMethod.subscribe(this.updateMedia)
+    seed.subscribe(this.updateMedia)
+
+    media_store.subscribe(this.calculatePages)
+
+    afterNavigate(() => {
+      this.pages.set([])
     })
-    selectedTags.subscribe(() => {
-      this.resetMedia()
-    })
-    activeSetMethod.subscribe(() => {
-      this.resetMedia()
-    })
-    favouritesOnly.subscribe(() => {
-      this.resetMedia()
-    })
-    mediaTypeFilter.subscribe(() => {
-      this.resetMedia()
-    })
-    activeSortingMethod.subscribe(() => {
-      this.resetMedia()
-    })
-    seed.subscribe(() => {
-      this.resetMedia()
-    })
+
     this.alreadyInitialized = true
   }
 
-  private resetMedia = async () => {
-    media_store.set([])
+  public pages: Writable<
+    { hash: string; media: StoresValues<typeof media_store> }[]
+  > = writable([])
+
+  public updateMedia = async () => {
     media_store.set(await this.loadMedia(0))
   }
 
@@ -90,5 +89,42 @@ export default class MediaController {
     ])
 
     this.isCurrentlyLoadingNewMedia = false
+  }
+
+  private calculatePages = async () => {
+    // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
+
+    if (!get(media_store).length) {
+      this.pages.set([])
+      return
+    }
+
+    const tmp_pages: StoresValues<typeof this.pages> = []
+    let hasChanges = false
+
+    // For each page
+    for (
+      let i = 0;
+      i <
+      Math.max(
+        Math.ceil(get(media_store).length / pageSize),
+        get(this.pages).length
+      );
+      i++
+    ) {
+      const page = get(media_store).slice(i * pageSize, (i + 1) * pageSize)
+      const hash = await md5(page.map(m => m.id).join())
+
+      // If the page has changed, update it
+      if (get(this.pages)[i]?.hash != hash) {
+        hasChanges = true
+        tmp_pages[i] = { hash, media: page }
+      } else tmp_pages[i] = get(this.pages)[i]
+    }
+
+    if (hasChanges) {
+      this.pages.set([])
+      this.pages.set(tmp_pages)
+    }
   }
 }

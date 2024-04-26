@@ -1,6 +1,6 @@
 <script lang="ts">
   import DropFile from "$components/DropFile.svelte"
-  import ImageGrid from "$components/ImageGrid.svelte"
+  import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer.svelte"
   import Toolbar from "$components/Toolbar.svelte"
 
