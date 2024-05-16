@@ -17,5 +17,6 @@ build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "cr.hera.lan/stash:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
+      --cache=true
       --cache-run-layers
       --cache-copy-layers
