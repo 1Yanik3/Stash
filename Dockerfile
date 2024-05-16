@@ -7,7 +7,7 @@ RUN npm i
 COPY prisma ./prisma
 RUN npx prisma generate
 
-COPY . .
+COPY scripts src static .eslintignore .*rc* mdi-svelte.d.ts *.config.js .
 RUN npm run build && npm prune --production
 
 # Stage 2: Final stage with optimized production image
