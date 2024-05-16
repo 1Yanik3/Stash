@@ -102,10 +102,10 @@
         padding: 0.5em;
       }
 
-      .actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
+    //   .actions {
+    //     display: grid;
+    //     grid-template-columns: 1fr 1fr;
+    //   }
     }
   }
 </style>

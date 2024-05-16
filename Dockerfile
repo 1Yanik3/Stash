@@ -2,12 +2,14 @@
 FROM node:alpine as builder
 WORKDIR /app
 
-COPY package.json package-lock.json .
+COPY package.json package-lock.json ./
 RUN npm i
 COPY prisma ./prisma
 RUN npx prisma generate
 
-COPY scripts src static .eslintignore .*rc* mdi-svelte.d.ts *.config.js ./
+COPY static  ./static
+COPY jsconfig.json .*rc* mdi-svelte.d.ts *.config.js ./
+COPY src ./src
 RUN ls -alh
 RUN npm run build && npm prune --production
 
