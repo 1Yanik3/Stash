@@ -20,4 +20,4 @@ build:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-    - curl -X POST $HOOK_URL
+    - wget --post-data="" $HOOK_URL
