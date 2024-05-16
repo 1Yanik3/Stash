@@ -1,3 +1,7 @@
+stages:
+  - build
+  - deploy
+
 build:
   stage: build
   image:
@@ -20,4 +24,9 @@ build:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-    - wget --post-data="" $HOOK_URL
+
+deploy:
+  stage: deploy
+  image: busybox:latest
+  script:
+    - wget --post-data="" $HOOK_URL > /dev/null 2>&1
