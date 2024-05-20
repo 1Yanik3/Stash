@@ -25,6 +25,34 @@ build:
       --cache-run-layers
       --cache-copy-layers
 
+bundle-prometheus:
+  stage: deploy
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [""]
+  script:
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag="latest"
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag="$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile.prometheus"
+      --destination "cr.hera.lan/stash-prometheus:${tag}"
+      --skip-tls-verify-registry "cr.hera.lan"
+      --cache=true
+      --cache-run-layers
+      --cache-copy-layers
+  rules:
+    - changes:
+        paths:
+          - Dockerfile.prometheus
+          - prometheus.yml
+
 deploy:
   stage: deploy
   image: busybox:latest
