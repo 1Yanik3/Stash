@@ -22,10 +22,6 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 export const DELETE: RequestHandler = async ({ params, request }) => {
   const { name } = await request.json()
 
-  if (!name) {
-    throw error(400, "No tag name supplied")
-  }
-
   const media = await prisma.media.findUniqueOrThrow({
     where: {
       id: params.media
