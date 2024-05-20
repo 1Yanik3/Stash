@@ -5,6 +5,7 @@
   import getIconForTagName from "$lib/getIconForTagName"
 
   export let tag: string
+  export let forceShowName = false
   const icon = getIconForTagName(tag)
 
   const dispatch = createEventDispatcher()
@@ -16,7 +17,7 @@
     on:contextmenu|preventDefault={() => dispatch("contextmenu")}
     use:tooltip={{ title: tag, position: "bottom", enabled: !!icon }}
   >
-    {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden"}
+    {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" && !forceShowName}
       <Icon name={$icon} />
     {:else}
       {tag}

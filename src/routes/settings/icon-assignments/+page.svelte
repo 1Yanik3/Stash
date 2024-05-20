@@ -5,6 +5,7 @@
   import Button from "$components/Button.svelte"
   import type { PageData } from "./$types"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import TagChip from "$components/Tags/TagChip.svelte"
 
   export let data: PageData
 
@@ -60,13 +61,19 @@
 <div class="grid">
   {#each Object.entries(data.tagIcons) as [icon, tags] (icon)}
     <div class="tag">
-      <div class="head">
+      <div class="icon">
         <Icon nameAlt={icon} size={2} />
-        <span>{icon}</span>
       </div>
-      {#each tags as tag}
-        <span class="label">{tag}</span>
-      {/each}
+      <div>
+        <div class="title">
+          <span>{icon}</span>
+        </div>
+        <div class="tags">
+          {#each tags as tag}
+            <TagChip {tag} forceShowName />
+          {/each}
+        </div>
+      </div>
       <!-- <div class="actions">
           <Button icon="mdiPencil" on:click={() => editTag(tag)} />
           <Button icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
@@ -78,34 +85,51 @@
 <style lang="scss">
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.5em;
+    grid-template-columns: repeat(2, 300px);
+    justify-content: center;
+    gap: 1em;
 
     .tag {
-      $tagWidth: 120px;
-
-      display: grid;
-      width: $tagWidth;
+      display: flex;
       border: 1px solid $border-color-1;
 
-      .head {
+      .icon {
+        width: 65px;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-
         padding: 0.5em;
-
-        border-bottom: 1px solid $border-color-1;
+        border-right: 1px solid $border-color-1;
       }
 
-      .label {
+      .title {
         padding: 0.5em;
       }
 
-    //   .actions {
-    //     display: grid;
-    //     grid-template-columns: 1fr 1fr;
-    //   }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0.5em;
+      }
+
+      //   .head {
+      //     display: flex;
+      //     flex-direction: column;
+      //     align-items: center;
+
+      //     padding: 0.5em;
+
+      //     border-bottom: 1px solid $border-color-1;
+      //   }
+
+      //   .label {
+      //     padding: 0.5em;
+      //   }
+
+      //   .actions {
+      //     display: grid;
+      //     grid-template-columns: 1fr 1fr;
+      //   }
     }
   }
 </style>
