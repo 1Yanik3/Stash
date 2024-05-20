@@ -11,7 +11,7 @@
 
   const addNewTag = async () => {
     const { ok, status, statusText, text } = await fetch(
-      "/settings/tag-icons",
+      "/settings/icon-assignments",
       {
         method: "POST",
         body: JSON.stringify({
