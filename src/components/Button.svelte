@@ -33,6 +33,7 @@
   export let disabled = false
   export let noMargin = false
   export let styleOverride: string = ""
+  export let download: string | null = null
 
   export let tooltip: Parameters<typeof tooltip_function>[1] = {
     title: "",
@@ -95,6 +96,7 @@
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
   bind:this={element}
+  {download}
   {href}
   style={`padding-left: ${0.75 + indent}em;${styleOverride}`}
   class:active={active || (href && href == $page.url.pathname)}

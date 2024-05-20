@@ -233,6 +233,13 @@
   </button> -->
 
   <Button
+    icon="mdiDownload"
+    download="/api/media/{$visibleMedium?.id}/download"
+  >
+    Download
+  </Button>
+
+  <Button
     icon="mdiOpenInNew"
     on:click={() => {
       window.open(
