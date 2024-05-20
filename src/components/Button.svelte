@@ -33,7 +33,7 @@
   export let disabled = false
   export let noMargin = false
   export let styleOverride: string = ""
-  export let download: string | null = null
+  export let download: boolean = false
 
   export let tooltip: Parameters<typeof tooltip_function>[1] = {
     title: "",

@@ -234,7 +234,8 @@
 
   <Button
     icon="mdiDownload"
-    download="/api/media/{$visibleMedium?.id}/download"
+    href="/api/media/{$visibleMedium?.id}/download"
+    download
   >
     Download
   </Button>
