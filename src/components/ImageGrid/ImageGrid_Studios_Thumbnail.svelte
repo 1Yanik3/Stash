@@ -4,6 +4,7 @@
   import type { Media } from "@prisma/client"
   import { createEventDispatcher } from "svelte"
   import Icon from "$components/Icon.svelte"
+  import TagChip from "$components/Tags/TagChip.svelte"
 
   const dispatch = createEventDispatcher()
 
@@ -62,7 +63,7 @@
   {#key $visibleMedium == medium ? $visibleMedium : null}
     <div class="tags">
       {#each medium.tags as tag}
-        <span class="tag">{tag}</span>
+        <TagChip {tag} compact />
       {/each}
     </div>
   {/key}
@@ -73,7 +74,7 @@
     user-select: none;
 
     display: grid;
-    grid-template-columns: 10em 1fr;
+    grid-template-columns: 160px 1fr;
     grid-template-rows: 1fr auto;
 
     padding: 1em;
@@ -105,12 +106,14 @@
 
     .thumb {
       grid-row: span 2;
+      width: 160px;
     }
 
     .details {
       display: flex;
       flex-direction: column;
       gap: 0.25em;
+      overflow: hidden;
 
       margin: 0.5em;
       margin-top: 0;
@@ -119,22 +122,19 @@
 
       b {
         font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
     }
 
     .tags {
-      gap: 0.5em;
+      margin-top: 5.5px;
       margin-bottom: 5.5px;
       margin-left: 0.75em;
-
-      .tag {
-        margin-right: 0.25em;
-        padding: 0.3em 0.4em;
-
-        background: $color-dark-level-2;
-        border: 1px solid $border-color-1;
-        border-radius: 5px;
-      }
+      display: flex;
     }
 
     &.is-mobile {
@@ -153,7 +153,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         background: #212121;
         border: 1px solid hsl(0, 0%, 22%);
