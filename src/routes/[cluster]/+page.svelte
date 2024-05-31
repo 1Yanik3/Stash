@@ -39,14 +39,6 @@
   {/if}
 
   {#if $visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
-    <!-- <section
-      id="mediaPlayerSection"
-      style={$isFullscreen
-        ? "grid-column: span 3; width: 100vw; max-width: 100vw"
-        : ""}
-    >
-      <Toolbar />
-    </section> -->
     <MediaViewer />
   {/if}
 </main>
