@@ -47,7 +47,10 @@
 <Popup title="Import from URL">
   <main>
     <div class="inputField">
-      <input type="url" placeholder="https://..." bind:value={url} />
+      <input type="url" placeholder="https://..." bind:value={url} on:keydown={e => {
+        // @ts-ignore
+        if (e.key === "Enter") searchUrl()
+      }} />
       <Button icon="mdiSearchWeb" on:click={searchUrl} />
     </div>
 
@@ -87,6 +90,7 @@
       icon="mdiDownload"
       disabled={!metadata || loading}
       on:click={download}
+      shortcut={{modifier: "meta", key: "enter"}}
     >
       Download
     </Button>

@@ -6,18 +6,18 @@
 
   const iconOverwrites: any = {
     escape: "mdiKeyboardEsc",
-    F1: "mdiKeyboardF1",
-    F2: "mdiKeyboardF2",
-    F3: "mdiKeyboardF3",
-    F4: "mdiKeyboardF4",
-    F5: "mdiKeyboardF5",
-    F6: "mdiKeyboardF6",
-    F7: "mdiKeyboardF7",
-    F8: "mdiKeyboardF8",
-    F9: "mdiKeyboardF9",
-    F10: "mdiKeyboardF10",
-    F11: "mdiKeyboardF11",
-    F12: "mdiKeyboardF12",
+    f1: "mdiKeyboardF1",
+    f2: "mdiKeyboardF2",
+    f3: "mdiKeyboardF3",
+    f4: "mdiKeyboardF4",
+    f5: "mdiKeyboardF5",
+    f6: "mdiKeyboardF6",
+    f7: "mdiKeyboardF7",
+    f8: "mdiKeyboardF8",
+    f9: "mdiKeyboardF9",
+    f10: "mdiKeyboardF10",
+    f11: "mdiKeyboardF11",
+    f12: "mdiKeyboardF12",
     backspace: "mdiBackspaceOutline",
     tab: "mdiKeyboardTab",
     caps: "mdiKeyboardCaps",
@@ -37,8 +37,8 @@
 </script>
 
 <main class:compact>
-  {#if iconOverwrites[key]}
-    <Icon name={iconOverwrites[key]} size={compact ? 0.55 : 0.7} />
+  {#if iconOverwrites[key.toLowerCase()]}
+    <Icon name={iconOverwrites[key.toLowerCase()]} size={compact ? 0.55 : 0.7} />
   {:else}
     <span>{key}</span>
   {/if}

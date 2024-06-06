@@ -37,7 +37,7 @@
     )
       return
 
-    if (key != e.key) return
+    if (key.toLowerCase() != e.key.toLowerCase()) return
 
     e.preventDefault()
     action()
