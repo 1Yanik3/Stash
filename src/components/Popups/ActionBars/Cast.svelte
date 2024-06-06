@@ -250,7 +250,6 @@
         border 100ms;
 
       @media (hover: hover) and (pointer: fine) {
-
         &:not(.disabled):hover {
           background: hsl(0, 0%, 22%);
           border: 1px solid hsl(0, 0%, 24%);

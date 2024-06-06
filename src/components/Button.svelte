@@ -222,7 +222,6 @@
       border: 1px solid $border-color-1;
 
       @media (hover: hover) and (pointer: fine) {
-
         &:hover {
           background: color.adjust($color-dark-level-3, $lightness: 2%);
           border: 1px solid color.adjust($border-color-1, $lightness: 2%);
@@ -257,7 +256,6 @@
       justify-content: center;
 
       .section {
-
         .spacer {
           margin-right: unset;
         }
@@ -269,7 +267,6 @@
     }
 
     &.right {
-
       &,
       .section {
         flex-direction: row-reverse;
@@ -277,7 +274,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         background: $color-dark-level-2;
         border: 1px solid $border-color-1;

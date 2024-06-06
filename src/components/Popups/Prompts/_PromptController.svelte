@@ -4,6 +4,8 @@
   import TextPromptPopup from "./TextPromptPopup.svelte"
   import NotifyPromptPopup from "./NotifyPromptPopup.svelte"
   import CodePromptPopup from "./CodePromptPopup.svelte"
+  import Dropdown from "$reusables/Dropdown.svelte"
+  import SelectPromptDropdown from "./SelectPromptDropdown.svelte"
 
   export const prompt = {
     text: (question: string, value = ""): Promise<string | null> =>
@@ -33,6 +35,28 @@
           target: document.body,
           props: {
             question,
+            options,
+            value: value || options[0]
+          }
+        })
+
+        element.$on("result", ({ detail }) => {
+          if (detail != null) resolve(detail)
+          else resolve(null)
+          element.$destroy()
+        })
+      }),
+
+    dropdown: (
+      target: Element,
+      options: string[],
+      value = ""
+    ): Promise<string | null> =>
+      new Promise(resolve => {
+        console.log(target)
+        const element = new SelectPromptDropdown({
+          target,
+          props: {
             options,
             value: value || options[0]
           }

@@ -72,23 +72,17 @@ select {
   }
 }
 
-// Table styling
 table {
   width: 100%;
   border-collapse: collapse;
+  border-top: 1px solid $border-color-base;
+  border-right: 1px solid $border-color-base;
 
   th,
   td {
     padding: 10px;
     border-bottom: 1px solid $border-color-base;
-
-    &:first-child {
-      border-left: 1px solid $border-color-base;
-    }
-
-    &:last-child {
-      border-right: 1px solid $border-color-base;
-    }
+    border-left: 1px solid $border-color-base;
   }
 
   tr {

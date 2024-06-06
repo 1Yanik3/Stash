@@ -159,7 +159,6 @@
     }
 
     &.mobile {
-
       section {
         display: grid;
         align-content: start;

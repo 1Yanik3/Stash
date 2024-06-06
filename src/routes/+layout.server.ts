@@ -25,7 +25,7 @@ export const load: LayoutServerLoad = async ({ url }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
   return {
-    clusters: prisma.clusters.findMany(),
+    clusters: await prisma.clusters.findMany(),
     tagIcons,
     serverURL
   }

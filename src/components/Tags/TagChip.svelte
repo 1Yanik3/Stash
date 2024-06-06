@@ -17,7 +17,11 @@
     class:compact
     on:click|preventDefault={() => dispatch("click")}
     on:contextmenu|preventDefault={() => dispatch("contextmenu")}
-    use:tooltip={{ title: tag, position: "bottom", enabled: $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" }}
+    use:tooltip={{
+      title: tag,
+      position: "bottom",
+      enabled: $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden"
+    }}
   >
     {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" && !forceShowName}
       <Icon name={$icon} size={compact ? 0.9 : 1} />

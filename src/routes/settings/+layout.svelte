@@ -18,6 +18,7 @@
   <!-- TODO: Mobile support -->
   <section class="navigationSection">
     <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
+    <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
     <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
     <Button icon="mdiTagMultiple" href="/settings/icon-assignments"
       >Icon Assignments</Button

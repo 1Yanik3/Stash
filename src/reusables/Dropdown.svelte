@@ -4,6 +4,7 @@
   export let right = 0
   export let bottom = 0
   export let left = 0
+  export let position: "absolute" | "fixed" = "fixed"
 
   $: style = (() => {
     let style = ""
@@ -15,7 +16,7 @@
   })()
 </script>
 
-<main {style}>
+<main {style} style:position id="dropdownContainer">
   <div class="moreActionsDropdown" style:display={visible ? "block" : "none"}>
     <slot />
   </div>
@@ -23,7 +24,6 @@
 
 <style lang="scss">
   main {
-    position: fixed;
     z-index: 10;
 
     padding: 5px 0;
