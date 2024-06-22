@@ -87,5 +87,10 @@
 
     background: $color-dark-level-lower;
     border-left: 1px solid $border-color-base;
+
+    &.fullscreen {
+      max-width: none !important;
+      width: 100vw !important;
+    }
   }
 </style>
