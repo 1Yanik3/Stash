@@ -16,7 +16,7 @@
 
   $: pageData = $page.data as PageData
 
-  let mainElement: HTMLElement
+  let mediaElement: HTMLElement
   let isZoomedIn = false
 
   let preloadedImageUrl = ""
@@ -46,11 +46,12 @@
     </div>
     <div
       id="media"
+      bind:this={mediaElement}
       class:darkened={$isFullscreen}
       class:isZoomedIn
       on:click={e => {
-        if ($settings.touchNavigationButtons) {
-          const { width } = mainElement.getBoundingClientRect()
+        if ($settings.imageTapAction == "navigate") {
+          const { width } = mediaElement.getBoundingClientRect()
 
           if (e.offsetX < width / 2) $controller.goToPreviousMedia()
           if (e.offsetX > width / 2) $controller.goToNextMedia()

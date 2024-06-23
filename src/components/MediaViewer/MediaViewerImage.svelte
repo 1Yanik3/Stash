@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { visibleMedium } from "$lib/stores"
+  import { settings, visibleMedium } from "$lib/stores"
 
   let mainElement: HTMLElement
   let imageElement: HTMLImageElement
@@ -8,6 +8,8 @@
   let zoomMode: "none" | "original" | "fit" = "none"
 
   const toggleZoom = (e: MouseEvent) => {
+    if ($settings.imageTapAction != "zoom") return
+
     if (zoomMode == "none" && e.button == 0) {
       const targetCords = {
         left: e.offsetX / imageElement.width,
@@ -68,6 +70,24 @@
     imageElement.style.height = "100%"
     imageElement.style.width = "100%"
   }
+
+  const calculateCursor = (e: MouseEvent) => {
+    if ($settings.imageTapAction == "zoom") {
+      cursor = zoomMode == "none" ? "zoom-in" : "zoom-out"
+      return
+    }
+
+    if ($settings.imageTapAction == "navigate") {
+      const { width } = mainElement.getBoundingClientRect()
+
+      cursor = e.offsetX < width / 2 ? "w-resize" : "e-resize"
+      return
+    }
+
+    cursor = "default"
+  }
+
+  let cursor = "default"
 </script>
 
 <main bind:this={mainElement}>
@@ -75,7 +95,8 @@
     bind:this={imageElement}
     on:mousedown={toggleZoom}
     on:contextmenu={e => e.preventDefault()}
-    style:cursor={zoomMode == "none" ? "zoom-in" : "zoom-out"}
+    on:mousemove={calculateCursor}
+    style:cursor
     src={`${$page.data.serverURL}/file/${$visibleMedium?.id}`}
     crossorigin="use-credentials"
     alt={$visibleMedium?.name}

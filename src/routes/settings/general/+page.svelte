@@ -17,14 +17,11 @@
   />
 
   <span>Mobile Navigation Touch areas</span>
-  <Toggle
-    state={$settings.touchNavigationButtons}
-    on:toggle={e =>
-      settings.update(s => {
-        s.touchNavigationButtons = e.detail
-        return s
-      })}
-  />
+  <select class="card" bind:value={$settings.imageTapAction}>
+    {#each ["navigate", "zoom"] as action}
+      <option value={action}>{action}</option>
+    {/each}
+  </select>
 
   <span>Mobile Layout</span>
   <Toggle
@@ -43,5 +40,6 @@
     grid-template-columns: 300px auto;
     gap: 0.25em 1em;
     align-items: flex-start;
+    max-width: 450px;
   }
 </style>

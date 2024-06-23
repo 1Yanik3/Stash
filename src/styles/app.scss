@@ -59,6 +59,12 @@ select {
     border 100ms;
   border: 1px solid transparent;
 
+  &.card {
+    background: #1d1d1d;
+    border: 1px solid #333;
+    border-radius: 3px;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       background: hsl(0, 0%, 22%);

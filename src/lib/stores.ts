@@ -55,7 +55,7 @@ export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
   windowControlsSpacer: false,
-  touchNavigationButtons: false,
+  imageTapAction: "zoom" as "zoom" | "navigate",
   mobileLayout: false
 })
 
