@@ -93,6 +93,22 @@
         condition: true
       },
       {
+        name: "Import from Search",
+        icon: "mdiSearchWeb",
+        async action() {
+          $controller.setPopup("Quick Actions Import from Search")
+        },
+        condition: true
+      },
+      {
+        name: "Import from Reddit",
+        icon: "mdiReddit",
+        async action() {
+          $controller.setPopup("Quick Actions Import from Reddit")
+        },
+        condition: true
+      },
+      {
         name: "Cast",
         icon: "mdiCast",
         async action() {

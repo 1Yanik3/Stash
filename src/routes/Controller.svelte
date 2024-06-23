@@ -25,6 +25,8 @@
   import type { PageData } from "./[cluster]/$types"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
+  import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
+  import QuickActionsImportFromReddit from "$components/Popups/QuickSwitcher/QuickActions_ImportFromReddit.svelte"
   import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
   import MediaController from "$lib/controllers/MediaController"
   import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
@@ -94,6 +96,8 @@
     "Quick Actions": QuickActions,
     "Quick Actions Import": QuickActionsImport,
     "Quick Actions Import from URL": QuickActionsImportFromUrl,
+    "Quick Actions Import from Search": QuickActionsImportFromSearch,
+    "Quick Actions Import from Reddit": QuickActionsImportFromReddit,
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
     Settings: SettingsPopup,

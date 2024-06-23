@@ -1,8 +1,10 @@
 import prisma from "$lib/server/prisma"
 
+import { error } from "@sveltejs/kit"
+
 import type { LayoutServerLoad } from "./$types"
 
-export const load: LayoutServerLoad = async ({ params, depends, url }) => {
+export const load: LayoutServerLoad = async ({ params, depends }) => {
   depends("cluster")
 
   const clusters = await prisma.clusters.findMany()

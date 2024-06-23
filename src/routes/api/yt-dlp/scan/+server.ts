@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Execute the yt-dlp command for the url with the -J flag to get the JSON metadata, and return the result if it's successful
   return new Response(
-    await runCommand(`yt-dlp -J ${url}`).catch(e => {
+    await runCommand(`yt-dlp -J "${url}"`).catch(e => {
       throw error(500, JSON.stringify(e))
     })
   )
@@ -43,5 +43,6 @@ export type Metadata = {
   resolution: string
   aspect_ratio: number
   format: string
-  _type: string
+  _type: string,
+  url: string
 }

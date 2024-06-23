@@ -7,6 +7,7 @@
   export let title = ""
   export let hideHeader = false
   export let bottomSheet = false
+  export let fullscreen = false
 
   const dispatch = createEventDispatcher()
 
@@ -34,6 +35,7 @@
   transition:fade={{ duration: 100 }}
   on:click={() => $controller.setPopup(null)}
   class:mobile={$settings.mobileLayout}
+  class:fullscreen
 >
   <section
     transition:scale={{ start: 1.1, duration: 100 }}
@@ -46,6 +48,10 @@
           <div class="centralBlob" on:click={() => dispatch("close")} />
         {:else}
           <h2>{title}</h2>
+
+          {#if $$slots.headerElement}
+            <slot name="headerElement" />
+          {/if}
 
           <button on:click={() => dispatch("close")}>
             <Icon name="mdiClose" />
@@ -100,11 +106,12 @@
       #header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
         padding: 0.5em;
+        gap: 1rem;
 
         h2 {
           margin: 0 0.2em;
+          flex-grow: 1;
         }
 
         &:not(:has(.centralBlob)) {
@@ -172,6 +179,24 @@
 
         #content {
           justify-content: center;
+        }
+      }
+    }
+
+    &.fullscreen {
+      section {
+        width: 100vw;
+        max-width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        #content {
+          overflow: auto;
         }
       }
     }
