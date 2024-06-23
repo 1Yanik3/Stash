@@ -160,7 +160,7 @@
         <Icon name="mdiStarOutline" size={0.8} />
       {/if}
     </button>
-    {#each $visibleMedium?.tags || [] as tag}
+    {#each $visibleMedium?.tags || [] as tag (tag)}
       <TagChip {tag} on:contextmenu={() => removeTagFromMedia(tag)} />
     {/each}
     {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
