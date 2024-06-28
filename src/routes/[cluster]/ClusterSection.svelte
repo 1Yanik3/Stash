@@ -14,6 +14,7 @@
 
   import type { LayoutData } from "./$types"
   import Button from "$components/Button.svelte"
+  import { derived } from "svelte/store"
   $: pageData = $page.data as LayoutData
 </script>
 
@@ -45,6 +46,13 @@
         seed.set(Math.random())
       }}
       icon={$activeSortingMethod.icon}
+      tooltip={{
+        title: derived(
+          activeSortingMethod,
+          $activeSortingMethod => $activeSortingMethod.title
+        ),
+        position: "right"
+      }}
     >
       Sorting Method
     </Button>
@@ -56,6 +64,12 @@
         traverse.set(!$traverse)
       }}
       icon={$traverse ? "mdiHook" : "mdiHookOff"}
+      tooltip={{
+        title: derived(traverse, $traverse =>
+          $traverse ? "Traversing" : "Not Traversing"
+        ),
+        position: "right"
+      }}
     >
       Traverse
     </Button>
@@ -71,6 +85,13 @@
         )
       }}
       icon={$activeSetMethod.icon}
+      tooltip={{
+        title: derived(
+          activeSetMethod,
+          $activeSetMethod => $activeSetMethod.title
+        ),
+        position: "right"
+      }}
     >
       Set Method ({$activeSetMethod.title})
     </Button>
@@ -82,6 +103,10 @@
         on:click={() => {
           mediaTypeFilter.set("image")
         }}
+        tooltip={{
+          title: "All Media",
+          position: "right"
+        }}
       >
         Image
       </Button>
@@ -91,6 +116,10 @@
         icon="mdiImageOutline"
         on:click={() => {
           mediaTypeFilter.set("video")
+        }}
+        tooltip={{
+          title: "Only Images",
+          position: "right"
         }}
       >
         Image
@@ -102,6 +131,10 @@
         on:click={() => {
           mediaTypeFilter.set("")
         }}
+        tooltip={{
+          title: "Only Videos",
+          position: "right"
+        }}
       >
         Image
       </Button>
@@ -112,6 +145,12 @@
       icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
       on:click={() => {
         favouritesOnly.set(!$favouritesOnly)
+      }}
+      tooltip={{
+        title: derived(favouritesOnly, $favouritesOnly =>
+          $favouritesOnly ? "Only Favourited" : "All Media"
+        ),
+        position: "right"
       }}
     >
       Favourited
@@ -132,6 +171,12 @@
   </section>
 
   <section>
+    <Button
+      hidden
+      icon="mdiBellOutline"
+      on:click={() => $controller.setPopup("Shortcuts")}
+    />
+
     {#if !$settings.mobileLayout}
       <Button
         hidden

@@ -1,9 +1,11 @@
+import { Readable, derived, get, readable } from "svelte/store"
+
 import Tooltip from "./Tooltip.svelte"
 
 export function tooltip(
   element: HTMLElement,
   options: {
-    title: string
+    title: string | Readable<string>
     position: "top" | "bottom" | "left" | "right"
     enabled?: boolean
   }
@@ -32,7 +34,10 @@ export function tooltip(
 
     tooltipComponent = new Tooltip({
       props: {
-        title: options.title,
+        title:
+          typeof options.title == "string"
+            ? readable(options.title)
+            : options.title,
         position: options.position,
         x,
         y
@@ -49,6 +54,8 @@ export function tooltip(
 
   element.addEventListener("mouseenter", mouseEnter)
   element.addEventListener("mouseleave", mouseLeave)
+
+  // TODO: Close tooltip if the element get's destroyed
 
   return {
     destroy() {

@@ -6,6 +6,7 @@
   import Key from "$components/Key.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
   import { tooltip as tooltip_function } from "$reusables/tooltip"
+  import { readable } from "svelte/store"
 
   let isDraggingOver = false
 

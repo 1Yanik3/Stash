@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let title: string
+  import type { Readable } from "svelte/store"
+
+  export let title: Readable<string>
   export let x: number
   export let y: number
   export let position: "top" | "bottom" | "left" | "right"
@@ -15,7 +17,7 @@
   class:direction-left={position == "left"}
   class:direction-right={position == "right"}
 >
-  <span>{title}</span>
+  <span>{$title}</span>
 </div>
 
 <style lang="scss">
