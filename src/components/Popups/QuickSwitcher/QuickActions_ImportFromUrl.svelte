@@ -46,41 +46,52 @@
 
 <Popup title="Import from URL">
   <main>
-    <div class="inputField">
-      <input type="url" placeholder="https://..." bind:value={url} on:keydown={e => {
-        // @ts-ignore
-        if (e.key === "Enter") searchUrl()
-      }} />
-      <Button icon="mdiSearchWeb" on:click={searchUrl} />
-    </div>
+    <section>
+      <div class="inputField">
+        <input
+          type="url"
+          placeholder="https://..."
+          bind:value={url}
+          on:keydown={e => {
+            // @ts-ignore
+            if (e.key === "Enter") searchUrl()
+          }}
+        />
+        <Button icon="mdiSearchWeb" on:click={searchUrl} />
+      </div>
+      {#if metadata}
+        <img src={metadata.thumbnail} alt="" />
+      {/if}
+    </section>
 
     {#if metadata}
-      <div class="metadata">
-        <img src={metadata.thumbnail} alt="" />
-        <span>Title: <span>{metadata.title}</span></span>
-        <span>Format: <span>{metadata.format}</span></span>
-        {#if metadata.duration_string}
-          <span>Duration: <span>{metadata.duration_string}</span></span>
-        {/if}
-      </div>
-
-      <!-- TODO: Add tag selector like in the upload popup -->
-      <div class="tags">
-        {#each tags as tag}
-          <span
-            on:contextmenu|preventDefault={() =>
-              (tags = tags.filter(t => t != tag))}>{tag}</span
-          >
-        {/each}
-        {#if tags.length == 0}
-          <span>No Tag</span>
-        {/if}
-        <div style="margin-top: 10px; margin-left: 3px">
-          <TagInputField
-            on:selected={({ detail }) => (tags = tags.concat([detail]))}
-          />
+      <section>
+        <div class="metadata">
+          <span>Title: <span>{metadata.title}</span></span>
+          <span>Format: <span>{metadata.format}</span></span>
+          {#if metadata.duration_string}
+            <span>Duration: <span>{metadata.duration_string}</span></span>
+          {/if}
         </div>
-      </div>
+
+        <!-- TODO: Add tag selector like in the upload popup -->
+        <div class="tags">
+          {#each tags as tag}
+            <span
+              on:contextmenu|preventDefault={() =>
+                (tags = tags.filter(t => t != tag))}>{tag}</span
+            >
+          {/each}
+          {#if tags.length == 0}
+            <span>No Tag</span>
+          {/if}
+          <div style="margin-top: 10px; margin-left: 3px">
+            <TagInputField
+              on:selected={({ detail }) => (tags = tags.concat([detail]))}
+            />
+          </div>
+        </div>
+      </section>
     {/if}
   </main>
 
@@ -90,7 +101,7 @@
       icon="mdiDownload"
       disabled={!metadata || loading}
       on:click={download}
-      shortcut={{modifier: "meta", key: "enter"}}
+      shortcut={{ modifier: "meta", key: "enter" }}
     >
       Download
     </Button>
@@ -99,8 +110,21 @@
 
 <style lang="scss">
   main {
-    display: grid;
+    display: flex;
     gap: 0.5em;
+
+    section {
+      display: flex;
+      flex-direction: column;
+
+      img {
+        aspect-ratio: 16 / 9;
+        width: 400px;
+        object-fit: cover;
+        border-radius: 0.5em;
+        margin-top: 1em;
+      }
+    }
 
     .inputField {
       display: flex;
@@ -115,13 +139,6 @@
     .metadata {
       display: grid;
       gap: 0.5em;
-
-      img {
-        aspect-ratio: 16 / 9;
-        width: 400px;
-        object-fit: cover;
-        border-radius: 0.5em;
-      }
 
       & > span {
         margin: 0 1em;

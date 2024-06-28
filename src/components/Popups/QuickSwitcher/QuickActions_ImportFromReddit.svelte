@@ -64,9 +64,7 @@
       {#each results as { title, url }}
         <div
           class="result"
-          on:click={() => {
-            throw "Not implemented"
-          }}
+          on:click={download}
           on:contextmenu|preventDefault={() => {
             window.open(url)
           }}
