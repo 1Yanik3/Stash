@@ -40,8 +40,8 @@ build-gatekeeper:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/gatekeeper"
-      --dockerfile "${CI_PROJECT_DIR}/gatekeeper/Dockerfile"
+      --context "${CI_PROJECT_DIR}/_gatekeeper"
+      --dockerfile "${CI_PROJECT_DIR}/_gatekeeper/Dockerfile"
       --destination "cr.hera.lan/stash-gatekeeper:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
       --cache=true
