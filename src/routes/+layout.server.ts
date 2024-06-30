@@ -5,7 +5,39 @@ import type { LayoutServerLoad } from "./$types"
 
 export const ssr = true
 
-export const load: LayoutServerLoad = async ({ url }) => {
+const getClusters = async (token: string) => {
+  const currentUser = await prisma.credentials.findFirst({
+    where: {
+      Session: {
+        some: {
+          token
+        }
+      }
+    },
+    select: {
+      permittedClusters: {
+        select: {
+          id: true
+        }
+      }
+    }
+  })
+
+  if (!currentUser) return []
+
+  return await prisma.clusters.findMany({
+    where: {
+      id: {
+        in: currentUser.permittedClusters.map(c => c.id)
+      }
+    },
+    orderBy: {
+      sortOrder: "asc"
+    }
+  })
+}
+
+export const load: LayoutServerLoad = async ({ url, cookies }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts1", url.pathname)
 
   let tagIcons = {} as { [icon in keyof typeof possibleIcons]: string[] }
@@ -25,7 +57,7 @@ export const load: LayoutServerLoad = async ({ url }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
   return {
-    clusters: await prisma.clusters.findMany(),
+    clusters: await getClusters(cookies.get("session") || ""),
     tagIcons,
     serverURL
   }

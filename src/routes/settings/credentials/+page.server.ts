@@ -3,6 +3,11 @@ import prisma from "$lib/server/prisma"
 import { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async () => ({
+  allClusters: await prisma.clusters.findMany({
+    orderBy: {
+      sortOrder: "asc"
+    }
+  }),
   credentials: await prisma.credentials.findMany({
     select: {
       id: true,
@@ -12,6 +17,9 @@ export const load: PageServerLoad = async () => ({
           id: true,
           name: true,
           icon: true
+        },
+        orderBy: {
+          sortOrder: "asc"
         }
       }
     }

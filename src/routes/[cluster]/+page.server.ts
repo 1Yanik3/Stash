@@ -1,7 +1,6 @@
 import prisma from "$lib/server/prisma"
 
 import { Story } from "@prisma/client"
-import { fail } from "@sveltejs/kit"
 
 import type { PageServerLoad, PageServerParentData } from "./$types"
 
