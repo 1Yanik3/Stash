@@ -47,10 +47,6 @@ build-gatekeeper:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-  rules:
-    - changes:
-        paths:
-          - _gatekeeper/**/*
 
 deploy:
   stage: deploy
