@@ -33,8 +33,7 @@ func main() {
 	// Middleware to check session header for each request
 	authMiddleware := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Allow access to /signin without authentication
-			if r.URL.Path == "/signin" || startsWith(r.URL.Path, "/signin") {
+			if r.URL.Path == "/signin" || startsWith(r.URL.Path, "/signin") || startsWith(r.URL.Path, "/_app") {
 				next.ServeHTTP(w, r)
 				return
 			}
