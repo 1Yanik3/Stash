@@ -6,6 +6,7 @@
   import CodePromptPopup from "./CodePromptPopup.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
   import SelectPromptDropdown from "./SelectPromptDropdown.svelte"
+  import SelectMultiplePromptPopup from "./SelectMultiplePromptPopup.svelte"
 
   export const prompt = {
     text: (question: string, value = ""): Promise<string | null> =>
@@ -37,6 +38,28 @@
             question,
             options,
             value: value || options[0]
+          }
+        })
+
+        element.$on("result", ({ detail }) => {
+          if (detail != null) resolve(detail)
+          else resolve(null)
+          element.$destroy()
+        })
+      }),
+
+    selectMultiple: (
+      question: string,
+      options: { name: string, value: string }[],
+      selected: string[]
+    ): Promise<string[] | null> =>
+      new Promise(resolve => {
+        const element = new SelectMultiplePromptPopup({
+          target: document.body,
+          props: {
+            question,
+            options,
+            selected: selected || []
           }
         })
 
