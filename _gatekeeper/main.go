@@ -48,8 +48,7 @@ func main() {
 		})
 	}
 
-	// Serve static files from the "./static" directory for requests to /file
-	fs := http.FileServer(http.Dir("./static"))
+	fs := http.FileServer(http.Dir("./media"))
 	http.Handle("/file/", authMiddleware(http.StripPrefix("/file", fs)))
 
 	// Set up the reverse proxy for all other requests
