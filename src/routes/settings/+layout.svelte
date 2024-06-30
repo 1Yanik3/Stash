@@ -85,9 +85,9 @@
     }
 
     &.mobile {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr auto;
-      height: 100vh;
+      grid-template-columns: auto 1fr;
+      //   grid-template-rows: 1fr auto;
+      //   height: 100vh;
     }
   }
 </style>

@@ -134,7 +134,7 @@
   <Dropdown bottom={84} right={8}>
     <Button
       icon="mdiCog"
-      href="/settings"
+      href="/settings/general"
       on:click={() => (menuDropdownVisible = false)}
     >
       Settings
