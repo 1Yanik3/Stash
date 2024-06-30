@@ -36,6 +36,7 @@
       height: 100%;
 
       object-fit: contain;
+      outline: none !important;
     }
   }
 </style>

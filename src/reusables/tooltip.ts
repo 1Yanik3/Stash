@@ -1,4 +1,5 @@
-import { Readable, derived, get, readable } from "svelte/store"
+import { settings } from "$lib/stores"
+import { Readable, get, readable } from "svelte/store"
 
 import Tooltip from "./Tooltip.svelte"
 
@@ -16,6 +17,7 @@ export function tooltip(
 
   const mouseEnter = (event: MouseEvent) => {
     if (options.enabled === false) return
+    if (!get(settings).tooltipEnabled) return
 
     let x = element.getBoundingClientRect().x
     let y = element.getBoundingClientRect().y

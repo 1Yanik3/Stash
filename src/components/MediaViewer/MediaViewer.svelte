@@ -49,7 +49,8 @@
       bind:this={mediaElement}
       class:darkened={$isFullscreen}
       class:isZoomedIn
-      on:click={e => {
+      on:pointerdown={e => {
+        console.log(e)
         if ($settings.imageTapAction == "navigate") {
           const { width } = mediaElement.getBoundingClientRect()
 

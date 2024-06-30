@@ -56,7 +56,8 @@ export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 export let settings = persisted("settings", {
   windowControlsSpacer: false,
   imageTapAction: "zoom" as "zoom" | "navigate",
-  mobileLayout: false
+  mobileLayout: false,
+  tooltipEnabled: true
 })
 
 // TODO: Change to a "mode"

@@ -6,6 +6,16 @@
 
 <SettingsPageHeader title="General" />
 <section>
+  <span>Tooltip Enabled</span>
+  <Toggle
+    state={$settings.tooltipEnabled}
+    on:toggle={e =>
+      settings.update(s => {
+        s.tooltipEnabled = e.detail
+        return s
+      })}
+  />
+
   <span>Window-Controls spacing</span>
   <Toggle
     state={$settings.windowControlsSpacer}
