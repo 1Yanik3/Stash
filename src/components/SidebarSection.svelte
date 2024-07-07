@@ -26,7 +26,7 @@
 
   div.horizontal {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     max-width: 100%;
     margin-top: 0.5em;
   }

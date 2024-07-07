@@ -43,6 +43,33 @@
         </Button>
         <Button
           hidden
+          icon={$selectedTags[0] == "show_single"
+            ? "mdiNumeric1"
+            : $selectedTags[0] == "show_dual"
+              ? "mdiNumeric2"
+              : $selectedTags[0] == "show_tripple"
+                ? "mdiNumeric3"
+                : "mdiAllInclusive"}
+          on:click={() => {
+            if ($selectedTags[0] == "show_single") {
+              selectedTags.set(["show_dual"])
+            } else if ($selectedTags[0] == "show_dual") {
+              selectedTags.set(["show_tripple"])
+            } else if ($selectedTags[0] == "show_tripple") {
+              selectedTags.set([])
+            } else {
+              selectedTags.set(["show_single"])
+            }
+          }}
+          active={["show_single", "show_dual", "show_tripple"].includes(
+            // @ts-ignore
+            $selectedTags[0]
+          )}
+        >
+          Unsorted
+        </Button>
+        <Button
+          hidden
           icon="mdiTrashCanOutline"
           on:click={() => {
             selectedTags.set(["SHOW_TRASHED"])

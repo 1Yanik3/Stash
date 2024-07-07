@@ -44,10 +44,23 @@ export const GET: RequestHandler = async ({ params, request }) => {
     tagsFilter = /*sql*/ `
         AND NOT "Media"."tags" @> ARRAY['solo']
         AND NOT "Media"."tags" @> ARRAY['two']
+        AND NOT "Media"."tags" @> ARRAY['three']
         AND NOT "Media"."tags" @> ARRAY['group']
     `
+  else if (tags[0] == "show_single")
+    tagsFilter = /*sql*/ `
+            AND array_length("Media"."tags", 1) = 1 AND tag != 'show_unsorted'
+        `
+  else if (tags[0] == "show_dual")
+    tagsFilter = /*sql*/ `
+            AND array_length("Media"."tags", 1) = 2 AND tag != 'show_unsorted'
+        `
+  else if (tags[0] == "show_tripple")
+    tagsFilter = /*sql*/ `
+            AND array_length("Media"."tags", 1) = 3 AND tag != 'show_unsorted'
+        `
   // TODO: Traverse for AND
-  else if (tags[0]?.length)
+  else if (tags[0]?.length) {
     if (activeSetMethod.title == "OR")
       tagsFilter = /*sql*/ `
                 AND (
@@ -74,6 +87,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
                       .join(" AND ")}
                 )
             `
+  }
 
   const favouriteFilter = favouritesOnly
     ? /*sql*/ `
