@@ -38,8 +38,17 @@ func main() {
 				return
 			}
 
-			sessionToken, err := r.Cookie("session")
-			if err != nil || !isValidSession(db, sessionToken.Value) {
+			sessionToken := r.URL.Query().Get("session") // Check for token in URL parameters
+			if sessionToken == "" {
+				cookie, err := r.Cookie("session") // Check for token in cookies
+				if err != nil {
+					http.Redirect(w, r, "/signin", http.StatusFound)
+					return
+				}
+				sessionToken = cookie.Value // Use the Value field of the cookie
+			}
+
+			if !isValidSession(db, sessionToken) {
 				http.Redirect(w, r, "/signin", http.StatusFound)
 				return
 			}
