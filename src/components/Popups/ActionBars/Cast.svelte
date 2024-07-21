@@ -4,102 +4,121 @@
   import { controller, visibleMedium } from "$lib/stores"
   import Icon from "../../Icon.svelte"
   import { fade } from "svelte/transition"
+  import type Castjs from "$lib/client/cast-js"
+  import type { Media } from ".prisma/client"
 
-  let socket: WebSocket | null = null
-  let blank = false
   let videoPlaying = true
   let currentTime = 0
   let playbackProgress = 0
-  let playbackDuration = 1
-  $: audioPaused = !videoPlaying
+  let newVideo = false
 
-  let audioDestination: "mute" | "local" | "remote" = "mute"
-
-  visibleMedium.subscribe(() => (videoPlaying = true))
-
-  const sendMessage = (message: string) => {
-    if (!socket) return
-    if (!socket.OPEN) return
-
-    socket.send(message)
-  }
+  let connected = false
+  let cjs: null | Castjs
 
   onMount(async () => {
     if (!browser) return
 
-    const pairingCode =
-      (await $controller.prompt().text("Enter pairing code:")) || ""
-    const url = `wss://pubSub.any.gay/${pairingCode}`
-    socket = new WebSocket(url)
+    // Setup CastJS
+    cjs = new (await import("$lib/client/cast-js")).default()
+    cjs.on("connect", () => {
+      console.log("connect")
+      connected = true
+    })
+    cjs.on("disconnect", () => {
+      console.log("disconnect")
+      connected = false
+    })
+    cjs.on("available", () => {
+      console.log("available")
+    })
+    cjs.on("statechange", () => {
+      console.log("statechange", cjs?.state)
+      videoPlaying = cjs?.state === "playing"
+    })
+    cjs.on("timeupdate", () => {
+      console.log("timeupdate")
+      currentTime = cjs?.time
+      playbackProgress = cjs?.progress
+    })
+    cjs.on("playing", () => {
+      console.log("playing")
+      videoPlaying = true
+      if (newVideo) {
+        cjs?.seek(0, false)
+        newVideo = false
+      }
+    })
+    cjs.on("pause", () => {
+      console.log("pause")
+      videoPlaying = false
+    })
+    cjs.on("end", () => {
+      console.log("end")
+    })
+    cjs.on("error", () => {
+      console.log("error")
+    })
+  })
 
-    socket.addEventListener("open", () => {
-      visibleMedium.subscribe(() => {
-        if (!socket) return console.log("socket is null")
-        if (!$visibleMedium) {
-          socket.send("paired")
-          return
-        }
-        const type = $visibleMedium.type.startsWith("video") ? "video" : "image"
-        socket.send(`${type}: ${$visibleMedium.id}`)
+  const cast = (media = $visibleMedium) => {
+    if (!cjs) return
+
+    console.info("casting", media?.id || null)
+
+    window.cjs = cjs
+    // cjs.disconnect()
+    // console.log("disconnected")
+
+    if (media) {
+      console.log(`https://stash.any.gay/file/${media.id}?session=udhmunznya`)
+      cjs.cast(`https://stash.any.gay/file/${media.id}?session=udhmunznya`, {
+        poster: `https://stash.any.gay/file/api/media/${media.id}/thumbnail`,
+        title: media.name
       })
-    })
-    socket.addEventListener("message", event => {
-      console.log(event.data)
-      if (event.data.startsWith("progress-video: ")) {
-        playbackProgress = Number(event.data.replace("progress-video: ", ""))
-      }
-      if (event.data.startsWith("audio-position: ")) {
-        currentTime = Number(event.data.replace("audio-position: ", ""))
-      }
-      if (event.data.startsWith("duration-video: ")) {
-        playbackDuration = Number(event.data.replace("duration-video: ", ""))
-      }
-    })
-    socket.addEventListener("close", () => {
-      window.alert("close")
-      socket = socket = new WebSocket(url)
-    })
-    socket.addEventListener("error", () => {
-      window.alert("error")
-      socket = socket = new WebSocket(url)
-    })
+      newVideo = true
+    } else {
+      console.log("home")
+      cjs.cast(
+        "https://cdn.discordapp.com/attachments/995660268241682462/1263555370937221230/ant.ms_capybara_sketch_dark_background_82e81000-ef94-4631-95dd-8f9ddd764160.png?ex=669aa924&is=669957a4&hm=78ee3f6a2ebe0bd1efe65b75c75c9abe474e28279c7b18adbe0810397fa95a10&",
+        {
+          title: "Stash",
+          description: "Select something to play ;)"
+        }
+      )
+    }
+  }
+  visibleMedium.subscribe(newValue => {
+    if (connected) cast(newValue)
   })
 </script>
 
-{#if $visibleMedium && $visibleMedium.type.startsWith("video") && audioDestination == "local"}
-  <!-- svelte-ignore a11y-media-has-caption -->
-  <video
-    src="https://stash.hera.lan/file/{$visibleMedium?.id}"
-    bind:currentTime
-    bind:paused={audioPaused}
-    autoplay
-    style="display: none"
-  ></video>
-{/if}
-
 <main>
   <section class="first">
-    <span
-      on:click={() => {
-        sendMessage("blank")
-        visibleMedium.set(null)
-        $controller.setActionBar(null)
-      }}
-    >
-      <Icon name="mdiClose" size={0.8} />
-    </span>
+    {#if connected}
+      <span
+        class:disabled={!$visibleMedium}
+        on:click={() => {
+          console.info("disconnect")
+          cjs?.disconnect()
+        }}
+      >
+        <Icon name="mdiCastOff" size={0.8} />
+      </span>
+    {:else}
+      <span class:disabled={!$visibleMedium} on:click={() => cast()}>
+        <Icon name="mdiCast" size={0.8} />
+      </span>
+    {/if}
 
-    <span
-      on:click={() => {
-        sendMessage(blank ? "unblank" : "blank")
-        blank = !blank
-      }}
-    >
-      <Icon
-        name={blank ? "mdiProjectorScreenOff" : "mdiProjectorScreen"}
-        size={0.8}
-      />
-    </span>
+    {#if $visibleMedium}
+      <span
+        on:click={() => {
+          visibleMedium.set(null)
+        }}
+      >
+        <Icon name={"mdiBackspaceOutline"} size={0.8} />
+      </span>
+    {/if}
   </section>
 
   <section>
@@ -109,7 +128,7 @@
     {#if $visibleMedium?.type.startsWith("video")}
       <!-- go forward 60 sec -->
       <span
-        on:click={() => sendMessage("control-video: backward-60")}
+        on:click={() => cjs?.seek(currentTime - 60, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind60" size={0.8} />
@@ -117,7 +136,7 @@
 
       <!-- go forward 15 sec -->
       <span
-        on:click={() => sendMessage("control-video: backward-15")}
+        on:click={() => cjs?.seek(currentTime - 15, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind15" size={0.8} />
@@ -126,9 +145,9 @@
       <!-- play/pause -->
       <span
         on:click={() => {
-          if (videoPlaying) sendMessage("control-video: pause")
-          else sendMessage("control-video: play")
-          videoPlaying = !videoPlaying
+          console.debug({ videoPlaying })
+          if (videoPlaying) cjs?.pause()
+          else cjs?.play()
         }}
         transition:fade={{ duration: 100 }}
       >
@@ -137,7 +156,7 @@
 
       <!-- go forward 15 sec -->
       <span
-        on:click={() => sendMessage("control-video: forward-15")}
+        on:click={() => cjs?.seek(currentTime + 15, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiFastForward15" size={0.8} />
@@ -145,7 +164,7 @@
 
       <!-- go forward 60 sec -->
       <span
-        on:click={() => sendMessage("control-video: forward-60")}
+        on:click={() => cjs?.seek(currentTime + 60, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiFastForward60" size={0.8} />
@@ -154,35 +173,6 @@
   </section>
 
   <section class="last">
-    <!-- audio destination selector -->
-    <span
-      on:click={() => {
-        switch (audioDestination) {
-          case "mute":
-            audioDestination = "local"
-            break
-          case "local":
-            audioDestination = "remote"
-            sendMessage("control-video: unmute")
-            break
-          case "remote":
-            audioDestination = "mute"
-            sendMessage("control-video: mute")
-            break
-        }
-      }}
-      transition:fade={{ duration: 100 }}
-    >
-      <Icon
-        name={audioDestination === "mute"
-          ? "mdiVolumeMute"
-          : audioDestination === "local"
-            ? "mdiSpeaker"
-            : "mdiCastAudio"}
-        size={0.8}
-      />
-    </span>
-
     <span on:click={() => $controller.goToPreviousMedia()}>
       <Icon name="mdiChevronLeft" size={0.8} />
     </span>
@@ -195,14 +185,10 @@
     <div
       class="playbackStatus"
       on:click={e => {
-        sendMessage(
-          `control-video: seek-${
-            (e.clientY / window.innerHeight) * playbackDuration
-          }`
-        )
+        cjs?.seek((e.clientY * 100) / window.innerHeight, true)
       }}
     >
-      <div style:height="{(playbackProgress / playbackDuration) * 100}%" />
+      <div style:height="{playbackProgress}%" />
     </div>
   {/if}
 </main>

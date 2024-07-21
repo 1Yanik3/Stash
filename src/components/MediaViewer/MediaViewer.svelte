@@ -94,5 +94,9 @@
       max-width: none !important;
       width: 100vw !important;
     }
+
+    #media {
+        background: black;
+    }
   }
 </style>
