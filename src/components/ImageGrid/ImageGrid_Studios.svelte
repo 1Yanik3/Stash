@@ -4,6 +4,7 @@
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
   import Button from "$components/Button.svelte"
   import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
+  import { settings } from "$lib/stores"
 
   export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
   export let i: number
@@ -43,7 +44,7 @@
   delay={i > 0 ? 300 : 0}
 >
   {#if intersecting}
-    <main>
+    <main class:isMobile={$settings.mobileLayout}>
       {#if selectedMedia.length}
         <div class="groupActions">
           <Button
@@ -97,6 +98,10 @@
 
     .groupActions {
       display: flex;
+    }
+
+    &.isMobile {
+        gap: 0;
     }
   }
 </style>

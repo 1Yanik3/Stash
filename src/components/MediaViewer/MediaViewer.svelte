@@ -40,7 +40,7 @@
 />
 
 {#if $visibleMedium}
-  <main class:fullscreen={$isFullscreen}>
+  <main class:fullscreen={$isFullscreen} class:mobile={$settings.mobileLayout}>
     <div class="toolbar">
       <Toolbar />
     </div>
@@ -90,7 +90,7 @@
     background: $color-dark-level-lower;
     border-left: 1px solid $border-color-base;
 
-    &.fullscreen {
+    &.fullscreen, &.mobile {
       max-width: none !important;
       width: 100vw !important;
     }

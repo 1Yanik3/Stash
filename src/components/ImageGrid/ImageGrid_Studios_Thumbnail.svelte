@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings, visibleMedium } from "$lib/stores"
+  import { visibleMedium } from "$lib/stores"
   import GridThumbnail from "./GridThumbnail.svelte"
   import type { Media } from "@prisma/client"
   import { createEventDispatcher } from "svelte"
@@ -36,7 +36,6 @@
   class:active={$visibleMedium == medium && !parent}
   class:selected={selectedMedia.includes(medium.id)}
   class:sub
-  class:is-mobile={$settings.mobileLayout}
 >
   <div class="thumb">
     <GridThumbnail {medium} i={-1} disableActive />
@@ -135,21 +134,6 @@
       margin-bottom: 5.5px;
       margin-left: 0.75em;
       display: flex;
-    }
-
-    &.is-mobile {
-      grid-template-columns: 1fr;
-      gap: 0.5em;
-      width: calc(100vw - 62px);
-
-      .details {
-        margin-left: 0;
-      }
-
-      .tags {
-        margin-top: 0.5em;
-        margin-left: 0;
-      }
     }
 
     @media (hover: hover) and (pointer: fine) {
