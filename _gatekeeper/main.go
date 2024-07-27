@@ -42,7 +42,7 @@ func main() {
 			if sessionToken == "" {
 				cookie, err := r.Cookie("session") // Check for token in cookies
 				if err != nil {
-					http.Redirect(w, r, "/signin", http.StatusFound)
+					http.Redirect(w, r, "/signin", http.StatusTemporaryRedirect)
 					return
 				}
 				sessionToken = cookie.Value // Use the Value field of the cookie

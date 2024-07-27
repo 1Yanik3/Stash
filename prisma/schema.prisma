@@ -51,10 +51,11 @@ model Media {
   date        DateTime @default(now())
   createdDate DateTime @default(now())
 
-  height Int
-  width  Int
-  tags   String[]
-  source String? // TODO
+  height       Int
+  width        Int
+  tags         String[]
+  source       String? // TODO
+  content_hash String?
 
   favourited     Boolean        @default(false)
   countAttribute CountAttribute @default(unknown) // TODO
