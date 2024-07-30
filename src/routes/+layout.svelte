@@ -3,9 +3,9 @@
 
   import { controller, settings } from "$lib/stores"
   import Controller from "./Controller.svelte"
-  import { onMount } from "svelte"
+  import { browser } from "$app/environment"
 
-  $: document.body.className = $settings.theme
+  $: browser && (() => (document.body.className = $settings.theme))()
 </script>
 
 <Controller bind:this={$controller} />
