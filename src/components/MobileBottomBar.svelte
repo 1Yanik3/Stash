@@ -238,8 +238,10 @@
 </main>
 
 <style lang="scss">
+  @use "sass:color";
+
   main {
-    $background-color: mix($color-dark-level-1, $color-dark-level-2, 50%);
+    $background-color: color.mix($color-dark-level-1, $color-dark-level-2, 50%);
 
     display: flex;
     gap: 8px;
@@ -312,7 +314,7 @@
         }
 
         .iconContainer {
-          background: lighten($color: $background-color, $amount: 10%);
+          background: color.adjust($color: $background-color, $lightness: 10%);
 
           .icon {
             opacity: 100%;

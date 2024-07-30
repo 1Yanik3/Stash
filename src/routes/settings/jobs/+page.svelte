@@ -17,6 +17,3 @@
     <td>{entry.failedReason || "waiting"}</td>
   </Table>
 {/each}
-
-<style lang="scss">
-</style>
