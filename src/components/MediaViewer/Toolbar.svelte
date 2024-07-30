@@ -263,8 +263,8 @@
     min-width: calc(100% - 4em);
     padding: 0.35em;
 
-    background: $color-dark-level-1;
-    border-bottom: 1px solid $border-color-base;
+    background: var(--color-dark-level-1);
+    border-bottom: 1px solid var(--border-color-base);
 
     // TODO: Still make click interractions possible even with dragging
     // -webkit-app-region: drag;

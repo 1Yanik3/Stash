@@ -202,8 +202,13 @@
 
     &.card {
       margin: 0.25em;
-      background: hsl(0, 0%, 13%);
-      border: 1px solid hsl(0, 0%, 24%);
+      background: var(--color-dark-level-2);
+      border: 1px solid var(--border-color-1);
+
+      &:hover {
+        background: var(--color-dark-level-2-hover) !important;
+        border: 1px solid var(--border-color-1-hover) !important;
+      }
     }
 
     &.disabled {
@@ -212,31 +217,31 @@
     }
 
     &.active {
-      background: $color-dark-level-2;
-      border: 1px solid $border-color-1;
+      background: var(--color-dark-level-2);
+      border: 1px solid var(--border-color-1);
 
       &:hover {
-        background: color.adjust($color-dark-level-2, $lightness: 2%);
-        border: 1px solid color.adjust($border-color-1, $lightness: 2%);
+        background: var(--color-dark-level-2-hover);
+        border: 1px solid var(--border-color-1-hover);
       }
     }
 
     &.highlighted {
-      background: $color-dark-level-3;
-      border: 1px solid $border-color-1;
+      background: var(--color-dark-level-3);
+      border: 1px solid var(--border-color-1);
 
       @media (hover: hover) and (pointer: fine) {
 
         &:hover {
-          background: color.adjust($color-dark-level-3, $lightness: 2%);
-          border: 1px solid color.adjust($border-color-1, $lightness: 2%);
+          background: var(--color-dark-level-2-hover);
+          border: 1px solid var(--border-color-1-hover);
         }
       }
     }
 
     &.isDraggingOver {
-      background: color.adjust($color-dark-level-2, $lightness: 2%);
-      border: 1px solid color.adjust($border-color-1, $lightness: 2%);
+      background: var(--color-dark-level-2-hover);
+      border: 1px solid var(--border-color-1-hover);
     }
 
     .section {
@@ -285,8 +290,8 @@
       &:hover {
 
         &:not(.transparentButton) {
-          background: $color-dark-level-2;
-          border: 1px solid $border-color-1;
+          background: var(--color-dark-level-2);
+          border: 1px solid var(--border-color-1);
         }
 
         &.transparentButton {

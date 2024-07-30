@@ -96,8 +96,8 @@
       max-width: 90%;
       max-height: 90%;
 
-      background: $color-dark-level-base;
-      border: 1px solid $border-color-1;
+      background: var(--color-dark-level-base);
+      border: 1px solid var(--border-color-1);
       border-radius: 0.5em;
       box-shadow:
         rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,

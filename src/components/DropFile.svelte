@@ -191,7 +191,7 @@
 
       padding: 1em;
 
-      border: 1px dashed hsl(0, 0%, 24%);
+      border: 1px dashed var(--border-color-1-hover);
     }
 
     .tags {
@@ -241,8 +241,8 @@
           margin-right: 0.25em;
           padding: 0.3em 0.5em;
 
-          background: $color-dark-level-2;
-          border: 1px solid $color-dark-level-1;
+          background: var(--color-dark-level-2);
+          border: 1px solid var(--color-dark-level-1);
           border-radius: 3px;
         }
       }

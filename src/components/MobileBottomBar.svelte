@@ -241,7 +241,8 @@
   @use "sass:color";
 
   main {
-    $background-color: color.mix($color-dark-level-1, $color-dark-level-2, 50%);
+    // TODO: Make dynamic
+    $background-color: color.mix(#1c1c1c, #303030, 50%);
 
     display: flex;
     gap: 8px;

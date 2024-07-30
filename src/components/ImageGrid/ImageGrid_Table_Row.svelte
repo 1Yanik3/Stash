@@ -145,8 +145,8 @@
         margin-right: 0.25em;
         padding: 0.3em 0.4em;
 
-        background: $color-dark-level-2;
-        border: 1px solid $border-color-1;
+        background: var(--color-dark-level-2);
+        border: 1px solid var(--border-color-1);
         border-radius: 5px;
       }
     }

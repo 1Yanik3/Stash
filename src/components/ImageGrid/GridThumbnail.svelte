@@ -73,7 +73,13 @@
       viewBox={`0 0 ${medium.width} ${medium.height}`}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width={medium.width} height={medium.height} x="0" y="0" />
+      <rect
+        width={medium.width}
+        height={medium.height}
+        x="0"
+        y="0"
+        fill="var(--color-lowest)"
+      />
     </svg>
 
     {#if intersecting || i == 0}

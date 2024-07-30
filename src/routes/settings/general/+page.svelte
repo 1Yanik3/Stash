@@ -1,6 +1,6 @@
 <script lang="ts">
   import { settings } from "$lib/stores"
-  import Toggle from "$components/Popups/SettingsPopup/components/Toggle.svelte"
+  import Toggle from "$components/Toggle.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
 </script>
 
@@ -42,6 +42,13 @@
         return s
       })}
   />
+
+  <span>Theme</span>
+  <select class="card" bind:value={$settings.theme}>
+    {#each ["default", "light", "amoled"] as action}
+      <option value={action}>{action}</option>
+    {/each}
+  </select>
 </section>
 
 <style lang="scss">

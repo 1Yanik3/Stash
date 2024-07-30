@@ -30,8 +30,8 @@
 
     padding: 0.5em;
 
-    background: hsl(0, 0%, 11%);
-    border: 1px solid hsl(0, 0%, 17%);
+    background: var(--color-dark-level-1);
+    border: 1px solid var(--order-color-base);
     border-radius: 0.35em;
 
     &.direction-bottom {

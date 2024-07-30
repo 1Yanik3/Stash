@@ -207,7 +207,7 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
-    border-left: 1px solid hsl(0, 0%, 22%);
+    border-left: 1px solid var(--border-color-1);
 
     section.first {
       align-self: start;
@@ -238,8 +238,8 @@
       @media (hover: hover) and (pointer: fine) {
 
         &:not(.disabled):hover {
-          background: hsl(0, 0%, 22%);
-          border: 1px solid hsl(0, 0%, 24%);
+          background: var(--border-color-1);
+          border: 1px solid var(--border-color-1-hover);
         }
       }
     }
@@ -256,7 +256,7 @@
 
       div {
         width: 3px;
-        background: hsl(0, 0%, 22%);
+        background: var(--border-color-1);
         transition: height 150ms;
       }
     }

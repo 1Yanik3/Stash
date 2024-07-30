@@ -207,7 +207,7 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
-    border-right: 1px solid $border-color-base;
+    border-right: 1px solid var(--border-color-base);
 
     -webkit-app-region: drag;
 

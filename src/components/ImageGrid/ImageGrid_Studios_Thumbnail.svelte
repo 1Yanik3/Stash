@@ -89,7 +89,7 @@
 
     &.active {
       background: #212121;
-      border: 1px solid hsl(0, 0%, 22%);
+      border: 1px solid var(--border-color-1);
       box-shadow:
         rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
         rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
@@ -142,7 +142,7 @@
 
       &:hover {
         background: #212121;
-        border: 1px solid hsl(0, 0%, 22%);
+        border: 1px solid var(--border-color-1);
         box-shadow:
           rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
           rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;

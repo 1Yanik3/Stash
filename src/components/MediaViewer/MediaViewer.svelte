@@ -87,8 +87,8 @@
     max-width: min(1000px, 40vw);
     height: 100vh;
 
-    background: $color-dark-level-lower;
-    border-left: 1px solid $border-color-base;
+    background: var(--color-dark-level-lower);
+    border-left: 1px solid var(--border-color-base);
 
     &.fullscreen,
     &.mobile {
@@ -97,7 +97,7 @@
     }
 
     #media {
-      background: black;
+      background: var(--color-lowest);
     }
   }
 </style>

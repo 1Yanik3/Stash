@@ -48,7 +48,7 @@
     overflow: scroll;
     overflow-y: auto;
     display: flex;
-    background: $color-dark-level-base;
+    background: var(--color-dark-level-base);
 
     #imageGallerySection {
       position: relative;

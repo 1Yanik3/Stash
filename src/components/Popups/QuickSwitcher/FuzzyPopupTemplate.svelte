@@ -150,7 +150,7 @@
 
       &.active {
         background: #303030;
-        border: 1px solid hsl(0, 0%, 24%);
+        border: 1px solid var(--border-color-1-hover);
       }
 
       &.mobileNavigationButtons {
@@ -158,8 +158,8 @@
         right: 10px;
         bottom: 10px;
 
-        background: hsl(0, 0%, 9%);
-        border: 1px solid hsl(0, 0%, 15%);
+        background: var(--color-dark-level-base);
+        border: 1px solid var(--border-color-base);
       }
     }
   }

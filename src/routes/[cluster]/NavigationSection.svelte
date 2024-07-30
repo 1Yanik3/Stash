@@ -148,8 +148,8 @@
     width: 234px;
     height: 100vh;
 
-    background: $color-dark-level-1;
-    border-right: 1px solid $border-color-base;
+    background: var(--color-dark-level-1);
+    border-right: 1px solid var(--border-color-base);
 
     & > :nth-child(2) {
       scrollbar-width: none;

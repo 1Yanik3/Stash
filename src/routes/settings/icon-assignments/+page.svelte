@@ -91,7 +91,7 @@
 
     .tag {
       display: flex;
-      border: 1px solid $border-color-1;
+      border: 1px solid var(--border-color-1);
 
       .icon {
         display: flex;
@@ -101,7 +101,7 @@
         width: 65px;
         padding: 0.5em;
 
-        border-right: 1px solid $border-color-1;
+        border-right: 1px solid var(--border-color-1);
       }
 
       .title {
@@ -121,7 +121,7 @@
 
       //     padding: 0.5em;
 
-      //     border-bottom: 1px solid $border-color-1;
+      //     border-bottom: 1px solid var(--border-color-1);
       //   }
 
       //   .label {

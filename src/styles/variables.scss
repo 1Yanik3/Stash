@@ -1,11 +1,13 @@
-/* Variables and mixins declared here will be available in all other SCSS files */
-$color-dark-level-lower: #121212;
-$color-dark-level-base: #161616;
-$color-dark-level-1: #1c1c1c;
-$color-dark-level-2: #303030;
-$color-dark-level-3: #545454;
+// $base-brightness: 6%;
 
-$color-text: hsl(0, 0%, 93%);
+// /* Variables and mixins declared here will be available in all other SCSS files */
+// $color-dark-level-lower: hsl(0, 0%, $base-brightness - 2%);
+// $color-dark-level-base: hsl(0, 0%, $base-brightness);
+// $color-dark-level-1: hsl(0, 0%, $base-brightness + 2%);
+// $color-dark-level-2: hsl(0, 0%, $base-brightness + 10%);
+// $color-dark-level-3: hsl(0, 0%, $base-brightness + 24%);
 
-$border-color-base: hsl(0, 0%, 16%);
-$border-color-1: hsl(0, 0%, 22%);
+// $color-text: hsl(0, 0%, 93%);
+
+// $border-color-base: hsl(0, 0%, $base-brightness + 7%);
+// $border-color-1: hsl(0, 0%, $base-brightness + 13%);

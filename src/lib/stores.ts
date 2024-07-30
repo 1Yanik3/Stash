@@ -57,7 +57,8 @@ export let settings = persisted("settings", {
   windowControlsSpacer: false,
   imageTapAction: "zoom" as "zoom" | "navigate",
   mobileLayout: false,
-  tooltipEnabled: true
+  tooltipEnabled: true,
+  theme: "default" as "default" | "light" | "amoled"
 })
 
 // TODO: Change to a "mode"

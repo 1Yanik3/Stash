@@ -209,12 +209,12 @@
       padding: 0.5em;
 
       background: hsl(0, 0%, 13%);
-      border: 1px solid hsl(0, 0%, 24%);
+      border: 1px solid var(--border-color-1-hover);
       border-radius: 0.35em;
 
       &:hover {
-        background: hsl(0, 0%, 22%);
-        border: 1px solid hsl(0, 0%, 24%);
+        background: var(--color-dark-level-2);
+        border: 1px solid var(--border-color-1);
       }
 
       .title {

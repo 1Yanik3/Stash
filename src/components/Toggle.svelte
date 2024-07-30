@@ -26,8 +26,8 @@
     height: $size;
     padding: $padding;
 
-    background: hsl(0, 0%, 7%);
-    border: 1px solid hsl(0, 0%, 17%);
+    background: var(--color-dark-level-base);
+    border: 1px solid var(--border-color-base);
     border-radius: 0.6em;
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,

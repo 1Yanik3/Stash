@@ -66,8 +66,8 @@
       width: 234px;
       padding: 5px 0;
 
-      background: $color-dark-level-1;
-      border-right: 1px solid $border-color-base;
+      background: var(--color-dark-level-1);
+      border-right: 1px solid var(--border-color-base);
 
       .divider {
         flex-grow: 1;

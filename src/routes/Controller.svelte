@@ -19,7 +19,6 @@
   import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
-  import SettingsPopup from "$components/Popups/SettingsPopup/index.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
   import type { PageData } from "./[cluster]/$types"
@@ -98,7 +97,6 @@
     "Quick Actions Import from Search": QuickActionsImportFromSearch,
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
-    Settings: SettingsPopup,
     "Create Story": CreateStoryPopup,
     "Navigation Section Mobile": NavigationSectionMobile,
     "Media Viewer Mobile": MediaViewerMobile,
