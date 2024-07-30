@@ -101,7 +101,7 @@
     }
 
     &.isMobile {
-        gap: 0;
+      gap: 0;
     }
   }
 </style>

@@ -74,7 +74,10 @@
         on:click={async () => {
           const newClusters = await $controller.prompt().selectMultiple(
             "Permitted Clusters",
-            data.allClusters.map(c => ({ value: c.id.toString(), name: c.name })),
+            data.allClusters.map(c => ({
+              value: c.id.toString(),
+              name: c.name
+            })),
             entry.permittedClusters.map(c => c.id.toString())
           )
           if (newClusters)
@@ -91,6 +94,7 @@
 <style lang="scss">
   td {
     position: relative;
+
     .floating {
       position: absolute;
       top: 0;
@@ -98,6 +102,7 @@
     }
 
     &:not(:hover) {
+
       .floating {
         display: none;
       }

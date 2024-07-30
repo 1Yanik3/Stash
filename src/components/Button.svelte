@@ -35,6 +35,7 @@
   export let noMargin = false
   export let styleOverride: string = ""
   export let download: true | null = null
+  export let transparentButton = false
 
   export let tooltip: Parameters<typeof tooltip_function>[1] = {
     title: "",
@@ -105,6 +106,7 @@
   class:right
   class:highlighted
   class:noMargin
+  class:transparentButton
   on:contextmenu={e => {
     dispatch("contextmenu", e)
   }}
@@ -188,7 +190,8 @@
 
     transition:
       background 100ms,
-      border 100ms;
+      border 100ms,
+      transform 200ms;
 
     -webkit-app-region: no-drag;
     -webkit-tap-highlight-color: transparent;
@@ -223,6 +226,7 @@
       border: 1px solid $border-color-1;
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
           background: color.adjust($color-dark-level-3, $lightness: 2%);
           border: 1px solid color.adjust($border-color-1, $lightness: 2%);
@@ -257,6 +261,7 @@
       justify-content: center;
 
       .section {
+
         .spacer {
           margin-right: unset;
         }
@@ -268,6 +273,7 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
@@ -275,9 +281,17 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
-        background: $color-dark-level-2;
-        border: 1px solid $border-color-1;
+
+        &:not(.transparentButton) {
+          background: $color-dark-level-2;
+          border: 1px solid $border-color-1;
+        }
+
+        &.transparentButton {
+          transform: scale(1.1);
+        }
       }
     }
   }

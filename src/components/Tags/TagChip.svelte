@@ -47,8 +47,8 @@
     border-radius: 3px;
 
     &.compact {
-      padding: 0.25em 0.4em;
       cursor: default;
+      padding: 0.25em 0.4em;
     }
   }
 </style>

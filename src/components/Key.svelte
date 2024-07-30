@@ -38,7 +38,10 @@
 
 <main class:compact>
   {#if iconOverwrites[key.toLowerCase()]}
-    <Icon name={iconOverwrites[key.toLowerCase()]} size={compact ? 0.55 : 0.7} />
+    <Icon
+      name={iconOverwrites[key.toLowerCase()]}
+      size={compact ? 0.55 : 0.7}
+    />
   {:else}
     <span>{key}</span>
   {/if}

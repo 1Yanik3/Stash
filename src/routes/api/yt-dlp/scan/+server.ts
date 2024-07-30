@@ -43,6 +43,6 @@ export type Metadata = {
   resolution: string
   aspect_ratio: number
   format: string
-  _type: string,
+  _type: string
   url: string
 }

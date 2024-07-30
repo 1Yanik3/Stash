@@ -50,6 +50,7 @@
     grid-template-columns: 300px auto;
     gap: 0.25em 1em;
     align-items: flex-start;
+
     max-width: 450px;
   }
 </style>

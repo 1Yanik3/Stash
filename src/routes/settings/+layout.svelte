@@ -21,6 +21,9 @@
     <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
     <Button icon="mdiPassport" href="/settings/credentials">Credentials</Button>
     <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
+    <Button icon="mdiContentDuplicate" href="/settings/duplicates"
+      >Duplicates</Button
+    >
     <Button icon="mdiTagMultiple" href="/settings/icon-assignments"
       >Icon Assignments</Button
     >

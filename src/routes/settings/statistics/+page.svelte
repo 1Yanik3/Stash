@@ -19,14 +19,15 @@
     gap: 1em;
 
     section {
-      background: $color-dark-level-base;
-      border: 1px solid $border-color-1;
-      border-radius: 0.5em;
-      padding: 0.75em;
-
       display: flex;
       flex-direction: column;
       gap: 0.25em;
+
+      padding: 0.75em;
+
+      background: $color-dark-level-base;
+      border: 1px solid $border-color-1;
+      border-radius: 0.5em;
 
       b {
         font-size: 2.5rem;

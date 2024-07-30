@@ -44,8 +44,7 @@ export default async (job: Job) => {
   if (downloadProcess.stdout)
     downloadProcess.stdout.on("data", data => {
       const match = (data as string).match(/\[download\] +(\d+)/)?.[1]
-      if (match)
-        job.updateProgress(parseInt(match))
+      if (match) job.updateProgress(parseInt(match))
     })
 
   await new Promise((resolve, reject) => {
@@ -70,7 +69,6 @@ export default async (job: Job) => {
   ).catch(e => {
     console.warn("  Failed to download thumbnail: ", e)
   })
-
 
   await job.updateProgress(100)
 }

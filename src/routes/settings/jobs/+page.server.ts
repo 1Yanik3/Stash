@@ -34,10 +34,9 @@ export const load: PageServerLoad = async () => ({
             failedReason: await getJobState(job)
           }))
         )
+      ).sort((a, b) =>
+        (b.id || "").localeCompare(a.id || "", "en", { numeric: true })
       )
-        .sort((a, b) =>
-          (b.id || "").localeCompare(a.id || "", "en", { numeric: true })
-        )
     }))
   )
 })

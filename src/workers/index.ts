@@ -1,25 +1,29 @@
-import { QUEUES } from "../lib/constants"
 import { Worker } from "bullmq"
+
+import { QUEUES } from "../lib/constants"
 import importMediaFromURL from "./functions/importMediaFromURL"
 
-const worker = new Worker(QUEUES.JOBS, async job => {
-  console.log(`Processing job ${job.id} of type ${job.data.function}`)
+const worker = new Worker(
+  QUEUES.JOBS,
+  async job => {
+    console.log(`Processing job ${job.id} of type ${job.data.function}`)
 
-  switch (job.data.function) {
-    case "importMediaFromURL":
+    switch (job.data.function) {
+      case "importMediaFromURL":
         await importMediaFromURL(job)
-      break
-    default:
+        break
+      default:
         console.log("  Unknown function")
-      break
-  
-  }
-}, { 
-    connection: {
-        host: "localhost",
-        port: 6379
+        break
     }
-})
+  },
+  {
+    connection: {
+      host: "localhost",
+      port: 6379
+    }
+  }
+)
 
 worker.on("completed", job => {
   console.log(`${job.id} has completed!`)

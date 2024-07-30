@@ -90,13 +90,14 @@
     background: $color-dark-level-lower;
     border-left: 1px solid $border-color-base;
 
-    &.fullscreen, &.mobile {
-      max-width: none !important;
+    &.fullscreen,
+    &.mobile {
       width: 100vw !important;
+      max-width: none !important;
     }
 
     #media {
-        background: black;
+      background: black;
     }
   }
 </style>

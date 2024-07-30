@@ -46,10 +46,11 @@
   h1 {
     margin-top: 0;
   }
+
   .inputs {
     display: grid;
-    gap: 0.5rem;
     grid-template-columns: auto 1fr;
+    gap: 0.5rem;
     align-items: center;
   }
 </style>

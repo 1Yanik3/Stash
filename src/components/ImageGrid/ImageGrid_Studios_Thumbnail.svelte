@@ -109,10 +109,10 @@
     }
 
     .details {
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       gap: 0.25em;
-      overflow: hidden;
 
       margin: 0.5em;
       margin-top: 0;
@@ -120,23 +120,26 @@
       margin-left: 0.75em;
 
       b {
-        font-weight: bold;
         overflow: hidden;
-        text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+
+        font-weight: bold;
+        text-overflow: ellipsis;
+
+        -webkit-line-clamp: 2;
       }
     }
 
     .tags {
+      display: flex;
       margin-top: 5.5px;
       margin-bottom: 5.5px;
       margin-left: 0.75em;
-      display: flex;
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         background: #212121;
         border: 1px solid hsl(0, 0%, 22%);

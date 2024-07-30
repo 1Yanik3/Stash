@@ -105,13 +105,13 @@
 
       #header {
         display: flex;
+        gap: 1rem;
         align-items: center;
         padding: 0.5em;
-        gap: 1rem;
 
         h2 {
-          margin: 0 0.2em;
           flex-grow: 1;
+          margin: 0 0.2em;
         }
 
         &:not(:has(.centralBlob)) {
@@ -166,6 +166,7 @@
     }
 
     &.mobile {
+
       section {
         display: grid;
         align-content: start;
@@ -184,16 +185,18 @@
     }
 
     &.fullscreen {
+
       section {
+        display: grid;
+        grid-template-rows: auto 1fr;
+
         width: 100vw;
         max-width: 100vw;
         height: 100vh;
         max-height: 100vh;
+
         border-radius: 0;
         box-shadow: none;
-
-        display: grid;
-        grid-template-rows: auto 1fr;
 
         #content {
           overflow: auto;

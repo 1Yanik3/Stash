@@ -120,9 +120,10 @@
       img {
         aspect-ratio: 16 / 9;
         width: 400px;
+        margin-top: 1em;
+
         object-fit: cover;
         border-radius: 0.5em;
-        margin-top: 1em;
       }
     }
 

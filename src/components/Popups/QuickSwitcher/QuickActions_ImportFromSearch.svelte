@@ -101,24 +101,26 @@
     }
 
     .results {
+      overflow: auto;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1em;
+
       height: 60vh;
-      overflow: auto;
 
       .result {
         display: flex;
         flex-direction: column;
-        align-items: center;
         gap: 0.5em;
+        align-items: center;
+
         transition: transform 0.2s;
 
         img {
-          width: 100%;
-          border-radius: 8px;
           aspect-ratio: 16/9;
+          width: 100%;
           object-fit: cover;
+          border-radius: 8px;
         }
 
         &:hover {

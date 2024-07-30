@@ -86,19 +86,21 @@
   .grid {
     display: grid;
     grid-template-columns: repeat(2, 300px);
-    justify-content: center;
     gap: 1em;
+    justify-content: center;
 
     .tag {
       display: flex;
       border: 1px solid $border-color-1;
 
       .icon {
-        width: 65px;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+
+        width: 65px;
         padding: 0.5em;
+
         border-right: 1px solid $border-color-1;
       }
 

@@ -10,11 +10,7 @@
 
 {#each data.queues as { queueName, jobs }}
   <h1>{queueName}</h1>
-  <Table
-    headers={["title", "progress", "id", "status"]}
-    data={jobs}
-    let:entry
-  >
+  <Table headers={["title", "progress", "id", "status"]} data={jobs} let:entry>
     <td>{entry.name}</td>
     <td>{entry.progress}</td>
     <td>{entry.id}</td>

@@ -212,6 +212,7 @@
     -webkit-app-region: drag;
 
     &:not(.mobile) {
+
       & > :first-child {
         align-self: start;
       }

@@ -2,5 +2,5 @@
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
 </script>
 
-<SettingsPageHeader title="Icon Packs" />
+<SettingsPageHeader title="Duplicates" />
 <span>TODO</span>

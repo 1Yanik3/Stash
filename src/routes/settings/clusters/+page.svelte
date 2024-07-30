@@ -127,6 +127,7 @@
 <style lang="scss">
   td {
     position: relative;
+
     .floating {
       position: absolute;
       top: 0;
@@ -134,6 +135,7 @@
     }
 
     &:not(:hover) {
+
       .floating {
         display: none;
       }

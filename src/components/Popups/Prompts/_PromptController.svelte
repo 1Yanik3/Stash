@@ -50,7 +50,7 @@
 
     selectMultiple: (
       question: string,
-      options: { name: string, value: string }[],
+      options: { name: string; value: string }[],
       selected: string[]
     ): Promise<string[] | null> =>
       new Promise(resolve => {
