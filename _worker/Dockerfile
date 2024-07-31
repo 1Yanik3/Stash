@@ -1,7 +1,8 @@
-FROM oven/bun:alpine as builder
+FROM oven/bun:1.1.21 as builder
 
-RUN apk add --no-cache ffmpeg exiftool yt-dlp nginx
-COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
+RUN apt-get update && \
+    apt-get install -y ffmpeg exiftool yt-dlp && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
