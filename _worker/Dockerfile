@@ -10,4 +10,6 @@ RUN bun install --frozen-lockfile
 COPY schema.prisma .
 RUN bunx prisma generate
 
+COPY . .
+
 CMD bun run index.ts
