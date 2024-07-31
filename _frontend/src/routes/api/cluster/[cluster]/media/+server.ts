@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
   await prisma.job.create({
     data: {
-      name: "generateMediaThumbnail",
+      name: "createMediaThumbnail",
       data: JSON.stringify({ id: mediaId })
     }
   })
