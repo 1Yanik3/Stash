@@ -1,7 +1,6 @@
 import { setMethods, sortingMethods } from "$lib/../types"
 import prisma from "$lib/server/prisma"
 // import { ExifParserFactory } from "ts-exif-parser"
-import sharedImportLogic from "$lib/server/sharedImportLogic"
 import { pageSize } from "$lib/stores"
 import fs from "fs/promises"
 
@@ -122,16 +121,9 @@ export const GET: RequestHandler = async ({ params, request }) => {
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {
-  console.time("media post request: formData")
   const data = await request.formData()
-  console.timeEnd("media post request: formData")
-
-  console.time("media post request: get file")
   const file = data.get("file") as File
   const selectedTags = (data.get("selectedTags") as string).split(",")
-  console.timeEnd("media post request: get file")
-
-  console.time("media post request: create db entry")
 
   const { id: mediaId } = await prisma.media.create({
     data: {
@@ -148,19 +140,26 @@ export const POST: RequestHandler = async ({ params, request }) => {
       tags: selectedTags.map(t => t.toLocaleLowerCase())
     }
   })
-  console.timeEnd("media post request: create db entry")
 
   // TODO: Get rid of this step
-  console.time("media post request: get buffer")
   const fileBuffer = Buffer.from(await file.arrayBuffer())
-  console.timeEnd("media post request: get buffer")
 
-  console.time("media post request: store file")
-  // store file
   await fs.writeFile(`./media/${mediaId}`, fileBuffer)
   console.timeEnd("media post request: store file")
 
-  await sharedImportLogic(file.name, mediaId)
+  await prisma.job.create({
+    data: {
+      name: "updateMediaMetadataFromFile",
+      data: JSON.stringify({ id: mediaId })
+    }
+  })
+
+  await prisma.job.create({
+    data: {
+      name: "generateMediaThumbnail",
+      data: JSON.stringify({ id: mediaId })
+    }
+  })
 
   return new Response()
 }

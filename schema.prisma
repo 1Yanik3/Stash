@@ -120,3 +120,21 @@ model Session {
   credential    Credentials @relation(fields: [credentialsId], references: [id])
   credentialsId Int
 }
+
+enum JobStatus {
+  created
+  running
+  completed
+  failed
+  invalid
+}
+
+model Job {
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  status               JobStatus @default(created)
+  data                 String    @default("{}")
+  completionPercentage Int?
+  createdAt            DateTime  @default(now())
+  debugMessages        String[]
+}

@@ -1,9 +1,16 @@
-import sharedImportLogic from "$lib/server/sharedImportLogic"
+import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "@sveltejs/kit"
 
 export const GET: RequestHandler = async ({ params }) => {
   if (!params.media) return new Response("No media provided", { status: 400 })
-  sharedImportLogic(`./media/${params.media}`, params.media)
+
+  await prisma.job.create({
+    data: {
+      name: "updateMediaMetadataFromFile",
+      data: JSON.stringify({ id: params.media })
+    }
+  })
+
   return new Response()
 }

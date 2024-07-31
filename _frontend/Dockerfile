@@ -15,7 +15,6 @@ RUN npm run build && npm prune --production
 
 # Stage 2: Final stage with optimized production image
 FROM node:alpine
-RUN apk add --no-cache ffmpeg exiftool yt-dlp nginx
 
 WORKDIR /app
 COPY --from=builder /app ./

@@ -1,5 +1,4 @@
 import prisma from "$lib/server/prisma"
-import sharedImportLogic from "$lib/server/sharedImportLogic"
 import fs from "fs/promises"
 import mime from "mime-types"
 
@@ -41,9 +40,19 @@ export const POST: RequestHandler = async ({ params, request }) => {
   await fs.copyFile(`${importFolderPath}/${filename}`, `./media/${mediaId}`)
   await fs.rm(`${importFolderPath}/${filename}`)
 
-  await sharedImportLogic(filename, mediaId)
+  await prisma.job.create({
+    data: {
+      name: "updateMediaMetadataFromFile",
+      data: JSON.stringify({ id: mediaId })
+    }
+  })
 
-  // TODO: Start thumbnail generation
+  await prisma.job.create({
+    data: {
+      name: "createMediaThumbnail",
+      data: JSON.stringify({ id: mediaId })
+    }
+  })
 
   return new Response()
 }

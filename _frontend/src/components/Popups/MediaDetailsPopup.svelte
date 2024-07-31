@@ -93,17 +93,6 @@
         <div>
           <b>Metadata</b>
           <div>
-            <!-- TODO: Tooltip -->
-            <Button
-              icon="mdiCodeJson"
-              noMargin
-              on:click={() => {
-                fetch(`/api/media/${$visibleMedium?.id}/metadata`)
-                  .then(res => res.json())
-                  .then(data => JSON.stringify(data, null, 4))
-                  .then($controller.prompt().code)
-              }}
-            />
             <Button
               icon="mdiReload"
               noMargin
