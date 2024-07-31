@@ -26,6 +26,11 @@ build-frontend:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
+  only:
+    changes:
+      - _frontend/**/*
+      - schema.prisma
+
 
 build-worker:
   stage: build
@@ -51,6 +56,10 @@ build-worker:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
+  only:
+    changes:
+      - _worker/**/*
+      - schema.prisma
 
 build-gatekeeper:
   stage: build
@@ -74,6 +83,10 @@ build-gatekeeper:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
+  only:
+    changes:
+      - _gatekeeper/**/*
+      - schema.prisma
 
 deploy:
   stage: deploy
