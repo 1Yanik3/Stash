@@ -1,7 +1,7 @@
-import generateThumbnail from "$lib/server/generateThumbnail"
 import fs from "fs/promises"
 
 import type { RequestHandler } from "./$types"
+import prisma from "$lib/server/prisma"
 
 const thumbnailRoot = "./thumbnails"
 
@@ -39,10 +39,12 @@ export const POST: RequestHandler = async ({ request, params }) => {
     fileBuffer
   )
 
-  await generateThumbnail(
-    `${thumbnailRoot}/${params.media}.original.webp`,
-    `${thumbnailRoot}/${params.media}.webp`
-  )
+  await prisma.job.create({
+    data: {
+      name: "createMediaThumbnail",
+      data: JSON.stringify({ id: params.media })
+    }
+  })
 
   return new Response()
 }

@@ -6,8 +6,8 @@ RUN apk add --no-cache ffmpeg exiftool yt-dlp nginx
 WORKDIR /app
 
 COPY package.json bun.lockb ./
-RUN npm i
+RUN bun install --frozen-lockfile
 COPY schema.prisma .
-RUN npx prisma generate
+RUN bunx prisma generate
 
 CMD bun run index.ts

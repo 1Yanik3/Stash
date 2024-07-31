@@ -4,22 +4,33 @@ import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import type { MetadataType } from "../../lib/getMetadataFromFile.types";
 
 export const execute = async (job: Job) => {
-  const { id } = await parse(job.data, job);
-  console.log(`Running job: updateMediaMetadataFromFile for media ${id}`, job.data);
+  const { id, initial } = await parse(job.data, job);
 
   const metadata = await getMetadataFromFile(`./media/${id}`);
 
-  await prisma.media.update({
-    where: { id: id },
-    data: {
-      width: metadata.width,
-      height: metadata.height,
-      createdDate: await getCreatedDate(id, metadata),
-    },
-  });
+  if (initial)
+    await prisma.media.update({
+      where: { id: id },
+      data: {
+        width: metadata.width,
+        height: metadata.height,
+        createdDate: await getCreatedDate(id, metadata),
+      },
+    });
+  else
+    await prisma.media.update({
+      where: { id: id },
+      data: {
+        width: metadata.width,
+        height: metadata.height,
+      },
+    });
 };
 
-const parse = async (data: any, job: Job): Promise<{ id: string }> => {
+const parse = async (
+  data: any,
+  job: Job
+): Promise<{ id: string; initial: boolean | undefined }> => {
   const json = JSON.parse(data);
 
   if (!json.id) {
