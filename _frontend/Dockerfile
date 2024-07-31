@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm i
-COPY prisma ./prisma
+COPY schema.prisma .
 RUN npx prisma generate
 
 COPY static  ./static
