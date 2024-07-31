@@ -5,7 +5,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
 
-
 WORKDIR /app
 
 COPY package.json bun.lockb ./
