@@ -2,7 +2,7 @@ stages:
   - build
   - deploy
 
-build:
+build-frontend:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
@@ -17,8 +17,8 @@ build:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --context "${CI_PROJECT_DIR}/_frontend"
+      --dockerfile "${CI_PROJECT_DIR}/_frontend/Dockerfile"
       --destination "cr.hera.lan/stash:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
       --cache=true

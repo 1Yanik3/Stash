@@ -1,6 +1,6 @@
 import { Worker } from "bullmq"
 
-import { QUEUES } from "../lib/constants"
+import { QUEUES } from "../_frontend/src/lib/constants"
 import importMediaFromURL from "./functions/importMediaFromURL"
 
 const worker = new Worker(

@@ -22,7 +22,6 @@ export default async (filename: string, mediaId: string) => {
     const date = new Date(
       input.replace(":", "-").replace(":", "-").replace(" ", "T")
     )
-    console.log(input, date)
     if (date > new Date(0)) return date
     else return false
   }

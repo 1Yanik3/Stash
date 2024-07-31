@@ -1,4 +1,3 @@
-import getMetadataFromFile from "$lib/server/getMetadataFromFile"
 import sharedImportLogic from "$lib/server/sharedImportLogic"
 
 import type { RequestHandler } from "@sveltejs/kit"
