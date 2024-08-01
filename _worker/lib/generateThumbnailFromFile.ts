@@ -16,6 +16,7 @@ export default (
         ])
         .output(outputFile)
         .on("end", resolve)
+        .on("error", reject)
         .outputOptions(outputOptions.concat("-vframes 1"))
         .run();
     } catch (error: any) {
