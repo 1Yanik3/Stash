@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { controller } from "$lib/stores"
   import { onDestroy, onMount } from "svelte"
+
+  import { controller } from "$lib/stores"
 
   let value = -1
   let interval: NodeJS.Timeout | null = null

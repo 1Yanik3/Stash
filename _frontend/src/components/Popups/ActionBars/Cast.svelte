@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { browser } from "$app/environment"
   import { onMount } from "svelte"
-  import { controller, visibleMedium } from "$lib/stores"
-  import Icon from "../../Icon.svelte"
   import { fade } from "svelte/transition"
+
+  import { browser } from "$app/environment"
   import type Castjs from "$lib/client/cast-js"
+  import { controller, visibleMedium } from "$lib/stores"
+
+  import Icon from "../../Icon.svelte"
   import type { Media } from ".prisma/client"
 
   let videoPlaying = true

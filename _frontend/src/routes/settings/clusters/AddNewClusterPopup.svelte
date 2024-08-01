@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { ClusterType } from "@prisma/client"
+
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import { possibleIcons } from "$lib/possibleIcons"
   import Popup from "$reusables/Popup.svelte"
-  import { ClusterType } from "@prisma/client"
 
   export let close: () => void
 

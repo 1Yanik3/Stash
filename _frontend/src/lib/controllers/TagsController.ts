@@ -1,3 +1,5 @@
+import { get, Writable, writable } from "svelte/store"
+
 import { afterNavigate } from "$app/navigation"
 import { page } from "$app/stores"
 import {
@@ -7,7 +9,6 @@ import {
   selectedTags,
   traverse
 } from "$lib/stores"
-import { Writable, get, writable } from "svelte/store"
 
 import { setMethods } from "../../types"
 

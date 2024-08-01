@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Popup from "$reusables/Popup.svelte"
-  import Button from "$components/Button.svelte"
   import { page } from "$app/stores"
+  import Button from "$components/Button.svelte"
   import { controller } from "$lib/stores"
+  import Popup from "$reusables/Popup.svelte"
 
   let query = ""
 

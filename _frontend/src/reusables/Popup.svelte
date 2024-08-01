@@ -1,7 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte"
   import { fade, scale } from "svelte/transition"
+
   import Icon from "$components/Icon.svelte"
+
   import { controller, settings } from "../lib/stores"
 
   export let title = ""

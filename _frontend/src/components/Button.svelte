@@ -1,12 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher, type ComponentProps } from "svelte"
-  import Icon from "$components/Icon.svelte"
-  import type { possibleIcons } from "$lib/possibleIcons"
+  import { readable } from "svelte/store"
+
   import { page } from "$app/stores"
+  import Icon from "$components/Icon.svelte"
   import Key from "$components/Key.svelte"
+  import type { possibleIcons } from "$lib/possibleIcons"
   import Shortcut from "$reusables/Shortcut.svelte"
   import { tooltip as tooltip_function } from "$reusables/tooltip"
-  import { readable } from "svelte/store"
 
   let isDraggingOver = false
 

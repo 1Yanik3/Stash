@@ -1,10 +1,11 @@
+import { get } from "svelte/store"
+
 import {
   controller,
   thumbnailSuffixParameter,
   videoElement,
   visibleMedium
 } from "$lib/stores"
-import { get } from "svelte/store"
 
 const dataURItoBlob = (dataURI: string) => {
   // convert base64 to raw binary data held in a string

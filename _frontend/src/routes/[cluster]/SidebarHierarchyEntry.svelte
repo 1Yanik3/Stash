@@ -1,14 +1,15 @@
 <script lang="ts">
+  import { readable } from "svelte/store"
+
+  import Button from "$components/Button.svelte"
+  import getIconForTagName from "$lib/getIconForTagName"
+  import type { possibleIcons } from "$lib/possibleIcons"
   import {
     collapsedTags,
     controller,
     selectedMediaIds,
     selectedTags
   } from "$lib/stores"
-  import type { possibleIcons } from "$lib/possibleIcons"
-  import Button from "$components/Button.svelte"
-  import getIconForTagName from "$lib/getIconForTagName"
-  import { readable } from "svelte/store"
 
   type TagData = {
     name: string

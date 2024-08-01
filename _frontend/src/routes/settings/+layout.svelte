@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { isFullscreen, mobileBottomBarVisible, settings } from "$lib/stores"
-  import MobileBottomBar from "$components/MobileBottomBar.svelte"
-  import ClusterSection from "../[cluster]/ClusterSection.svelte"
   import Button from "$components/Button.svelte"
+  import MobileBottomBar from "$components/MobileBottomBar.svelte"
+  import { isFullscreen, mobileBottomBarVisible, settings } from "$lib/stores"
+
+  import ClusterSection from "../[cluster]/ClusterSection.svelte"
 </script>
 
 <main class:mobile={$settings.mobileLayout}>

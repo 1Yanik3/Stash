@@ -1,6 +1,7 @@
 <script lang="ts">
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import Table from "$components/Table.svelte"
+
   import type { PageData } from "./$types"
 
   export let data: PageData

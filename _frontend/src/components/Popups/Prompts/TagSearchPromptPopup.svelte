@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import PromptFramework from "./_PromptFramework.svelte"
+
   import TagInputField from "../../Tags/TagInputField.svelte"
+  import PromptFramework from "./_PromptFramework.svelte"
 
   export let question: string
   export let value: string

@@ -5,14 +5,15 @@
    * Copyright (c) 2021-present NAVER Corp.
    * MIT license
    */
+  import { GRID_EVENTS } from "@egjs/grid"
   import {
-    onMount,
+    afterUpdate,
     beforeUpdate,
     createEventDispatcher,
     onDestroy,
-    afterUpdate
+    onMount
   } from "svelte"
-  import { GRID_EVENTS } from "@egjs/grid"
+
   export let GridClass: any
 
   const dispatch = createEventDispatcher()

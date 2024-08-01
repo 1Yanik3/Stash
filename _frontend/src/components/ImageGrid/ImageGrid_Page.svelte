@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { Media } from "@prisma/client"
+
   import { JustifiedGrid } from "$components/Grid/Grids/JustifiedGrid"
 
   import GridThumbnail from "./GridThumbnail.svelte"
-  import type { Media } from "@prisma/client"
 
   export let media: Media[]
   export let i: number

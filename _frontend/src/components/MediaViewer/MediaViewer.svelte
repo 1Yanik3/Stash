@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores"
   import {
     controller,
     imageSuffixParameter,
@@ -7,11 +8,11 @@
     settings,
     visibleMedium
   } from "$lib/stores"
-  import { page } from "$app/stores"
-  import type { PageData } from "../../routes/[cluster]/$types"
   import Shortcut from "$reusables/Shortcut.svelte"
-  import MediaViewerVideo from "./MediaViewerVideo.svelte"
+
+  import type { PageData } from "../../routes/[cluster]/$types"
   import MediaViewerImage from "./MediaViewerImage.svelte"
+  import MediaViewerVideo from "./MediaViewerVideo.svelte"
   import Toolbar from "./Toolbar.svelte"
 
   $: pageData = $page.data as PageData

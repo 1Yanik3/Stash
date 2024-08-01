@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
+
   const dispatch = createEventDispatcher()
 
   $: if (state != undefined) dispatch("toggle", state)

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Media } from "@prisma/client"
+
   import GridThumbnail from "./GridThumbnail.svelte"
 
   export let medium: Media & { disabled?: Boolean; expanded?: Boolean }

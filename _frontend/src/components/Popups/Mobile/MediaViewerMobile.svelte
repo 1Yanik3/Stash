@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { actionBar, controller, visibleMedium } from "$lib/stores"
   import { onMount } from "svelte"
+
+  import { actionBar, controller, visibleMedium } from "$lib/stores"
+
   import MediaViewer from "../../MediaViewer/MediaViewer.svelte"
   import Toolbar from "../../MediaViewer/Toolbar.svelte"
 

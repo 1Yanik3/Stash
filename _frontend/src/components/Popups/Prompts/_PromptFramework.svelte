@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import Popup from "$reusables/Popup.svelte"
+
   import Button from "$components/Button.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
   const dispatch = createEventDispatcher()
 

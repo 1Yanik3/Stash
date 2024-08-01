@@ -1,20 +1,22 @@
 <script lang="ts">
-  import {
-    activeSortingMethod,
-    activeSetMethod,
-    controller,
-    settings,
-    traverse,
-    mediaTypeFilter,
-    favouritesOnly,
-    seed
-  } from "$lib/stores"
-  import { page } from "$app/stores"
-  import { setMethods, sortingMethods } from "../../types"
-
-  import type { LayoutData } from "./$types"
-  import Button from "$components/Button.svelte"
   import { derived } from "svelte/store"
+
+  import { page } from "$app/stores"
+  import Button from "$components/Button.svelte"
+  import {
+    activeSetMethod,
+    activeSortingMethod,
+    controller,
+    favouritesOnly,
+    mediaTypeFilter,
+    seed,
+    settings,
+    traverse
+  } from "$lib/stores"
+
+  import { setMethods, sortingMethods } from "../../types"
+  import type { LayoutData } from "./$types"
+
   $: pageData = $page.data as LayoutData
 </script>
 

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Popup from "$reusables/Popup.svelte"
-
-  import { visibleMedium } from "$lib/stores"
-  import Button from "$components/Button.svelte"
   import {
     mdiBicyclePennyFarthing,
     mdiBrushVariant,
     mdiCancel,
     mdiFloppyVariant
   } from "@mdi/js"
-  import ImageCompare from "$reusables/ImageCompare.svelte"
   import { Stretch } from "svelte-loading-spinners"
+
+  import Button from "$components/Button.svelte"
+  import { visibleMedium } from "$lib/stores"
+  import ImageCompare from "$reusables/ImageCompare.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
   export let isVisible = true
   export let replaceMedia: (newMedia: Blob) => void

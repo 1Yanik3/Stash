@@ -10,6 +10,7 @@
     uploadPopupOpen,
     viewMode
   } from "$lib/stores"
+
   import Icon from "../../Icon.svelte"
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 

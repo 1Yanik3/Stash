@@ -1,6 +1,6 @@
-import prisma from "$lib/server/prisma"
-
 import type { RequestHandler } from "@sveltejs/kit"
+
+import prisma from "$lib/server/prisma"
 
 export const POST: RequestHandler = async ({ request }) => {
   const ids: string[] = await request.json()

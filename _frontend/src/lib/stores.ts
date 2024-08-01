@@ -1,10 +1,9 @@
+import type { Media } from "@prisma/client"
+import { persisted } from "svelte-local-storage-store"
+import { writable, type Writable } from "svelte/store"
+
 import AutoScroll from "$components/Popups/ActionBars/AutoScroll.svelte"
 import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
-import { persisted } from "svelte-local-storage-store"
-import type { Writable } from "svelte/store"
-import { writable } from "svelte/store"
-
-import type { Media } from "@prisma/client"
 
 import type Controller from "../routes/Controller.svelte"
 import { setMethods, sortingMethods } from "../types"

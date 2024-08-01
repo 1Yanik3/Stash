@@ -1,6 +1,6 @@
-import prisma from "$lib/server/prisma"
-
 import { error, json } from "@sveltejs/kit"
+
+import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
 

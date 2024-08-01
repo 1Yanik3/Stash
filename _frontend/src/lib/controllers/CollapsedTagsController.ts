@@ -1,6 +1,7 @@
+import { get } from "svelte/store"
+
 import { page } from "$app/stores"
 import { collapsedTags } from "$lib/stores"
-import { get } from "svelte/store"
 
 export default class CollapsedTagsController {
   private alreadyInitialized = false

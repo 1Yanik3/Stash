@@ -1,7 +1,7 @@
-import { env } from "$env/dynamic/private"
-
 import MistralClient from "@mistralai/mistralai"
 import { error } from "@sveltejs/kit"
+
+import { env } from "$env/dynamic/private"
 
 import type { RequestHandler } from "./$types"
 

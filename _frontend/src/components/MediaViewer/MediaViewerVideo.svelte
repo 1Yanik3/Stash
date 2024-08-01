@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import { videoElement, visibleMedium } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
-  import { onMount } from "svelte"
 
   const formatDuration = (seconds: number) => {
     let hours = Math.floor(seconds / 3600)

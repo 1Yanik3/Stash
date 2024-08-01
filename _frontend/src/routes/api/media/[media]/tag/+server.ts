@@ -1,6 +1,6 @@
-import prisma from "$lib/server/prisma"
+import { error, type RequestHandler } from "@sveltejs/kit"
 
-import { type RequestHandler, error } from "@sveltejs/kit"
+import prisma from "$lib/server/prisma"
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   const { name } = await request.json()

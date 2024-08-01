@@ -1,8 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
+
   import Icon from "$components/Icon.svelte"
-  import { tooltip } from "$reusables/tooltip"
   import getIconForTagName from "$lib/getIconForTagName"
+  import { tooltip } from "$reusables/tooltip"
 
   export let tag: string
   export let forceShowName = false

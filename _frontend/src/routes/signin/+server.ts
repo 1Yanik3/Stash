@@ -1,7 +1,7 @@
-import prisma from "$lib/server/prisma"
+import { RequestHandler } from "@sveltejs/kit"
 import { bcrypt } from "hash-wasm"
 
-import { RequestHandler } from "@sveltejs/kit"
+import prisma from "$lib/server/prisma"
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   const { username, password } = await request.json()

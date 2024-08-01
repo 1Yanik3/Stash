@@ -1,7 +1,8 @@
 import fs from "fs/promises"
 
-import type { RequestHandler } from "./$types"
 import prisma from "$lib/server/prisma"
+
+import type { RequestHandler } from "./$types"
 
 const thumbnailRoot = "./thumbnails"
 

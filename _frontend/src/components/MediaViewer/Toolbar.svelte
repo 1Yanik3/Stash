@@ -1,6 +1,9 @@
 <script lang="ts">
+  import selectFiles from "select-files"
+
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
+  import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
   import {
     controller,
     imageSuffixParameter,
@@ -8,15 +11,15 @@
     settings,
     visibleMedium
   } from "$lib/stores"
-  import selectFiles from "select-files"
-  import Shortcut from "$reusables/Shortcut.svelte"
-  import type { PageData } from "../../routes/[cluster]/$types"
-  import Icon from "../Icon.svelte"
-  import TagInputField from "../Tags/TagInputField.svelte"
-  import Button from "../Button.svelte"
-  import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
-  import TagChip from "../Tags/TagChip.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
+
+  import type { PageData } from "../../routes/[cluster]/$types"
+  import Button from "../Button.svelte"
+  import Icon from "../Icon.svelte"
+  import TagChip from "../Tags/TagChip.svelte"
+  import TagInputField from "../Tags/TagInputField.svelte"
+
   // import UpscalePopup from './Popups/UpscalePopup.svelte';
   $: pageData = $page.data as PageData
 

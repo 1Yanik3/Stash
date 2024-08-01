@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { controller, settings } from "$lib/stores"
-
   import FuzzySearch from "fuzzy-search"
-  import Popup from "$reusables/Popup.svelte"
   import { createEventDispatcher, onMount } from "svelte"
+
   import Button from "$components/Button.svelte"
+  import { controller, settings } from "$lib/stores"
+  import Popup from "$reusables/Popup.svelte"
 
   type T = $$Generic<Record>
   type TAsArray = Array<T>

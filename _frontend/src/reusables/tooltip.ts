@@ -1,5 +1,6 @@
+import { get, Readable, readable } from "svelte/store"
+
 import { settings } from "$lib/stores"
-import { Readable, get, readable } from "svelte/store"
 
 import Tooltip from "./Tooltip.svelte"
 

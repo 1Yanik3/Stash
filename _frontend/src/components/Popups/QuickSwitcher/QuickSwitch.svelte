@@ -1,6 +1,8 @@
 <script lang="ts">
   import { get } from "svelte/store"
+
   import { controller, selectedTags } from "$lib/stores"
+
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
   const promise = (async () => {

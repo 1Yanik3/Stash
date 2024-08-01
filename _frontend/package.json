@@ -7,14 +7,14 @@
     "start": "vite",
     "check": "svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
-    "format": "npx prettier . --write; npx stylelint --fix **/*.{css,scss,svelte}"
+    "format": "npx prettier . --write --remove-unused-imports; npx stylelint --fix **/*.{css,scss,svelte}"
   },
   "devDependencies": {
     "@egjs/grid": "^1.14.2",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@mdi/js": "^7.4.47",
     "@sveltejs/adapter-node": "^1.3.1",
     "@sveltejs/kit": "^1.24.0",
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/fuzzy-search": "^2.1.2",
     "bullmq": "^5.7.15",
     "eslint": "^8.48.0",
@@ -44,7 +44,6 @@
     "@mistralai/mistralai": "^0.1.3",
     "@prisma/client": "^5.17.0",
     "cookie": "^0.5.0",
-    "fluent-ffmpeg": "^2.1.2",
     "fuzzy-search": "^3.2.1",
     "mdi-svelte": "^1.1.2",
     "pretty-bytes": "^6.1.1",

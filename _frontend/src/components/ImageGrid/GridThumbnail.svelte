@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { Media } from "@prisma/client"
+
+  import { page } from "$app/stores"
+  import Icon from "$components/Icon.svelte"
   import {
     selectedMediaIds,
     thumbnailSuffixParameter,
     visibleMedium
   } from "$lib/stores"
-
-  import type { Media } from "@prisma/client"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
-  import { page } from "$app/stores"
-  import Icon from "$components/Icon.svelte"
 
   export let i: number
   export let medium: Media

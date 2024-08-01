@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation"
   import type { Media } from "@prisma/client"
-  import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
+
+  import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
-  import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
   import { settings } from "$lib/stores"
+  import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
+
+  import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
   export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
   export let i: number

@@ -1,9 +1,12 @@
 <script lang="ts">
   import { mdiSend } from "@mdi/js"
-  import Popup from "$reusables/Popup.svelte"
-  import Button from "../Button.svelte"
+
   import { page } from "$app/stores"
+  import Popup from "$reusables/Popup.svelte"
+
   import type { PageData } from "../../routes/[cluster]/$types"
+  import Button from "../Button.svelte"
+
   $: pageData = $page.data as PageData
 
   let title = ""

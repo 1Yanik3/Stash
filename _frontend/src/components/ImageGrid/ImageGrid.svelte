@@ -1,18 +1,17 @@
 <script lang="ts">
-  import { selectedTags, viewMode, media_store, controller } from "$lib/stores"
+  import { readable } from "svelte/store"
 
-  import ImageGridPage from "./ImageGrid_Page.svelte"
-  import ImageGridStories from "./ImageGrid_Stories.svelte"
-  import ImageGridCollection from "./ImageGrid_Collection.svelte"
-
-  import ImageGridStudios from "./ImageGrid_Studios.svelte"
+  import { afterNavigate } from "$app/navigation"
   import { page } from "$app/stores"
+  import Button from "$components/Button.svelte"
+  import { controller, media_store, selectedTags, viewMode } from "$lib/stores"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import Button from "$components/Button.svelte"
+  import ImageGridCollection from "./ImageGrid_Collection.svelte"
+  import ImageGridPage from "./ImageGrid_Page.svelte"
+  import ImageGridStories from "./ImageGrid_Stories.svelte"
+  import ImageGridStudios from "./ImageGrid_Studios.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
-  import { readable } from "svelte/store"
-  import { afterNavigate } from "$app/navigation"
 
   $: pageData = $page.data as PageData
   $: ({ pages } = $controller?.mediaController ?? readable({ pages: [] }))

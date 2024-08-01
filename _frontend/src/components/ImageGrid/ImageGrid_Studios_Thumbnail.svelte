@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { visibleMedium } from "$lib/stores"
-  import GridThumbnail from "./GridThumbnail.svelte"
   import type { Media } from "@prisma/client"
   import { createEventDispatcher } from "svelte"
+
   import Icon from "$components/Icon.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
+  import { visibleMedium } from "$lib/stores"
+
+  import GridThumbnail from "./GridThumbnail.svelte"
 
   const dispatch = createEventDispatcher()
 

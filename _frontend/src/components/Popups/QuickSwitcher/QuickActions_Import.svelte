@@ -2,6 +2,7 @@
   import { page } from "$app/stores"
   import { controller, selectedTags } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
+
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
   let loading = false

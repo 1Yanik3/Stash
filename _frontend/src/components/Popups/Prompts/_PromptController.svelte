@@ -1,12 +1,13 @@
 <script lang="ts">
+  import Dropdown from "$reusables/Dropdown.svelte"
+
+  import CodePromptPopup from "./CodePromptPopup.svelte"
+  import NotifyPromptPopup from "./NotifyPromptPopup.svelte"
+  import SelectMultiplePromptPopup from "./SelectMultiplePromptPopup.svelte"
+  import SelectPromptDropdown from "./SelectPromptDropdown.svelte"
   import SelectPromptPopup from "./SelectPromptPopup.svelte"
   import TagSearchPromptPopup from "./TagSearchPromptPopup.svelte"
   import TextPromptPopup from "./TextPromptPopup.svelte"
-  import NotifyPromptPopup from "./NotifyPromptPopup.svelte"
-  import CodePromptPopup from "./CodePromptPopup.svelte"
-  import Dropdown from "$reusables/Dropdown.svelte"
-  import SelectPromptDropdown from "./SelectPromptDropdown.svelte"
-  import SelectMultiplePromptPopup from "./SelectMultiplePromptPopup.svelte"
 
   export const prompt = {
     text: (question: string, value = ""): Promise<string | null> =>

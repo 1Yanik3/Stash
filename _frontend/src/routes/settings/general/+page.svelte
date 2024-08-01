@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { settings } from "$lib/stores"
-  import Toggle from "$components/Toggle.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import Toggle from "$components/Toggle.svelte"
+  import { settings } from "$lib/stores"
 </script>
 
 <SettingsPageHeader title="General" />

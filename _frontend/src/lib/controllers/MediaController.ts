@@ -1,20 +1,20 @@
+import { Media } from "@prisma/client"
+import { md5 } from "hash-wasm"
+import { get, StoresValues, Writable, writable } from "svelte/store"
+
 import { afterNavigate } from "$app/navigation"
 import { page } from "$app/stores"
 import {
   activeSetMethod,
   activeSortingMethod,
   favouritesOnly,
-  mediaTypeFilter,
   media_store,
+  mediaTypeFilter,
   pageSize,
   seed,
   selectedTags,
   traverse
 } from "$lib/stores"
-import { md5 } from "hash-wasm"
-import { StoresValues, Writable, get, writable } from "svelte/store"
-
-import { Media } from "@prisma/client"
 
 import { setMethods, sortingMethods } from "../../types"
 

@@ -2,15 +2,15 @@
   import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
-
   import {
     actionBar,
     actionBars,
+    controller,
     isFullscreen,
     settings,
-    visibleMedium,
-    controller
+    visibleMedium
   } from "$lib/stores"
+
   import NavigationSection from "./NavigationSection.svelte"
 
   const onscroll = (e: Event) => {

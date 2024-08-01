@@ -1,5 +1,6 @@
-import { page } from "$app/stores"
 import { derived } from "svelte/store"
+
+import { page } from "$app/stores"
 
 import { PageData } from "../routes/[cluster]/$types"
 import { possibleIcons } from "./possibleIcons"

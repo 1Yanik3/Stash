@@ -1,10 +1,12 @@
 <script lang="ts">
-  import type { PageData } from "../../routes/[cluster]/$types"
-  import { page } from "$app/stores"
-  import { createEventDispatcher, onMount } from "svelte"
   import FuzzySearch from "fuzzy-search"
-  import { controller } from "$lib/stores"
+  import { createEventDispatcher, onMount } from "svelte"
   import { readable } from "svelte/store"
+
+  import { page } from "$app/stores"
+  import { controller } from "$lib/stores"
+
+  import type { PageData } from "../../routes/[cluster]/$types"
 
   let value: string
   let focused = false

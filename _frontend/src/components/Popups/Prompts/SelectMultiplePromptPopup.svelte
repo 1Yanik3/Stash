@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
+
   import PromptFramework from "./_PromptFramework.svelte"
 
   export let question: string

@@ -1,15 +1,17 @@
 <script lang="ts">
+  import { ClusterType } from "@prisma/client"
+  import { text } from "@sveltejs/kit"
+
+  import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import Icon from "$components/Icon.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import Table from "$components/Table.svelte"
-  import { ClusterType } from "@prisma/client"
+  import { possibleIcons } from "$lib/possibleIcons"
+  import { controller } from "$lib/stores"
+
   import type { PageData } from "./$types"
   import AddNewClusterPopup from "./AddNewClusterPopup.svelte"
-  import { possibleIcons } from "$lib/possibleIcons"
-  import { invalidateAll } from "$app/navigation"
-  import { controller } from "$lib/stores"
-  import { text } from "@sveltejs/kit"
 
   export let data: PageData
 

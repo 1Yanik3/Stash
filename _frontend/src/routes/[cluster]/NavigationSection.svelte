@@ -1,13 +1,13 @@
 <script lang="ts">
-  import SidebarSection from "$components/SidebarSection.svelte"
-  import Button from "$components/Button.svelte"
-  import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
+  import { readable } from "svelte/store"
 
   import { page } from "$app/stores"
+  import Button from "$components/Button.svelte"
+  import SidebarSection from "$components/SidebarSection.svelte"
   import { controller, selectedTags, settings } from "$lib/stores"
 
   import type { PageData } from "./$types"
-  import { readable } from "svelte/store"
+  import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   $: pageData = $page.data as PageData
 

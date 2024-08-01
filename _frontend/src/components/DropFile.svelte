@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { page } from "$app/stores"
   import { controller, selectedTags, uploadPopupOpen } from "$lib/stores"
-  import { onMount } from "svelte"
   import Popup from "$reusables/Popup.svelte"
+  import Shortcut from "$reusables/Shortcut.svelte"
+
   import Button from "./Button.svelte"
   import Icon from "./Icon.svelte"
-  import TagInputField from "./Tags/TagInputField.svelte"
   import Key from "./Key.svelte"
-  import Shortcut from "$reusables/Shortcut.svelte"
+  import TagInputField from "./Tags/TagInputField.svelte"
 
   let tags: String[] = []
   let tagInputElement: TagInputField

@@ -1,5 +1,3 @@
-import { SvelteComponentDev } from "svelte/internal"
-
 import VanillaGrid, {
   FrameGridOptions,
   GridMethods,
@@ -8,6 +6,7 @@ import VanillaGrid, {
   MasonryGridOptions,
   PackingGridOptions
 } from "@egjs/grid"
+import { SvelteComponentDev } from "svelte/internal"
 
 export default abstract class Grid<
   T extends GridOptions

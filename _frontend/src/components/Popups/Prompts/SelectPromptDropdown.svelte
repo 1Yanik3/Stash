@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import Dropdown from "$reusables/Dropdown.svelte"
+
   import Button from "$components/Button.svelte"
+  import Dropdown from "$reusables/Dropdown.svelte"
 
   export let options: string[]
   export let value: string

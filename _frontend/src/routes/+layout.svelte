@@ -1,9 +1,10 @@
 <script>
   import "../styles/app.scss"
 
-  import { controller, settings } from "$lib/stores"
-  import Controller from "./Controller.svelte"
   import { browser } from "$app/environment"
+  import { controller, settings } from "$lib/stores"
+
+  import Controller from "./Controller.svelte"
 
   $: browser && (() => (document.body.className = $settings.theme))()
 </script>

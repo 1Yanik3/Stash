@@ -1,8 +1,9 @@
 <script lang="ts">
   import { page } from "$app/stores"
+  import Button from "$components/Button.svelte"
   import { controller, selectedTags } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
-  import Button from "$components/Button.svelte"
+
   import type { Metadata } from "../../../routes/api/yt-dlp/scan/+server"
   import TagInputField from "../../Tags/TagInputField.svelte"
 

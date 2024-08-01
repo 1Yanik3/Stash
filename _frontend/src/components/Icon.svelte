@@ -1,5 +1,6 @@
 <script lang="ts">
   import { possibleIcons } from "$lib/possibleIcons"
+
   export let name: keyof typeof possibleIcons | null = null
   export let nameAlt: string = ""
   const possibleIconsAlt = possibleIcons as any

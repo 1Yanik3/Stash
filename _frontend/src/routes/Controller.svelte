@@ -1,6 +1,22 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { afterNavigate, beforeNavigate, goto } from "$app/navigation"
   import { page } from "$app/stores"
+  import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
+  import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
+  import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
+  import NavigationSectionMobile from "$components/Popups/Mobile/NavigationSectionMobile.svelte"
+  import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
+  import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
+  import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
+  import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
+  import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
+  import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
+  import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
+  import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
+  import MediaController from "$lib/controllers/MediaController"
+  import TagsController from "$lib/controllers/TagsController"
   import {
     actionBar,
     actionBars,
@@ -12,23 +28,9 @@
     thumbnailSuffixParameter,
     visibleMedium
   } from "$lib/stores"
-  import { onMount } from "svelte"
-  import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
-  import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
-  import NavigationSectionMobile from "$components/Popups/Mobile/NavigationSectionMobile.svelte"
-  import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
-  import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
-  import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
-  import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
+
   import type { PageData } from "./[cluster]/$types"
-  import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
-  import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
-  import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
-  import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
-  import MediaController from "$lib/controllers/MediaController"
-  import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
-  import TagsController from "$lib/controllers/TagsController"
 
   $: pageData = $page.data as PageData
 

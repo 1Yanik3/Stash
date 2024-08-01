@@ -1,6 +1,6 @@
-import prisma from "$lib/server/prisma"
-
 import { Handle } from "@sveltejs/kit"
+
+import prisma from "$lib/server/prisma"
 
 const isSessionCookieValid = async (session_cookie: string | null) => {
   if (!session_cookie) {

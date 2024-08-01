@@ -1,11 +1,12 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
-  import Icon from "$components/Icon.svelte"
-  import { controller } from "$lib/stores"
   import Button from "$components/Button.svelte"
-  import type { PageData } from "./$types"
+  import Icon from "$components/Icon.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
+  import { controller } from "$lib/stores"
+
+  import type { PageData } from "./$types"
 
   export let data: PageData
 
