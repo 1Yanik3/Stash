@@ -36,7 +36,6 @@
     "svelte-loading-spinners": "^0.3.4",
     "svelte-preprocess": "^5.0.4",
     "ts-exif-parser": "^0.2.2",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "type": "module",

@@ -2,16 +2,16 @@
 FROM node:alpine as builder
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm i
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install
 COPY schema.prisma .
-RUN npx prisma generate
+RUN pnpx prisma generate
 
-COPY static  ./static
+COPY static ./static
 COPY jsconfig.json .*rc* mdi-svelte.d.ts *.config.js ./
 COPY src ./src
 RUN ls -alh
-RUN npm run build && npm prune --production
+RUN pnpm run build && pnpm prune --prod
 
 # Stage 2: Final stage with optimized production image
 FROM node:alpine
