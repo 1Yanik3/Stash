@@ -238,7 +238,6 @@
         border 100ms;
 
       @media (hover: hover) and (pointer: fine) {
-
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);

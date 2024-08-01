@@ -7,7 +7,9 @@
     "start": "vite",
     "check": "svelte-check --tsconfig ./jsconfig.json",
     "check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
-    "format": "npx prettier . --write --remove-unused-imports; npx stylelint --fix **/*.{css,scss,svelte}"
+    "format": "pnpm run format:prettier && pnpm run format:stylelint",
+    "format:prettier": "npx prettier . --write",
+    "format:stylelint": "npx stylelint --fix **/*.{css,scss,svelte}"
   },
   "devDependencies": {
     "@egjs/grid": "^1.14.2",
@@ -17,7 +19,6 @@
     "@sveltejs/kit": "^1.24.0",
     "@types/fuzzy-search": "^2.1.2",
     "bullmq": "^5.7.15",
-    "eslint": "^8.48.0",
     "hash-wasm": "^4.9.0",
     "mime-types": "^2.1.35",
     "node-html-parser": "^6.1.13",

@@ -168,7 +168,6 @@
     }
 
     &.mobile {
-
       section {
         display: grid;
         align-content: start;
@@ -187,7 +186,6 @@
     }
 
     &.fullscreen {
-
       section {
         display: grid;
         grid-template-rows: auto 1fr;

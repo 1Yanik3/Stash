@@ -57,7 +57,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover div {
         filter: brightness(1.2);
       }

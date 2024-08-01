@@ -141,7 +141,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         background: #212121;
         border: 1px solid var(--border-color-1);

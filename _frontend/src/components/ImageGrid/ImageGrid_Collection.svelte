@@ -91,7 +91,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         transform: scale(1.03);
         filter: brightness(0.85);
