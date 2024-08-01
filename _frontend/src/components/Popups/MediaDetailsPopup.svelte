@@ -104,10 +104,14 @@
               on:click={() => {
                 fetch(`/api/media/${$visibleMedium?.id}/thumbnail/reset`).then(
                   () =>
-                    thumbnailSuffixParameter.set({
-                      mediaId: $visibleMedium?.id,
-                      suffix: Math.random().toString(16).substring(2, 8)
-                    })
+                    setTimeout(
+                      () =>
+                        thumbnailSuffixParameter.set({
+                          mediaId: $visibleMedium?.id,
+                          suffix: Math.random().toString(16).substring(2, 8)
+                        }),
+                      200
+                    )
                 )
               }}
             />
