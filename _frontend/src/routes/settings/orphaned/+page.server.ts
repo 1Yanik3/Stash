@@ -19,6 +19,7 @@ export const load: PageServerLoad = async () => {
   return {
     // Filter files that are not in the mediaIdSet
     unimportedFiles: fileNames
+      .map(fileName => fileName.split(".")[0])
       .filter(fileName => !mediaIdSet.has(fileName))
       .slice(0, 10)
   }
