@@ -4,6 +4,7 @@
   "type": "module",
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.25",
+    "@types/mime-types": "^2.1.4",
     "bun-types": "latest"
   },
   "peerDependencies": {
@@ -12,6 +13,7 @@
   "dependencies": {
     "@prisma/client": "5.17.0",
     "fluent-ffmpeg": "^2.1.3",
+    "mime-types": "^2.1.35",
     "prisma": "^5.17.0"
   }
 }

@@ -2,6 +2,7 @@ import { Job } from "@prisma/client";
 import prisma from "../../prisma";
 import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import type { MetadataType } from "../../lib/getMetadataFromFile.types";
+import mime from "mime-types";
 
 export const execute = async (job: Job) => {
   const { id, initial } = await parse(job.data, job);
@@ -23,6 +24,7 @@ export const execute = async (job: Job) => {
       data: {
         width: metadata.width,
         height: metadata.height,
+        type: mime.lookup(`./media/${id}`) || "UNKNOWN",
       },
     });
 };
