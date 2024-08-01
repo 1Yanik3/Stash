@@ -5,6 +5,7 @@
   export let bottom = 0
   export let left = 0
   export let position: "absolute" | "fixed" = "fixed"
+  export let width: "unset" | number = "unset"
 
   $: style = (() => {
     let style = ""
@@ -16,7 +17,12 @@
   })()
 </script>
 
-<main {style} style:position id="dropdownContainer">
+<main
+  {style}
+  style:position
+  id="dropdownContainer"
+  style:width={width == "unset" ? "unset" : `${width}px`}
+>
   <div class="moreActionsDropdown" style:display={visible ? "block" : "none"}>
     <slot />
   </div>

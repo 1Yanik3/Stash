@@ -309,6 +309,7 @@
       }
 
       &.active {
+
         .label {
           font-weight: 700;
           opacity: 90%;

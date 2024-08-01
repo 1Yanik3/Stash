@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Select from "$components/Select.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import Toggle from "$components/Toggle.svelte"
   import { settings } from "$lib/stores"
@@ -27,11 +28,13 @@
   />
 
   <span>Mobile Navigation Touch areas</span>
-  <select class="card" bind:value={$settings.imageTapAction}>
-    {#each ["navigate", "zoom"] as action}
-      <option value={action}>{action}</option>
-    {/each}
-  </select>
+  <Select
+    options={[
+      { value: "navigate", name: "Navigate" },
+      { value: "zoom", name: "Zoom" }
+    ]}
+    bind:value={$settings.imageTapAction}
+  />
 
   <span>Mobile Layout</span>
   <Toggle
@@ -44,11 +47,14 @@
   />
 
   <span>Theme</span>
-  <select class="card" bind:value={$settings.theme}>
-    {#each ["default", "light", "amoled"] as action}
-      <option value={action}>{action}</option>
-    {/each}
-  </select>
+  <Select
+    options={[
+      { value: "default", name: "Default" },
+      { value: "light", name: "Light" },
+      { value: "amoled", name: "Amoled" }
+    ]}
+    bind:value={$settings.theme}
+  />
 </section>
 
 <style lang="scss">

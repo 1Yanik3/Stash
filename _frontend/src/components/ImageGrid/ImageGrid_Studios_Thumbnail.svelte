@@ -125,11 +125,10 @@
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
 
         font-weight: bold;
         text-overflow: ellipsis;
-
-        -webkit-line-clamp: 2;
       }
     }
 
@@ -141,6 +140,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         background: #212121;
         border: 1px solid var(--border-color-1);

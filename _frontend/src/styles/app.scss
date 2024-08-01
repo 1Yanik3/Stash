@@ -144,14 +144,10 @@ select {
 table {
   width: 100%;
   border-collapse: collapse;
-  border-top: 1px solid var(--border-color-base);
-  border-right: 1px solid var(--border-color-base);
 
   th,
   td {
     padding: 10px;
-    border-bottom: 1px solid var(--border-color-base);
-    border-left: 1px solid var(--border-color-base);
   }
 
   tr {
@@ -159,6 +155,17 @@ table {
     transition: background 200ms;
     &:hover {
       background: var(--color-dark-level-lower);
+    }
+  }
+
+  &:not(.borderless) {
+    border-top: 1px solid var(--border-color-base);
+    border-right: 1px solid var(--border-color-base);
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border-color-base);
+      border-left: 1px solid var(--border-color-base);
     }
   }
 }

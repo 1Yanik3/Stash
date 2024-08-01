@@ -1,19 +1,28 @@
 <script lang="ts">
   type T = $$Generic<Record>
 
-  export let headers: string[]
+  export let headers: string[] | null = null
   export let data: T[]
+  export let borderless = false
 </script>
 
-<table>
-  <tr>
-    {#each headers as header}
-      <th>{header}</th>
-    {/each}
-  </tr>
-  {#each data as entry}
+<table class:borderless>
+  {#if headers}
     <tr>
-      <slot {entry} />
+      {#each headers as header}
+        <th>{header}</th>
+      {/each}
+    </tr>
+  {/if}
+  {#each data as entry, i}
+    <tr>
+      <slot {entry} {i} />
     </tr>
   {/each}
 </table>
+
+<style>
+  tr {
+    position: relative;
+  }
+</style>

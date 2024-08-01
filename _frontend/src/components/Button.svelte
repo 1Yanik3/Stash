@@ -232,6 +232,7 @@
       border: 1px solid var(--border-color-1);
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
           background: var(--color-dark-level-2-hover);
           border: 1px solid var(--border-color-1-hover);
@@ -266,6 +267,7 @@
       justify-content: center;
 
       .section {
+
         .spacer {
           margin-right: unset;
         }
@@ -277,6 +279,7 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
@@ -284,7 +287,9 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
+
         &:not(.transparentButton) {
           background: var(--color-dark-level-2);
           border: 1px solid var(--border-color-1);
