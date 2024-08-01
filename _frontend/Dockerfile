@@ -3,14 +3,13 @@ FROM node:alpine as builder
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY schema.prisma .
 RUN pnpx prisma generate
 
 COPY static ./static
 COPY jsconfig.json .*rc* mdi-svelte.d.ts *.config.js ./
 COPY src ./src
-RUN ls -alh
 RUN pnpm run build && pnpm prune --prod
 
 # Stage 2: Final stage with optimized production image
