@@ -19,6 +19,15 @@
     if (!response.ok) throw "Something went wrong with the import"
     invalidateAll()
   }
+
+  const deleteOrphan = async (filename: string) => {
+    const response = await fetch(`/settings/orphaned/${filename}/delete`, {
+      method: "DELETE"
+    })
+
+    if (!response.ok) throw "Something went wrong with the deletion"
+    invalidateAll()
+  }
 </script>
 
 <SettingsPageHeader title="Orphaned Files" />
@@ -37,14 +46,21 @@
         {cluster.name}
       </Button>
     {/each}
+    <Button
+      noMargin
+      icon="mdiTrashCan"
+      on:click={() => {
+        deleteOrphan(entry)
+      }}
+    />
   </td>
 </Table>
 
 <style lang="scss">
   td {
     display: flex;
-    justify-content: end;
     align-items: center;
+    justify-content: end;
 
     a {
       flex-grow: 1;

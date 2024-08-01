@@ -72,15 +72,15 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem 1rem;
-
     max-width: 475px;
 
     div {
-        display: flex;
-        align-items: center;
-        span {
-            flex-grow: 1;
-        }
+      display: flex;
+      align-items: center;
+
+      span {
+        flex-grow: 1;
+      }
     }
   }
 </style>

@@ -84,6 +84,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         filter: brightness(110%);
       }
@@ -112,9 +113,9 @@
       }
 
       &.active {
+        z-index: 1;
         background: var(--color-dark-level-2);
         outline: 1px solid var(--border-color-1);
-        z-index: 1;
 
         &:hover {
           background: var(--color-dark-level-2-hover);
