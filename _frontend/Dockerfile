@@ -19,4 +19,4 @@ WORKDIR /app
 COPY --from=builder /app ./
 
 ENV NODE_ENV=production
-CMD BODY_SIZE_LIMIT=0 node build
+CMD BODY_SIZE_LIMIT="Infinity" node build
