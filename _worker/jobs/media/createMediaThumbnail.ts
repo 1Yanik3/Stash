@@ -9,6 +9,12 @@ const thumbnailRoot = "./thumbnails";
 export const execute = async (job: Job) => {
   const { id } = await parse(job.data, job);
 
+  const media = await prisma.media.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
   const cluster = await prisma.clusters.findFirstOrThrow({
     where: {
       Media: {
@@ -19,22 +25,26 @@ export const execute = async (job: Job) => {
     },
   });
 
-  // TODO: Store in database
-  const { duration } = await getMetadataFromFile(`${mediaRoot}/${id}`);
+  let outputOptions: any[] = [];
 
-  let defaultDuration = 7;
-  // TODO: make dynamic
-  if (cluster.name == "Studios") defaultDuration = 30;
+  if (media.type.startsWith("video")) {
+    // TODO: Store in database
+    const { duration } = await getMetadataFromFile(`${mediaRoot}/${id}`);
 
-  const outputOptions = duration
-    ? [
-        `-ss ${
-          duration > defaultDuration
-            ? defaultDuration
-            : (duration / 2).toFixed(1)
-        }`,
-      ]
-    : [];
+    let defaultDuration = 7;
+    // TODO: make dynamic
+    if (cluster.name == "Studios") defaultDuration = 30;
+
+    outputOptions = duration
+      ? [
+          `-ss ${
+            duration > defaultDuration
+              ? defaultDuration
+              : (duration / 2).toFixed(1)
+          }`,
+        ]
+      : [];
+  }
 
   await generateThumbnailFromFile(
     `${mediaRoot}/${id}`,
