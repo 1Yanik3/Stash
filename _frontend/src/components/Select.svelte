@@ -8,7 +8,7 @@
 
   export let options: { value: T; name: string | undefined }[]
   export let value: T = options[0].value
-  export let width = 200
+  export let width = 150
 
   let main: HTMLElement
   let open = false
@@ -26,7 +26,7 @@
   }}
   style:min-width="{width - 10.5}px"
 >
-  <span>{JSON.stringify(value)}</span>
+  <span>{options.find(o => o.value == value)?.name || value}</span>
   <div class="arrow">
     <Icon size={0.8} name="mdiChevronDown" />
   </div>
@@ -84,7 +84,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         filter: brightness(110%);
       }
@@ -103,6 +102,7 @@
       rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 
     span {
+      margin-top: 1px;
       padding: 5px;
       outline: 1px solid var(--border-color-base);
 
@@ -114,6 +114,7 @@
       &.active {
         background: var(--color-dark-level-2);
         outline: 1px solid var(--border-color-1);
+        z-index: 1;
 
         &:hover {
           background: var(--color-dark-level-2-hover);

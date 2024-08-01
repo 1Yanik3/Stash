@@ -80,7 +80,8 @@
     if ($settings.imageTapAction == "navigate") {
       const { width } = mainElement.getBoundingClientRect()
 
-      cursor = e.offsetX < width / 2 ? "w-resize" : "e-resize"
+      if (e.clientY > window.innerHeight - 100) cursor = "default"
+      else cursor = e.offsetX < width / 2 ? "w-resize" : "e-resize"
       return
     }
 

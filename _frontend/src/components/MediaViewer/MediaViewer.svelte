@@ -51,9 +51,10 @@
       class:darkened={$isFullscreen}
       class:isZoomedIn
       on:pointerdown={e => {
-        console.log(e)
         if ($settings.imageTapAction == "navigate") {
           const { width } = mediaElement.getBoundingClientRect()
+
+          if (e.clientY > window.innerHeight - 200) return
 
           if (e.offsetX < width / 2) $controller.goToPreviousMedia()
           if (e.offsetX > width / 2) $controller.goToNextMedia()
