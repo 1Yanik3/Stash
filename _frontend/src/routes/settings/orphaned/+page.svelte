@@ -12,7 +12,8 @@
     const response = await fetch(`/api/cluster/${cluster}/import`, {
       method: "POST",
       body: JSON.stringify({
-        filename
+        filename,
+        selectedTags: []
       })
     })
 
