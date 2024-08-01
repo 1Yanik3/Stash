@@ -41,17 +41,12 @@ export const POST: RequestHandler = async ({ request, params }) => {
   const file = data.get("file") as File
   const fileBuffer = Buffer.from(await file.arrayBuffer())
 
-  await fs.writeFile(
-    `${thumbnailRoot}/${params.media}.original.webp`,
-    fileBuffer
+  await fs.rename(
+    `${thumbnailRoot}/${params.media}.webp`,
+    `${thumbnailRoot}/${params.media}.original.webp`
   )
 
-  await prisma.job.create({
-    data: {
-      name: "createMediaThumbnail",
-      data: JSON.stringify({ id: params.media })
-    }
-  })
+  await fs.writeFile(`${thumbnailRoot}/${params.media}.webp`, fileBuffer)
 
   return new Response()
 }
