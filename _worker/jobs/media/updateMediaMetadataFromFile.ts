@@ -11,7 +11,7 @@ export const execute = async (job: Job) => {
 
   if (initial)
     await prisma.media.update({
-      where: { id: id },
+      where: { id },
       data: {
         width: metadata.width,
         height: metadata.height,
@@ -20,11 +20,10 @@ export const execute = async (job: Job) => {
     });
   else
     await prisma.media.update({
-      where: { id: id },
+      where: { id },
       data: {
         width: metadata.width,
         height: metadata.height,
-        type: mime.lookup(`./media/${id}`) || "UNKNOWN",
       },
     });
 };
