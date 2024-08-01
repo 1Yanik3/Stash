@@ -7,63 +7,80 @@
 
 <SettingsPageHeader title="General" />
 <section>
-  <span>Tooltip Enabled</span>
-  <Toggle
-    state={$settings.tooltipEnabled}
-    on:toggle={e =>
-      settings.update(s => {
-        s.tooltipEnabled = e.detail
-        return s
-      })}
-  />
+  <div>
+    <span>Tooltip Enabled</span>
+    <Toggle
+      state={$settings.tooltipEnabled}
+      on:toggle={e =>
+        settings.update(s => {
+          s.tooltipEnabled = e.detail
+          return s
+        })}
+    />
+  </div>
 
-  <span>Window-Controls spacing</span>
-  <Toggle
-    state={$settings.windowControlsSpacer}
-    on:toggle={e =>
-      settings.update(s => {
-        s.windowControlsSpacer = e.detail
-        return s
-      })}
-  />
+  <div>
+    <span>Window-Controls spacing</span>
+    <Toggle
+      state={$settings.windowControlsSpacer}
+      on:toggle={e =>
+        settings.update(s => {
+          s.windowControlsSpacer = e.detail
+          return s
+        })}
+    />
+  </div>
 
-  <span>Mobile Navigation Touch areas</span>
-  <Select
-    options={[
-      { value: "navigate", name: "Navigate" },
-      { value: "zoom", name: "Zoom" }
-    ]}
-    bind:value={$settings.imageTapAction}
-  />
+  <div>
+    <span>Mobile Navigation Touch areas</span>
+    <Select
+      options={[
+        { value: "navigate", name: "Navigate" },
+        { value: "zoom", name: "Zoom" }
+      ]}
+      bind:value={$settings.imageTapAction}
+    />
+  </div>
 
-  <span>Mobile Layout</span>
-  <Toggle
-    state={$settings.mobileLayout}
-    on:toggle={e =>
-      settings.update(s => {
-        s.mobileLayout = e.detail
-        return s
-      })}
-  />
+  <div>
+    <span>Mobile Layout</span>
+    <Toggle
+      state={$settings.mobileLayout}
+      on:toggle={e =>
+        settings.update(s => {
+          s.mobileLayout = e.detail
+          return s
+        })}
+    />
+  </div>
 
-  <span>Theme</span>
-  <Select
-    options={[
-      { value: "default", name: "Default" },
-      { value: "light", name: "Light" },
-      { value: "amoled", name: "Amoled" }
-    ]}
-    bind:value={$settings.theme}
-  />
+  <div>
+    <span>Theme</span>
+    <Select
+      options={[
+        { value: "default", name: "Default" },
+        { value: "light", name: "Light" },
+        { value: "amoled", name: "Amoled" }
+      ]}
+      bind:value={$settings.theme}
+    />
+  </div>
 </section>
 
 <style lang="scss">
   section {
-    display: grid;
-    grid-template-columns: 300px auto;
-    gap: 0.25em 1em;
-    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem 1rem;
 
-    max-width: 450px;
+    max-width: 475px;
+
+    div {
+        display: flex;
+        align-items: center;
+        span {
+            flex-grow: 1;
+        }
+    }
   }
 </style>
