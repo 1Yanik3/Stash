@@ -25,31 +25,45 @@ while (true) {
             status: "running",
           },
         });
-        await registeredJob
-          .execute(job)
-          .then(async () => {
-            await prisma.job.update({
-              where: {
-                id: job.id,
-              },
-              data: {
-                status: "completed",
-              },
-            });
-          })
-          .catch(async (error) => {
-            await prisma.job.update({
-              where: {
-                id: job.id,
-              },
-              data: {
-                status: "failed",
-                debugMessages: {
-                  push: [error.message],
+        try {
+          await registeredJob
+            .execute(job)
+            .then(async () => {
+              await prisma.job.update({
+                where: {
+                  id: job.id,
                 },
-              },
+                data: {
+                  status: "completed",
+                },
+              });
+            })
+            .catch(async (error) => {
+              await prisma.job.update({
+                where: {
+                  id: job.id,
+                },
+                data: {
+                  status: "failed",
+                  debugMessages: {
+                    push: [error.message],
+                  },
+                },
+              });
             });
+        } catch (error: any) {
+          await prisma.job.update({
+            where: {
+              id: job.id,
+            },
+            data: {
+              status: "failed",
+              debugMessages: {
+                push: [error.message],
+              },
+            },
           });
+        }
       }
     }
   }
