@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { controller, visibleMedium } from "$lib/stores"
+  import {
+    controller,
+    thumbnailSuffixParameter,
+    visibleMedium
+  } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
   import Button from "../Button.svelte"
@@ -94,6 +98,19 @@
         <div>
           <b>Metadata</b>
           <div>
+            <Button
+              icon="mdiImageRefresh"
+              noMargin
+              on:click={() => {
+                fetch(`/api/media/${$visibleMedium?.id}/thumbnail/reset`).then(
+                  () =>
+                    thumbnailSuffixParameter.set({
+                      mediaId: $visibleMedium?.id,
+                      suffix: Math.random().toString(16).substring(2, 8)
+                    })
+                )
+              }}
+            />
             <Button
               icon="mdiReload"
               noMargin
