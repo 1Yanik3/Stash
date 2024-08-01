@@ -9,11 +9,10 @@
   export let data: PageData
 
   const importOrphan = async (cluster: number, filename: string) => {
-    const response = await fetch(`/api/cluster/${cluster}/import`, {
+    const response = await fetch(`/settings/orphaned/${filename}`, {
       method: "POST",
       body: JSON.stringify({
-        filename,
-        selectedTags: []
+        cluster: cluster
       })
     })
 
@@ -22,7 +21,7 @@
   }
 
   const deleteOrphan = async (filename: string) => {
-    const response = await fetch(`/settings/orphaned/${filename}/delete`, {
+    const response = await fetch(`/settings/orphaned/${filename}`, {
       method: "DELETE"
     })
 
@@ -39,7 +38,6 @@
     {#each data.clusters as cluster}
       <Button
         noMargin
-        icon="mdiImport"
         on:click={() => {
           importOrphan(cluster.id, entry)
         }}
