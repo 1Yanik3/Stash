@@ -46,6 +46,7 @@ export const execute = async (job: Job) => {
       : [];
   }
 
+  console.debug("Generating thumbnail for media", id, "with options", outputOptions);
   await generateThumbnailFromFile(
     `${mediaRoot}/${id}`,
     `${thumbnailRoot}/${id}.webp`,
