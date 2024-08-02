@@ -94,7 +94,7 @@
 <style lang="scss">
   main {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 0.5em;
     margin-bottom: 1em;
 

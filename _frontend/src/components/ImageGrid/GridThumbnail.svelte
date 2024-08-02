@@ -13,6 +13,8 @@
   export let i: number
   export let medium: Media
   export let disableActive = false
+  export let rigidAspectRatio = false
+  export let disableZoom = false
 
   const dragStartHandler = (e: DragEvent) => {
     e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
@@ -68,6 +70,7 @@
     on:dragstart|stopPropagation={dragStartHandler}
     bind:this={element}
     class:selected={$selectedMediaIds.includes(medium.id)}
+    class:rigidAspectRatio
   >
     <svg
       viewBox={`0 0 ${medium.width} ${medium.height}`}
@@ -89,6 +92,7 @@
           alt={medium.name}
           class:active={!disableActive && $visibleMedium == medium}
           crossorigin="use-credentials"
+          class:disableZoom
         />
       {/await}
 
@@ -129,7 +133,7 @@
 
     @media (hover: hover) and (pointer: fine) {
 
-      &:hover {
+      &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);
       }
@@ -143,6 +147,14 @@
 
     &.selected img {
       outline: 3px solid hsl(0, 0%, 36%);
+    }
+
+    &.rigidAspectRatio {
+      aspect-ratio: 16/9;
+
+      img {
+        object-fit: cover;
+      }
     }
   }
 </style>

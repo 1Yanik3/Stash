@@ -40,7 +40,7 @@
   class:sub
 >
   <div class="thumb">
-    <GridThumbnail {medium} i={-1} disableActive />
+    <GridThumbnail {medium} i={-1} disableActive rigidAspectRatio disableZoom />
   </div>
 
   <div class="details">
@@ -55,9 +55,6 @@
       {#key $visibleMedium == medium ? $visibleMedium : null}
         <b>{medium.name}</b>
       {/key}
-      <span>
-        {medium.width}x{medium.height}
-      </span>
     {/if}
   </div>
 
@@ -74,9 +71,10 @@
   main {
     user-select: none;
 
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 
     padding: 1em;
 
@@ -105,27 +103,23 @@
         rgba(68, 68, 68, 0.12) 0px 1px 2px 0px;
     }
 
-    .thumb {
-      grid-row: span 2;
-      width: 160px;
-    }
-
     .details {
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 0.25em;
+      height: 35px;
 
-      margin: 0.5em;
-      margin-top: 0;
-      margin-bottom: 0;
-      margin-left: 0.75em;
+      //   margin: 0.5em;
+      //   margin-top: 0;
+      //   margin-bottom: 0;
+      //   margin-left: 0.75em;
 
       b {
         overflow: hidden;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
 
         font-weight: bold;
         text-overflow: ellipsis;
@@ -133,10 +127,12 @@
     }
 
     .tags {
+      overflow: scroll;
       display: flex;
-      margin-top: 5.5px;
-      margin-bottom: 5.5px;
-      margin-left: 0.75em;
+      margin: -2.25px;
+      //   margin-top: 5.5px;
+      //   margin-bottom: 5.5px;
+      //   margin-left: 0.75em;
     }
 
     @media (hover: hover) and (pointer: fine) {

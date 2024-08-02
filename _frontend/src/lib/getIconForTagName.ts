@@ -2,7 +2,7 @@ import { derived } from "svelte/store"
 
 import { page } from "$app/stores"
 
-import { PageData } from "../routes/[cluster]/$types"
+import type { PageData } from "../routes/[cluster]/$types"
 import { possibleIcons } from "./possibleIcons"
 import { collapsedTags } from "./stores"
 
