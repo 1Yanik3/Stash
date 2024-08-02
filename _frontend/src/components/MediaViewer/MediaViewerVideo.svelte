@@ -58,11 +58,13 @@
   let thumbIsLifted = false
   $: console.log(thumbIsLifted)
 
-  const processMousePositionToTime = (e: MouseEvent) => {
+  const processMousePositionToTime = (e: MouseEvent | TouchEvent) => {
     const startX = rangeSlider.getBoundingClientRect().left
     const endX = rangeSlider.getBoundingClientRect().right
     const range = endX - startX
-    const playbackPercentage = ((e.clientX - startX) / range) * 100
+    const playbackPercentage =
+      // @ts-ignore
+      (((e.clientX || e.touches[0].clientX) - startX) / range) * 100
     currentTime = (video.duration / 100) * playbackPercentage
   }
 </script>
@@ -100,6 +102,14 @@
         if (thumbIsLifted) processMousePositionToTime(e)
       }}
       on:mouseup={e => {
+        processMousePositionToTime(e)
+        thumbIsLifted = false
+      }}
+      on:touchstart={() => (thumbIsLifted = true)}
+      on:touchmove={e => {
+        if (thumbIsLifted) processMousePositionToTime(e)
+      }}
+      on:touchend={e => {
         processMousePositionToTime(e)
         thumbIsLifted = false
       }}
