@@ -38,7 +38,11 @@
     <Button icon="mdiImageMultiple" href="/settings/icon-packs">
       Icon Packs
     </Button>
-    <Button icon="mdiFileFind" href="/settings/orphaned">Orphaned Files</Button>
+    <Button
+      icon="mdiFileFind"
+      href="/settings/orphaned"
+      count={data.unimported_count}>Orphaned Files</Button
+    >
 
     <div class="divider" />
 

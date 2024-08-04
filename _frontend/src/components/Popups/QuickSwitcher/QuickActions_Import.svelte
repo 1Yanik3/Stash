@@ -12,7 +12,7 @@
     loading = true
 
     const response = await fetch(
-      `/api/cluster/${$page.data.cluster.id}/import`,
+      `https://stash.hera.lan/api/cluster/${$page.data.cluster.id}/import`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -22,12 +22,15 @@
       }
     )
 
-    if (response.ok) loading = false
+    if (response.ok)
+      setTimeout(() => {
+        loading = false
+      }, 200)
     else throw "Something went wrong with the import"
   }
 
   const getPromise = async (loading: boolean) => {
-    return fetch(`/api/cluster/-1/import`)
+    return fetch(`https://stash.hera.lan/api/cluster/-1/import`)
       .then(res => res.json())
       .then(d => d as string[])
   }

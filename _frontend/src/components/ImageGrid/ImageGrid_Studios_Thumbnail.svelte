@@ -109,11 +109,6 @@
       flex-direction: column;
       height: 35px;
 
-      //   margin: 0.5em;
-      //   margin-top: 0;
-      //   margin-bottom: 0;
-      //   margin-left: 0.75em;
-
       b {
         overflow: hidden;
         display: -webkit-box;
@@ -130,9 +125,6 @@
       overflow: scroll;
       display: flex;
       margin: -2.25px;
-      //   margin-top: 5.5px;
-      //   margin-bottom: 5.5px;
-      //   margin-left: 0.75em;
     }
 
     @media (hover: hover) and (pointer: fine) {
