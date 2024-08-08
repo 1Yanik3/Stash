@@ -1,4 +1,4 @@
-import { RequestHandler } from "@sveltejs/kit"
+import type { RequestHandler } from "@sveltejs/kit"
 import { bcrypt } from "hash-wasm"
 
 import prisma from "$lib/server/prisma"

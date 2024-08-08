@@ -2,7 +2,7 @@ import fs from "fs/promises"
 
 import prisma from "$lib/server/prisma"
 
-import { PageServerLoad } from "./$types"
+import type { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async () => {
   // Start reading the directory and querying the database in parallel

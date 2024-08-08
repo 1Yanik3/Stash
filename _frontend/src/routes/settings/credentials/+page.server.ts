@@ -1,6 +1,6 @@
 import prisma from "$lib/server/prisma"
 
-import { PageServerLoad } from "./$types"
+import type { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async () => ({
   allClusters: await prisma.clusters.findMany({
