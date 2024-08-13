@@ -5,34 +5,35 @@ import prisma from "../../prisma";
 
 const mediaRoot = "./media";
 const thumbnailRoot = "./thumbnails";
+import ffmpeg from "fluent-ffmpeg";
 
 export const execute = async (job: Job) => {
   const { id } = await parse(job.data, job);
 
-  const { duration } = await getMetadataFromFile(`${mediaRoot}/${id}`);
-
-  if (!duration) {
+  try {
+    ffmpeg()
+      .input(`${mediaRoot}/${id}`)
+      .complexFilter([
+        `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease`,
+      ])
+      .output(`${thumbnailRoot}/${id}_seek.webm`)
+      .on("error", async (error) => {
+        await prisma.job.update({
+          where: { id: job.id },
+          data: {
+            status: "failed",
+            debugMessages: ["Could not generate thumbnail 2", error.message],
+          },
+        });
+      })
+      .outputOptions(["-vf", "fps=1/10"])
+      .run();
+  } catch (error: any) {
     await prisma.job.update({
       where: { id: job.id },
       data: {
         status: "failed",
-        debugMessages: ["Could not get duration of video"],
-      },
-    });
-    throw new Error();
-  }
-
-  for (let position = 0; position < duration; position += 10) {
-    await generateThumbnailFromFile(
-      `${mediaRoot}/${id}`,
-      `${thumbnailRoot}/${id}_seek_${Math.floor(position / 10)}.webp`,
-      [`-ss ${position}`],
-      250
-    );
-    await prisma.job.update({
-      where: { id: job.id },
-      data: {
-        completionPercentage: Math.round((position / duration) * 100),
+        debugMessages: ["Could not generate thumbnail", error.message],
       },
     });
   }
