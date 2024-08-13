@@ -11,30 +11,21 @@ export const GET: RequestHandler = async ({ params }) => {
     return new Response(
       await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
     )
-  } catch {
-    try {
-      // respond with thumbnail
-      return new Response(
-        await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
-      )
-    } catch (e: any) {
-      if (params.media.includes("_seek_")) return
-      
-      console.error("Error generating thumbnail", e.message)
+  } catch (e: any) {
+    console.error("Error generating thumbnail", e.message)
 
-      // create thumbnail
-      // TODO: this should be a await task
-      await prisma.job.create({
-        data: {
-          name: "createMediaThumbnail",
-          data: JSON.stringify({ id: params.media })
-        }
-      })
+    // create thumbnail
+    // TODO: this should be a await task
+    await prisma.job.create({
+      data: {
+        name: "createMediaThumbnail",
+        data: JSON.stringify({ id: params.media })
+      }
+    })
 
-      return new Response("Thumbnail was unable to be found or generated!", {
-        status: 500
-      })
-    }
+    return new Response("Thumbnail was unable to be found or generated!", {
+      status: 500
+    })
   }
 }
 

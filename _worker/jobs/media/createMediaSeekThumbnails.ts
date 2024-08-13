@@ -1,6 +1,4 @@
 import { Job } from "@prisma/client";
-import generateThumbnailFromFile from "../../lib/generateThumbnailFromFile";
-import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import prisma from "../../prisma";
 
 const mediaRoot = "./media";
@@ -10,25 +8,38 @@ import ffmpeg from "fluent-ffmpeg";
 export const execute = async (job: Job) => {
   const { id } = await parse(job.data, job);
 
-  try {
-    ffmpeg()
-      .input(`${mediaRoot}/${id}`)
-      .complexFilter([
-        `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease,fps=1/10[v]`,
-      ])
-      .outputOptions(["-map", "[v]"])
-      .output(`${thumbnailRoot}/${id}_seek.webm`)
-      .on("error", async (error) => {
-        await prisma.job.update({
-          where: { id: job.id },
-          data: {
-            status: "failed",
-            debugMessages: ["Could not generate thumbnail 2", error.message],
-          },
-        });
-      })
-      .run();
-  } catch (error: any) {
+  await new Promise((resolve, reject) => {
+    try {
+      ffmpeg()
+        .input(`${mediaRoot}/${id}`)
+        .complexFilter([
+          `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease,fps=1/10[v]`,
+        ])
+        .outputOptions(["-map", "[v]"])
+        .output(`${thumbnailRoot}/${id}_seek.webm`)
+        .on("progress", async (progress) => {
+          await prisma.job.update({
+            where: { id: job.id },
+            data: {
+              completionPercentage: progress.percent || -1,
+            },
+          });
+        })
+        .on("end", resolve)
+        .on("error", async (error) => {
+          await prisma.job.update({
+            where: { id: job.id },
+            data: {
+              status: "failed",
+              debugMessages: ["Could not generate thumbnail 2", error.message],
+            },
+          });
+        })
+        .run();
+    } catch (error: any) {
+      reject(error);
+    }
+  }).catch(async (error) => {
     await prisma.job.update({
       where: { id: job.id },
       data: {
@@ -36,7 +47,7 @@ export const execute = async (job: Job) => {
         debugMessages: ["Could not generate thumbnail", error.message],
       },
     });
-  }
+  });
 };
 
 const parse = async (

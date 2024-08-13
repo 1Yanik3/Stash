@@ -46,13 +46,13 @@
 
   let video: HTMLVideoElement
   $: videoElement.set(video)
+  let seekVideo: HTMLVideoElement | null
 
   let paused = true
   let currentTime = 0
   let duration = 0
   let volume = 0.5
-  let currentSeekPercentage = 0
-  let currentSeekPosition: number | null = 0
+  let currentSeekPosition: number = 0
 
   $: playbackPercentage = (currentTime / duration) * 100
 
@@ -67,15 +67,16 @@
     const playbackPercentage =
       // @ts-ignore
       (((e.clientX || e.touches[0].clientX) - startX) / range) * 100
-    const newTime = (video.duration / 100) * playbackPercentage
 
-    if (thumbIsLifted) currentTime = newTime
+    currentSeekPosition = (video.duration / 100) * playbackPercentage
 
-    currentSeekPercentage = playbackPercentage
+    if (thumbIsLifted) currentTime = currentSeekPosition
 
-    if (currentSeekPercentage < 0) currentSeekPosition = null
-    else if (currentSeekPercentage > 99) currentSeekPosition = null
-    else currentSeekPosition = Math.floor(newTime / 10)
+    if (seekVideo) {
+      seekVideo.currentTime = currentSeekPosition
+      console.log(seekVideo.currentTime)
+      seekVideo.style.left = `${playbackPercentage}%`
+    }
   }
 </script>
 
@@ -127,15 +128,17 @@
       <div class="track-before" style="width: {playbackPercentage}%"></div>
       <div class="track-after" style="width: {100 - playbackPercentage}%"></div>
       <div class="thumb" style="left: {playbackPercentage}%"></div>
-      {#if !$settings.mobileLayout && currentSeekPosition != null}
-        <img
-          class="seekPreview"
-          style="left: {currentSeekPercentage}%"
-          src="{$page.data
-            .serverURL}/api/media/{$visibleMedium?.id}_seek_{currentSeekPosition}/thumbnail"
-          alt={currentSeekPosition.toFixed()}
+      {#if !$settings.mobileLayout}
+        <video
+          src="{$page.data.serverURL}/api/media/{$visibleMedium?.id}/seek"
+          autoplay
+          controls
+          bind:this={seekVideo}
+          muted
           crossorigin="use-credentials"
-        />
+        >
+          <track kind="captions" />
+        </video>
       {/if}
     </div>
     <div>
@@ -187,7 +190,7 @@
     width: 100%;
     height: 100%;
 
-    video {
+    & > video {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -264,7 +267,7 @@
           }
         }
 
-        .seekPreview {
+        & > video {
           position: absolute;
           bottom: 70px;
 
