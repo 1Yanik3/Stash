@@ -52,13 +52,13 @@
   let currentTime = 0
   let duration = 0
   let volume = 0.5
+  let disableSeeking = false
   let currentSeekPosition: number = 0
 
   $: playbackPercentage = (currentTime / duration) * 100
 
   let rangeSlider: HTMLDivElement
   let thumbIsLifted = false
-  $: console.log(thumbIsLifted)
 
   const processMousePositionToTime = (e: MouseEvent | TouchEvent) => {
     const startX = rangeSlider.getBoundingClientRect().left
@@ -74,10 +74,13 @@
 
     if (seekVideo) {
       seekVideo.currentTime = currentSeekPosition
-      console.log(seekVideo.currentTime)
       seekVideo.style.left = `${playbackPercentage}%`
     }
   }
+
+  visibleMedium.subscribe(() => {
+    disableSeeking = false
+  })
 </script>
 
 <main>
@@ -128,14 +131,13 @@
       <div class="track-before" style="width: {playbackPercentage}%"></div>
       <div class="track-after" style="width: {100 - playbackPercentage}%"></div>
       <div class="thumb" style="left: {playbackPercentage}%"></div>
-      {#if !$settings.mobileLayout}
+      {#if !$settings.mobileLayout && !disableSeeking}
         <video
-          src="{$page.data.serverURL}/api/media/{$visibleMedium?.id}/seek"
-          autoplay
-          controls
+          src="{$page.data.serverURL}/thumb/{$visibleMedium?.id}_seek.webm"
           bind:this={seekVideo}
           muted
           crossorigin="use-credentials"
+          on:error={() => (disableSeeking = true)}
         >
           <track kind="captions" />
         </video>
@@ -267,13 +269,15 @@
           }
         }
 
+        &:not(:hover) {
+            & > video {
+                display: none;
+            }
+        }
+
         & > video {
           position: absolute;
-          bottom: 70px;
-
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          bottom: 40px;
 
           width: 150px;
           border-radius: 5px;

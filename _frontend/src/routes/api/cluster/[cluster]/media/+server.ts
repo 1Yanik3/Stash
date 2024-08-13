@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   const file = data.get("file") as File
   const selectedTags = (data.get("selectedTags") as string).split(",")
 
-  const { id: mediaId } = await prisma.media.create({
+  const { id: mediaId, type } = await prisma.media.create({
     data: {
       name: file.name,
       type: file.type,
@@ -161,6 +161,15 @@ export const POST: RequestHandler = async ({ params, request }) => {
       data: JSON.stringify({ id: mediaId })
     }
   })
+
+  if (type.startsWith("video")) {
+    await prisma.job.create({
+      data: {
+        name: "createMediaSeekThumbnails",
+        data: JSON.stringify({ id: mediaId })
+      }
+    })
+  }
 
   return new Response()
 }
