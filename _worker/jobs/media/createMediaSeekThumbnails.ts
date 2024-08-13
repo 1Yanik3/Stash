@@ -34,6 +34,7 @@ export const execute = async (job: Job) => {
               debugMessages: ["Could not generate thumbnail 2", error.message],
             },
           });
+          reject(error);
         })
         .run();
     } catch (error: any) {
