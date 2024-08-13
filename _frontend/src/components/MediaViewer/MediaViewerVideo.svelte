@@ -3,7 +3,7 @@
 
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
-  import { videoElement, visibleMedium } from "$lib/stores"
+  import { settings, videoElement, visibleMedium } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   const formatDuration = (seconds: number) => {
@@ -51,6 +51,8 @@
   let currentTime = 0
   let duration = 0
   let volume = 0.5
+  let currentSeekPercentage = 0
+  let currentSeekPosition: number | null = 0
 
   $: playbackPercentage = (currentTime / duration) * 100
 
@@ -65,7 +67,15 @@
     const playbackPercentage =
       // @ts-ignore
       (((e.clientX || e.touches[0].clientX) - startX) / range) * 100
-    currentTime = (video.duration / 100) * playbackPercentage
+    const newTime = (video.duration / 100) * playbackPercentage
+
+    if (thumbIsLifted) currentTime = newTime
+
+    currentSeekPercentage = playbackPercentage
+
+    if (currentSeekPercentage < 0) currentSeekPosition = null
+    else if (currentSeekPercentage > 99) currentSeekPosition = null
+    else currentSeekPosition = Math.floor(newTime / 10)
   }
 </script>
 
@@ -99,7 +109,7 @@
       bind:this={rangeSlider}
       on:mousedown|preventDefault={() => (thumbIsLifted = true)}
       on:mousemove={e => {
-        if (thumbIsLifted) processMousePositionToTime(e)
+        processMousePositionToTime(e)
       }}
       on:mouseup={e => {
         processMousePositionToTime(e)
@@ -107,7 +117,7 @@
       }}
       on:touchstart={() => (thumbIsLifted = true)}
       on:touchmove={e => {
-        if (thumbIsLifted) processMousePositionToTime(e)
+        processMousePositionToTime(e)
       }}
       on:touchend={e => {
         processMousePositionToTime(e)
@@ -117,6 +127,16 @@
       <div class="track-before" style="width: {playbackPercentage}%"></div>
       <div class="track-after" style="width: {100 - playbackPercentage}%"></div>
       <div class="thumb" style="left: {playbackPercentage}%"></div>
+      {#if !$settings.mobileLayout && currentSeekPosition != null}
+        <img
+          class="seekPreview"
+          style="left: {currentSeekPercentage}%"
+          src="{$page.data
+            .serverURL}/api/media/{$visibleMedium?.id}_seek_{currentSeekPosition}/thumbnail"
+          alt={currentSeekPosition.toFixed()}
+          crossorigin="use-credentials"
+        />
+      {/if}
     </div>
     <div>
       <span>{formatDuration(currentTime)} / {formatDuration(duration)}</span>
@@ -242,6 +262,19 @@
           &:hover {
             height: $height + 12px;
           }
+        }
+
+        .seekPreview {
+          position: absolute;
+          bottom: 70px;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          width: 150px;
+          border-radius: 5px;
+          transform: translate(-50%);
         }
       }
     }

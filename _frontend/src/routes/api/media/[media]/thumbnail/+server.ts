@@ -18,6 +18,8 @@ export const GET: RequestHandler = async ({ params }) => {
         await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
       )
     } catch (e: any) {
+      if (params.media.includes("_seek_")) return
+      
       console.error("Error generating thumbnail", e.message)
 
       // create thumbnail
