@@ -1,11 +1,10 @@
 import ffmpeg from "fluent-ffmpeg";
 
-const targetSize = 500;
-
 export default (
   inputFile: string,
   outputFile: string,
-  outputOptions: any[] = []
+  outputOptions: any[] = [],
+  targetSize = 500
 ) =>
   new Promise((resolve, reject) => {
     try {
