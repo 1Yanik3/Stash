@@ -25,10 +25,16 @@ export const execute = async (job: Job) => {
   for (let position = 0; position < duration; position += 10) {
     await generateThumbnailFromFile(
       `${mediaRoot}/${id}`,
-      `${thumbnailRoot}/${id}_seek_${position}.webp`,
-      [`-ss ${Math.floor(position / 10)}`],
+      `${thumbnailRoot}/${id}_seek_${Math.floor(position / 10)}.webp`,
+      [`-ss ${position}`],
       250
     );
+    await prisma.job.update({
+      where: { id: job.id },
+      data: {
+        completionPercentage: Math.round((position / duration) * 100),
+      },
+    });
   }
 };
 
