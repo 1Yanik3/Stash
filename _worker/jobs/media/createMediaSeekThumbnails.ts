@@ -14,8 +14,9 @@ export const execute = async (job: Job) => {
     ffmpeg()
       .input(`${mediaRoot}/${id}`)
       .complexFilter([
-        `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease`,
+        `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease,fps=1/10[v]`,
       ])
+      .outputOptions(["-map", "[v]"])
       .output(`${thumbnailRoot}/${id}_seek.webm`)
       .on("error", async (error) => {
         await prisma.job.update({
@@ -26,7 +27,6 @@ export const execute = async (job: Job) => {
           },
         });
       })
-      .outputOptions(["-vf", "fps=1/10"])
       .run();
   } catch (error: any) {
     await prisma.job.update({
