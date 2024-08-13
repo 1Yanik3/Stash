@@ -60,6 +60,9 @@ func main() {
 	fs := http.FileServer(http.Dir("./media"))
 	http.Handle("/file/", authMiddleware(http.StripPrefix("/file", fs)))
 
+	fs_seek := http.FileServer(http.Dir("./thumbnails"))
+	http.Handle("/thumb/", authMiddleware(http.StripPrefix("/thumb", fs_seek)))
+
 	// Set up the reverse proxy for all other requests
 	targetURL, err := url.Parse(proxyTargetURL)
 	if err != nil {
