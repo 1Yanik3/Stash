@@ -2,13 +2,14 @@
 FROM node:alpine as builder
 WORKDIR /app
 
+RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 COPY schema.prisma .
 RUN pnpx prisma generate
 
 COPY static ./static
-COPY jsconfig.json .*rc* mdi-svelte.d.ts *.config.js ./
+COPY tsconfig.json .*rc* mdi-svelte.d.ts *.config.js ./
 COPY src ./src
 RUN pnpm run build && pnpm prune --prod
 

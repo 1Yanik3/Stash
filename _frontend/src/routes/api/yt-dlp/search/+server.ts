@@ -1,6 +1,6 @@
 import { parse } from "node-html-parser"
 
-import { RequestHandler } from "./$types"
+import type { RequestHandler } from "./$types"
 
 export const POST: RequestHandler = async ({ request }) => {
   const { query } = await request.json()
