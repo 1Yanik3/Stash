@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client"
+  import type { Media } from "@prisma/client/wasm"
 
   import GridThumbnail from "./GridThumbnail.svelte"
 

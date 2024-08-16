@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client"
+  import type { Media } from "@prisma/client/wasm"
 
   import ImageGridTableRow from "./ImageGrid_Table_Row.svelte"
 

@@ -2,10 +2,10 @@
   import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
     actionBar,
     actionBars,
-    controller,
     isFullscreen,
     settings,
     visibleMedium
@@ -16,7 +16,7 @@
   const onscroll = (e: Event) => {
     const target = e.target as HTMLDivElement
     if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500) {
-      $controller.mediaController.loadMoreMedia()
+      mediaController.loadMoreMedia()
     }
   }
 </script>
@@ -62,7 +62,6 @@
     }
 
     &.mobile {
-
       #imageGallerySection {
         min-width: unset;
       }

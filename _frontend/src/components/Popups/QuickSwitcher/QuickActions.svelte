@@ -1,10 +1,10 @@
 <script lang="ts">
   import { page } from "$app/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"
   import {
     actionBar,
     controller,
-    media_store,
     selectedMediaIds,
     selectedTags,
     uploadPopupOpen,
@@ -36,7 +36,7 @@
                 name: newTag
               })
             }).catch(console.error)
-            $media_store
+            mediaController.media
               .find(m => m.id == $selectedMediaIds[i])
               ?.tags.push(newTag)
           }
@@ -48,7 +48,8 @@
         icon: "mdiTagRemove",
         async action() {
           const tagsInSelectedMedia =
-            $media_store.find(m => m.id == $selectedMediaIds[0])?.tags || []
+            mediaController.media.find(m => m.id == $selectedMediaIds[0])
+              ?.tags || []
 
           const tagToDelete = await $controller
             .prompt()
@@ -63,7 +64,9 @@
               })
             }).catch(console.error)
 
-            const media = $media_store.find(m => m.id == $selectedMediaIds[i])
+            const media = mediaController.media.find(
+              m => m.id == $selectedMediaIds[i]
+            )
             if (media) media.tags = media.tags.filter(t => t != tagToDelete)
           }
         },

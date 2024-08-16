@@ -7,7 +7,6 @@
   import Key from "$components/Key.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"
   import Shortcut from "$reusables/Shortcut.svelte"
-  import { tooltip as tooltip_function } from "$reusables/tooltip"
 
   let isDraggingOver = false
 
@@ -38,7 +37,7 @@
   export let download: true | null = null
   export let transparentButton = false
 
-  export let tooltip: Parameters<typeof tooltip_function>[1] = {
+  export let tooltip: any = {
     title: "",
     position: "bottom",
     enabled: false
@@ -108,10 +107,10 @@
   class:highlighted
   class:noMargin
   class:transparentButton
-  on:contextmenu={e => {
+  on:contextmenu={(e: MouseEvent) => {
     dispatch("contextmenu", e)
   }}
-  on:click={e => {
+  on:click={(e: MouseEvent) => {
     console.time("navigation")
     dispatch("click", e)
     // TODO
@@ -130,13 +129,12 @@
 
     // }
   }}
-  on:dblclick={e => {
+  on:dblclick={(e: MouseEvent) => {
     dispatch("dblclick", e)
   }}
   class:isDraggingOver
   class:card
   class:disabled
-  use:tooltip_function={tooltip}
 >
   <div class="section">
     {#if (icon || iconNoTyping) != null}

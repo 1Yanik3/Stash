@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ClusterType } from "@prisma/client"
+  import { ClusterType } from "@prisma/client/wasm"
   import { text } from "@sveltejs/kit"
 
   import { invalidateAll } from "$app/navigation"

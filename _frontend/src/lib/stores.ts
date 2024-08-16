@@ -1,4 +1,4 @@
-import type { Media } from "@prisma/client"
+import type { Media } from "@prisma/client/wasm"
 import { persisted } from "svelte-local-storage-store"
 import { writable, type Writable } from "svelte/store"
 
@@ -10,7 +10,6 @@ import { setMethods, sortingMethods } from "../types"
 
 // Core Parts
 export let controller: Writable<Controller> = writable()
-export let media_store: Writable<Media[]> = writable([])
 
 // Constants
 export const pageSize = 50

@@ -1,6 +1,5 @@
-import { get, Writable, writable } from "svelte/store"
+import { get } from "svelte/store"
 
-import { afterNavigate } from "$app/navigation"
 import { page } from "$app/stores"
 import {
   activeSetMethod,
@@ -31,21 +30,15 @@ export default class TagsController {
     favouritesOnly.subscribe(this.updateTags)
     mediaTypeFilter.subscribe(this.updateTags)
 
-    // afterNavigate(() => {
-    //   this.tags.set([])
-    // })
-
     this.alreadyInitialized = true
   }
 
-  public tags: Writable<
-    {
-      tag: string[]
-      direct_count: number
-      indirect_count: number
-      tag_exists_in_collapsed_tags: boolean
-    }[]
-  > = writable([])
+  public tags: {
+    tag: string[]
+    direct_count: number
+    indirect_count: number
+    tag_exists_in_collapsed_tags: boolean
+  }[] = $state([])
 
   public updateTags = async () => {
     const tagRequest = await fetch(
@@ -57,16 +50,16 @@ export default class TagsController {
       }).toString()}`
     )
 
-    this.tags.set(await tagRequest.json())
+    this.tags = await tagRequest.json()
     this.updateHierarchicalTagsExceptPeople()
   }
 
-  public hierarchicalTagsExceptPeople: Writable<TagData> = writable([])
+  public hierarchicalTagsExceptPeople: TagData = $state([])
 
   private updateHierarchicalTagsExceptPeople = async () => {
     let tagData: TagData = []
 
-    get(this.tags)
+    this.tags
       .filter(t => !["Solo", "Two", "Three", "Group"].includes(t.tag[0]))
       .sort((a, b) => a.tag.length - b.tag.length)
       .forEach(({ tag, direct_count, indirect_count }) => {
@@ -95,12 +88,12 @@ export default class TagsController {
         addAt(tagData, 0)
       })
 
-    this.hierarchicalTagsExceptPeople.set(
-      tagData.sort((a, b) =>
-        get(page).params.cluster == "Camp Buddy"
-          ? b.name.localeCompare(a.name)
-          : b.count - a.count
-      )
+    this.hierarchicalTagsExceptPeople = tagData.sort((a, b) =>
+      get(page).params.cluster == "Camp Buddy"
+        ? b.name.localeCompare(a.name)
+        : b.count - a.count
     )
   }
 }
+
+export const tagsController = new TagsController()

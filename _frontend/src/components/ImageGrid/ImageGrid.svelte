@@ -1,10 +1,9 @@
 <script lang="ts">
   import { readable } from "svelte/store"
 
-  import { afterNavigate } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
-  import { controller, media_store, selectedTags, viewMode } from "$lib/stores"
+  import { controller, selectedTags, viewMode } from "$lib/stores"
 
   import type { PageData } from "../../routes/[cluster]/$types"
   import ImageGridCollection from "./ImageGrid_Collection.svelte"
@@ -12,9 +11,9 @@
   import ImageGridStories from "./ImageGrid_Stories.svelte"
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
 
   $: pageData = $page.data as PageData
-  $: ({ pages } = $controller?.mediaController ?? readable({ pages: [] }))
   $: ({ tags } = $controller?.tagsController ?? readable({ tags: [] }))
 </script>
 
@@ -64,9 +63,9 @@
 
   <section>
     {#if $viewMode == "table"}
-      <ImageGridTable media={$media_store} />
-    {:else if $controller?.mediaController}
-      {#each $pages as { hash, media }, i (hash)}
+      <ImageGridTable media={mediaController.media} />
+    {:else}
+      {#each mediaController.pages as { hash, media }, i (hash)}
         {#if pageData.cluster.type == "withName"}
           <ImageGridStudios {media} {i} />
         {:else}

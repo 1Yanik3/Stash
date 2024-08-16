@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client"
+  import type { Media } from "@prisma/client/wasm"
 
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"

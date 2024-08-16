@@ -15,13 +15,12 @@
   import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
-  import MediaController from "$lib/controllers/MediaController"
-  import TagsController from "$lib/controllers/TagsController"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { tagsController as _tagsController } from "$lib/controllers/TagsController.svelte"
   import {
     actionBar,
     actionBars,
     imageSuffixParameter,
-    media_store,
     selectedMediaIds,
     selectedTags,
     settings,
@@ -34,14 +33,15 @@
 
   $: pageData = $page.data as PageData
 
-  export const mediaController = new MediaController()
-  export const tagsController = new TagsController()
+  // TODO: get rid of
+  export const tagsController = _tagsController
   export const collapsedTagsController = new CollapsedTagsController()
 
   onMount(() => {
     mediaController.init()
-    tagsController.init()
+    _tagsController.init()
     collapsedTagsController.init()
+    console.log("Controller mounted")
   })
 
   beforeNavigate(() => {
@@ -69,21 +69,26 @@
   export let promptController: PromptController
   export const prompt = () => promptController.prompt
 
+  // TODO: Move to controller
   export const goToPreviousMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
+    const mediaIndex = mediaController.media.findIndex(
+      m => m.id == $visibleMedium?.id
+    )
 
-    if (mediaIndex > 0) visibleMedium.set($media_store[mediaIndex - 1])
+    if (mediaIndex > 0) visibleMedium.set(mediaController.media[mediaIndex - 1])
   }
 
   export const goToNextMedia = async () => {
     if (!$visibleMedium) return
 
-    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
+    const mediaIndex = mediaController.media.findIndex(
+      m => m.id == $visibleMedium?.id
+    )
 
-    if (mediaIndex < $media_store.length - 1)
-      visibleMedium.set($media_store[mediaIndex + 1])
+    if (mediaIndex < mediaController.media.length - 1)
+      visibleMedium.set(mediaController.media[mediaIndex + 1])
   }
 
   const shift = true,

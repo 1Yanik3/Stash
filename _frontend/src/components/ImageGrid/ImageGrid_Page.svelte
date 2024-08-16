@@ -1,15 +1,14 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client"
-
-  import { JustifiedGrid } from "$components/Grid/Grids/JustifiedGrid"
+  import type { Media } from "@prisma/client/wasm"
 
   import GridThumbnail from "./GridThumbnail.svelte"
+  import Grid from "$components/Grid/Grid.svelte"
 
   export let media: Media[]
   export let i: number
 </script>
 
-<JustifiedGrid
+<Grid
   autoResize={true}
   useResizeObserver={true}
   defaultDirection="start"
@@ -20,4 +19,4 @@
   {#each media as medium}
     <GridThumbnail {medium} {i} />
   {/each}
-</JustifiedGrid>
+</Grid>

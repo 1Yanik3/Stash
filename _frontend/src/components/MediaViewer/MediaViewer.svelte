@@ -1,10 +1,10 @@
 <script lang="ts">
   import { page } from "$app/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
     controller,
     imageSuffixParameter,
     isFullscreen,
-    media_store,
     settings,
     visibleMedium
   } from "$lib/stores"
@@ -22,11 +22,13 @@
 
   let preloadedImageUrl = ""
   const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
-    const mediaIndex = $media_store.findIndex(m => m.id == $visibleMedium?.id)
+    const mediaIndex = mediaController.media.findIndex(
+      m => m.id == $visibleMedium?.id
+    )
 
-    if (mediaIndex < $media_store.length - 1)
+    if (mediaIndex < mediaController.media.length - 1)
       preloadedImageUrl = `${pageData.serverURL}/file/${
-        $media_store[mediaIndex + 1].id
+        mediaController.media[mediaIndex + 1].id
       }${$imageSuffixParameter}`
     else preloadedImageUrl = ""
   }

@@ -3,7 +3,7 @@
 
   import Icon from "$components/Icon.svelte"
   import getIconForTagName from "$lib/getIconForTagName"
-  import { tooltip } from "$reusables/tooltip"
+//   import { tooltip } from "$reusables/tooltip"
 
   export let tag: string
   export let forceShowName = false
@@ -17,12 +17,6 @@
   <span
     class:compact
     on:click|preventDefault={() => dispatch("click")}
-    on:contextmenu|preventDefault={() => dispatch("contextmenu")}
-    use:tooltip={{
-      title: tag,
-      position: "bottom",
-      enabled: $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden"
-    }}
   >
     {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" && !forceShowName}
       <Icon name={$icon} size={compact ? 0.9 : 1} />

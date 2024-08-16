@@ -1,6 +1,5 @@
-import { Story } from "@prisma/client"
-
 import prisma from "$lib/server/prisma"
+import type { Story } from "@prisma/client/wasm"
 
 import type { PageServerLoad, PageServerParentData } from "./$types"
 

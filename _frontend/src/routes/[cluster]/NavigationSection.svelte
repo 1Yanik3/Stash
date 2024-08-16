@@ -5,15 +5,12 @@
   import Button from "$components/Button.svelte"
   import SidebarSection from "$components/SidebarSection.svelte"
   import { controller, selectedTags, settings } from "$lib/stores"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   import type { PageData } from "./$types"
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   $: pageData = $page.data as PageData
-
-  $: ({ tags, hierarchicalTagsExceptPeople } =
-    $controller?.tagsController ??
-    readable({ tags: [], hierarchicalTagsExceptPeople: [] }))
 </script>
 
 {#if $page.data.cluster.type != "stories"}
@@ -87,25 +84,25 @@
         <SidebarSection title="People">
           <SidebarHierarchyEntry
             name="Solo"
-            count={$tags?.find(t => t.tag[0] == "Solo")?.direct_count || 0}
+            count={tagsController.tags.find(t => t.tag[0] == "Solo")?.direct_count || 0}
             iconOverwrite="mdiAccount"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Two"
-            count={$tags?.find(t => t.tag[0] == "Two")?.direct_count || 0}
+            count={tagsController.tags.find(t => t.tag[0] == "Two")?.direct_count || 0}
             iconOverwrite="mdiAccountMultiple"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Three"
-            count={$tags?.find(t => t.tag[0] == "Three")?.direct_count || 0}
+            count={tagsController.tags.find(t => t.tag[0] == "Three")?.direct_count || 0}
             iconOverwrite="mdiAccountGroup"
             children={[]}
           />
           <SidebarHierarchyEntry
             name="Group"
-            count={$tags?.find(t => t.tag[0] == "Group")?.direct_count || 0}
+            count={tagsController.tags.find(t => t.tag[0] == "Group")?.direct_count || 0}
             iconOverwrite="mdiAccountMultiplePlus"
             children={[]}
           />
@@ -131,11 +128,9 @@
       {/if}
 
       <SidebarSection title="Tags">
-        {#if $hierarchicalTagsExceptPeople}
-          {#each $hierarchicalTagsExceptPeople as d}
-            <SidebarHierarchyEntry {...d} />
-          {/each}
-        {/if}
+        {#each tagsController.hierarchicalTagsExceptPeople as d}
+        <SidebarHierarchyEntry {...d} />
+        {/each}
       </SidebarSection>
     </div>
   </main>

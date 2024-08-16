@@ -1,14 +1,12 @@
-import { Media } from "@prisma/client"
+import type { Media } from "@prisma/client/wasm"
 import { md5 } from "hash-wasm"
-import { get, StoresValues, Writable, writable } from "svelte/store"
+import { get } from "svelte/store"
 
-import { afterNavigate } from "$app/navigation"
 import { page } from "$app/stores"
 import {
   activeSetMethod,
   activeSortingMethod,
   favouritesOnly,
-  media_store,
   mediaTypeFilter,
   pageSize,
   seed,
@@ -18,7 +16,7 @@ import {
 
 import { setMethods, sortingMethods } from "../../types"
 
-export default class MediaController {
+class MediaController {
   private alreadyInitialized = false
   public init = () => {
     if (this.alreadyInitialized) {
@@ -33,21 +31,18 @@ export default class MediaController {
     activeSortingMethod.subscribe(this.updateMedia)
     seed.subscribe(this.updateMedia)
 
-    media_store.subscribe(this.calculatePages)
-
-    // afterNavigate(() => {
-    //   this.pages.set([])
-    // })
-
     this.alreadyInitialized = true
   }
 
-  public pages: Writable<
-    { hash: string; media: StoresValues<typeof media_store> }[]
-  > = writable([])
-
+  public media: Media[] = $state([])
+  public pages: { hash: string; media: Media[] }[] = $state([])
   public updateMedia = async () => {
-    media_store.set(await this.loadMedia(0))
+    this.setMedia(await this.loadMedia(0))
+  }
+
+  private setMedia = async (media: Media[]) => {
+    this.media = media
+    this.pages = await calculatePages(media)
   }
 
   private isCurrentlyLoadingNewMedia = false
@@ -83,49 +78,40 @@ export default class MediaController {
   public async loadMoreMedia() {
     if (this.isCurrentlyLoadingNewMedia) this.isCurrentlyLoadingNewMedia = true
 
-    media_store.set([
-      ...get(media_store),
-      ...(await this.loadMedia(get(media_store).length))
-    ])
+    this.setMedia(this.media.concat(await this.loadMedia(this.media.length)))
 
     this.isCurrentlyLoadingNewMedia = false
   }
+}
 
-  private calculatePages = async () => {
-    // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
+const _mediaController = new MediaController()
+export const mediaController = _mediaController
 
-    if (!get(media_store).length) {
-      this.pages.set([])
-      return
-    }
+const calculatePages = async (media: Media[]) => {
+  // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
 
-    const tmp_pages: StoresValues<typeof this.pages> = []
-    let hasChanges = false
-
-    // For each page
-    for (
-      let i = 0;
-      i <
-      Math.max(
-        Math.ceil(get(media_store).length / pageSize),
-        get(this.pages).length
-      );
-      i++
-    ) {
-      const page = get(media_store).slice(i * pageSize, (i + 1) * pageSize)
-      if (!page.length) break
-
-      const hash = await md5(page.map(m => m.id).join())
-
-      // If the page has changed, update it
-      if (get(this.pages)[i]?.hash != hash) {
-        hasChanges = true
-        tmp_pages[i] = { hash, media: page }
-      } else tmp_pages[i] = get(this.pages)[i]
-    }
-
-    if (hasChanges) {
-      this.pages.set(tmp_pages)
-    }
+  if (!media.length) {
+    return []
   }
+  const pages: { hash: string; media: Media[] }[] = []
+
+  // For each page
+  for (
+    let i = 0;
+    i <
+    Math.max(Math.ceil(media.length / pageSize), _mediaController.pages.length);
+    i++
+  ) {
+    const page = media.slice(i * pageSize, (i + 1) * pageSize)
+    if (!page.length) break
+
+    const hash = await md5(page.map(m => m.id).join())
+
+    // If the page has changed, update it
+    if (_mediaController.pages[i]?.hash != hash) {
+      pages[i] = { hash, media: page }
+    } else pages[i] = _mediaController.pages[i]
+  }
+
+  return pages
 }

@@ -1,4 +1,4 @@
-import { get, Readable, readable } from "svelte/store"
+import { get, readable, type Readable } from "svelte/store"
 
 import { settings } from "$lib/stores"
 

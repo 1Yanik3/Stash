@@ -14,7 +14,7 @@
     onMount
   } from "svelte"
 
-  export let GridClass: any
+  import { JustifiedGrid as GridClass } from "@egjs/grid"
 
   const dispatch = createEventDispatcher()
   let container: any
