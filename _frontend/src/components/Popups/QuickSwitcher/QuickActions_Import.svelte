@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { controller, selectedTags } from "$lib/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { selectedTags } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
@@ -51,7 +52,7 @@
     on:selected={({ detail }) => importElement(detail)}
     disableClose
     on:close={() => {
-      $controller.mediaController.updateMedia()
+      mediaController.updateMedia()
       // TODO: invalidate Tags
     }}
   >

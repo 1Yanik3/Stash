@@ -10,6 +10,7 @@
   import Icon from "./Icon.svelte"
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
 
   let tags: String[] = []
   let tagInputElement: TagInputField
@@ -86,7 +87,7 @@
 
     $uploadPopupOpen = false
     uploadStarted = false
-    $controller.mediaController.updateMedia()
+    mediaController.updateMedia()
     // TODO: invalidate Tags
   }
 </script>

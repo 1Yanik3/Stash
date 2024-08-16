@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
   import {
     controller,
@@ -121,7 +122,7 @@
                 fetch(`/api/media/${$visibleMedium?.id}/metadata/reload`).then(
                   () => {
                     // TODO: Reload does not work
-                    $controller.mediaController.updateMedia()
+                    mediaController.updateMedia()
                   }
                 )
               }}
