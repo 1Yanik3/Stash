@@ -35,7 +35,10 @@
 
 <main
   transition:fade={{ duration: 100 }}
-  on:click={() => $controller.setPopup(null)}
+  on:click={() => {
+    dispatch("close")
+    $controller.setPopup(null)
+  }}
   class:mobile={$settings.mobileLayout}
   class:fullscreen
 >

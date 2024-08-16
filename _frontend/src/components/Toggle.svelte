@@ -1,16 +1,28 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
+  let { toggle, enable, disable, state } = $props<{
+    toggle?: (value: boolean) => void
+    enable?: (value: boolean) => void
+    disable?: (value: boolean) => void
+    state: boolean
+  }>()
 
-  const dispatch = createEventDispatcher()
-
-  $: if (state != undefined) dispatch("toggle", state)
-  $: if (state == true) dispatch("enable")
-  $: if (state == false) dispatch("disable")
-
-  export let state = false
+  //   $: if (state != undefined) toggle(state)
+  //   $: if (state == true) dispatch("enable")
+  //   $: if (state == false) dispatch("disable")
 </script>
 
-<main on:click={() => (state = !state)}>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<!-- svelte-ignore event_directive_deprecated -->
+<main
+  on:click={() => {
+    state = !state
+    if (toggle) toggle(state)
+    if (state == true && enable) enable(true)
+    if (state == false && disable) disable(false)
+  }}
+>
+  <!-- svelte-ignore element_invalid_self_closing_tag -->
   <div class:on={state} class:off={!state} />
 </main>
 
@@ -57,7 +69,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover div {
         filter: brightness(1.2);
       }

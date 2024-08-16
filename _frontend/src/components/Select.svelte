@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { possibleIcons } from "$lib/possibleIcons"
   import Dropdown from "$reusables/Dropdown.svelte"
 
   import Button from "./Button.svelte"
@@ -6,7 +7,11 @@
 
   type T = $$Generic<Record>
 
-  export let options: { value: T; name: string | undefined }[]
+  export let options: {
+    value: T
+    name?: string
+    icon?: keyof typeof possibleIcons
+  }[]
   export let value: T = options[0].value
   export let width = 150
 
@@ -16,6 +21,8 @@
   let left = 0
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main
   bind:this={main}
   on:click={() => {
@@ -24,9 +31,16 @@
     left = rect.left
     open = !open
   }}
-  style:min-width="{width - 10.5}px"
+  style:min-width={width > 0 ? `${width}px` : "100%"}
 >
-  <span>{options.find(o => o.value == value)?.name || value}</span>
+  {#if options.find(o => o.value == value)?.icon}
+    <div class="icon">
+      <Icon size={0.8} name={options.find(o => o.value == value)?.icon} />
+    </div>
+  {/if}
+  <span>
+    {options.find(o => o.value == value)?.name || value}
+  </span>
   <div class="arrow">
     <Icon size={0.8} name="mdiChevronDown" />
   </div>
@@ -40,6 +54,7 @@
     style:width="{width}px"
   >
     {#each options as o}
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
       <span
         class:active={o.value === value}
         on:mousedown={() => {
@@ -47,6 +62,9 @@
           open = false
         }}
       >
+        {#if o.icon}
+          <Icon size={0.8} name={o.icon} />
+        {/if}
         {o.name}
       </span>
     {/each}
@@ -84,10 +102,17 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         filter: brightness(110%);
       }
+    }
+
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    .icon {
+      padding-left: 0.25rem;
     }
   }
 

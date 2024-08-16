@@ -2,18 +2,18 @@
   import { page } from "$app/stores"
   import {
     activeSetMethod,
-    activeSortingMethod,
     controller,
     favouritesOnly,
     mediaTypeFilter,
-    seed,
     selectedTags,
     traverse
   } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../routes/[cluster]/$types"
-  import { setMethods, sortingMethods } from "../types"
+  import SidebarFilterSection from "../routes/[cluster]/SidebarFilterSection.svelte"
+  import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
   import Button from "./Button.svelte"
   import Icon from "./Icon.svelte"
 
@@ -22,6 +22,7 @@
   let clusterSelectionDropdownVisible = false
   let filtersSelectionDropdownVisible = false
   let menuDropdownVisible = false
+  let tagsSheetOpen = false
 
   $: filterCount =
     ($traverse ? 1 : 0) +
@@ -46,88 +47,17 @@
   </Dropdown>
 {/if}
 
+{#if tagsSheetOpen}
+  <Popup bottomSheet on:close={() => {
+    tagsSheetOpen = false
+  }}>
+    <SidebarTagsSection />
+  </Popup>
+{/if}
+
 {#if filtersSelectionDropdownVisible}
   <Dropdown bottom={84} right={8}>
-    <Button
-      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
-      on:click={() => {
-        activeSortingMethod.set(
-          sortingMethods[
-            (sortingMethods.indexOf($activeSortingMethod) + 1) %
-              sortingMethods.length
-          ]
-        )
-      }}
-      on:contextmenu={({ detail }) => {
-        detail.preventDefault()
-        seed.set(Math.random())
-      }}
-      icon={$activeSortingMethod.icon}
-    >
-      Sorting Method
-    </Button>
-
-    <Button
-      disabled={pageData.cluster?.type == "stories"}
-      on:click={() => {
-        traverse.set(!$traverse)
-      }}
-      icon={$traverse ? "mdiHook" : "mdiHookOff"}
-    >
-      Traverse
-    </Button>
-
-    <Button
-      disabled={["collection", "stories"].includes(pageData.cluster?.type)}
-      on:click={() => {
-        activeSetMethod.set(
-          setMethods[
-            (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
-          ]
-        )
-      }}
-      icon={$activeSetMethod.icon}
-    >
-      Set Method ({$activeSetMethod.title})
-    </Button>
-
-    {#if $mediaTypeFilter == ""}
-      <Button
-        icon="mdiMultimedia"
-        on:click={() => {
-          mediaTypeFilter.set("image")
-        }}
-      >
-        Image
-      </Button>
-    {:else if $mediaTypeFilter == "image"}
-      <Button
-        icon="mdiImageOutline"
-        on:click={() => {
-          mediaTypeFilter.set("video")
-        }}
-      >
-        Image
-      </Button>
-    {:else if $mediaTypeFilter == "video"}
-      <Button
-        icon="mdiVideoOutline"
-        on:click={() => {
-          mediaTypeFilter.set("")
-        }}
-      >
-        Image
-      </Button>
-    {/if}
-
-    <Button
-      icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
-      on:click={() => {
-        favouritesOnly.set(!$favouritesOnly)
-      }}
-    >
-      Favourited
-    </Button>
+    <SidebarFilterSection />
   </Dropdown>
 {/if}
 
@@ -166,6 +96,7 @@
 
 <main>
   <!-- Cluster Selection -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="button"
     class:active={!$page.url.pathname.startsWith("/settings")}
@@ -186,10 +117,8 @@
   </div>
 
   <!-- Tags Section -->
-  <div
-    class="button"
-    on:mousedown={() => $controller.setPopup("Navigation Section Mobile")}
-  >
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div class="button" on:mousedown={() => (tagsSheetOpen = !tagsSheetOpen)}>
     <div class="iconContainer">
       <div class="icon">
         <Icon name="mdiTagMultiple" />
@@ -204,6 +133,7 @@
   </div>
 
   <!-- Filter Section -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="button"
     class:active={filterCount}
@@ -224,6 +154,7 @@
   </div>
 
   <!-- Menu Section -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="button"
     class:active={$page.url.pathname.startsWith("/settings")}
@@ -309,7 +240,6 @@
       }
 
       &.active {
-
         .label {
           font-weight: 700;
           opacity: 90%;

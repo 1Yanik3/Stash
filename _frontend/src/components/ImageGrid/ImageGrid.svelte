@@ -12,9 +12,9 @@
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   $: pageData = $page.data as PageData
-  $: ({ tags } = $controller?.tagsController ?? readable({ tags: [] }))
 </script>
 
 {#if pageData.cluster.type == "collection" && !$selectedTags.length}
@@ -37,8 +37,8 @@
         </Button>
       {/if}
 
-      {#if $tags}
-        {#each $tags
+      {#if tagsController.tags}
+        {#each tagsController.tags
           .filter(t => t.tag
               .join("/")
               .toLowerCase()

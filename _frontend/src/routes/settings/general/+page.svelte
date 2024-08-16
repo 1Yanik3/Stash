@@ -46,9 +46,9 @@
     <span>Mobile Layout</span>
     <Toggle
       state={$settings.mobileLayout}
-      on:toggle={e =>
+      toggle={value =>
         settings.update(s => {
-          s.mobileLayout = e.detail
+          s.mobileLayout = value
           return s
         })}
     />

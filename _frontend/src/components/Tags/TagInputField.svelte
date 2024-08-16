@@ -1,12 +1,8 @@
 <script lang="ts">
   import FuzzySearch from "fuzzy-search"
-  import { createEventDispatcher, onMount } from "svelte"
-  import { readable } from "svelte/store"
+  import { createEventDispatcher } from "svelte"
 
-  import { page } from "$app/stores"
-  import { controller } from "$lib/stores"
-
-  import type { PageData } from "../../routes/[cluster]/$types"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   let value: string
   let focused = false
@@ -45,9 +41,7 @@
   }
 
   //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
-  $: ({ tags } = $controller?.tagsController ?? readable({ tags: [] }))
-
-  $: searcher = new FuzzySearch($tags, ["tag"], {
+  $: searcher = new FuzzySearch(tagsController.tags, ["tag"], {
     caseSensitive: false,
     sort: true
   })

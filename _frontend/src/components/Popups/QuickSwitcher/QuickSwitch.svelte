@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { get } from "svelte/store"
-
-  import { controller, selectedTags } from "$lib/stores"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import { selectedTags } from "$lib/stores"
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
   const promise = (async () => {
-    return get($controller?.tagsController?.tags)
+    return tagsController.tags
   })()
 </script>
 
@@ -15,7 +14,6 @@
   searchAttributes={["tag"]}
   let:result
   on:selected={({ detail }) => {
-    // goto(`/${detail.cluster.name}/${detail.id}`)
     selectedTags.set([detail.tag.join("/").toLowerCase()])
   }}
 >

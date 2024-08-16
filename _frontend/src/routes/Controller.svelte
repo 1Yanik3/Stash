@@ -6,7 +6,6 @@
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
-  import NavigationSectionMobile from "$components/Popups/Mobile/NavigationSectionMobile.svelte"
   import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
@@ -105,7 +104,6 @@
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
     "Create Story": CreateStoryPopup,
-    "Navigation Section Mobile": NavigationSectionMobile,
     "Media Viewer Mobile": MediaViewerMobile,
     "Media Details": MediaDetailsPopup
   } as const

@@ -48,7 +48,7 @@
   $: videoElement.set(video)
   let seekVideo: HTMLVideoElement | null
 
-  let paused = true
+  let paused = false
   let currentTime = 0
   let duration = 0
   let volume = 0.5
@@ -108,6 +108,7 @@
         paused = !paused
       }}
     />
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="range"
       bind:this={rangeSlider}

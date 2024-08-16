@@ -11,7 +11,9 @@
     visibleMedium
   } from "$lib/stores"
 
-  import NavigationSection from "./NavigationSection.svelte"
+  $: console.log({visibleMedium: $visibleMedium?.id})
+
+  import Sidebar from "./Sidebar.svelte"
 
   const onscroll = (e: Event) => {
     const target = e.target as HTMLDivElement
@@ -23,7 +25,7 @@
 
 <main class:mobile={$settings.mobileLayout}>
   {#if !$isFullscreen && !$settings.mobileLayout}
-    <NavigationSection />
+    <Sidebar />
   {/if}
 
   {#if !$isFullscreen}

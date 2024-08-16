@@ -3,22 +3,12 @@
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
   import { isFullscreen, mobileBottomBarVisible, settings } from "$lib/stores"
 
-  import ClusterSection from "../[cluster]/ClusterSection.svelte"
   import type { LayoutData } from "./$types"
 
   export let data: LayoutData
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
-  {#if !$settings.mobileLayout}
-    <section
-      class="clusterSection"
-      style={$isFullscreen ? "display: none" : ""}
-    >
-      <ClusterSection />
-    </section>
-  {/if}
-
   <!-- TODO: Mobile support -->
   <section class="navigationSection">
     <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
