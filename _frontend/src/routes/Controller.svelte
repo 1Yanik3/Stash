@@ -6,7 +6,6 @@
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
-  import PromptController from "$components/Popups/Prompts/_PromptController.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
   import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
@@ -65,9 +64,6 @@
     })
   })
 
-  export let promptController: PromptController
-  export const prompt = () => promptController.prompt
-
   // TODO: Move to controller
   export const goToPreviousMedia = async () => {
     if (!$visibleMedium) return
@@ -113,8 +109,6 @@
   export const setActionBar = (newActionBar: keyof typeof actionBars | null) =>
     actionBar.set(newActionBar)
 </script>
-
-<PromptController bind:this={promptController} />
 
 {#if popup}
   <svelte:component this={popups[popup]} />

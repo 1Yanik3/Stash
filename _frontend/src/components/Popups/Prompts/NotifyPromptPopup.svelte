@@ -1,16 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import PromptFramework from "./_PromptFramework.svelte"
 
   export let text: string
-
-  const dispatch = createEventDispatcher()
+  export let onresult: (result: boolean) => void
 </script>
 
-<PromptFramework
-  on:cancel={() => dispatch("result", false)}
-  on:ok={() => dispatch("result", true)}
->
+<PromptFramework oncancel={() => onresult(false)} onok={() => onresult(true)}>
   <p>{text}</p>
 </PromptFramework>

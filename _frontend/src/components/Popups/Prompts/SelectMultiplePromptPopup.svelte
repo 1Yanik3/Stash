@@ -1,19 +1,15 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import PromptFramework from "./_PromptFramework.svelte"
 
   export let question: string
   export let options: { value: string; name: string }[]
   export let selected: string[]
-  $: console.log({ selected })
-
-  const dispatch = createEventDispatcher()
+  export let onresult: (value: string[] | null) => void
 </script>
 
 <PromptFramework
-  on:cancel={() => dispatch("result", null)}
-  on:ok={() => dispatch("result", selected)}
+  oncancel={() => onresult(null)}
+  onok={() => onresult(selected)}
 >
   <span>{question}:</span>
 

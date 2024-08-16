@@ -3,8 +3,7 @@
   import Button from "$components/Button.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import Table from "$components/Table.svelte"
-  import { controller } from "$lib/stores"
-
+  import { prompts } from "$lib/controllers/PromptController"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -58,9 +57,7 @@
         noMargin
         icon="mdiPencil"
         on:click={async () => {
-          const newName = await $controller
-            .prompt()
-            .text("New name", entry.username)
+          const newName = await prompts.text("New name", entry.username)
           if (newName) editUsername(entry.id, newName)
         }}
       />
@@ -73,7 +70,7 @@
         noMargin
         icon="mdiPencil"
         on:click={async () => {
-          const newClusters = await $controller.prompt().selectMultiple(
+          const newClusters = await prompts.selectMultiple(
             "Permitted Clusters",
             data.allClusters.map(c => ({
               value: c.id.toString(),
@@ -103,7 +100,6 @@
     }
 
     &:not(:hover) {
-
       .floating {
         display: none;
       }

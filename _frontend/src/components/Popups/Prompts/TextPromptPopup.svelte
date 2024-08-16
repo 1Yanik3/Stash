@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte"
+  import { onMount } from "svelte"
 
   import PromptFramework from "./_PromptFramework.svelte"
 
   export let question: string
   export let value: string
+  let _value = value
 
-  const dispatch = createEventDispatcher()
+  export let onresult: (value: string | null) => void
 
   const onInput = (e: KeyboardEvent) => {
     if (e.key == "Enter") {
-      dispatch("result", value)
+      onresult(_value)
     }
   }
 
@@ -20,18 +21,16 @@
   })
 </script>
 
-<PromptFramework
-  on:cancel={() => dispatch("result", null)}
-  on:ok={() => dispatch("result", value)}
->
+<PromptFramework oncancel={() => onresult(null)} onok={() => onresult(_value)}>
   <label>
     <span>{question}:</span>
+    <!-- svelte-ignore element_invalid_self_closing_tag -->
     <textarea
       name="text"
       rows="3"
       wrap="soft"
       bind:this={inputElement}
-      bind:value
+      bind:value={_value}
       on:keydown={onInput}
     />
   </label>

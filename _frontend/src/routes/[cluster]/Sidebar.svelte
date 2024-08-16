@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
@@ -17,6 +18,9 @@
   <main class:mobile={$settings.mobileLayout}>
     <div class="header">
       <Select
+        onchange={({ name }) => {
+          goto(`/${name}`)
+        }}
         value={$page.data.cluster.id}
         options={pageData.clusters.map(c => ({
           value: c.id,
@@ -44,12 +48,12 @@
 
     {#if showFilters}
       <div class="filters">
-        <SidebarFilterSection/>
+        <SidebarFilterSection />
       </div>
     {/if}
 
     <div class="tags-section">
-        <SidebatTagsSection/>
+      <SidebatTagsSection />
     </div>
   </main>
 {/if}

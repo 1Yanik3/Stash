@@ -1,5 +1,6 @@
 import { get } from "svelte/store"
 
+import { prompts } from "$lib/controllers/PromptController"
 import {
   controller,
   thumbnailSuffixParameter,
@@ -37,11 +38,9 @@ export default async () => {
 
   const video = get(videoElement)
   if (!video) {
-    get(controller)
-      .prompt()
-      .notify(
-        "ERROR: No video element found present while trying to replace thumbnail."
-      )
+    prompts.notify(
+      "ERROR: No video element found present while trying to replace thumbnail."
+    )
     return
   }
 

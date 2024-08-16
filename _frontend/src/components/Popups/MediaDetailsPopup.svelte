@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { prompts } from "$lib/controllers/PromptController"
   import {
     controller,
     thumbnailSuffixParameter,
@@ -30,9 +31,7 @@
   const rename = async (suggestedName = $visibleMedium?.name) => {
     if (!$visibleMedium) return
 
-    const newName = await $controller
-      .prompt()
-      .text("Enter new name", suggestedName)
+    const newName = await prompts.text("Enter new name", suggestedName)
     if (newName) {
       $visibleMedium.name = newName
       fetch(`/api/media/${$visibleMedium.id}/rename`, {

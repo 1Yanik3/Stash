@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { possibleIcons } from "$lib/possibleIcons"
-  import Dropdown from "$reusables/Dropdown.svelte"
 
-  import Button from "./Button.svelte"
   import Icon from "./Icon.svelte"
 
   type T = $$Generic<Record>
@@ -14,6 +12,7 @@
   }[]
   export let value: T = options[0].value
   export let width = 150
+  export let onchange: (value: T) => void = () => {}
 
   let main: HTMLElement
   let open = false
@@ -59,6 +58,7 @@
         class:active={o.value === value}
         on:mousedown={() => {
           value = o.value
+          onchange(o)
           open = false
         }}
       >

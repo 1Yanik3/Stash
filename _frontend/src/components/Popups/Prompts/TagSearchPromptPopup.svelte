@@ -1,27 +1,19 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import TagInputField from "../../Tags/TagInputField.svelte"
   import PromptFramework from "./_PromptFramework.svelte"
 
   export let question: string
   export let value: string
-
-  const dispatch = createEventDispatcher()
-
-  let inputElement: HTMLInputElement
+  export let onresult: (value: string | null) => void
 </script>
 
-<PromptFramework
-  on:cancel={() => dispatch("result", null)}
-  on:ok={() => dispatch("result", value)}
->
+<PromptFramework oncancel={() => onresult(null)} onok={() => onresult(value)}>
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label>
     <span>{question}:</span>
 
     <TagInputField
-      on:selected={({ detail }) => dispatch("result", detail.toLowerCase())}
+      on:selected={({ detail }) => onresult(detail.toLowerCase())}
     />
   </label>
 </PromptFramework>

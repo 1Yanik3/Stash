@@ -4,21 +4,22 @@
   import Icon from "$components/Icon.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
-  import { controller } from "$lib/stores"
+  import { prompts } from "$lib/controllers/PromptController"
 
   import type { PageData } from "./$types"
 
   export let data: PageData
 
   const addNewTag = async () => {
+    console.log(prompts)
     const { ok, status, statusText, text } = await fetch(
       "/settings/icon-assignments",
       {
         method: "POST",
         body: JSON.stringify({
-          tag: await $controller.prompt().text("Enter the tag name"),
+          tag: await prompts.text("Enter the tag name"),
           // TODO: Preview? (implement as custom prompt type)
-          icon: await $controller.prompt().text("Enter icon name")
+          icon: await prompts.text("Enter icon name")
         })
       }
     )

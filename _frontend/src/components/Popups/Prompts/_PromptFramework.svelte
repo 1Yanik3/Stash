@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import Button from "$components/Button.svelte"
   import Popup from "$reusables/Popup.svelte"
 
-  const dispatch = createEventDispatcher()
+  export let oncancel: () => void
+  export let onok: () => void
 
   export let noCancel = false
 </script>
 
-<Popup on:close={() => dispatch("cancel", false)}>
+<Popup on:close={oncancel}>
   <slot />
 
   <svelte:fragment slot="actionsLeft">
@@ -17,9 +16,7 @@
       <Button
         card
         icon={null}
-        on:click={() => {
-          dispatch("cancel")
-        }}
+        on:click={oncancel}
       >
         Cancel
       </Button>
@@ -27,7 +24,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="actionsRight">
-    <Button card icon={null} highlighted on:click={() => dispatch("ok")}>
+    <Button card icon={null} highlighted on:click={onok}>
       Ok
     </Button>
   </svelte:fragment>

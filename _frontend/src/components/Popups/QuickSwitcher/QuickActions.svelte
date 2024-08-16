@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { prompts } from "$lib/controllers/PromptController"
   import type { possibleIcons } from "$lib/possibleIcons"
   import {
     actionBar,
@@ -26,7 +27,7 @@
         name: "Add tag",
         icon: "mdiTagPlus",
         async action() {
-          const newTag = await $controller.prompt().tag("Enter new tag:")
+          const newTag = await prompts.tag("Enter new tag:")
           if (!newTag) return
 
           for (const i in $selectedMediaIds) {
@@ -51,9 +52,10 @@
             mediaController.media.find(m => m.id == $selectedMediaIds[0])
               ?.tags || []
 
-          const tagToDelete = await $controller
-            .prompt()
-            .select("Enter tag to remove: ", tagsInSelectedMedia)
+          const tagToDelete = await prompts.select(
+            "Enter tag to remove: ",
+            tagsInSelectedMedia
+          )
           if (tagToDelete == null) return
 
           for (const i in $selectedMediaIds) {
@@ -150,17 +152,13 @@
         name: "Rename Tag",
         icon: "mdiTagEdit",
         async action() {
-          const oldName = await $controller
-            .prompt()
-            .select(
-              "What tag do you want to rename?",
-              $selectedTags as string[]
-            )
+          const oldName = prompts.select(
+            "What tag do you want to rename?",
+            $selectedTags as string[]
+          )
           if (!oldName) return
 
-          const newName = await $controller
-            .prompt()
-            .text("Enter new name:", oldName || "")
+          const newName = prompts.text("Enter new name:", oldName || "")
           if (!newName) return
 
           await fetch(`/api/cluster/${$page.data.cluster.name}/tags/rename`, {

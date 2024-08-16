@@ -1,14 +1,13 @@
 <script lang="ts">
   import { ClusterType } from "@prisma/client/wasm"
-  import { text } from "@sveltejs/kit"
 
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import Icon from "$components/Icon.svelte"
   import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
   import Table from "$components/Table.svelte"
+  import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"
-  import { controller } from "$lib/stores"
 
   import type { PageData } from "./$types"
   import AddNewClusterPopup from "./AddNewClusterPopup.svelte"
@@ -83,9 +82,7 @@
         icon="mdiPencil"
         on:click={async () => {
           // TODO: Icon Picker
-          const newIcon = await $controller
-            .prompt()
-            .text("New icon", entry.icon)
+          const newIcon = await prompts.text("New icon", entry.icon)
           if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
         }}
       />
@@ -97,9 +94,7 @@
       <Button
         icon="mdiPencil"
         on:click={async () => {
-          const newName = await $controller
-            .prompt()
-            .text("New name", entry.name)
+          const newName = await prompts.text("New name", entry.name)
           if (newName) editClusterAttribute(entry.id, "name", newName)
         }}
       />
@@ -111,13 +106,11 @@
       <Button
         icon="mdiPencil"
         on:click={async ({ detail }) => {
-          const newType = await $controller
-            .prompt()
-            .dropdown(
-              detail.target?.closest("td"),
-              Object.keys(ClusterType),
-              entry.type
-            )
+          const newType = await prompts.dropdown(
+            detail.target?.closest("td"),
+            Object.keys(ClusterType),
+            entry.type
+          )
           if (newType && newType != entry.type)
             editClusterAttribute(entry.id, "type", newType)
         }}
@@ -137,7 +130,6 @@
     }
 
     &:not(:hover) {
-
       .floating {
         display: none;
       }
