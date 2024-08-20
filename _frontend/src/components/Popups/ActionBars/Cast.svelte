@@ -3,11 +3,11 @@
   import { fade } from "svelte/transition"
 
   import { browser } from "$app/environment"
+  import { page } from "$app/stores"
   import type Castjs from "$lib/client/cast-js"
-  import { controller, visibleMedium } from "$lib/stores"
+  import { controller, settings, visibleMedium } from "$lib/stores"
 
   import Icon from "../../Icon.svelte"
-  import type { Media } from ".prisma/client"
 
   let videoPlaying = true
   let currentTime = 0
@@ -92,6 +92,9 @@
   visibleMedium.subscribe(newValue => {
     if (connected) cast(newValue)
   })
+
+  let disableSeeking = false
+  let seekVideo: HTMLVideoElement | null
 </script>
 
 <main>
@@ -184,13 +187,36 @@
   </section>
 
   {#if $visibleMedium?.type.startsWith("video")}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="playbackStatus"
       on:click={e => {
         cjs?.seek((e.clientY * 100) / window.innerHeight, true)
       }}
+      on:mousemove={e => {
+        if (seekVideo) {
+          seekVideo.currentTime =
+            (e.clientY * seekVideo.duration) / window.innerHeight
+
+          const topBottomPadding = 59
+          seekVideo.style.top = `${Math.max(topBottomPadding, Math.min(window.innerHeight - topBottomPadding, e.clientY))}px`
+        }
+      }}
     >
       <div style:height="{playbackProgress}%" />
+
+      {#if !$settings.mobileLayout && !disableSeeking}
+        <video
+          src="{$page.data.serverURL}/thumb/{$visibleMedium?.id}_seek.webm"
+          muted
+          bind:this={seekVideo}
+          crossorigin="use-credentials"
+          on:error={() => (disableSeeking = true)}
+        >
+          <track kind="captions" />
+        </video>
+      {/if}
     </div>
   {/if}
 </main>
@@ -238,7 +264,6 @@
         border 100ms;
 
       @media (hover: hover) and (pointer: fine) {
-
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);
@@ -260,6 +285,19 @@
         width: 3px;
         background: var(--border-color-1);
         transition: height 150ms;
+      }
+
+      video {
+        display: none;
+        position: absolute;
+        right: 1em;
+        height: 85px;
+        border-radius: 5px;
+        transform: translateY(-50%);
+      }
+
+      &:hover video {
+        display: block;
       }
     }
   }
