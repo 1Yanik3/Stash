@@ -48,14 +48,15 @@
     {promise}
     searchAttributes={[""]}
     bind:value
-    let:result
-    on:selected={({ detail }) => importElement(detail)}
+    onselected={a => importElement(a)}
     disableClose
-    on:close={() => {
+    onclose={() => {
       mediaController.updateMedia()
       // TODO: invalidate Tags
     }}
   >
-    <span>{result}</span>
+    {#snippet children(result)}
+      <span>{result}</span>
+    {/snippet}
   </FuzzyPopupTemplate>
 {/if}

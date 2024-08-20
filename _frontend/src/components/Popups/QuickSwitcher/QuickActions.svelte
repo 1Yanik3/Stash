@@ -152,7 +152,7 @@
         name: "Rename Tag",
         icon: "mdiTagEdit",
         async action() {
-          const oldName = prompts.select(
+          const oldName = await prompts.select(
             "What tag do you want to rename?",
             $selectedTags as string[]
           )
@@ -184,10 +184,11 @@
   {promise}
   searchAttributes={["name"]}
   conditionAttribute="condition"
-  let:result
-  on:selected={({ detail }) => detail.action()}
+  onselected={({ action }) => action()}
   placeholder="Search..."
 >
-  <span>{result.name}</span>
-  <Icon name={result.icon} size={0.8} />
+  {#snippet children(result)}
+    <span>{result.name}</span>
+    <Icon name={result.icon} size={0.8} />
+  {/snippet}
 </FuzzyPopupTemplate>

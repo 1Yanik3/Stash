@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte"
+  import { onMount } from "svelte"
   import { fade, scale } from "svelte/transition"
 
   import Icon from "$components/Icon.svelte"
@@ -11,13 +11,13 @@
   export let bottomSheet = false
   export let fullscreen = false
 
-  const dispatch = createEventDispatcher()
+  export let onclose = () => {}
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key != "Escape") return
 
     e.preventDefault()
-    dispatch("close")
+    onclose()
     $controller.setPopup(null)
   }
 
@@ -26,22 +26,25 @@
   })
 
   const onPopState = (event: PopStateEvent) => {
-    dispatch("close")
+    onclose()
     $controller.setPopup(null)
   }
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:popstate={onPopState} />
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main
   transition:fade={{ duration: 100 }}
   on:click={() => {
-    dispatch("close")
+    onclose()
     $controller.setPopup(null)
   }}
   class:mobile={$settings.mobileLayout}
   class:fullscreen
 >
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <section
     transition:scale={{ start: 1.1, duration: 100 }}
     class:bottomSheet
@@ -50,7 +53,8 @@
     {#if !hideHeader || $settings.mobileLayout}
       <div id="header">
         {#if bottomSheet}
-          <div class="centralBlob" on:click={() => dispatch("close")} />
+          <!-- svelte-ignore element_invalid_self_closing_tag -->
+          <div class="centralBlob" on:click={onclose} />
         {:else}
           <h2>{title}</h2>
 
@@ -58,7 +62,7 @@
             <slot name="headerElement" />
           {/if}
 
-          <button on:click={() => dispatch("close")}>
+          <button on:click={onclose}>
             <Icon name="mdiClose" />
           </button>
         {/if}

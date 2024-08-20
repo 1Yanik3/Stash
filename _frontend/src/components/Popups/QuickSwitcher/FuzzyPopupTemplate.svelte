@@ -1,6 +1,6 @@
 <script lang="ts">
   import FuzzySearch from "fuzzy-search"
-  import { createEventDispatcher, onMount } from "svelte"
+  import { onMount, type Snippet } from "svelte"
 
   import Button from "$components/Button.svelte"
   import { controller, settings } from "$lib/stores"
@@ -9,24 +9,43 @@
   type T = $$Generic<Record>
   type TAsArray = Array<T>
 
-  export let promise: Promise<TAsArray>
-  export let searchAttributes: string[]
-  export let disableClose = false
-  export let conditionAttribute: keyof T | null = null
-  export let placeholder = ""
+  let {
+    promise,
+    searchAttributes,
+    disableClose = false,
+    conditionAttribute = null,
+    placeholder = "",
+    value = $bindable(""),
+    children,
+    onclose = () => {},
+    onselected = () => {}
+  }: {
+    promise: Promise<TAsArray>
+    searchAttributes: string[]
+    disableClose?: boolean
+    conditionAttribute?: keyof T | null
+    placeholder?: string
+    value?: string
+    children: Snippet<[T]>
+    onclose?: () => void
+    onselected?: (d: T) => void
+  } = $props()
 
   let inputBox: HTMLInputElement
-  let selectedIndex = 0
-  export let value = ""
+  let selectedIndex = $state(0)
 
-  let searcher: any = null
-  let results: T[]
-  $: results =
-    (searcher
-      ?.search(value)
+  let searcher: any = $state(null)
+
+  const executeSearch = (query: string) => {
+    if (!searcher) return []
+
+    return searcher
+      .search(query)
       .filter((d: any) => typeof d != "string" || d != ".DS_STORE")
-      .slice(0, $settings.mobileLayout ? 15 : 10) as T) || []
-  $: console.log(results)
+      .slice(0, $settings.mobileLayout ? 15 : 10) as T
+  }
+  let results: T[] = $derived(executeSearch(value))
+
   promise.then(data => {
     searcher = new FuzzySearch(
       data.filter(t =>
@@ -40,11 +59,6 @@
     )
   })
 
-  const dispatch = createEventDispatcher<{
-    selected: T
-    close: void
-  }>()
-
   const onInput = (event: KeyboardEvent) => {
     if (event.key == "ArrowUp") {
       if (selectedIndex > 0) selectedIndex--
@@ -56,10 +70,10 @@
 
     if (event.key == "Enter") {
       if (!disableClose) {
-        dispatch("close")
+        onclose()
         $controller.setPopup(null)
       }
-      dispatch("selected", results[selectedIndex])
+      onselected(results[selectedIndex])
     }
   }
 
@@ -68,28 +82,31 @@
   })
 </script>
 
-<Popup on:close={() => dispatch("close")} hideHeader>
+<Popup {onclose} hideHeader>
   <main>
     <input
       type="search"
       bind:value
-      on:keydown={e => onInput(e)}
+      onkeydown={e => onInput(e)}
       bind:this={inputBox}
       {placeholder}
     />
 
+
     {#each results as result, i}
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class:active={i == selectedIndex}
-        on:click={() => {
+        onclose={() => {
           if (!disableClose) {
-            dispatch("close")
+            onclose()
             $controller.setPopup(null)
           }
-          dispatch("selected", results[i])
+          onselected(results[i])
         }}
       >
-        <slot {result} />
+        {@render children(result)}
       </div>
     {/each}
 
@@ -114,10 +131,10 @@
           icon="mdiKeyboardReturn"
           on:click={() => {
             if (!disableClose) {
-              dispatch("close")
+              onclose()
               $controller.setPopup(null)
             }
-            dispatch("selected", results[selectedIndex])
+            onselected(results[selectedIndex])
           }}
         />
       </div>

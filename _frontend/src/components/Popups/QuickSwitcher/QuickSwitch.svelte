@@ -12,11 +12,12 @@
 <FuzzyPopupTemplate
   {promise}
   searchAttributes={["tag"]}
-  let:result
-  on:selected={({ detail }) => {
-    selectedTags.set([detail.tag.join("/").toLowerCase()])
+  onselected={({ tag }) => {
+    selectedTags.set([tag.join("/").toLowerCase()])
   }}
 >
-  <span>{result.tag.join("/")}</span>
-  <span>{result.direct_count}</span>
+  {#snippet children(result)}
+    <span>{result.tag.join("/")}</span>
+    <span>{result.direct_count}</span>
+  {/snippet}
 </FuzzyPopupTemplate>
