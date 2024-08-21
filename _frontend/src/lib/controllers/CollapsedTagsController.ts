@@ -3,7 +3,9 @@ import { get } from "svelte/store"
 import { page } from "$app/stores"
 import { collapsedTags } from "$lib/stores"
 
-export default class CollapsedTagsController {
+import { tagsController } from "./TagsController.svelte"
+
+class CollapsedTagsController {
   private alreadyInitialized = false
   public init = () => {
     if (this.alreadyInitialized) {
@@ -58,5 +60,9 @@ export default class CollapsedTagsController {
         )
       })
     }
+
+    tagsController.updateTags()
   }
 }
+
+export const collapsedTagsController = new CollapsedTagsController()

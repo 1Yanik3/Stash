@@ -12,8 +12,8 @@
     tag: string
     forceShowName?: boolean
     compact?: boolean
-    onclick: (e: MouseEvent) => void
-    oncontextmenu: (e: MouseEvent) => void
+    onclick?: (e: MouseEvent) => void
+    oncontextmenu?: (e: MouseEvent) => void
   } = $props()
 
   const icon = getIconForTagName(tag)

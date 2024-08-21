@@ -1,23 +1,9 @@
-// body {
-//   --color-dark-level-lower: hsl(0, 0%, 7%);
-//   --color-dark-level-base: hsl(0, 0%, 9%);
-//   --color-dark-level-1: hsl(0, 0%, 11%);
-//   --color-dark-level-2: hsl(0, 0%, 14.5%);
-//   --color-dark-level-2-hover: hsl(0, 0%, 16.5%);
-//   --color-dark-level-3: hsl(0, 0%, 33%);
-
-//   --color-text: hsl(0, 0%, 93%);
-
-//   --border-color-lower: hsl(0, 0%, 13%);
-//   --border-color-base: hsl(0, 0%, 16%);
-//   --border-color-1: hsl(0, 0%, 22%);
-//   --border-color-1-hover: hsl(0, 0%, 24%);
-// }
 body {
   --color-lowest: #000;
   --color-dark-level-lower: hsl(0, 0%, 5%);
   --color-dark-level-base: hsl(0, 0%, 7%);
   --color-dark-level-1: hsl(0, 0%, 9%);
+  --color-dark-level-1-hover: hsl(0, 0%, 11%);
   --color-dark-level-2: hsl(0, 0%, 12.5%);
   --color-dark-level-2-hover: hsl(0, 0%, 14.5%);
   --color-dark-level-3: hsl(0, 0%, 31%);
@@ -28,6 +14,8 @@ body {
   --border-color-base: hsl(0, 0%, 14%);
   --border-color-1: hsl(0, 0%, 20%);
   --border-color-1-hover: hsl(0, 0%, 22%);
+  --border-color-2: hsl(0, 0%, 25%);
+  --border-color-2-hover: hsl(0, 0%, 27%);
 }
 
 body.light {
@@ -35,6 +23,7 @@ body.light {
   --color-dark-level-lower: hsl(0, 0%, 95%);
   --color-dark-level-base: hsl(0, 0%, 100%);
   --color-dark-level-1: hsl(0, 0%, 95%);
+  --color-dark-level-1-hover: hsl(0, 0%, 90%);
   --color-dark-level-2: hsl(0, 0%, 87.5%);
   --color-dark-level-2-hover: hsl(0, 0%, 85.5%);
   --color-dark-level-3: hsl(0, 0%, 69%);
@@ -45,6 +34,8 @@ body.light {
   --border-color-base: hsl(0, 0%, 86%);
   --border-color-1: hsl(0, 0%, 80%);
   --border-color-1-hover: hsl(0, 0%, 78%);
+  --border-color-2: hsl(0, 0%, 71%);
+  --border-color-2-hover: hsl(0, 0%, 70%);
 }
 
 body.amoled {
@@ -52,6 +43,7 @@ body.amoled {
   --color-dark-level-lower: #000;
   --color-dark-level-base: #000;
   --color-dark-level-1: #000;
+  --color-dark-level-1-hover: hsl(0, 0%, 2%);
   --color-dark-level-2: hsl(0, 0%, 10%);
   --color-dark-level-2-hover: hsl(0, 0%, 12%);
   --color-dark-level-3: hsl(0, 0%, 15%);
@@ -61,6 +53,8 @@ body.amoled {
   --border-color-base: hsl(0, 0%, 7%);
   --border-color-1: hsl(0, 0%, 10%);
   --border-color-1-hover: hsl(0, 0%, 12%);
+  --border-color-2: hsl(0, 0%, 14%);
+  --border-color-2-hover: hsl(0, 0%, 16%);
 }
 
 html,

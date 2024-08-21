@@ -2,6 +2,7 @@
   import { readable } from "svelte/store"
 
   import Button from "$components/Button.svelte"
+  import { collapsedTagsController } from "$lib/controllers/CollapsedTagsController"
   import getIconForTagName from "$lib/getIconForTagName"
   import type { possibleIcons } from "$lib/possibleIcons"
   import {
@@ -23,8 +24,7 @@
     children,
     indent = 0,
     nameOverwrite = "",
-    iconOverwrite = null,
-    element
+    iconOverwrite = null
   }: {
     name: string
     count?: number | null
@@ -32,7 +32,6 @@
     indent?: number
     nameOverwrite?: string
     iconOverwrite?: keyof typeof possibleIcons | null
-    element?: HTMLAnchorElement
   } = $props()
 
   let collapsed = $derived($collapsedTags.includes(name.toLowerCase()))
@@ -66,7 +65,7 @@
   }}
   oncontextmenu={e => {
     e.preventDefault()
-    $controller.collapsedTagsController.toggleCollapsedTag(name.toLowerCase())
+    collapsedTagsController.toggleCollapsedTag(name.toLowerCase())
   }}
   active={$selectedTags.includes(name.toLowerCase())}
 >

@@ -12,9 +12,9 @@
   import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
-  import CollapsedTagsController from "$lib/controllers/CollapsedTagsController"
+  import { collapsedTagsController } from "$lib/controllers/CollapsedTagsController"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController as _tagsController } from "$lib/controllers/TagsController.svelte"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
   import {
     actionBar,
     actionBars,
@@ -31,13 +31,9 @@
 
   let pageData = $page.data as PageData
 
-  // TODO: get rid of
-  export const tagsController = _tagsController
-  export const collapsedTagsController = new CollapsedTagsController()
-
   onMount(() => {
     mediaController.init()
-    _tagsController.init()
+    tagsController.init()
     collapsedTagsController.init()
     console.log("Controllers mounted")
   })
@@ -86,12 +82,6 @@
       visibleMedium.set(mediaController.media[mediaIndex + 1])
   }
 
-  const shift = true,
-    control = true,
-    alt = true,
-    opt = true,
-    meta = true
-
   const popups = {
     "Quick Actions": QuickActions,
     "Quick Actions Import": QuickActionsImport,
@@ -112,7 +102,7 @@
 </script>
 
 {#if Popup}
-  <Popup/>
+  <Popup />
 {/if}
 
 <Shortcut

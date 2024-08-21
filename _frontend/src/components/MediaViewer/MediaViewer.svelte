@@ -92,16 +92,23 @@
     height: 100vh;
 
     background: var(--color-dark-level-lower);
-    border-left: 1px solid var(--border-color-base);
+
+    &:not(&.fullscreen) {
+      border-left: 1px solid var(--border-color-base);
+    }
+
+    #media {
+      background: var(--color-lowest);
+    }
 
     &.fullscreen,
     &.mobile {
       width: 100vw !important;
       max-width: none !important;
-    }
 
-    #media {
-      background: var(--color-lowest);
+      #media {
+        background: #000;
+      }
     }
   }
 </style>
