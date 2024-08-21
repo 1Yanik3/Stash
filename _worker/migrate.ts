@@ -1,40 +1,23 @@
 import prisma from "./prisma";
 
-const id = 281;
+const assignments = await prisma.tagIcons.findMany();
 
-const media = await prisma.media.findMany({
-  where: {
-    tags: {
-      some: {
-        id,
-      },
-    },
-  },
-});
-
-for (const medium of media) {
-  await prisma.media.update({
+for (const assignment of assignments) {
+  const tag = await prisma.tags.findFirst({
     where: {
-      id: medium.id,
-    },
-    data: {
-      specialFilterAttribute: "group",
-      tags: {
-        disconnect: {
-          id,
-        },
-      },
+      tag: assignment.tag,
+      parentId: null,
     },
   });
-}
 
-await prisma.tags.delete({
-  where: {
-    id,
-    media: {
-      every: {
-        id: "loool",
+  if (tag) {
+    await prisma.tags.update({
+      where: {
+        id: tag.id,
       },
-    },
-  },
-});
+      data: {
+        icon: assignment.icon,
+      },
+    });
+  }
+}

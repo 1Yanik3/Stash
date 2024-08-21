@@ -83,11 +83,6 @@ model Media {
   @@index([id, clustersId, tags_old])
 }
 
-model TagIcons {
-  tag  String @unique
-  icon String
-}
-
 model GroupedIntoNames {
   id    Int     @id @default(autoincrement())
   name  String

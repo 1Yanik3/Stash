@@ -31,9 +31,9 @@
 <Button
   styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
   count={tag.count}
-  icon={iconOverwrite || tag.icon || tag.collapsed
-    ? "mdiFolderHidden"
-    : "mdiFolderOutline"}
+  icon={iconOverwrite ||
+    tag.icon ||
+    (tag.collapsed ? "mdiFolderHidden" : "mdiFolderOutline")}
   onclick={e => {
     selectedMediaIds.set([])
     if (e.altKey) {
