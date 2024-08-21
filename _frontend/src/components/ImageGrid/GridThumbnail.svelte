@@ -143,6 +143,7 @@
 
   div {
     scroll-margin: 11px;
+    -webkit-tap-highlight-color: transparent;
     // height: calc(100% - 2px);
     // position: relative;
 

@@ -29,7 +29,7 @@
 
   import type { PageData } from "./[cluster]/$types"
 
-  $: pageData = $page.data as PageData
+  let pageData = $page.data as PageData
 
   // TODO: get rid of
   export const tagsController = _tagsController
@@ -39,7 +39,7 @@
     mediaController.init()
     _tagsController.init()
     collapsedTagsController.init()
-    console.log("Controller mounted")
+    console.log("Controllers mounted")
   })
 
   beforeNavigate(() => {
@@ -57,9 +57,9 @@
   })
 
   onMount(() => {
-    visibleMedium.subscribe(() => {
+    visibleMedium.subscribe(newMedium => {
       if ($settings.mobileLayout) {
-        setPopup($visibleMedium ? "Media Viewer Mobile" : null)
+        setPopup(newMedium ? "Media Viewer Mobile" : null)
       }
     })
   })
@@ -104,14 +104,15 @@
     "Media Details": MediaDetailsPopup
   } as const
 
-  let popup: keyof typeof popups | null = null
+  let popup: keyof typeof popups | null = $state(null)
+  let Popup = $derived(popup ? popups[popup] : null) as any
   export const setPopup = (newPopup: typeof popup) => (popup = newPopup)
   export const setActionBar = (newActionBar: keyof typeof actionBars | null) =>
     actionBar.set(newActionBar)
 </script>
 
-{#if popup}
-  <svelte:component this={popups[popup]} />
+{#if Popup}
+  <Popup/>
 {/if}
 
 <Shortcut
