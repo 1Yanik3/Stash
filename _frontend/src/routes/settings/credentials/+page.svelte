@@ -1,9 +1,10 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/Table.svelte"
   import { prompts } from "$lib/controllers/PromptController"
+
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -39,55 +40,57 @@
   }
 </script>
 
-<SettingsPageHeader title="Credentials">
-  <Button card icon="mdiLogout" href="/settings/credentials/logout">
-    Logout
-  </Button>
-</SettingsPageHeader>
+<SettingsPageContent title="Credentials">
+  {#snippet headerActions()}
+    <Button card icon="mdiLogout" href="/settings/credentials/logout">
+      Logout
+    </Button>
+  {/snippet}
 
-<Table
-  headers={["Username", "Permitted Clusters"]}
-  data={data.credentials}
-  let:entry
->
-  <td>
-    {entry.username}
-    <div class="floating">
-      <Button
-        noMargin
-        icon="mdiPencil"
-        on:click={async () => {
-          const newName = await prompts.text("New name", entry.username)
-          if (newName) editUsername(entry.id, newName)
-        }}
-      />
-    </div>
-  </td>
-  <td>
-    {entry.permittedClusters.map(c => c.name).join(", ")}
-    <div class="floating">
-      <Button
-        noMargin
-        icon="mdiPencil"
-        on:click={async () => {
-          const newClusters = await prompts.selectMultiple(
-            "Permitted Clusters",
-            data.allClusters.map(c => ({
-              value: c.id.toString(),
-              name: c.name
-            })),
-            entry.permittedClusters.map(c => c.id.toString())
-          )
-          if (newClusters)
-            editPermittedClusters(
-              entry.id,
-              newClusters.map(v => +v)
+  <Table
+    headers={["Username", "Permitted Clusters"]}
+    data={data.credentials}
+    let:entry
+  >
+    <td>
+      {entry.username}
+      <div class="floating">
+        <Button
+          noMargin
+          icon="mdiPencil"
+          on:click={async () => {
+            const newName = await prompts.text("New name", entry.username)
+            if (newName) editUsername(entry.id, newName)
+          }}
+        />
+      </div>
+    </td>
+    <td>
+      {entry.permittedClusters.map(c => c.name).join(", ")}
+      <div class="floating">
+        <Button
+          noMargin
+          icon="mdiPencil"
+          on:click={async () => {
+            const newClusters = await prompts.selectMultiple(
+              "Permitted Clusters",
+              data.allClusters.map(c => ({
+                value: c.id.toString(),
+                name: c.name
+              })),
+              entry.permittedClusters.map(c => c.id.toString())
             )
-        }}
-      />
-    </div>
-  </td>
-</Table>
+            if (newClusters)
+              editPermittedClusters(
+                entry.id,
+                newClusters.map(v => +v)
+              )
+          }}
+        />
+      </div>
+    </td>
+  </Table>
+</SettingsPageContent>
 
 <style lang="scss">
   td {

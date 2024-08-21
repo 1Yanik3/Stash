@@ -2,13 +2,11 @@
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import Icon from "$components/Icon.svelte"
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
   import { prompts } from "$lib/controllers/PromptController"
 
-  import type { PageData } from "./$types"
-
-  export let data: PageData
+  let { data } = $props()
 
   const addNewTag = async () => {
     console.log(prompts)
@@ -56,33 +54,35 @@
   }
 </script>
 
-<SettingsPageHeader title="Icon Assignments">
-  <Button card icon="mdiPlus" on:click={addNewTag}>Add new Tag</Button>
-</SettingsPageHeader>
+<SettingsPageContent title="Icon Assignments">
+  {#snippet headerActions()}
+    <Button card icon="mdiPlus" on:click={addNewTag}>Add new Tag</Button>
+  {/snippet}
 
-<div class="grid">
-  {#each Object.entries(data.tagIcons) as [icon, tags] (icon)}
-    <div class="tag">
-      <div class="icon">
-        <Icon nameAlt={icon} size={2} />
-      </div>
-      <div>
-        <div class="title">
-          <span>{icon}</span>
+  <div class="grid">
+    {#each Object.entries(data.tagIcons) as [icon, tags] (icon)}
+      <div class="tag">
+        <div class="icon">
+          <Icon nameAlt={icon} size={2} />
         </div>
-        <div class="tags">
-          {#each tags as tag}
-            <TagChip {tag} forceShowName />
-          {/each}
+        <div>
+          <div class="title">
+            <span>{icon}</span>
+          </div>
+          <div class="tags">
+            {#each tags as tag}
+              <TagChip {tag} forceShowName />
+            {/each}
+          </div>
         </div>
+        <!-- <div class="actions">
+            <Button icon="mdiPencil" on:click={() => editTag(tag)} />
+            <Button icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
+            </div> -->
       </div>
-      <!-- <div class="actions">
-          <Button icon="mdiPencil" on:click={() => editTag(tag)} />
-          <Button icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
-        </div> -->
-    </div>
-  {/each}
-</div>
+    {/each}
+  </div>
+</SettingsPageContent>
 
 <style lang="scss">
   .grid {

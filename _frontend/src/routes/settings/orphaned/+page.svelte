@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/Table.svelte"
 
   import type { PageData } from "./$types"
@@ -30,30 +30,30 @@
   }
 </script>
 
-<SettingsPageHeader title="Orphaned Files" />
-
-<Table data={data.unimportedFiles} let:entry>
-  <td>
-    <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
-    {#each data.clusters as cluster}
+<SettingsPageContent title="Orphaned Files">
+  <Table data={data.unimportedFiles} let:entry>
+    <td>
+      <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
+      {#each data.clusters as cluster}
+        <Button
+          noMargin
+          on:click={() => {
+            importOrphan(cluster.id, entry)
+          }}
+        >
+          {cluster.name}
+        </Button>
+      {/each}
       <Button
         noMargin
+        icon="mdiTrashCan"
         on:click={() => {
-          importOrphan(cluster.id, entry)
+          deleteOrphan(entry)
         }}
-      >
-        {cluster.name}
-      </Button>
-    {/each}
-    <Button
-      noMargin
-      icon="mdiTrashCan"
-      on:click={() => {
-        deleteOrphan(entry)
-      }}
-    />
-  </td>
-</Table>
+      />
+    </td>
+  </Table>
+</SettingsPageContent>
 
 <style lang="scss">
   td {

@@ -1,19 +1,19 @@
 <script lang="ts">
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
 
   import type { PageData } from "./$types"
 
   export let data: PageData
 </script>
 
-<SettingsPageHeader title="Statistics" />
-
-<main>
-  <section>
-    <span>Media Count</span>
-    <b>{data.countOfMedia}</b>
-  </section>
-</main>
+<SettingsPageContent title="Statistics">
+  <main>
+    <section>
+      <span>Media Count</span>
+      <b>{data.countOfMedia}</b>
+    </section>
+  </main>
+</SettingsPageContent>
 
 <style lang="scss">
   main {

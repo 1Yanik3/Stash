@@ -4,7 +4,7 @@
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import Icon from "$components/Icon.svelte"
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/Table.svelte"
   import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"
@@ -52,72 +52,78 @@
   }
 </script>
 
-<SettingsPageHeader title="Clusters">
-  <Button
-    card
-    icon="mdiPlus"
-    on:click={() =>
-      (popup = new AddNewClusterPopup({
-        target: document.body,
-        props: {
-          close: () => {
-            popup?.$destroy()
+<SettingsPageContent title="Clusters">
+  {#snippet headerActions()}
+    <Button
+      card
+      icon="mdiPlus"
+      on:click={() =>
+        (popup = new AddNewClusterPopup({
+          target: document.body,
+          props: {
+            close: () => {
+              popup?.$destroy()
+            }
           }
-        }
-      }))}
-  >
-    Add new cluster
-  </Button>
-</SettingsPageHeader>
+        }))}
+    >
+      Add new cluster
+    </Button>
+  {/snippet}
 
-<Table headers={["Id", "Icon", "Name", "Type"]} data={data.clusters} let:entry>
-  <td>
-    {entry.id}
-  </td>
-  <td>
-    <Icon nameAlt={entry.icon} />
-    {entry.icon}
-    <div class="floating">
-      <Button
-        icon="mdiPencil"
-        on:click={async () => {
-          // TODO: Icon Picker
-          const newIcon = await prompts.text("New icon", entry.icon)
-          if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
-        }}
-      />
-    </div>
-  </td>
-  <td>
-    {entry.name}
-    <div class="floating">
-      <Button
-        icon="mdiPencil"
-        on:click={async () => {
-          const newName = await prompts.text("New name", entry.name)
-          if (newName) editClusterAttribute(entry.id, "name", newName)
-        }}
-      />
-    </div>
-  </td>
-  <td>
-    {entry.type.substring(0, 1).toUpperCase() + entry.type.substring(1)}
-    <div class="floating">
-      <Button
-        icon="mdiPencil"
-        on:click={async ({ detail }) => {
-          const newType = await prompts.dropdown(
-            detail.target?.closest("td"),
-            Object.keys(ClusterType),
-            entry.type
-          )
-          if (newType && newType != entry.type)
-            editClusterAttribute(entry.id, "type", newType)
-        }}
-      />
-    </div>
-  </td>
-</Table>
+  <Table
+    headers={["Id", "Icon", "Name", "Type"]}
+    data={data.clusters}
+    let:entry
+  >
+    <td>
+      {entry.id}
+    </td>
+    <td>
+      <Icon nameAlt={entry.icon} />
+      {entry.icon}
+      <div class="floating">
+        <Button
+          icon="mdiPencil"
+          on:click={async () => {
+            // TODO: Icon Picker
+            const newIcon = await prompts.text("New icon", entry.icon)
+            if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
+          }}
+        />
+      </div>
+    </td>
+    <td>
+      {entry.name}
+      <div class="floating">
+        <Button
+          icon="mdiPencil"
+          on:click={async () => {
+            const newName = await prompts.text("New name", entry.name)
+            if (newName) editClusterAttribute(entry.id, "name", newName)
+          }}
+        />
+      </div>
+    </td>
+    <td>
+      {entry.type.substring(0, 1).toUpperCase() + entry.type.substring(1)}
+      <div class="floating">
+        <Button
+          icon="mdiPencil"
+          on:click={async ({ detail }) => {
+            const newType = await prompts.dropdown(
+              detail.target?.closest("td"),
+              Object.keys(ClusterType),
+              entry.type
+            )
+            if (newType && newType != entry.type)
+              editClusterAttribute(entry.id, "type", newType)
+          }}
+        />
+      </div>
+    </td>
+  </Table>
+</SettingsPageContent>
 
 <style lang="scss">
   td {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import {
     activeSetMethod,
@@ -48,9 +49,12 @@
 {/if}
 
 {#if tagsSheetOpen}
-  <Popup bottomSheet on:close={() => {
-    tagsSheetOpen = false
-  }}>
+  <Popup
+    bottomSheet
+    onclose={() => {
+      tagsSheetOpen = false
+    }}
+  >
     <SidebarTagsSection />
   </Popup>
 {/if}
@@ -97,28 +101,41 @@
 <main>
   <!-- Cluster Selection -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="button"
-    class:active={!$page.url.pathname.startsWith("/settings")}
-    on:mousedown={() =>
-      (clusterSelectionDropdownVisible = !clusterSelectionDropdownVisible)}
-  >
-    <div class="iconContainer">
-      <div class="icon">
-        <Icon
-          nameAlt={pageData.clusters.find(c => c.id == pageData.cluster?.id)
-            ?.icon}
-        />
+  {#if $page.url.pathname.startsWith("/settings")}
+    <div class="button" onmousedown={() => goto("/")}>
+      <div class="iconContainer">
+        <div class="icon">
+          <Icon name="mdiArrowLeft" />
+        </div>
       </div>
+      <span class="label">
+        Go Back
+      </span>
     </div>
-    <span class="label">
-      {pageData.clusters.find(c => c.id == pageData.cluster?.id)?.name}
-    </span>
-  </div>
+  {:else}
+    <div
+      class="button"
+      class:active={!$page.url.pathname.startsWith("/settings")}
+      onmousedown={() =>
+        (clusterSelectionDropdownVisible = !clusterSelectionDropdownVisible)}
+    >
+      <div class="iconContainer">
+        <div class="icon">
+          <Icon
+            nameAlt={pageData.clusters.find(c => c.id == pageData.cluster?.id)
+              ?.icon}
+          />
+        </div>
+      </div>
+      <span class="label">
+        {pageData.clusters.find(c => c.id == pageData.cluster?.id)?.name}
+      </span>
+    </div>
+  {/if}
 
   <!-- Tags Section -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="button" on:mousedown={() => (tagsSheetOpen = !tagsSheetOpen)}>
+  <div class="button" onmousedown={() => (tagsSheetOpen = !tagsSheetOpen)}>
     <div class="iconContainer">
       <div class="icon">
         <Icon name="mdiTagMultiple" />
@@ -137,7 +154,7 @@
   <div
     class="button"
     class:active={filterCount}
-    on:mousedown={() =>
+    onmousedown={() =>
       (filtersSelectionDropdownVisible = !filtersSelectionDropdownVisible)}
   >
     <div class="iconContainer">
@@ -158,7 +175,7 @@
   <div
     class="button"
     class:active={$page.url.pathname.startsWith("/settings")}
-    on:mousedown={() => (menuDropdownVisible = !menuDropdownVisible)}
+    onmousedown={() => (menuDropdownVisible = !menuDropdownVisible)}
   >
     <div class="iconContainer">
       <div class="icon">

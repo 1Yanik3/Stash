@@ -1,16 +1,22 @@
-<div class="wrapper">
-  <main>
-    <div class="details">
-      <img src="/icons/web/icon-512-maskable.png" alt="" />
-      <b>Stash</b>
-      <span>By <a href="https://ant.lgbt/">ConfusedAnt</a></span>
-    </div>
+<script lang="ts">
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+</script>
 
-    <p class="description">
-      A featureful tag based library to <br /> organise your media collections
-    </p>
-  </main>
-</div>
+<SettingsPageContent>
+  <div class="wrapper">
+    <main>
+      <div class="details">
+        <img src="/icons/web/icon-512-maskable.png" alt="" />
+        <b>Stash</b>
+        <span>By <a href="https://ant.lgbt/">ConfusedAnt</a></span>
+      </div>
+
+      <p class="description">
+        A featureful tag based library to <br /> organise your media collections
+      </p>
+    </main>
+  </div>
+</SettingsPageContent>
 
 <style lang="scss">
   .wrapper {

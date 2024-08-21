@@ -1,20 +1,50 @@
 <script lang="ts">
-  import SettingsPageHeader from "$components/Settings/SettingsPageHeader.svelte"
+  import Button from "$components/Button.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/Table.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
-  import type { PageData } from "./$types"
+  let { data } = $props()
 
-  export let data: PageData
+  const colourPalletteStatus = {
+    created: "#eed18c",
+    running: "#6fb5e0",
+    completed: "grey",
+    failed: "red",
+    invalid: "red"
+  } as const
+
+  let jobDetails: null | (typeof data.jobs)[number] = $state(null)
 </script>
 
-<SettingsPageHeader title="Jobs" />
-
-{#each data.queues as { queueName, jobs }}
-  <h1>{queueName}</h1>
-  <Table headers={["title", "progress", "id", "status"]} data={jobs} let:entry>
-    <td>{entry.name}</td>
-    <td>{entry.progress}</td>
+<SettingsPageContent title="Jobs">
+  <Table headers={["id", "name", "status"]} data={data.jobs} let:entry>
     <td>{entry.id}</td>
-    <td>{entry.failedReason || "waiting"}</td>
+    <td>{entry.name}</td>
+    <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td>
+    <div>
+      <Button
+        noMargin
+        icon="mdiInformation"
+        on:click={() => (jobDetails = entry)}
+      />
+    </div>
   </Table>
-{/each}
+</SettingsPageContent>
+
+{#if jobDetails}
+  <Popup
+    title="Job details for {jobDetails.id}"
+    onclose={() => (jobDetails = null)}
+  >
+    <pre>{JSON.stringify(jobDetails, null, 2)}</pre>
+  </Popup>
+{/if}
+
+<style lang="scss">
+  div {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher, type ComponentProps } from "svelte"
-  import { readable } from "svelte/store"
 
   import { page } from "$app/stores"
   import Icon from "$components/Icon.svelte"

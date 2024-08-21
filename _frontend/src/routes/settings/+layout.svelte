@@ -1,16 +1,21 @@
 <script lang="ts">
+  import { goto } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
-  import { isFullscreen, mobileBottomBarVisible, settings } from "$lib/stores"
+  import { mobileBottomBarVisible, settings } from "$lib/stores"
 
-  import type { LayoutData } from "./$types"
-
-  export let data: LayoutData
+  let { children, data } = $props()
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
   <!-- TODO: Mobile support -->
-  <section class="navigationSection">
+  <section class="sidebar">
+    {#if !$settings.mobileLayout}
+      <div style="display: flex;">
+        <Button icon="mdiArrowLeft" on:click={() => goto("/")} />
+      </div>
+    {/if}
+
     <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
     <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
     <Button icon="mdiPassport" href="/settings/credentials">Credentials</Button>
@@ -41,32 +46,27 @@
   </section>
 
   <div class="content">
-    <slot />
+    {@render children()}
   </div>
 
   {#if $settings.mobileLayout && $mobileBottomBarVisible}
-    <MobileBottomBar />
+    <div class="mobileBottomBar">
+      <MobileBottomBar />
+    </div>
   {/if}
 </main>
 
 <style lang="scss">
   main {
     display: grid;
-    grid-template-columns: auto auto 1fr;
-    width: 100%;
+    grid-template-columns: 234px 1fr;
     height: 100vh;
 
-    .clusterSection {
-      display: flex;
-      height: 100vh;
-    }
-
-    .navigationSection {
+    .sidebar {
       overflow: hidden;
       display: flex;
       flex-direction: column;
 
-      width: 234px;
       padding: 5px 0;
 
       background: var(--color-dark-level-1);
@@ -75,25 +75,19 @@
       .divider {
         flex-grow: 1;
       }
-
-      //   &.mobile {
-      //     height: 80vh;
-      //     width: 100%;
-      //     border: none;
-      //   }
     }
 
     .content {
-      overflow-y: scroll;
-      width: calc(100% - 2em);
-      height: calc(100vh - 2em);
-      padding: 1em;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
+    .mobileBottomBar {
+      grid-column: span 2;
     }
 
     &.mobile {
-      grid-template-columns: auto 1fr;
-      //   grid-template-rows: 1fr auto;
-      //   height: 100vh;
+      grid-template-columns: 60px 1fr;
     }
   }
 </style>
