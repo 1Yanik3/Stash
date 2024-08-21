@@ -15,9 +15,7 @@
   import {
     actionBar,
     actionBars,
-    imageSuffixParameter,
     selectedMediaIds,
-    settings,
     thumbnailSuffixParameter
   } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -41,6 +39,8 @@
   afterNavigate(() => {
     selectedMediaIds.set([])
     mediaController.visibleMedium = null
+    tagsController.updateTags()
+    mediaController.updateMedia()
   })
 
   // TODO: reimplment this

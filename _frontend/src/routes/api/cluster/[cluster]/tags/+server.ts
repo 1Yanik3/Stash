@@ -36,9 +36,9 @@ export const GET: RequestHandler = async ({ params, url }) => {
 
   return json(
     await prisma.$queryRawUnsafe(/*sql*/ `
-        WITH RECURSIVE
+       WITH RECURSIVE
             TagHierarchy AS (
-                -- Base case: start with the tag itself
+                -- Base case: start with all tags
                 SELECT
                     "id",
                     "parentId"
@@ -50,32 +50,44 @@ export const GET: RequestHandler = async ({ params, url }) => {
                     "Tags"."id",
                     "Tags"."parentId"
                 FROM
-                    "Tags" "Tags"
+                    "Tags"
                     INNER JOIN TagHierarchy ON "Tags"."parentId" = TagHierarchy."id"
+            ),
+            TagsWithMedia AS (
+                -- Find tags with media associated
+                SELECT
+                    "Tags"."id" AS tag_id,
+                    COUNT(DISTINCT "Media"."id")::INTEGER AS media_count
+                FROM
+                    "Tags"
+                LEFT JOIN "_MediaToTags" ON "_MediaToTags"."B" = "Tags"."id"
+                LEFT JOIN "Media" ON "_MediaToTags"."A" = "Media"."id"
+                WHERE
+                    "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${params.cluster}')
+                    ${typeFilter}
+                    ${favouriteFilter}
+                GROUP BY
+                    "Tags"."id"
+            ),
+            ParentTags AS (
+                -- Find parent tags which are parents of tags with media
+                SELECT DISTINCT
+                    "Tags"."id"
+                FROM
+                    "Tags"
+                INNER JOIN TagHierarchy ON TagHierarchy."parentId" = "Tags"."id"
+                INNER JOIN TagsWithMedia ON TagsWithMedia.tag_id = TagHierarchy.id
             )
         SELECT
             "Tags".*,
-            COUNT(DISTINCT "Media"."id")::INTEGER AS count
-            -- COALESCE(
-            --     SUM(
-            --         CASE
-            --             WHEN TagHierarchy.id IS NOT NULL THEN 1
-            --             ELSE 0
-            --         END
-            --     ),
-            --     0
-            -- )::INTEGER AS indirect_count
+            COALESCE(TagsWithMedia.media_count, 0) AS count
         FROM
             "Tags"
-            LEFT JOIN "_MediaToTags" ON "_MediaToTags"."B" = "Tags"."id"
-            LEFT JOIN "Media" ON "_MediaToTags"."A" = "Media"."id"
-            LEFT JOIN TagHierarchy ON TagHierarchy."parentId" = "Tags"."id"
+        LEFT JOIN TagsWithMedia ON "Tags"."id" = TagsWithMedia.tag_id
         WHERE
-            "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${params.cluster}')
-            ${typeFilter}
-            ${favouriteFilter}
-        GROUP BY
-            "Tags"."id";
+            "Tags"."id" IN (SELECT id FROM ParentTags)
+            OR TagsWithMedia.media_count > 0;
+
     `)
   )
 }

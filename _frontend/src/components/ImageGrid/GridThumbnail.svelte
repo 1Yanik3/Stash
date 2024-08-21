@@ -84,7 +84,7 @@
     {#if intersecting || i == 0}
       {#await new Promise(resolve => resolve(true)) then}
         <img
-          src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail${suffix}`}
+          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
           alt={medium.name}
           class:active={!disableActive && mediaController.visibleMedium == medium}
           crossorigin="use-credentials"
