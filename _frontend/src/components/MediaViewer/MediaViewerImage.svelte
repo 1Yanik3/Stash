@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { settings, visibleMedium } from "$lib/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { settings } from "$lib/stores"
 
   let mainElement: HTMLElement
   let imageElement: HTMLImageElement
@@ -98,9 +99,9 @@
     oncontextmenu={e => e.preventDefault()}
     onmousemove={calculateCursor}
     style:cursor
-    src={`${$page.data.serverURL}/file/${$visibleMedium?.id}`}
+    src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
     crossorigin="use-credentials"
-    alt={$visibleMedium?.name}
+    alt={mediaController.visibleMedium?.name}
   />
 </main>
 

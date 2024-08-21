@@ -5,19 +5,28 @@
 
   type T = $$Generic<Record>
 
-  export let options: {
-    value: T
-    name?: string
-    icon?: keyof typeof possibleIcons
-  }[]
-  export let value: T = options[0].value
-  export let width = 150
-  export let onchange: (value: T) => void = () => {}
+  type Props = {
+    options: {
+      value: T
+      name?: string
+      icon?: keyof typeof possibleIcons
+    }[]
+    value?: T
+    width?: number
+    onchange?: (value: T) => void
+  }
+
+  let {
+    options,
+    value = $bindable(options[0].value),
+    width = 150,
+    onchange = () => {}
+  }: Props = $props()
 
   let main: HTMLElement
-  let open = false
-  let top = 0
-  let left = 0
+  let open = $state(false)
+  let top = $state(0)
+  let left = $state(0)
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -110,7 +119,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         filter: brightness(110%);
       }

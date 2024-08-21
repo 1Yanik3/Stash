@@ -3,8 +3,7 @@
   import { prompts } from "$lib/controllers/PromptController"
   import {
     controller,
-    thumbnailSuffixParameter,
-    visibleMedium
+    thumbnailSuffixParameter
   } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
@@ -29,13 +28,13 @@
     )
   }
 
-  const rename = async (suggestedName = $visibleMedium?.name) => {
-    if (!$visibleMedium) return
+  const rename = async (suggestedName = mediaController.visibleMedium?.name) => {
+    if (!mediaController.visibleMedium) return
 
     const newName = await prompts.text("Enter new name", suggestedName)
     if (newName) {
-      $visibleMedium.name = newName
-      fetch(`/api/media/${$visibleMedium.id}/rename`, {
+      mediaController.visibleMedium.name = newName
+      fetch(`/api/media/${mediaController.visibleMedium.id}/rename`, {
         method: "PUT",
         body: JSON.stringify({
           name: newName
@@ -46,17 +45,17 @@
 </script>
 
 <Popup title="Media Details" on:close={() => $controller.setPopup(null)}>
-  {#if $visibleMedium}
+  {#if mediaController.visibleMedium}
     <main>
       <div>
         <Icon name="mdiFormTextbox" />
-        <span>{$visibleMedium.name}</span>
-        {#if $visibleMedium.name.endsWith(".mp4")}
+        <span>{mediaController.visibleMedium.name}</span>
+        {#if mediaController.visibleMedium.name.endsWith(".mp4")}
           <Button
             icon="mdiCreation"
             noMargin
             onclick={async () => {
-              if (!$visibleMedium) return
+              if (!mediaController.visibleMedium) return
 
               const request = await fetch("/api/ai/prompt", {
                 method: "POST",
@@ -69,7 +68,7 @@
                     - If the title is in caps, convert it to title case.
                     - If the filename mentions the names of people, add all of them to the end in brackets separated by a comma, so that the end result looks something like this: "<TITLE> (<PERSON 1>, <PERSON 2>)".
                     - Except if you only have names and no title, output the names in the same format but without the brackets.
-                    "${$visibleMedium.name}"
+                    "${mediaController.visibleMedium.name}"
                   `.replace(/^\s+|\s+$/gm, "")
                 })
               })
@@ -88,8 +87,8 @@
           icon="mdiPencil"
           noMargin
           onclick={() => {
-            if (!$visibleMedium) return
-            rename($visibleMedium.name)
+            if (!mediaController.visibleMedium) return
+            rename(mediaController.visibleMedium.name)
           }}
         />
       </div>
@@ -102,12 +101,12 @@
               icon="mdiImageRefresh"
               noMargin
               onclick={() => {
-                fetch(`/api/media/${$visibleMedium?.id}/thumbnail/reset`).then(
+                fetch(`/api/media/${mediaController.visibleMedium?.id}/thumbnail/reset`).then(
                   () =>
                     setTimeout(
                       () =>
                         thumbnailSuffixParameter.set({
-                          mediaId: $visibleMedium?.id,
+                          mediaId: mediaController.visibleMedium?.id as string,
                           suffix: Math.random().toString(16).substring(2, 8)
                         }),
                       200
@@ -119,7 +118,7 @@
               icon="mdiReload"
               noMargin
               onclick={() => {
-                fetch(`/api/media/${$visibleMedium?.id}/metadata/reload`).then(
+                fetch(`/api/media/${mediaController.visibleMedium?.id}/metadata/reload`).then(
                   () => {
                     // TODO: Reload does not work
                     mediaController.updateMedia()
@@ -132,17 +131,17 @@
 
         <div>
           <Icon name="mdiIdentifier" />
-          <span>{$visibleMedium.id}</span>
+          <span>{mediaController.visibleMedium.id}</span>
         </div>
 
         <div>
           <Icon name="mdiMoveResize" />
-          <span>{$visibleMedium.width}x{$visibleMedium.height}</span>
+          <span>{mediaController.visibleMedium.width}x{mediaController.visibleMedium.height}</span>
         </div>
 
         <div>
           <Icon name="mdiCalendar" />
-          <span>{toIsoString(new Date($visibleMedium.date))}</span>
+          <span>{toIsoString(new Date(mediaController.visibleMedium.date))}</span>
         </div>
       </section>
     </main>

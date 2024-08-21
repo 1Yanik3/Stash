@@ -1,43 +1,23 @@
 <script lang="ts">
-  import { readable } from "svelte/store"
-
   import Button from "$components/Button.svelte"
-  import { collapsedTagsController } from "$lib/controllers/CollapsedTagsController"
-  import getIconForTagName from "$lib/getIconForTagName"
-  import type { possibleIcons } from "$lib/possibleIcons"
   import {
-    collapsedTags,
-    controller,
-    selectedMediaIds,
-    selectedTags
-  } from "$lib/stores"
-
-  type TagData = {
-    name: string
-    count: number
-    children: TagData
-  }[]
+    tagsController,
+    type TagExtended
+  } from "$lib/controllers/TagsController.svelte"
+  import type { possibleIcons } from "$lib/possibleIcons"
+  import { selectedMediaIds } from "$lib/stores"
 
   let {
-    name,
-    count = null,
-    children,
+    tag,
     indent = 0,
     nameOverwrite = "",
     iconOverwrite = null
   }: {
-    name: string
-    count?: number | null
-    children: TagData
+    tag: TagExtended
     indent?: number
     nameOverwrite?: string
     iconOverwrite?: keyof typeof possibleIcons | null
   } = $props()
-
-  let collapsed = $derived($collapsedTags.includes(name.toLowerCase()))
-  let icon = $derived(
-    iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
-  )
 
   //   selectedTags.subscribe(tags => {
   //     if (tags.length == 1 && tags.includes(name.toLowerCase())) {
@@ -49,36 +29,34 @@
 </script>
 
 <Button
-  {indent}
-  {count}
-  icon={$icon}
+  styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
+  count={tag.count}
+  icon={iconOverwrite || tag.icon || tag.collapsed
+    ? "mdiFolderHidden"
+    : "mdiFolderOutline"}
   onclick={e => {
-    // @ts-ignore
-    if (e.detail.altKey) {
-      if ($selectedTags.includes(name.toLowerCase()))
-        selectedTags.set($selectedTags.filter(t => t != name.toLowerCase()))
-      else selectedTags.set([...$selectedTags, name.toLowerCase()])
+    selectedMediaIds.set([])
+    if (e.altKey) {
+      if (tagsController.selectedTags.some(t => t.id == tag.id))
+        tagsController.selectedTags = tagsController.selectedTags.filter(
+          t => t.id != tag.id
+        )
+      else tagsController.selectedTags = [...tagsController.selectedTags, tag]
     } else {
-      selectedTags.set([name.toLowerCase()])
-      selectedMediaIds.set([])
+      tagsController.selectedTags = [tag]
     }
   }}
   oncontextmenu={e => {
     e.preventDefault()
-    collapsedTagsController.toggleCollapsedTag(name.toLowerCase())
+    tagsController.toggleTag(tag, collapsed => (tag = { ...tag, collapsed }))
   }}
-  active={$selectedTags.includes(name.toLowerCase())}
+  active={tagsController.selectedTags.some(t => t.id == tag.id)}
 >
-  {(nameOverwrite || name).replace(/.+\//, "")}
+  {nameOverwrite || tag.tag}
 </Button>
 
-{#if children && !collapsed}
-  {#each children.sort((a, b) => a.name.localeCompare(b.name)) as c}
-    <svelte:self
-      indent={indent + 1}
-      name={name + "/" + c.name}
-      count={c.count}
-      children={c.children}
-    />
+{#if tag.children && !tag.collapsed}
+  {#each tag.children.sort((a, b) => a.tag.localeCompare(b.tag)) as c}
+    <svelte:self indent={indent + 1} tag={c} />
   {/each}
 {/if}

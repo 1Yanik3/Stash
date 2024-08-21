@@ -1,21 +1,28 @@
 import { get } from "svelte/store"
 
 import { page } from "$app/stores"
+import type { possibleIcons } from "$lib/possibleIcons"
 import {
   activeSetMethod,
   favouritesOnly,
   mediaTypeFilter,
-  selectedTags,
   traverse
 } from "$lib/stores"
 
 import { setMethods } from "../../types"
 
-type TagData = {
-  name: string
+export type TagBase = {
+  id: number
+  tag: string
+  icon: keyof typeof possibleIcons | null
+  collapsed: boolean
+  parentId: number | null
   count: number
-  children: TagData
-}[]
+}
+
+export type TagExtended = TagBase & {
+  children: TagExtended[]
+}
 
 export default class TagsController {
   private alreadyInitialized = false
@@ -24,75 +31,81 @@ export default class TagsController {
       console.log("TagsController already initialized!")
       return
     }
-    selectedTags.subscribe(this.updateTags)
-    traverse.subscribe(this.updateTags)
-    activeSetMethod.subscribe(this.updateTags)
-    favouritesOnly.subscribe(this.updateTags)
-    mediaTypeFilter.subscribe(this.updateTags)
+
+    $effect(() => {
+      if (
+        this.selectedTags ||
+        // TODO: stop being stores
+        traverse ||
+        activeSetMethod ||
+        favouritesOnly ||
+        mediaTypeFilter
+      )
+        this.updateTags()
+    })
 
     this.alreadyInitialized = true
   }
 
-  public tags: {
-    tag: string[]
-    direct_count: number
-    indirect_count: number
-    tag_exists_in_collapsed_tags: boolean
-  }[] = $state([])
+  public tags_flat: TagExtended[] = $state([])
+  public tags_hierarchy: TagExtended[] = $state([])
+  public selectedTags: TagExtended[] = $state([])
 
   public updateTags = async () => {
     const tagRequest = await fetch(
       `/api/cluster/${get(page).params.cluster}/tags?${new URLSearchParams({
-        tags: get(selectedTags).join(","),
+        tags: this.selectedTags.map(t => t.id).join(","),
         activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
         mediaTypeFilter: get(mediaTypeFilter),
         favouritesOnly: get(favouritesOnly).toString()
       }).toString()}`
     )
 
-    this.tags = await tagRequest.json()
-    this.updateHierarchicalTagsExceptPeople()
+    this.updateHierarchicalTags(await tagRequest.json())
   }
 
-  public hierarchicalTagsExceptPeople: TagData = $state([])
+  private updateHierarchicalTags = async (data: TagBase[]) => {
+    const tagMap: { [key: string]: TagExtended } = {}
 
-  private updateHierarchicalTagsExceptPeople = async () => {
-    let tagData: TagData = []
+    // Step 1: Create a map of all tags
+    data.forEach(tag => {
+      tagMap[tag.id] = {
+        ...tag,
+        children: []
+      }
+    })
 
-    this.tags
-      .filter(t => !["Solo", "Two", "Three", "Group"].includes(t.tag[0]))
-      .sort((a, b) => a.tag.length - b.tag.length)
-      .forEach(({ tag, direct_count, indirect_count }) => {
-        const addAt = (at: TagData, i: number) => {
-          if (!tag[i]) return
+    this.tags_flat = Object.values(tagMap)
 
-          const parent = at.find(t => t.name == tag[i])
+    // Step 2: Build the hierarchy
+    const result: TagExtended[] = []
+    data.forEach(tag => {
+      if (tag.parentId === null) {
+        result.push(tagMap[tag.id])
+      } else {
+        tagMap[tag.parentId].children.push(tagMap[tag.id])
+      }
+    })
 
-          if (parent) {
-            // Add as child
-            addAt(parent.children, i + 1)
-          } else {
-            // Add as new
-            const children: TagData = []
-            at.push({
-              name: tag[i],
-              count: get(traverse)
-                ? indirect_count + direct_count
-                : direct_count,
-              children
-            })
-            addAt(children, i + 1)
-          }
-        }
-
-        addAt(tagData, 0)
-      })
-
-    this.hierarchicalTagsExceptPeople = tagData.sort((a, b) =>
+    this.tags_hierarchy = result.sort((a, b) =>
       get(page).params.cluster == "Camp Buddy"
-        ? b.name.localeCompare(a.name)
+        ? b.tag.localeCompare(a.tag)
         : b.count - a.count
     )
+  }
+
+  public toggleTag = (tag: TagBase, callback: (collapsed: boolean) => {}) => {
+    callback(!tag.collapsed)
+
+    fetch(`/api/tags/${tag.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ collapsed: !tag.collapsed })
+    }).then(async res => {
+      if (!res.ok) {
+        console.error("Failed to toggle tag: ", await res.text())
+        callback(tag.collapsed)
+      }
+    })
   }
 }
 

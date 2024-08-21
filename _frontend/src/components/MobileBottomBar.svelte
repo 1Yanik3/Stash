@@ -1,12 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
   import {
     activeSetMethod,
     controller,
     favouritesOnly,
     mediaTypeFilter,
-    selectedTags,
     traverse
   } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
@@ -137,9 +137,9 @@
       <div class="icon">
         <Icon name="mdiTagMultiple" />
       </div>
-      {#if $selectedTags.length > 0}
+      {#if tagsController.selectedTags.length > 0}
         <div class="dot">
-          <span>{$selectedTags.length}</span>
+          <span>{tagsController.selectedTags.length}</span>
         </div>
       {/if}
     </div>

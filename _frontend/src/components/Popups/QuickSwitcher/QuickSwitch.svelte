@@ -1,23 +1,22 @@
 <script lang="ts">
   import { tagsController } from "$lib/controllers/TagsController.svelte"
-  import { selectedTags } from "$lib/stores"
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
   const promise = (async () => {
-    return tagsController.tags
+    return tagsController.tags_flat
   })()
 </script>
 
 <FuzzyPopupTemplate
   {promise}
   searchAttributes={["tag"]}
-  onselected={({ tag }) => {
-    selectedTags.set([tag.join("/").toLowerCase()])
+  onselected={d => {
+    tagsController.selectedTags = [d]
   }}
 >
   {#snippet children(result)}
-    <span>{result.tag.join("/")}</span>
-    <span>{result.direct_count}</span>
+    <span style="text-transform: capitalize">{result.tag}</span>
+    <span>{result.count}</span>
   {/snippet}
 </FuzzyPopupTemplate>

@@ -3,17 +3,9 @@
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import {
-    actionBar,
-    actionBars,
-    isFullscreen,
-    settings,
-    visibleMedium
-  } from "$lib/stores"
+  import { actionBar, actionBars, isFullscreen, settings } from "$lib/stores"
 
   import Sidebar from "./Sidebar.svelte"
-
-  $: console.log({ visibleMedium: $visibleMedium?.id })
 
   const onscroll = (e: Event) => {
     const target = e.target as HTMLDivElement
@@ -40,7 +32,7 @@
     <svelte:component this={actionBars[$actionBar]} />
   {/if}
 
-  {#if $visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
+  {#if mediaController.visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
     <MediaViewer />
   {/if}
 </main>
@@ -64,7 +56,6 @@
     }
 
     &.mobile {
-
       #imageGallerySection {
         min-width: unset;
       }

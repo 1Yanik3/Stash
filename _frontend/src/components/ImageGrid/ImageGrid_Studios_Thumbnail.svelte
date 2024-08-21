@@ -1,24 +1,26 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client/wasm"
   import { createEventDispatcher } from "svelte"
 
   import Icon from "$components/Icon.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
-  import { visibleMedium } from "$lib/stores"
+  import {
+    mediaController,
+    type MediaType
+  } from "$lib/controllers/MediaController.svelte"
 
   import GridThumbnail from "./GridThumbnail.svelte"
 
   const dispatch = createEventDispatcher()
 
   export let selectedMedia: string[]
-  export let medium: Media
+  export let medium: MediaType
 
   export let parent = false
   export let sub = false
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
-      visibleMedium.set(null)
+      mediaController.visibleMedium = null
       if (selectedMedia.includes(medium.id))
         selectedMedia = selectedMedia.filter(j => j != medium.id)
       else selectedMedia = [...selectedMedia, medium.id]
@@ -27,7 +29,7 @@
       if (parent) {
         dispatch("click")
       } else {
-        visibleMedium.set(medium)
+        mediaController.visibleMedium = medium
       }
     }
   }
@@ -35,7 +37,7 @@
 
 <main
   onmouseup={e => leftClick(e)}
-  class:active={$visibleMedium == medium && !parent}
+  class:active={mediaController.visibleMedium == medium && !parent}
   class:selected={selectedMedia.includes(medium.id)}
   class:sub
 >
@@ -52,13 +54,13 @@
         </b>
       {/await}
     {:else}
-      {#key $visibleMedium == medium ? $visibleMedium : null}
+      {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
         <b>{medium.name}</b>
       {/key}
     {/if}
   </div>
 
-  {#key $visibleMedium == medium ? $visibleMedium : null}
+  {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
     <div class="tags">
       {#each medium.tags as tag}
         <TagChip {tag} compact />
@@ -128,7 +130,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         background: var(--color-dark-level-1-hover);
         border: 1px solid var(--border-color-1-hover);

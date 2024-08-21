@@ -5,6 +5,7 @@ import prisma from "$lib/server/prisma"
 import type { PageServerLoad, PageServerParentData } from "./$types"
 
 const loadCounters = async (clusterName: string) => {
+  return [{ untagged_count: 0 }]
   return (
     (await prisma.$queryRaw`
         SELECT COUNT(*) AS untagged_count

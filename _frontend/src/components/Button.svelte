@@ -12,7 +12,6 @@
   let {
     icon = null as keyof typeof possibleIcons | null,
     iconNoTyping = null as string | null,
-    indent = 0, // TODO: remove
     count = null as number | null,
     active = false,
     href = null as string | null,
@@ -97,7 +96,7 @@
 <a
   {download}
   {href}
-  style={`padding-left: ${0.75 + indent}em;${styleOverride}`}
+  style={styleOverride}
   class:active={active || (href && href == $page.url.pathname)}
   class:hidden={hidden || !children}
   class:right

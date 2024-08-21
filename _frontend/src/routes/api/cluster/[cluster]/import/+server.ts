@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   const {
     filename,
     selectedTags
-  }: { filename: string; selectedTags: string[] } = await request.json()
+  }: { filename: string; selectedTags: number[] } = await request.json()
 
   const { id: mediaId, type } = await prisma.media.create({
     data: {
@@ -34,9 +34,23 @@ export const POST: RequestHandler = async ({ params, request }) => {
           id: +params.cluster
         }
       },
-      tags: selectedTags.map(t => t.toLocaleLowerCase()) || []
     }
   })
+
+  for (const tagId of selectedTags) {
+    await prisma.tags.update({
+      where: {
+        id: tagId
+      },
+      data: {
+        media: {
+          connect: {
+            id: mediaId
+          }
+        }
+      }
+    })
+  }
 
   await fs.copyFile(`${importFolderPath}/${filename}`, `./media/${mediaId}`)
   await fs.rm(`${importFolderPath}/${filename}`)

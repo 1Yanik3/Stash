@@ -7,7 +7,6 @@
     actionBar,
     controller,
     selectedMediaIds,
-    selectedTags,
     uploadPopupOpen,
     viewMode
   } from "$lib/stores"
@@ -23,57 +22,58 @@
   }[]
   let promise: Promise<functionalitiesType> = new Promise(resolve => {
     const functionalities: functionalitiesType = [
-      {
-        name: "Add tag",
-        icon: "mdiTagPlus",
-        async action() {
-          const newTag = await prompts.tag("Enter new tag:")
-          if (!newTag) return
+      // TODO: centalize this
+      //   {
+      //     name: "Add tag",
+      //     icon: "mdiTagPlus",
+      //     async action() {
+      //       const newTag = await prompts.tag("Enter new tag:")
+      //       if (!newTag) return
 
-          for (const i in $selectedMediaIds) {
-            await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
-              method: "PUT",
-              body: JSON.stringify({
-                name: newTag
-              })
-            }).catch(console.error)
-            mediaController.media
-              .find(m => m.id == $selectedMediaIds[i])
-              ?.tags.push(newTag)
-          }
-        },
-        condition: $selectedMediaIds.length > 0
-      },
-      {
-        name: "Remove tag",
-        icon: "mdiTagRemove",
-        async action() {
-          const tagsInSelectedMedia =
-            mediaController.media.find(m => m.id == $selectedMediaIds[0])
-              ?.tags || []
+      //       for (const i in $selectedMediaIds) {
+      //         await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
+      //           method: "PUT",
+      //           body: JSON.stringify({
+      //             name: newTag
+      //           })
+      //         }).catch(console.error)
+      //         mediaController.media
+      //           .find(m => m.id == $selectedMediaIds[i])
+      //           ?.tags.push(newTag)
+      //       }
+      //     },
+      //     condition: $selectedMediaIds.length > 0
+      //   },
+      //   {
+      //     name: "Remove tag",
+      //     icon: "mdiTagRemove",
+      //     async action() {
+      //       const tagsInSelectedMedia =
+      //         mediaController.media.find(m => m.id == $selectedMediaIds[0])
+      //           ?.tags || []
 
-          const tagToDelete = await prompts.select(
-            "Enter tag to remove: ",
-            tagsInSelectedMedia
-          )
-          if (tagToDelete == null) return
+      //       const tagToDelete = await prompts.select(
+      //         "Enter tag to remove: ",
+      //         tagsInSelectedMedia
+      //       )
+      //       if (tagToDelete == null) return
 
-          for (const i in $selectedMediaIds) {
-            await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
-              method: "DELETE",
-              body: JSON.stringify({
-                name: tagToDelete
-              })
-            }).catch(console.error)
+      //       for (const i in $selectedMediaIds) {
+      //         await fetch(`/api/media/${$selectedMediaIds[i]}/tag`, {
+      //           method: "DELETE",
+      //           body: JSON.stringify({
+      //             name: tagToDelete
+      //           })
+      //         }).catch(console.error)
 
-            const media = mediaController.media.find(
-              m => m.id == $selectedMediaIds[i]
-            )
-            if (media) media.tags = media.tags.filter(t => t != tagToDelete)
-          }
-        },
-        condition: $selectedMediaIds.length > 0
-      },
+      //         const media = mediaController.media.find(
+      //           m => m.id == $selectedMediaIds[i]
+      //         )
+      //         if (media) media.tags = media.tags.filter(t => t != tagToDelete)
+      //       }
+      //     },
+      //     condition: $selectedMediaIds.length > 0
+      //   },
       {
         name: "Upload",
         icon: "mdiUpload",
@@ -87,22 +87,6 @@
         icon: "mdiImport",
         async action() {
           $controller.setPopup("Quick Actions Import")
-        },
-        condition: true
-      },
-      {
-        name: "Import from URL",
-        icon: "mdiCloudDownload",
-        async action() {
-          $controller.setPopup("Quick Actions Import from URL")
-        },
-        condition: true
-      },
-      {
-        name: "Import from Search",
-        icon: "mdiSearchWeb",
-        async action() {
-          $controller.setPopup("Quick Actions Import from Search")
         },
         condition: true
       },
@@ -147,33 +131,34 @@
         },
         condition:
           $page.data.cluster.type == "withName" && $viewMode == "normal"
-      },
-      {
-        name: "Rename Tag",
-        icon: "mdiTagEdit",
-        async action() {
-          const oldName = await prompts.select(
-            "What tag do you want to rename?",
-            $selectedTags as string[]
-          )
-          if (!oldName) return
-
-          const newName = prompts.text("Enter new name:", oldName || "")
-          if (!newName) return
-
-          await fetch(`/api/cluster/${$page.data.cluster.name}/tags/rename`, {
-            method: "POST",
-            body: JSON.stringify({
-              oldName,
-              newName
-            })
-          })
-
-          // TODO: Do I need to invalidate the Media as well?
-          // TODO: Invalidate Tags
-        },
-        condition: $selectedTags.length > 0
       }
+      //   TODO: centralize this
+      //   {
+      //     name: "Rename Tag",
+      //     icon: "mdiTagEdit",
+      //     async action() {
+      //       const oldName = await prompts.select(
+      //         "What tag do you want to rename?",
+      //         $selectedTags as string[]
+      //       )
+      //       if (!oldName) return
+
+      //       const newName = prompts.text("Enter new name:", oldName || "")
+      //       if (!newName) return
+
+      //       await fetch(`/api/cluster/${$page.data.cluster.name}/tags/rename`, {
+      //         method: "POST",
+      //         body: JSON.stringify({
+      //           oldName,
+      //           newName
+      //         })
+      //       })
+
+      //       // TODO: Do I need to invalidate the Media as well?
+      //       // TODO: Invalidate Tags
+      //     },
+      //     condition: $selectedTags.length > 0
+      //   }
     ]
 
     resolve(functionalities)

@@ -1,17 +1,12 @@
 <script lang="ts">
-  import type { Media } from "@prisma/client/wasm"
-
   import { page } from "$app/stores"
   import Icon from "$components/Icon.svelte"
-  import {
-    selectedMediaIds,
-    thumbnailSuffixParameter,
-    visibleMedium
-  } from "$lib/stores"
+  import { mediaController, type MediaType } from "$lib/controllers/MediaController.svelte"
+  import { selectedMediaIds, thumbnailSuffixParameter } from "$lib/stores"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   export let i: number
-  export let medium: Media
+  export let medium: MediaType
   export let disableActive = false
   export let rigidAspectRatio = false
   export let disableZoom = false
@@ -39,13 +34,13 @@
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
-      visibleMedium.set(null)
+      mediaController.visibleMedium = null
       if ($selectedMediaIds.includes(medium.id))
         selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
       else selectedMediaIds.set([...$selectedMediaIds, medium.id])
     } else {
       selectedMediaIds.set([])
-      visibleMedium.set(medium)
+      mediaController.visibleMedium = medium
     }
   }
 
@@ -91,7 +86,7 @@
         <img
           src={`${$page.data.serverURL}/api/media/${medium.id}/thumbnail${suffix}`}
           alt={medium.name}
-          class:active={!disableActive && $visibleMedium == medium}
+          class:active={!disableActive && mediaController.visibleMedium == medium}
           crossorigin="use-credentials"
           class:disableZoom
         />
@@ -133,7 +128,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

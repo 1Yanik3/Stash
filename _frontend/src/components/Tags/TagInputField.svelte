@@ -41,14 +41,14 @@
   }
 
   //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
-  $: searcher = new FuzzySearch(tagsController.tags, ["tag"], {
+  $: searcher = new FuzzySearch(tagsController.tags_flat, ["tag"], {
     caseSensitive: false,
     sort: true
   })
   $: results = searcher
     .search(value)
     .slice(0, 10)
-    .map(t => t.tag.join("/"))
+    .map(t => t.tag)
 </script>
 
 <main>

@@ -1,8 +1,8 @@
 // This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "debian-openssl-1.1.x", "darwin-arm64"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "darwin-arm64"]
 }
 
 datasource db {
@@ -26,9 +26,8 @@ model Clusters {
 
   sortOrder Int @default(0) // TODO: why?
 
-  stories       Story[]
-  Media         Media[]
-  CollapsedTags CollapsedTags[]
+  stories Story[]
+  Media   Media[]
 
   credentials Credentials[]
 
@@ -43,6 +42,18 @@ enum CountAttribute {
   unknown
 }
 
+model Tags {
+  id        Int     @id @default(autoincrement())
+  tag       String
+  icon      String?
+  collapsed Boolean @default(false)
+
+  parentId Int?
+  parent   Tags?   @relation("ParentChildTags", fields: [parentId], references: [id])
+  children Tags[]  @relation("ParentChildTags")
+  media    Media[]
+}
+
 model Media {
   id          String   @id @default(uuid())
   type        String
@@ -52,12 +63,12 @@ model Media {
 
   height       Int
   width        Int
-  tags         String[]
+  tags_old     String[]
   source       String? // TODO
   content_hash String?
 
-  favourited     Boolean        @default(false)
-  countAttribute CountAttribute @default(unknown) // TODO
+  favourited             Boolean @default(false)
+  specialFilterAttribute String?
 
   // Link to cluster
   cluster    Clusters? @relation(fields: [clustersId], references: [id])
@@ -67,21 +78,14 @@ model Media {
   groupedInto        GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
   groupedIntoNamesId Int?
 
-  @@index([id, clustersId, tags])
+  tags Tags[]
+
+  @@index([id, clustersId, tags_old])
 }
 
 model TagIcons {
   tag  String @unique
   icon String
-}
-
-model CollapsedTags {
-  tag String @unique
-
-  Cluster    Clusters @relation(fields: [clustersId], references: [id])
-  clustersId Int
-
-  @@index([tag])
 }
 
 model GroupedIntoNames {

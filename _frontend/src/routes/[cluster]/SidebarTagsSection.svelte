@@ -8,8 +8,8 @@
 
 <main class:mobile={$settings.mobileLayout}>
   <SidebarSection>
-    {#each tagsController.hierarchicalTagsExceptPeople as d}
-      <SidebarHierarchyEntry {...d} />
+    {#each tagsController.tags_hierarchy as tag}
+      <SidebarHierarchyEntry {tag} />
     {/each}
   </SidebarSection>
 </main>

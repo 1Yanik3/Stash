@@ -5,8 +5,7 @@
     controller,
     imageSuffixParameter,
     isFullscreen,
-    settings,
-    visibleMedium
+    settings
   } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -20,29 +19,30 @@
   let mediaElement: HTMLElement
   let isZoomedIn = false
 
+  //   TODO: reimplment this
   let preloadedImageUrl = ""
-  const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
-    const mediaIndex = mediaController.media.findIndex(
-      m => m.id == $visibleMedium?.id
-    )
+  //   const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
+  //     const mediaIndex = mediaController.media.findIndex(
+  //       m => m.id == $visibleMedium?.id
+  //     )
 
-    if (mediaIndex < mediaController.media.length - 1)
-      preloadedImageUrl = `${pageData.serverURL}/file/${
-        mediaController.media[mediaIndex + 1].id
-      }${$imageSuffixParameter}`
-    else preloadedImageUrl = ""
-  }
-  $: updatePreloadedImageUrl($visibleMedium)
+  //     if (mediaIndex < mediaController.media.length - 1)
+  //       preloadedImageUrl = `${pageData.serverURL}/file/${
+  //         mediaController.media[mediaIndex + 1].id
+  //       }${$imageSuffixParameter}`
+  //     else preloadedImageUrl = ""
+  //   }
+  //   $: updatePreloadedImageUrl($visibleMedium)
 </script>
 
 <Shortcut
   key="Escape"
   action={() => {
-    visibleMedium.set(null)
+    mediaController.visibleMedium = null
   }}
 />
 
-{#if $visibleMedium}
+{#if mediaController.visibleMedium}
   <main class:fullscreen={$isFullscreen} class:mobile={$settings.mobileLayout}>
     <div class="toolbar">
       <Toolbar />
@@ -63,12 +63,12 @@
         }
       }}
     >
-      {#if $visibleMedium.type.startsWith("image")}
+      {#if mediaController.visibleMedium.type.startsWith("image")}
         <MediaViewerImage />
-      {:else if $visibleMedium.type.startsWith("video")}
+      {:else if mediaController.visibleMedium.type.startsWith("video")}
         <MediaViewerVideo />
       {:else}
-        <span>{$visibleMedium.name}</span>
+        <span>{mediaController.visibleMedium.name}</span>
       {/if}
     </div>
   </main>

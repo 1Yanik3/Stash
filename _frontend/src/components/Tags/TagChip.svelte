@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "$components/Icon.svelte"
-  import getIconForTagName from "$lib/getIconForTagName"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   let {
     tag,
@@ -9,17 +9,17 @@
     onclick = () => {},
     oncontextmenu = () => {}
   }: {
-    tag: string
+    tag: number
     forceShowName?: boolean
     compact?: boolean
     onclick?: (e: MouseEvent) => void
     oncontextmenu?: (e: MouseEvent) => void
   } = $props()
 
-  const icon = getIconForTagName(tag)
+  let _tag = $derived(tagsController.tags_flat.find(t => t.id == tag))
 </script>
 
-{#key tag}
+{#key _tag}
   <span
     class:compact
     onclick={e => {
@@ -31,10 +31,10 @@
       oncontextmenu(e)
     }}
   >
-    {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" && !forceShowName}
-      <Icon name={$icon} size={compact ? 0.9 : 1} />
+    {#if _tag && _tag.icon && !forceShowName}
+      <Icon name={_tag.icon} size={compact ? 0.9 : 1} />
     {:else}
-      {tag}
+      {_tag?.tag}
     {/if}
   </span>
 {/key}

@@ -4,12 +4,13 @@
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import type { TagExtended } from "$lib/controllers/TagsController.svelte"
   import {
     controller,
     imageSuffixParameter,
     isFullscreen,
-    settings,
-    visibleMedium
+    settings
   } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -26,46 +27,49 @@
   let dropdownVisible = false
 
   const addTagToMedia = (value: string) => {
-    fetch(`/api/media/${$visibleMedium?.id}/tag`, {
-      method: "PUT",
-      body: JSON.stringify({
-        name: value
-      })
-    })
-      .then(() => {
-        const isInUnsorted =
-          $visibleMedium?.tags.length == 1 &&
-          $visibleMedium?.tags[0] == "show_unsorted"
+    throw new Error("Not implemented")
+    // fetch(`/api/media/${mediaController.visibleMedium?.id}/tag`, {
+    //   method: "PUT",
+    //   body: JSON.stringify({
+    //     name: value
+    //   })
+    // })
+    //   .then(() => {
+    //     const isInUnsorted =
+    //       mediaController.visibleMedium?.tags.length == 1 &&
+    //       mediaController.visibleMedium?.tags[0].tag == "show_unsorted"
 
-        const tmp = $visibleMedium
-        tmp?.tags.push(value)
-        visibleMedium.set(tmp)
+    //     const tmp = mediaController.visibleMedium
+    //     // tmp?.tags.push(value)
+    //     mediaController.visibleMedium = tmp
 
-        if (isInUnsorted) {
-          removeTagFromMedia("show_unsorted")
-        } else {
-          // TODO: Do I need to invalidate the Media as well?
-          // TODO: Invalidate Tags
-        }
-      })
-      .catch(console.error)
+    //     // TODO: Do I need to reimplement this?
+    //     // if (isInUnsorted) {
+    //     //   removeTagFromMedia("show_unsorted")
+    //     // } else {
+    //     //   // TODO: Do I need to invalidate the Media as well?
+    //     //   // TODO: Invalidate Tags
+    //     // }
+    //   })
+    //   .catch(console.error)
   }
 
-  const removeTagFromMedia = (tag: string) => {
-    fetch(`/api/media/${$visibleMedium?.id}/tag`, {
-      method: "DELETE",
-      body: JSON.stringify({
-        name: tag
-      })
-    }).then(() => {
-      if (!$visibleMedium) return
-      const tmp = $visibleMedium
-      tmp.tags = tmp.tags.filter(t => t != tag)
-      visibleMedium.set(tmp)
+  const removeTagFromMedia = (tag: number) => {
+    throw new Error("Not implemented")
+    // fetch(`/api/media/${mediaController.visibleMedium?.id}/tag`, {
+    //   method: "DELETE",
+    //   body: JSON.stringify({
+    //     name: tag
+    //   })
+    // }).then(() => {
+    //   if (!mediaController.visibleMedium) return
+    //   const tmp = mediaController.visibleMedium
+    //   tmp.tags = tmp.tags.filter(t => t != tag)
+    //   mediaController.visibleMedium = tmp
 
-      // TODO: Do I need to invalidate the Media as well?
-      // TODO: Invalidate Tags
-    })
+    //   // TODO: Do I need to invalidate the Media as well?
+    //   // TODO: Invalidate Tags
+    // })
   }
 
   ;(window as any).test = () =>
@@ -74,12 +78,16 @@
     const data = new FormData()
     data.append(
       "file",
-      new File([newMedia], $visibleMedium?.name || "newImage.jpg", {
-        type: newMedia.type
-      })
+      new File(
+        [newMedia],
+        mediaController.visibleMedium?.name || "newImage.jpg",
+        {
+          type: newMedia.type
+        }
+      )
     )
 
-    fetch(`/api/media/${$visibleMedium?.id}/replace`, {
+    fetch(`/api/media/${mediaController.visibleMedium?.id}/replace`, {
       method: "PUT",
       body: data
     }).then(async () => {
@@ -131,7 +139,7 @@
   class:windowControlsSpacer={$settings.windowControlsSpacer}
 >
   <section>
-    <button onclick={() => visibleMedium.set(null)}>
+    <button onclick={() => (mediaController.visibleMedium = null)}>
       <Icon name="mdiClose" size={0.8} />
     </button>
   </section>
@@ -139,17 +147,17 @@
   <div>
     <button
       onclick={() => {
-        fetch(`/api/media/${$visibleMedium?.id}/favourited`, {
+        fetch(`/api/media/${mediaController.visibleMedium?.id}/favourited`, {
           method: "PUT",
           body: JSON.stringify({
-            favourited: !$visibleMedium?.favourited
+            favourited: !mediaController.visibleMedium?.favourited
           })
         })
           .then(() => {
-            if (!$visibleMedium) return
-            const tmp = $visibleMedium
-            tmp.favourited = !$visibleMedium?.favourited
-            visibleMedium.set(tmp)
+            if (!mediaController.visibleMedium) return
+            const tmp = mediaController.visibleMedium
+            tmp.favourited = !mediaController.visibleMedium?.favourited
+            mediaController.visibleMedium = tmp
 
             // TODO: Do I need to invalidate the Media as well?
             // TODO: Invalidate Tags
@@ -157,16 +165,16 @@
           .catch(console.error)
       }}
     >
-      {#if $visibleMedium?.favourited}
+      {#if mediaController.visibleMedium?.favourited}
         <Icon name="mdiStar" size={0.8} />
       {:else}
         <Icon name="mdiStarOutline" size={0.8} />
       {/if}
     </button>
-    {#each $visibleMedium?.tags || [] as tag (tag)}
+    {#each mediaController.visibleMedium?.tags || [] as tag (tag)}
       <TagChip {tag} oncontextmenu={() => removeTagFromMedia(tag)} />
     {/each}
-    {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
+    {#if pageData.cluster.type != "collection" || mediaController.visibleMedium?.tags.length != 1}
       <TagInputField
         on:selected={({ detail }) => addTagToMedia(detail.toLowerCase())}
       />
@@ -219,7 +227,7 @@
   </Button>
 
   <!-- TODO: Timestamp picker (in frontend, using video element) -->
-  {#if $visibleMedium?.type.startsWith("video")}
+  {#if mediaController.visibleMedium?.type.startsWith("video")}
     <Button
       icon="mdiFileReplaceOutline"
       onclick={() => {
@@ -237,7 +245,7 @@
 
   <Button
     icon="mdiDownload"
-    href="/api/media/{$visibleMedium?.id}/download"
+    href="/api/media/{mediaController.visibleMedium?.id}/download"
     download
   >
     Download
@@ -247,7 +255,7 @@
     icon="mdiOpenInNew"
     onclick={() => {
       window.open(
-        `${$page.data.serverURL}/file/${$visibleMedium?.id}`,
+        `${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`,
         "_blank"
       )
       dropdownVisible = false

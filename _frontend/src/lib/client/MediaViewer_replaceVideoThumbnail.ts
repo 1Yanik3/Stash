@@ -5,8 +5,8 @@ import {
   controller,
   thumbnailSuffixParameter,
   videoElement,
-  visibleMedium
 } from "$lib/stores"
+import { mediaController } from "$lib/controllers/MediaController.svelte"
 
 const dataURItoBlob = (dataURI: string) => {
   // convert base64 to raw binary data held in a string
@@ -60,7 +60,7 @@ export default async () => {
   const data = new FormData()
   data.append("file", blob, "frame.png")
 
-  let mediaId = get(visibleMedium)?.id
+  let mediaId = mediaController.visibleMedium?.id
   if (!mediaId) {
     return
   }

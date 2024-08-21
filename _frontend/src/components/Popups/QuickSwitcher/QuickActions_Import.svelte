@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { selectedTags } from "$lib/stores"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
@@ -18,7 +18,7 @@
         method: "POST",
         body: JSON.stringify({
           filename,
-          selectedTags: $selectedTags
+          selectedTags: tagsController.selectedTags.map(t => t.id)
         })
       }
     )

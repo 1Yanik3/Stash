@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { readable } from "svelte/store"
-
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
-  import { controller, selectedTags, viewMode } from "$lib/stores"
+  import { viewMode } from "$lib/stores"
 
   import type { PageData } from "../../routes/[cluster]/$types"
   import ImageGridCollection from "./ImageGrid_Collection.svelte"
@@ -17,35 +14,36 @@
   $: pageData = $page.data as PageData
 </script>
 
-{#if pageData.cluster.type == "collection" && !$selectedTags.length}
+{#if pageData.cluster.type == "collection" && !tagsController.selectedTags.length}
   <ImageGridCollection />
 {:else if pageData.cluster.type == "stories"}
   <ImageGridStories />
 {:else}
-  {#if pageData.cluster.type == "collection"}
+  <!-- TODO -->
+  <!-- {#if pageData.cluster.type == "collection"}
     <div id="collectionGroups">
-      {#if $selectedTags.length == 1 && $selectedTags[0].includes("/")}
+      {#if tagsController.selectedTags.length == 1 && tagsController.selectedTags[0].includes("/")}
         <Button
           card
           icon="mdiFolderArrowUpOutline"
           onclick={() =>
             selectedTags.set([
-              $selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
+              tagsController.selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
             ])}
         >
-          {$selectedTags[0].replace(/\/.+$/, "")}
+          {tagsController.selectedTags[0].replace(/\/.+$/, "")}
         </Button>
       {/if}
 
-      {#if tagsController.tags}
-        {#each tagsController.tags
+      {#if tagsController.tags_flat}
+        {#each tagsController.tags_flat
           .filter(t => t.tag
               .join("/")
               .toLowerCase()
-              .startsWith($selectedTags[0].toString()))
+              .startsWith(tagsController.selectedTags[0].toString()))
           .filter(t => t.tag
                 .join("/")
-                .toLowerCase() != $selectedTags[0].toString())
+                .toLowerCase() != tagsController.selectedTags[0].toString())
           .sort((a, b) => a.tag
               .join("/")
               .localeCompare(b.tag.join("/"))) as { tag }}
@@ -59,7 +57,7 @@
         {/each}
       {/if}
     </div>
-  {/if}
+  {/if} -->
 
   <section>
     {#if $viewMode == "table"}

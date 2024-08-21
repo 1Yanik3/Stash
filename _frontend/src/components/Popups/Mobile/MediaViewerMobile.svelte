@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  import { actionBar, controller, visibleMedium } from "$lib/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { actionBar, controller } from "$lib/stores"
 
   import MediaViewer from "../../MediaViewer/MediaViewer.svelte"
   import Toolbar from "../../MediaViewer/Toolbar.svelte"
@@ -11,7 +12,7 @@
   })
 
   const onPopState = (event: PopStateEvent) => {
-    visibleMedium.set(null)
+    mediaController.visibleMedium = null
     $controller.setPopup(null)
   }
 </script>

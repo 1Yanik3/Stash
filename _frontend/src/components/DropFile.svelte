@@ -3,7 +3,7 @@
 
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { controller, selectedTags, uploadPopupOpen } from "$lib/stores"
+  import { uploadPopupOpen } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -11,24 +11,24 @@
   import Icon from "./Icon.svelte"
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
+  import { tagsController, type TagBase, type TagExtended } from "$lib/controllers/TagsController.svelte"
 
-  let tags: String[] = []
-  let tagInputElement: TagInputField
+  let tags: TagExtended[] = $state.link(tagsController.selectedTags)
+  let tagInputElement: TagInputField | null = $state(null)
 
   onMount(() => {
-    selectedTags.subscribe(() => (tags = $selectedTags))
     uploadPopupOpen.subscribe(() => {
-      if (tags) tags = $selectedTags
+      if (tags) tags = tagsController.selectedTags
       if (uploadProgress) uploadProgress = 0
       if (uploadPercentage) uploadPercentage = 0
       if (files) files = []
     })
   })
 
-  let uploadStarted = false
-  let uploadProgress = 0
-  let uploadPercentage = 0
-  let files: File[] = []
+  let uploadStarted = $state(false)
+  let uploadProgress = $state(0)
+  let uploadPercentage = $state(0)
+  let files: File[] = $state([])
 
   const onEnter = (e: DragEvent) => {
     e.preventDefault()
@@ -98,7 +98,7 @@
 <svelte:document ondragenter={onEnter} ondragleave={onLeave} />
 
 {#if $uploadPopupOpen}
-  <Shortcut shift key="T" action={() => tagInputElement.focus()} />
+  <Shortcut shift key="T" action={() => tagInputElement?.focus()} />
 
   <Popup title="Upload Files" on:close={() => ($uploadPopupOpen = false)}>
     <main>

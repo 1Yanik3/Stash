@@ -3,15 +3,16 @@
   import { fade } from "svelte/transition"
 
   import { page } from "$app/stores"
-  import { selectedTags } from "$lib/stores"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
 
   $: pageData = $page.data as PageData
 
   let data: {
-    id: string
-    tag: string
+    tagId: number
+    tagTag: string
+    mediaId: number
   }[] = []
 
   onMount(async () => {
@@ -30,13 +31,21 @@
     </label>
   </div>
 
-  {#each data.filter(d => d.tag
-      .toLowerCase()
-      .includes(filter.toLowerCase())) as d}
-    <span class="tag" onclick={() => selectedTags.set([d.tag.toLowerCase()])}>
-      <img src={`${$page.data.serverURL}/api/media/${d.id}/thumbnail`} alt="" />
+  {#each data.filter(d => d.tagTag.includes(filter.toLowerCase())) as d}
+    <span
+      class="tag"
+      onclick={() => {
+        const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagId)
 
-      <span>{d.tag.split("/", 1)[0]}</span>
+        if (matchingTag) tagsController.selectedTags = [matchingTag]
+      }}
+    >
+      <img
+        src={`${$page.data.serverURL}/api/media/${d.mediaId}/thumbnail`}
+        alt=""
+      />
+
+      <span>{d.tagTag}</span>
     </span>
   {/each}
 </main>
@@ -91,7 +100,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         transform: scale(1.03);
         filter: brightness(0.85);

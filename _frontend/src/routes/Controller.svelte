@@ -7,12 +7,9 @@
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
-  import QuickActionsImportFromSearch from "$components/Popups/QuickSwitcher/QuickActions_ImportFromSearch.svelte"
-  import QuickActionsImportFromUrl from "$components/Popups/QuickSwitcher/QuickActions_ImportFromUrl.svelte"
   import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
-  import { collapsedTagsController } from "$lib/controllers/CollapsedTagsController"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
   import {
@@ -20,10 +17,8 @@
     actionBars,
     imageSuffixParameter,
     selectedMediaIds,
-    selectedTags,
     settings,
-    thumbnailSuffixParameter,
-    visibleMedium
+    thumbnailSuffixParameter
   } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -34,59 +29,58 @@
   onMount(() => {
     mediaController.init()
     tagsController.init()
-    collapsedTagsController.init()
-    console.log("Controllers mounted")
+    console.log("%cControllers mounted", "color: grey");
   })
 
   beforeNavigate(() => {
     thumbnailSuffixParameter.set(null)
+    tagsController.selectedTags = []
+    mediaController.filter_specialFilterAttribute = null
   })
 
   afterNavigate(() => {
     selectedMediaIds.set([])
-    selectedTags.set([])
-    visibleMedium.set(null)
+    mediaController.visibleMedium = null
   })
 
-  visibleMedium.subscribe(() => {
-    imageSuffixParameter.set("")
-  })
-
-  onMount(() => {
-    visibleMedium.subscribe(newMedium => {
-      if ($settings.mobileLayout) {
-        setPopup(newMedium ? "Media Viewer Mobile" : null)
-      }
-    })
-  })
+  // TODO: reimplment this
+  // visibleMedium.subscribe(() => {
+  //   imageSuffixParameter.set("")
+  // })
+  // onMount(() => {
+  //   visibleMedium.subscribe(newMedium => {
+  //     if ($settings.mobileLayout) {
+  //       setPopup(newMedium ? "Media Viewer Mobile" : null)
+  //     }
+  //   })
+  // })
 
   // TODO: Move to controller
   export const goToPreviousMedia = async () => {
-    if (!$visibleMedium) return
+    if (!mediaController.visibleMedium) return
 
     const mediaIndex = mediaController.media.findIndex(
-      m => m.id == $visibleMedium?.id
+      m => m.id == mediaController.visibleMedium?.id
     )
 
-    if (mediaIndex > 0) visibleMedium.set(mediaController.media[mediaIndex - 1])
+    if (mediaIndex > 0)
+      mediaController.visibleMedium = mediaController.media[mediaIndex - 1]
   }
 
   export const goToNextMedia = async () => {
-    if (!$visibleMedium) return
+    if (!mediaController.visibleMedium) return
 
     const mediaIndex = mediaController.media.findIndex(
-      m => m.id == $visibleMedium?.id
+      m => m.id == mediaController.visibleMedium?.id
     )
 
     if (mediaIndex < mediaController.media.length - 1)
-      visibleMedium.set(mediaController.media[mediaIndex + 1])
+      mediaController.visibleMedium = mediaController.media[mediaIndex + 1]
   }
 
   const popups = {
     "Quick Actions": QuickActions,
     "Quick Actions Import": QuickActionsImport,
-    "Quick Actions Import from URL": QuickActionsImportFromUrl,
-    "Quick Actions Import from Search": QuickActionsImportFromSearch,
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
     "Create Story": CreateStoryPopup,

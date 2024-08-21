@@ -7,6 +7,7 @@ import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
 
 import type Controller from "../routes/Controller.svelte"
 import { setMethods, sortingMethods } from "../types"
+import { tagsController } from "./controllers/TagsController.svelte"
 
 // Core Parts
 export let controller: Writable<Controller> = writable()
@@ -35,9 +36,7 @@ export let thumbnailSuffixParameter: Writable<{
 export let imageSuffixParameter: Writable<String> = writable("")
 
 // Selections
-export let visibleMedium: Writable<Media | null> = writable(null)
 export let selectedMediaIds: Writable<String[]> = writable([])
-export let selectedTags: Writable<String[]> = writable([])
 
 // Media Filters
 export let activeSetMethod = writable(setMethods[0])

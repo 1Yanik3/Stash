@@ -3,7 +3,9 @@
 
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
+  import Select from "$components/Select.svelte"
   import SidebarSection from "$components/SidebarSection.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
   import {
     activeSetMethod,
@@ -11,7 +13,6 @@
     favouritesOnly,
     mediaTypeFilter,
     seed,
-    selectedTags,
     traverse
   } from "$lib/stores"
 
@@ -29,33 +30,34 @@
     onclick={() => {
       selectedTags.set([])
     }}
-    active={$selectedTags.length == 0}
+    active={tagsController.selectedTags.length == 0}
   >
     All
   </Button>
-  <Button
+  <!-- <Button
     hidden
-    icon={$selectedTags[0] == "show_unsorted"
+    icon={tagsController.selectedTags[0].tag == "show_unsorted"
       ? "mdiNumeric0"
-      : $selectedTags[0] == "show_single"
+      : tagsController.selectedTags[0].tag == "show_single"
         ? "mdiNumeric1"
-        : $selectedTags[0] == "show_dual"
+        : tagsController.selectedTags[0].tag == "show_dual"
           ? "mdiNumeric2"
-          : $selectedTags[0] == "show_tripple"
+          : tagsController.selectedTags[0].tag == "show_tripple"
             ? "mdiNumeric3"
             : "mdiAllInclusive"}
     onclick={() => {
-      if ($selectedTags[0] == "show_unsorted") {
-        selectedTags.set(["show_single"])
-      } else if ($selectedTags[0] == "show_single") {
-        selectedTags.set(["show_dual"])
-      } else if ($selectedTags[0] == "show_dual") {
-        selectedTags.set(["show_tripple"])
-      } else if ($selectedTags[0] == "show_tripple") {
-        selectedTags.set([])
-      } else {
-        selectedTags.set(["show_unsorted"])
-      }
+      // TODO: fix this
+      //   if (tagsController.selectedTags[0].tag == "show_unsorted") {
+      //     tagsController.selectedTags = ["show_single"]
+      //   } else if (tagsController.selectedTags[0].tag == "show_single") {
+      //     tagsController.selectedTags = ["show_dual"]
+      //   } else if (tagsController.selectedTags[0].tag == "show_dual") {
+      //     tagsController.selectedTags = ["show_tripple"]
+      //   } else if (tagsController.selectedTags[0].tag == "show_tripple") {
+      //     tagsController.selectedTags = []
+      //   } else {
+      //     tagsController.selectedTags = ["show_unsorted"]
+      //   }
     }}
     active={[
       "show_unsorted",
@@ -64,21 +66,21 @@
       "show_tripple"
     ].includes(
       // @ts-ignore
-      $selectedTags[0]
+      tagsController.selectedTags[0]
     )}
   >
     Unsorted
-  </Button>
-  <Button
+  </Button> -->
+  <!-- <Button
     hidden
     icon="mdiTrashCanOutline"
     onclick={() => {
       selectedTags.set(["SHOW_TRASHED"])
     }}
-    active={$selectedTags[0] == "SHOW_TRASHED"}
+    active={tagsController.selectedTags[0] == "SHOW_TRASHED"}
   >
     Trashed
-  </Button>
+  </Button> -->
 </SidebarSection>
 
 <SidebarSection title="Filters">
@@ -95,8 +97,8 @@
       // TODO: Do I need to invalidate the Media as well?
       // TODO: Invalidate Tags
     }}
-    oncontextmenu={({ detail }) => {
-      detail.preventDefault()
+    oncontextmenu={e => {
+      e.preventDefault()
       seed.set(Math.random())
     }}
     icon={$activeSortingMethod.icon}
@@ -205,52 +207,17 @@
   </Button>
 </SidebarSection>
 
+<!-- TODO: Make dynamic -->
 {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
-  <SidebarSection title="People">
-    <SidebarHierarchyEntry
-      name="Solo"
-      count={tagsController.tags.find(t => t.tag[0] == "Solo")?.direct_count ||
-        0}
-      iconOverwrite="mdiAccount"
-      children={[]}
-    />
-    <SidebarHierarchyEntry
-      name="Two"
-      count={tagsController.tags.find(t => t.tag[0] == "Two")?.direct_count ||
-        0}
-      iconOverwrite="mdiAccountMultiple"
-      children={[]}
-    />
-    <SidebarHierarchyEntry
-      name="Three"
-      count={tagsController.tags.find(t => t.tag[0] == "Three")?.direct_count ||
-        0}
-      iconOverwrite="mdiAccountGroup"
-      children={[]}
-    />
-    <SidebarHierarchyEntry
-      name="Group"
-      count={tagsController.tags.find(t => t.tag[0] == "Group")?.direct_count ||
-        0}
-      iconOverwrite="mdiAccountMultiplePlus"
-      children={[]}
-    />
-
-    {#await pageData.streamed.counters}
-      <SidebarHierarchyEntry
-        name="PEOPLE_COUNT_UNKNOWN"
-        nameOverwrite="Unknown"
-        iconOverwrite="mdiAccountQuestion"
-        children={[]}
-      />
-    {:then { untagged_count }}
-      <SidebarHierarchyEntry
-        name="PEOPLE_COUNT_UNKNOWN"
-        nameOverwrite="Unknown"
-        iconOverwrite="mdiAccountQuestion"
-        count={untagged_count}
-        children={[]}
-      />
-    {/await}
-  </SidebarSection>
+  <Select
+    bind:value={mediaController.filter_specialFilterAttribute}
+    options={[
+      { value: null, name: "All" },
+      { value: "solo", name: "Solo", icon: "mdiAccount" },
+      { value: "two", name: "Two", icon: "mdiAccountMultiple" },
+      { value: "three", name: "Three", icon: "mdiAccountGroup" },
+      { value: "group", name: "Group", icon: "mdiAccountMultiplePlus" },
+      { value: "show_unknown", name: "Unknown", icon: "mdiAccountQuestion" }
+    ]}
+  />
 {/if}

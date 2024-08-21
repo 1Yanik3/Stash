@@ -10,11 +10,14 @@ import {
   mediaTypeFilter,
   pageSize,
   seed,
-  selectedTags,
   traverse
 } from "$lib/stores"
 
+import type { MediaGetRequestBodyData } from "../../routes/api/cluster/[cluster]/media/get/+server"
 import { setMethods, sortingMethods } from "../../types"
+import { tagsController, type TagExtended } from "./TagsController.svelte"
+
+export type MediaType = Media & { tags: number[] }
 
 class MediaController {
   private alreadyInitialized = false
@@ -23,7 +26,15 @@ class MediaController {
       console.log("MediaController already initialized!")
       return
     }
-    selectedTags.subscribe(this.updateMedia)
+
+    $effect(
+      (
+        _ = [tagsController.selectedTags, this.filter_specialFilterAttribute]
+      ) => {
+        this.updateMedia()
+      }
+    )
+
     traverse.subscribe(this.updateMedia)
     activeSetMethod.subscribe(this.updateMedia)
     favouritesOnly.subscribe(this.updateMedia)
@@ -34,13 +45,17 @@ class MediaController {
     this.alreadyInitialized = true
   }
 
-  public media: Media[] = $state([])
+  public visibleMedium: MediaType | null = $state(null)
+  public media: MediaType[] = $state([])
   public pages: { hash: string; media: Media[] }[] = $state([])
+
+  public filter_specialFilterAttribute: string | null = $state(null)
+
   public updateMedia = async () => {
     this.setMedia(await this.loadMedia(0))
   }
 
-  private setMedia = async (media: Media[]) => {
+  private setMedia = async (media: typeof this.media) => {
     this.media = media
     this.pages = await calculatePages(media)
   }
@@ -48,31 +63,44 @@ class MediaController {
   private isCurrentlyLoadingNewMedia = false
   private loadMedia = async (offset: number) => {
     if (this.isCurrentlyLoadingNewMedia) return []
-
     this.isCurrentlyLoadingNewMedia = true
-    console.log("Loading new media", { offset })
+
+    // ?${new URLSearchParams({
+    //     traverse: get(traverse).toString(),
+    //     tags: tagsController.selectedTags.map(t => t.id).join(","),
+    //     activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
+    //     mediaTypeFilter: get(mediaTypeFilter),
+    //     favouritesOnly: get(favouritesOnly).toString(),
+    //     activeSortingMethod: (get(page).params.cluster == "Camp Buddy"
+    //       ? sortingMethods.findIndex(
+    //           a => a.icon == "mdiSortAlphabeticalAscending"
+    //         )
+    //       : sortingMethods.indexOf(get(activeSortingMethod))
+    //     ).toString(),
+    //     offset: offset.toString(),
+    //     seed: get(seed).toString()
+    //   }
 
     const mediaRequest = await fetch(
-      `/api/cluster/${get(page).params.cluster}/media?${new URLSearchParams({
-        traverse: get(traverse).toString(),
-        tags: get(selectedTags).join(","),
-        activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-        mediaTypeFilter: get(mediaTypeFilter),
-        favouritesOnly: get(favouritesOnly).toString(),
-        activeSortingMethod: (get(page).params.cluster == "Camp Buddy"
-          ? sortingMethods.findIndex(
-              a => a.icon == "mdiSortAlphabeticalAscending"
-            )
-          : sortingMethods.indexOf(get(activeSortingMethod))
-        ).toString(),
-        offset: offset.toString(),
-        seed: get(seed).toString()
-      }).toString()}`
+      `/api/cluster/${get(page).params.cluster}/media/get`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          tags: tagsController.selectedTags.map(t => t.id),
+          offset,
+          favouritesOnly: get(favouritesOnly),
+          specialFilterAttribute: this.filter_specialFilterAttribute
+        } satisfies MediaGetRequestBodyData)
+      }
     )
 
-    const data = (await mediaRequest.json()) as Media[]
+    const data = (await mediaRequest.json()) as (Media & { tags: string })[]
+    const processedData = data.map(m => ({
+      ...m,
+      tags: m.tags.split(",").map(t => +t)
+    })) satisfies MediaType[]
     this.isCurrentlyLoadingNewMedia = false
-    return data
+    return processedData
   }
 
   public async loadMoreMedia() {

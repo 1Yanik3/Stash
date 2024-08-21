@@ -5,7 +5,8 @@
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
   import type Castjs from "$lib/client/cast-js"
-  import { controller, settings, visibleMedium } from "$lib/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { controller, settings } from "$lib/stores"
 
   import Icon from "../../Icon.svelte"
 
@@ -62,7 +63,7 @@
     })
   })
 
-  const cast = (media = $visibleMedium) => {
+  const cast = (media = mediaController.visibleMedium) => {
     if (!cjs) return
 
     console.info("casting", media?.id || null)
@@ -89,9 +90,10 @@
       )
     }
   }
-  visibleMedium.subscribe(newValue => {
-    if (connected) cast(newValue)
-  })
+  // TODO: reimplement this
+  //   visibleMedium.subscribe(newValue => {
+  //     if (connected) cast(newValue)
+  //   })
 
   let disableSeeking = false
   let seekVideo: HTMLVideoElement | null
@@ -101,7 +103,7 @@
   <section class="first">
     {#if connected}
       <span
-        class:disabled={!$visibleMedium}
+        class:disabled={!mediaController.visibleMedium}
         onclick={() => {
           console.info("disconnect")
           cjs?.disconnect()
@@ -110,17 +112,16 @@
         <Icon name="mdiCastOff" size={0.8} />
       </span>
     {:else}
-      <span class:disabled={!$visibleMedium} onclick={() => cast()}>
+      <span
+        class:disabled={!mediaController.visibleMedium}
+        onclick={() => cast()}
+      >
         <Icon name="mdiCast" size={0.8} />
       </span>
     {/if}
 
-    {#if $visibleMedium}
-      <span
-        onclick={() => {
-          visibleMedium.set(null)
-        }}
-      >
+    {#if mediaController.visibleMedium}
+      <span onclick={() => (mediaController.visibleMedium = null)}>
         <Icon name={"mdiBackspaceOutline"} size={0.8} />
       </span>
     {/if}
@@ -130,7 +131,7 @@
     <!-- {#if $visibleMedium?.type.startsWith("image")}
 
         {/if} -->
-    {#if $visibleMedium?.type.startsWith("video")}
+    {#if mediaController.visibleMedium?.type.startsWith("video")}
       <!-- go forward 60 sec -->
       <span
         onclick={() => cjs?.seek(currentTime - 60, false)}
@@ -186,7 +187,7 @@
     </span>
   </section>
 
-  {#if $visibleMedium?.type.startsWith("video")}
+  {#if mediaController.visibleMedium?.type.startsWith("video")}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
@@ -208,7 +209,8 @@
 
       {#if !$settings.mobileLayout && !disableSeeking}
         <video
-          src="{$page.data.serverURL}/thumb/{$visibleMedium?.id}_seek.webm"
+          src="{$page.data.serverURL}/thumb/{mediaController.visibleMedium
+            ?.id}_seek.webm"
           muted
           bind:this={seekVideo}
           crossorigin="use-credentials"
@@ -264,7 +266,6 @@
         border 100ms;
 
       @media (hover: hover) and (pointer: fine) {
-
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);

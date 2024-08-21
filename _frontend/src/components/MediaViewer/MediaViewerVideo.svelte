@@ -3,7 +3,8 @@
 
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
-  import { settings, videoElement, visibleMedium } from "$lib/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { settings, videoElement } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   const formatDuration = (seconds: number) => {
@@ -78,14 +79,15 @@
     }
   }
 
-  visibleMedium.subscribe(() => {
-    disableSeeking = false
-  })
+  //   TODO: reimplment this
+  //   visibleMedium.subscribe(() => {
+  //     disableSeeking = false
+  //   })
 </script>
 
 <main>
   <video
-    src={`${$page.data.serverURL}/file/${$visibleMedium?.id}`}
+    src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
     autoplay
     bind:this={video}
     bind:paused
@@ -137,7 +139,8 @@
       <div class="thumb" style="left: {playbackPercentage}%"></div>
       {#if !$settings.mobileLayout && !disableSeeking}
         <video
-          src="{$page.data.serverURL}/thumb/{$visibleMedium?.id}_seek.webm"
+          src="{$page.data.serverURL}/thumb/{mediaController.visibleMedium
+            ?.id}_seek.webm"
           bind:this={seekVideo}
           muted
           crossorigin="use-credentials"
@@ -274,7 +277,6 @@
         }
 
         &:not(:hover) {
-
           & > video {
             display: none;
           }

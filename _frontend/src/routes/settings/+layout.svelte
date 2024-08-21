@@ -27,9 +27,6 @@
     >
       Duplicates
     </Button>
-    <Button icon="mdiTagMultiple" href="/settings/icon-assignments">
-      Icon Assignments
-    </Button>
     <Button icon="mdiImageMultiple" href="/settings/icon-packs">
       Icon Packs
     </Button>
