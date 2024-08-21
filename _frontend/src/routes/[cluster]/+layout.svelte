@@ -1,7 +1,6 @@
 <script lang="ts">
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
   import { mobileBottomBarVisible, settings } from "$lib/stores"
-
 </script>
 
 <main class:mobile={$settings.mobileLayout}>

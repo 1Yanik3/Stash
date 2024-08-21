@@ -44,4 +44,4 @@
   }
 </script>
 
-<svelte:window on:keydown={handler} />
+<svelte:window onkeydown={handler} />

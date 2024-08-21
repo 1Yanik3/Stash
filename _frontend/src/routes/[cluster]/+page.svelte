@@ -11,9 +11,9 @@
     visibleMedium
   } from "$lib/stores"
 
-  $: console.log({visibleMedium: $visibleMedium?.id})
-
   import Sidebar from "./Sidebar.svelte"
+
+  $: console.log({ visibleMedium: $visibleMedium?.id })
 
   const onscroll = (e: Event) => {
     const target = e.target as HTMLDivElement
@@ -64,6 +64,7 @@
     }
 
     &.mobile {
+
       #imageGallerySection {
         min-width: unset;
       }

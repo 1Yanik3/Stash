@@ -34,7 +34,7 @@
         card
         noMargin
         icon="mdiDebugStepOver"
-        on:click={() => {
+        onclick={() => {
           fetch(`${$page.url.href}/${entry.content_hash}/ignore`, {
             method: "PUT"
           })

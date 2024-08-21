@@ -12,7 +12,7 @@
   <section class="sidebar">
     {#if !$settings.mobileLayout}
       <div style="display: flex;">
-        <Button icon="mdiArrowLeft" on:click={() => goto("/")} />
+        <Button icon="mdiArrowLeft" onclick={() => goto("/")} />
       </div>
     {/if}
 
@@ -78,8 +78,8 @@
     }
 
     .content {
-      flex-grow: 1;
       overflow: hidden;
+      flex-grow: 1;
     }
 
     .mobileBottomBar {

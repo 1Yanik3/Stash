@@ -50,22 +50,19 @@
       <input
         type="search"
         bind:value={query}
-        on:keydown={e => {
+        onkeydown={e => {
           // @ts-ignore
           if (e.key === "Enter") searchQuery()
         }}
       />
-      <Button icon="mdiSearchWeb" on:click={searchQuery} />
+      <Button icon="mdiSearchWeb" onclick={searchQuery} />
     </div>
 
     {#if videoToPreview}
       {#await fetch( `/api/yt-dlp/scan`, { method: "POST", body: JSON.stringify( { url: videoToPreview } ) } ).then( res => res.json() ) then metadata}
         <div style="display: flex;justify-content: space-between;">
-          <Button
-            icon="mdiArrowLeft"
-            on:click={() => (videoToPreview = null)}
-          />
-          <Button card icon="mdiDownload" on:click={() => download(metadata)}>
+          <Button icon="mdiArrowLeft" onclick={() => (videoToPreview = null)} />
+          <Button card icon="mdiDownload" onclick={() => download(metadata)}>
             Download
           </Button>
         </div>
@@ -75,7 +72,7 @@
     {:else}
       <div class="results">
         {#each results as result}
-          <div class="result" on:click={() => (videoToPreview = result.url)}>
+          <div class="result" onclick={() => (videoToPreview = result.url)}>
             <img src={result.thumbnail} alt="" />
             <span>{result.title}</span>
           </div>

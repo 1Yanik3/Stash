@@ -53,7 +53,7 @@
             card
             icon="mdiGroup"
             disabled={selectedMedia.length <= 1}
-            on:click={() => {
+            onclick={() => {
               // TODO: Allow grouping of media with UI
               fetch(`/api/group-together`, {
                 method: "POST",
@@ -70,7 +70,7 @@
       {#each getProcessedMedia(media) as medium}
         <ImageGridStudiosThumbnail
           {medium}
-          on:click={() => (medium.expanded = !medium.expanded)}
+          onclick={() => (medium.expanded = !medium.expanded)}
           parent={medium.groupedIntoNamesId != null}
           bind:selectedMedia
         />

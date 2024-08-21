@@ -92,7 +92,6 @@
       {placeholder}
     />
 
-
     {#each results as result, i}
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -115,21 +114,21 @@
         <Button
           card
           icon="mdiArrowUp"
-          on:click={() => {
+          onclick={() => {
             if (selectedIndex > 0) selectedIndex--
           }}
         />
         <Button
           card
           icon="mdiArrowDown"
-          on:click={() => {
+          onclick={() => {
             if (selectedIndex <= results.length) selectedIndex++
           }}
         />
         <Button
           card
           icon="mdiKeyboardReturn"
-          on:click={() => {
+          onclick={() => {
             if (!disableClose) {
               onclose()
               $controller.setPopup(null)

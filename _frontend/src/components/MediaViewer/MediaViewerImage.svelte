@@ -94,9 +94,9 @@
 <main bind:this={mainElement}>
   <img
     bind:this={imageElement}
-    on:mousedown={toggleZoom}
-    on:contextmenu={e => e.preventDefault()}
-    on:mousemove={calculateCursor}
+    onmousedown={toggleZoom}
+    oncontextmenu={e => e.preventDefault()}
+    onmousemove={calculateCursor}
     style:cursor
     src={`${$page.data.serverURL}/file/${$visibleMedium?.id}`}
     crossorigin="use-credentials"

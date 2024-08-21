@@ -13,37 +13,47 @@
 
   type TagData = {
     name: string
-    count: number | ""
+    count: number
     children: TagData
   }[]
 
-  export let name: string
-  export let count: number | ""
-  export let children: TagData
-  export let indent = 0
-  export let nameOverwrite = ""
-  export let iconOverwrite: keyof typeof possibleIcons | null = null
+  let {
+    name,
+    count = null,
+    children,
+    indent = 0,
+    nameOverwrite = "",
+    iconOverwrite = null,
+    element
+  }: {
+    name: string
+    count?: number | null
+    children: TagData
+    indent?: number
+    nameOverwrite?: string
+    iconOverwrite?: keyof typeof possibleIcons | null
+    element?: HTMLAnchorElement
+  } = $props()
 
-  $: collapsed = $collapsedTags.includes(name.toLowerCase())
+  let collapsed = $derived($collapsedTags.includes(name.toLowerCase()))
+  let icon = $derived(
+    iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
+  )
 
-  let element: HTMLAnchorElement
-
-  selectedTags.subscribe(tags => {
-    if (tags.length == 1 && tags.includes(name.toLowerCase())) {
-      setTimeout(() => {
-        element?.scrollIntoView({ block: "nearest" })
-      }, 100)
-    }
-  })
-
-  $: icon = iconOverwrite ? readable(iconOverwrite) : getIconForTagName(name)
+  //   selectedTags.subscribe(tags => {
+  //     if (tags.length == 1 && tags.includes(name.toLowerCase())) {
+  //       setTimeout(() => {
+  //         element?.scrollIntoView({ block: "nearest" })
+  //       }, 100)
+  //     }
+  //   })
 </script>
 
 <Button
   {indent}
   {count}
   icon={$icon}
-  on:click={e => {
+  onclick={e => {
     // @ts-ignore
     if (e.detail.altKey) {
       if ($selectedTags.includes(name.toLowerCase()))
@@ -54,12 +64,11 @@
       selectedMediaIds.set([])
     }
   }}
-  on:contextmenu={({ detail }) => {
-    detail.preventDefault()
+  oncontextmenu={e => {
+    e.preventDefault()
     $controller.collapsedTagsController.toggleCollapsedTag(name.toLowerCase())
   }}
   active={$selectedTags.includes(name.toLowerCase())}
-  bind:element
 >
   {(nameOverwrite || name).replace(/.+\//, "")}
 </Button>

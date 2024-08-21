@@ -55,10 +55,13 @@
   <input
     bind:this={inputElement}
     type="text"
-    on:focusin={() => (focused = true)}
-    on:focusout={() => (focused = false)}
+    onfocusin={() => (focused = true)}
+    onfocusout={() => (focused = false)}
     bind:value
-    on:keydown|stopPropagation={handleKeyDown}
+    onkeydown={e => {
+      e.stopPropagation()
+      handleKeyDown(e)
+    }}
     class:alwaysExpanded
   />
 

@@ -37,7 +37,7 @@
       {#each data.clusters as cluster}
         <Button
           noMargin
-          on:click={() => {
+          onclick={() => {
             importOrphan(cluster.id, entry)
           }}
         >
@@ -47,7 +47,7 @@
       <Button
         noMargin
         icon="mdiTrashCan"
-        on:click={() => {
+        onclick={() => {
           deleteOrphan(entry)
         }}
       />

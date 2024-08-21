@@ -2,6 +2,7 @@
   import { onMount } from "svelte"
 
   import { page } from "$app/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { controller, selectedTags, uploadPopupOpen } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -10,7 +11,6 @@
   import Icon from "./Icon.svelte"
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
 
   let tags: String[] = []
   let tagInputElement: TagInputField
@@ -31,11 +31,13 @@
   let files: File[] = []
 
   const onEnter = (e: DragEvent) => {
+    e.preventDefault()
     if (!isFileTransfer(e)) return
     $uploadPopupOpen = true
   }
 
   const onLeave = (e: DragEvent) => {
+    e.preventDefault()
     if (e.pageY != 0 && e.pageX != 0) return
     $uploadPopupOpen = false
   }
@@ -44,6 +46,7 @@
     e.dataTransfer?.types.includes("Files")
 
   const handleDrop = (e: DragEvent) => {
+    e.preventDefault()
     if (!isFileTransfer(e)) return
 
     const items = Array.from(e.dataTransfer?.items || [])
@@ -92,10 +95,7 @@
   }
 </script>
 
-<svelte:document
-  on:dragenter|preventDefault={onEnter}
-  on:dragleave|preventDefault={onLeave}
-/>
+<svelte:document ondragenter={onEnter} ondragleave={onLeave} />
 
 {#if $uploadPopupOpen}
   <Shortcut shift key="T" action={() => tagInputElement.focus()} />
@@ -105,8 +105,8 @@
       {#if !uploadStarted}
         <div
           class="dropZone"
-          on:drop|preventDefault={handleDrop}
-          on:dragover|preventDefault={() => {}}
+          ondrop={handleDrop}
+          ondragover={e => e.preventDefault()}
         >
           <Icon name="mdiFileUpload" size={2.5} />
           <span>Drop or click to upload</span>
@@ -129,9 +129,13 @@
         <div class="tagsList">
           {#each tags as tag}
             <span
-              on:contextmenu|preventDefault={() =>
-                (tags = tags.filter(t => t != tag))}>{tag}</span
+              oncontextmenu={e => {
+                e.preventDefault()
+                tags = tags.filter(t => t != tag)
+              }}
             >
+              {tag}
+            </span>
           {/each}
           {#if tags.length == 0}
             <span>No Tag</span>
@@ -159,7 +163,7 @@
     </main>
 
     <svelte:fragment slot="actionsLeft">
-      <Button card on:click={() => ($uploadPopupOpen = false)}>Cancel</Button>
+      <Button card onclick={() => ($uploadPopupOpen = false)}>Cancel</Button>
     </svelte:fragment>
 
     <svelte:fragment slot="actionsRight">
@@ -167,7 +171,7 @@
         card
         highlighted
         icon="mdiUpload"
-        on:click={upload}
+        onclick={upload}
         shortcut={{ modifier: "meta", key: "enter" }}
       />
     </svelte:fragment>

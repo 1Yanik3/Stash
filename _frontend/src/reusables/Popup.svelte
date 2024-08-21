@@ -31,13 +31,13 @@
   }
 </script>
 
-<svelte:window on:keydown={onKeyDown} on:popstate={onPopState} />
+<svelte:window onkeydown={onKeyDown} on:popstate={onPopState} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main
   transition:fade={{ duration: 100 }}
-  on:click={() => {
+  onclick={() => {
     onclose()
     $controller.setPopup(null)
   }}
@@ -48,13 +48,13 @@
   <section
     transition:scale={{ start: 1.1, duration: 100 }}
     class:bottomSheet
-    on:click|stopPropagation
+    onclick={e => e.stopPropagation()}
   >
     {#if !hideHeader || $settings.mobileLayout}
       <div id="header">
         {#if bottomSheet}
           <!-- svelte-ignore element_invalid_self_closing_tag -->
-          <div class="centralBlob" on:click={onclose} />
+          <div class="centralBlob" onclick={onclose} />
         {:else}
           <h2>{title}</h2>
 
@@ -62,7 +62,7 @@
             <slot name="headerElement" />
           {/if}
 
-          <button on:click={onclose}>
+          <button onclick={onclose}>
             <Icon name="mdiClose" />
           </button>
         {/if}

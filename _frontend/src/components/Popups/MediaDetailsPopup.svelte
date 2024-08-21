@@ -55,7 +55,7 @@
           <Button
             icon="mdiCreation"
             noMargin
-            on:click={async () => {
+            onclick={async () => {
               if (!$visibleMedium) return
 
               const request = await fetch("/api/ai/prompt", {
@@ -87,7 +87,7 @@
         <Button
           icon="mdiPencil"
           noMargin
-          on:click={() => {
+          onclick={() => {
             if (!$visibleMedium) return
             rename($visibleMedium.name)
           }}
@@ -101,7 +101,7 @@
             <Button
               icon="mdiImageRefresh"
               noMargin
-              on:click={() => {
+              onclick={() => {
                 fetch(`/api/media/${$visibleMedium?.id}/thumbnail/reset`).then(
                   () =>
                     setTimeout(
@@ -118,7 +118,7 @@
             <Button
               icon="mdiReload"
               noMargin
-              on:click={() => {
+              onclick={() => {
                 fetch(`/api/media/${$visibleMedium?.id}/metadata/reload`).then(
                   () => {
                     // TODO: Reload does not work

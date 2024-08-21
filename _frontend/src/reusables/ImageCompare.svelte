@@ -41,26 +41,26 @@
 </script>
 
 <svelte:window
-  on:touchmove={move}
-  on:touchend={end}
-  on:mousemove={move}
-  on:mouseup={end}
+  ontouchmove={move}
+  ontouchend={end}
+  onmousemove={move}
+  onmouseup={end}
   on:resize={resize}
 />
 
-<div class="container" {style} on:touchstart={start} on:mousedown={start}>
+<div class="container" {style} ontouchstart={start} onmousedown={start}>
   <img
     bind:this={img}
     src={after}
     alt="after"
-    on:mousedown|preventDefault
+    onmousedown|preventDefault
     on:load={resize}
     {style}
   />
   <img
     src={before}
     alt="before"
-    on:mousedown|preventDefault
+    onmousedown|preventDefault
     style="{style}clip:rect(0, {x}px, {h}px, 0);"
   />
   <div class="handle" style="left: calc({offset * 100}% - 20px)">

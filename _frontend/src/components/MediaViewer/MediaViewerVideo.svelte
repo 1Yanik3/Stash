@@ -92,7 +92,7 @@
     bind:currentTime
     bind:duration
     bind:volume
-    on:playing={() => {
+    onplaying={() => {
       if (video.duration <= 5) video.loop = true
     }}
     crossorigin="use-credentials"
@@ -104,7 +104,7 @@
       transparentButton
       noMargin
       icon={paused ? "mdiPlay" : "mdiPause"}
-      on:click={() => {
+      onclick={() => {
         paused = !paused
       }}
     />
@@ -112,19 +112,22 @@
     <div
       class="range"
       bind:this={rangeSlider}
-      on:mousedown|preventDefault={() => (thumbIsLifted = true)}
-      on:mousemove={e => {
+      onmousedown={e => {
+        e.preventDefault()
+        thumbIsLifted = true
+      }}
+      onmousemove={e => {
         processMousePositionToTime(e)
       }}
-      on:mouseup={e => {
+      onmouseup={e => {
         processMousePositionToTime(e)
         thumbIsLifted = false
       }}
-      on:touchstart={() => (thumbIsLifted = true)}
-      on:touchmove={e => {
+      ontouchstart={() => (thumbIsLifted = true)}
+      ontouchmove={e => {
         processMousePositionToTime(e)
       }}
-      on:touchend={e => {
+      ontouchend={e => {
         processMousePositionToTime(e)
         thumbIsLifted = false
       }}
@@ -138,7 +141,7 @@
           bind:this={seekVideo}
           muted
           crossorigin="use-credentials"
-          on:error={() => (disableSeeking = true)}
+          onerror={() => (disableSeeking = true)}
         >
           <track kind="captions" />
         </video>
@@ -271,18 +274,20 @@
         }
 
         &:not(:hover) {
-            & > video {
-                display: none;
-            }
+
+          & > video {
+            display: none;
+          }
         }
 
         & > video {
           position: absolute;
           bottom: 40px;
+          transform: translate(-50%);
 
           width: 150px;
+
           border-radius: 5px;
-          transform: translate(-50%);
         }
       }
     }

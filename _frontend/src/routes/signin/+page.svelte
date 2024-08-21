@@ -38,7 +38,7 @@
   </div>
 
   <svelte:fragment slot="actionsRight">
-    <Button card icon={null} highlighted on:click={login}>Login</Button>
+    <Button card icon={null} highlighted onclick={login}>Login</Button>
   </svelte:fragment>
 </Popup>
 

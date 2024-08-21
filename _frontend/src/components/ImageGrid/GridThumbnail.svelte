@@ -17,6 +17,7 @@
   export let disableZoom = false
 
   const dragStartHandler = (e: DragEvent) => {
+    e.stopPropagation()
     e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
   }
 
@@ -67,7 +68,7 @@
   style={`position: relative`}
 >
   <div
-    on:dragstart|stopPropagation={dragStartHandler}
+    on:dragstart={dragStartHandler}
     bind:this={element}
     class:selected={$selectedMediaIds.includes(medium.id)}
     class:rigidAspectRatio

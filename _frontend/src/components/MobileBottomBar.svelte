@@ -40,7 +40,7 @@
         href="/{c.name}"
         active={c.id == pageData.cluster?.id &&
           !$page.url.pathname.startsWith("/settings")}
-        on:click={() => (clusterSelectionDropdownVisible = false)}
+        onclick={() => (clusterSelectionDropdownVisible = false)}
       >
         {c.name}
       </Button>
@@ -70,14 +70,14 @@
     <Button
       icon="mdiCog"
       href="/settings/general"
-      on:click={() => (menuDropdownVisible = false)}
+      onclick={() => (menuDropdownVisible = false)}
     >
       Settings
     </Button>
 
     <Button
       icon="mdiConsole"
-      on:click={() => {
+      onclick={() => {
         $controller.setPopup("Quick Actions")
         menuDropdownVisible = false
       }}
@@ -87,11 +87,10 @@
 
     <Button
       icon="mdiMagnify"
-      on:click={() => {
+      onclick={() => {
         $controller.setPopup("Quick Switch")
         menuDropdownVisible = false
       }}
-      on:click={() => (menuDropdownVisible = false)}
     >
       Quick Switch
     </Button>
@@ -108,9 +107,7 @@
           <Icon name="mdiArrowLeft" />
         </div>
       </div>
-      <span class="label">
-        Go Back
-      </span>
+      <span class="label"> Go Back </span>
     </div>
   {:else}
     <div
@@ -257,6 +254,7 @@
       }
 
       &.active {
+
         .label {
           font-weight: 700;
           opacity: 90%;

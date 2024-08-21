@@ -19,7 +19,6 @@
     scrollbar-width: none;
     scroll-padding: 38px;
     overflow: scroll;
-
     max-height: calc(100vh - 61px);
 
     &.mobile {

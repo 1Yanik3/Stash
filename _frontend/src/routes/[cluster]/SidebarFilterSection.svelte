@@ -26,7 +26,7 @@
   <Button
     hidden
     icon="mdiBookshelf"
-    on:click={() => {
+    onclick={() => {
       selectedTags.set([])
     }}
     active={$selectedTags.length == 0}
@@ -44,7 +44,7 @@
           : $selectedTags[0] == "show_tripple"
             ? "mdiNumeric3"
             : "mdiAllInclusive"}
-    on:click={() => {
+    onclick={() => {
       if ($selectedTags[0] == "show_unsorted") {
         selectedTags.set(["show_single"])
       } else if ($selectedTags[0] == "show_single") {
@@ -72,7 +72,7 @@
   <Button
     hidden
     icon="mdiTrashCanOutline"
-    on:click={() => {
+    onclick={() => {
       selectedTags.set(["SHOW_TRASHED"])
     }}
     active={$selectedTags[0] == "SHOW_TRASHED"}
@@ -84,7 +84,7 @@
 <SidebarSection title="Filters">
   <Button
     disabled={["collection", "stories"].includes(pageData.cluster?.type)}
-    on:click={() => {
+    onclick={() => {
       activeSortingMethod.set(
         sortingMethods[
           (sortingMethods.indexOf($activeSortingMethod) + 1) %
@@ -95,7 +95,7 @@
       // TODO: Do I need to invalidate the Media as well?
       // TODO: Invalidate Tags
     }}
-    on:contextmenu={({ detail }) => {
+    oncontextmenu={({ detail }) => {
       detail.preventDefault()
       seed.set(Math.random())
     }}
@@ -113,7 +113,7 @@
 
   <Button
     disabled={pageData.cluster?.type == "stories"}
-    on:click={() => {
+    onclick={() => {
       traverse.set(!$traverse)
     }}
     icon={$traverse ? "mdiHook" : "mdiHookOff"}
@@ -129,7 +129,7 @@
 
   <Button
     disabled={["collection", "stories"].includes(pageData.cluster?.type)}
-    on:click={() => {
+    onclick={() => {
       activeSetMethod.set(
         setMethods[
           (setMethods.indexOf($activeSetMethod) + 1) % setMethods.length
@@ -151,7 +151,7 @@
   {#if $mediaTypeFilter == ""}
     <Button
       icon="mdiMultimedia"
-      on:click={() => {
+      onclick={() => {
         mediaTypeFilter.set("image")
       }}
       tooltip={{
@@ -164,7 +164,7 @@
   {:else if $mediaTypeFilter == "image"}
     <Button
       icon="mdiImageOutline"
-      on:click={() => {
+      onclick={() => {
         mediaTypeFilter.set("video")
       }}
       tooltip={{
@@ -177,7 +177,7 @@
   {:else if $mediaTypeFilter == "video"}
     <Button
       icon="mdiVideoOutline"
-      on:click={() => {
+      onclick={() => {
         mediaTypeFilter.set("")
       }}
       tooltip={{
@@ -191,7 +191,7 @@
 
   <Button
     icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
-    on:click={() => {
+    onclick={() => {
       favouritesOnly.set(!$favouritesOnly)
     }}
     tooltip={{
@@ -241,7 +241,6 @@
         name="PEOPLE_COUNT_UNKNOWN"
         nameOverwrite="Unknown"
         iconOverwrite="mdiAccountQuestion"
-        count=""
         children={[]}
       />
     {:then { untagged_count }}

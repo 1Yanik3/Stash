@@ -57,7 +57,7 @@
     <Button
       card
       icon="mdiPlus"
-      on:click={() =>
+      onclick={() =>
         (popup = new AddNewClusterPopup({
           target: document.body,
           props: {
@@ -85,7 +85,7 @@
       <div class="floating">
         <Button
           icon="mdiPencil"
-          on:click={async () => {
+          onclick={async () => {
             // TODO: Icon Picker
             const newIcon = await prompts.text("New icon", entry.icon)
             if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
@@ -98,7 +98,7 @@
       <div class="floating">
         <Button
           icon="mdiPencil"
-          on:click={async () => {
+          onclick={async () => {
             const newName = await prompts.text("New name", entry.name)
             if (newName) editClusterAttribute(entry.id, "name", newName)
           }}
@@ -110,7 +110,7 @@
       <div class="floating">
         <Button
           icon="mdiPencil"
-          on:click={async ({ detail }) => {
+          onclick={async ({ detail }) => {
             const newType = await prompts.dropdown(
               detail.target?.closest("td"),
               Object.keys(ClusterType),
@@ -136,6 +136,7 @@
     }
 
     &:not(:hover) {
+
       .floating {
         display: none;
       }

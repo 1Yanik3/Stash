@@ -33,7 +33,7 @@
   {#each data.filter(d => d.tag
       .toLowerCase()
       .includes(filter.toLowerCase())) as d}
-    <span class="tag" on:click={() => selectedTags.set([d.tag.toLowerCase()])}>
+    <span class="tag" onclick={() => selectedTags.set([d.tag.toLowerCase()])}>
       <img src={`${$page.data.serverURL}/api/media/${d.id}/thumbnail`} alt="" />
 
       <span>{d.tag.split("/", 1)[0]}</span>

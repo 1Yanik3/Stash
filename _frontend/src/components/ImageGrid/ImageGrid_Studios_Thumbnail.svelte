@@ -34,7 +34,7 @@
 </script>
 
 <main
-  on:mouseup={e => leftClick(e)}
+  onmouseup={e => leftClick(e)}
   class:active={$visibleMedium == medium && !parent}
   class:selected={selectedMedia.includes(medium.id)}
   class:sub

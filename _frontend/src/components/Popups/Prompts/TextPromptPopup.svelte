@@ -31,7 +31,7 @@
       wrap="soft"
       bind:this={inputElement}
       bind:value={_value}
-      on:keydown={onInput}
+      onkeydown={onInput}
     />
   </label>
 </PromptFramework>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, type ComponentProps } from "svelte"
+  import type { ComponentProps, Snippet } from "svelte"
 
   import { page } from "$app/stores"
   import Icon from "$components/Icon.svelte"
@@ -9,40 +9,39 @@
 
   let isDraggingOver = false
 
-  // @ts-ignore
-  export let element: HTMLAnchorElement = null
+  let {
+    icon = null as keyof typeof possibleIcons | null,
+    iconNoTyping = null as string | null,
+    indent = 0, // TODO: remove
+    count = null as number | null,
+    active = false,
+    href = null as string | null,
+    shortcut = null as {
+      modifier: Exclude<
+        Exclude<ComponentProps<Shortcut>["modifier"], null>,
+        undefined
+      >
+      key: string
+    } | null,
+    hidden = false,
+    right = false,
+    card = false,
+    highlighted = false,
+    disabled = false,
+    noMargin = false,
+    styleOverride = "",
+    download = null as null | true,
+    transparentButton = false,
+    oncontextmenu = (() => {}) as (e: MouseEvent) => void,
+    onclick = (() => {}) as (e: MouseEvent) => void,
+    children = () => [] as any as Snippet | null
+  } = $props()
 
-  export let icon: keyof typeof possibleIcons | null = null
-  export let iconNoTyping: string | null = null
-  export let indent: number = 0
-  export let count: number | "" | null = null
-  export let active: boolean = false
-  export let href: string | null = null
-  export let shortcut: {
-    modifier: Exclude<
-      Exclude<ComponentProps<Shortcut>["modifier"], null>,
-      undefined
-    >
-    key: string
-  } | null = null
-
-  export let hidden = false
-  export let right = false
-  export let card = false
-  export let highlighted = false
-  export let disabled = false
-  export let noMargin = false
-  export let styleOverride: string = ""
-  export let download: true | null = null
-  export let transparentButton = false
-
-  export let tooltip: any = {
-    title: "",
-    position: "bottom",
-    enabled: false
-  }
-
-  const dispatch = createEventDispatcher()
+  //   export let tooltip: any = {
+  //     title: "",
+  //     position: "bottom",
+  //     enabled: false
+  //   }
 
   //#region Handle Drag (for moving media)
 
@@ -96,41 +95,17 @@
 
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
-  bind:this={element}
   {download}
   {href}
   style={`padding-left: ${0.75 + indent}em;${styleOverride}`}
   class:active={active || (href && href == $page.url.pathname)}
-  class:hidden={hidden || !$$slots.default}
+  class:hidden={hidden || !children}
   class:right
   class:highlighted
   class:noMargin
   class:transparentButton
-  on:contextmenu={(e: MouseEvent) => {
-    dispatch("contextmenu", e)
-  }}
-  on:click={(e: MouseEvent) => {
-    console.time("navigation")
-    dispatch("click", e)
-    // TODO
-    // if (tag) {
-    //     // is a tag button
-
-    //     if (tag.name == "Untagged")
-    //         pageData.tags.filter(t => t.name != "Untagged").forEach(t => t.active = false)
-    //     else
-    //         // @ts-ignore
-    //         pageData.tags.find(t => t.name == "Untagged").active = false
-
-    //     const tmp = pageData.tags.find(t => t == tag)
-    //     if (tmp)
-    //         tmp.active = !tag.active
-
-    // }
-  }}
-  on:dblclick={(e: MouseEvent) => {
-    dispatch("dblclick", e)
-  }}
+  {oncontextmenu}
+  {onclick}
   class:isDraggingOver
   class:card
   class:disabled
@@ -143,7 +118,7 @@
       </div>
     {/if}
     <span>
-      <slot />
+      {@render (children as Snippet)()}
     </span>
     {#if shortcut}
       <div style="display: flex;margin-left: 5px">
@@ -161,11 +136,7 @@
 </a>
 
 {#if shortcut}
-  <Shortcut
-    modifier={shortcut.modifier}
-    key={shortcut.key}
-    action={() => dispatch("click")}
-  />
+  <Shortcut modifier={shortcut.modifier} key={shortcut.key} action={onclick} />
 {/if}
 
 <style lang="scss">

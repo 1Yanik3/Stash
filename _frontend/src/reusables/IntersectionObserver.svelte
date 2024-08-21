@@ -43,6 +43,6 @@
   })
 </script>
 
-<div bind:this={container} on:click={e => dispatch("click", e)} {style}>
+<div bind:this={container} onclick={e => dispatch("click", e)} {style}>
   <slot {intersecting}></slot>
 </div>

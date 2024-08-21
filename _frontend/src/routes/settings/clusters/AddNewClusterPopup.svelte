@@ -48,7 +48,7 @@
       class:invalid={errors.includes("name")}
       type="text"
       id="e-name"
-      on:input={validate}
+      oninput={validate}
     />
 
     <!-- TODO: Search ability and preview -->
@@ -58,7 +58,7 @@
       class:invalid={errors.includes("icon")}
       type="text"
       id="icon"
-      on:input={validate}
+      oninput={validate}
     />
 
     <label for="e-type"> Type </label>
@@ -72,7 +72,7 @@
   </section>
 
   <svelte:fragment slot="actionsLeft">
-    <Button card on:click={close}>Cancel</Button>
+    <Button card onclick={close}>Cancel</Button>
   </svelte:fragment>
 
   <svelte:fragment slot="actionsRight">
@@ -80,7 +80,7 @@
       card
       highlighted
       icon="mdiPlus"
-      on:click={addNewCluster}
+      onclick={addNewCluster}
       shortcut={{ modifier: "meta", key: "enter" }}
     />
   </svelte:fragment>

@@ -102,7 +102,7 @@
     {#if connected}
       <span
         class:disabled={!$visibleMedium}
-        on:click={() => {
+        onclick={() => {
           console.info("disconnect")
           cjs?.disconnect()
         }}
@@ -110,14 +110,14 @@
         <Icon name="mdiCastOff" size={0.8} />
       </span>
     {:else}
-      <span class:disabled={!$visibleMedium} on:click={() => cast()}>
+      <span class:disabled={!$visibleMedium} onclick={() => cast()}>
         <Icon name="mdiCast" size={0.8} />
       </span>
     {/if}
 
     {#if $visibleMedium}
       <span
-        on:click={() => {
+        onclick={() => {
           visibleMedium.set(null)
         }}
       >
@@ -133,7 +133,7 @@
     {#if $visibleMedium?.type.startsWith("video")}
       <!-- go forward 60 sec -->
       <span
-        on:click={() => cjs?.seek(currentTime - 60, false)}
+        onclick={() => cjs?.seek(currentTime - 60, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind60" size={0.8} />
@@ -141,7 +141,7 @@
 
       <!-- go forward 15 sec -->
       <span
-        on:click={() => cjs?.seek(currentTime - 15, false)}
+        onclick={() => cjs?.seek(currentTime - 15, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind15" size={0.8} />
@@ -149,7 +149,7 @@
 
       <!-- play/pause -->
       <span
-        on:click={() => {
+        onclick={() => {
           console.debug({ videoPlaying })
           if (videoPlaying) cjs?.pause()
           else cjs?.play()
@@ -161,7 +161,7 @@
 
       <!-- go forward 15 sec -->
       <span
-        on:click={() => cjs?.seek(currentTime + 15, false)}
+        onclick={() => cjs?.seek(currentTime + 15, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiFastForward15" size={0.8} />
@@ -169,7 +169,7 @@
 
       <!-- go forward 60 sec -->
       <span
-        on:click={() => cjs?.seek(currentTime + 60, false)}
+        onclick={() => cjs?.seek(currentTime + 60, false)}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiFastForward60" size={0.8} />
@@ -178,10 +178,10 @@
   </section>
 
   <section class="last">
-    <span on:click={() => $controller.goToPreviousMedia()}>
+    <span onclick={() => $controller.goToPreviousMedia()}>
       <Icon name="mdiChevronLeft" size={0.8} />
     </span>
-    <span on:click={() => $controller.goToNextMedia()}>
+    <span onclick={() => $controller.goToNextMedia()}>
       <Icon name="mdiChevronRight" size={0.8} />
     </span>
   </section>
@@ -191,10 +191,10 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="playbackStatus"
-      on:click={e => {
+      onclick={e => {
         cjs?.seek((e.clientY * 100) / window.innerHeight, true)
       }}
-      on:mousemove={e => {
+      onmousemove={e => {
         if (seekVideo) {
           seekVideo.currentTime =
             (e.clientY * seekVideo.duration) / window.innerHeight
@@ -212,7 +212,7 @@
           muted
           bind:this={seekVideo}
           crossorigin="use-credentials"
-          on:error={() => (disableSeeking = true)}
+          onerror={() => (disableSeeking = true)}
         >
           <track kind="captions" />
         </video>
@@ -264,6 +264,7 @@
         border 100ms;
 
       @media (hover: hover) and (pointer: fine) {
+
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);
@@ -288,12 +289,15 @@
       }
 
       video {
-        display: none;
         position: absolute;
         right: 1em;
-        height: 85px;
-        border-radius: 5px;
         transform: translateY(-50%);
+
+        display: none;
+
+        height: 85px;
+
+        border-radius: 5px;
       }
 
       &:hover video {

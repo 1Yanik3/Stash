@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Media } from "@prisma/client/wasm"
 
-  import GridThumbnail from "./GridThumbnail.svelte"
   import Grid from "$components/Grid/Grid.svelte"
+
+  import GridThumbnail from "./GridThumbnail.svelte"
 
   export let media: Media[]
   export let i: number

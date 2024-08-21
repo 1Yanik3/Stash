@@ -8,24 +8,16 @@
   export let noCancel = false
 </script>
 
-<Popup on:close={oncancel}>
+<Popup onclose={oncancel}>
   <slot />
 
   <svelte:fragment slot="actionsLeft">
     {#if !noCancel}
-      <Button
-        card
-        icon={null}
-        on:click={oncancel}
-      >
-        Cancel
-      </Button>
+      <Button card icon={null} onclick={oncancel}>Cancel</Button>
     {/if}
   </svelte:fragment>
 
   <svelte:fragment slot="actionsRight">
-    <Button card icon={null} highlighted on:click={onok}>
-      Ok
-    </Button>
+    <Button card icon={null} highlighted onclick={onok}>Ok</Button>
   </svelte:fragment>
 </Popup>

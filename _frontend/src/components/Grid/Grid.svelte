@@ -5,7 +5,7 @@
    * Copyright (c) 2021-present NAVER Corp.
    * MIT license
    */
-  import { GRID_EVENTS } from "@egjs/grid"
+  import { GRID_EVENTS, JustifiedGrid as GridClass } from "@egjs/grid"
   import {
     afterUpdate,
     beforeUpdate,
@@ -13,8 +13,6 @@
     onDestroy,
     onMount
   } from "svelte"
-
-  import { JustifiedGrid as GridClass } from "@egjs/grid"
 
   const dispatch = createEventDispatcher()
   let container: any

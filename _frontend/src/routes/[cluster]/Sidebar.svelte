@@ -38,7 +38,7 @@
       />
       <Button
         icon="mdiFilter"
-        on:click={() => {
+        onclick={() => {
           showFilters = !showFilters
         }}
         active={showFilters}
@@ -61,6 +61,8 @@
 <style lang="scss">
   main {
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 
     width: 250px;
     height: 100vh;
@@ -68,16 +70,12 @@
     background: var(--color-dark-level-1);
     border-right: 1px solid var(--border-color-base);
 
-    display: flex;
-    flex-direction: column;
-
     .filters {
       padding-bottom: 0.5rem;
     }
 
     .tags-section {
       flex-grow: 1;
-
       border-top: 1px solid var(--border-color-base);
 
       &::-webkit-scrollbar {
@@ -92,9 +90,9 @@
     }
 
     .header {
-      padding: 0.5rem;
       display: grid;
       grid-template-columns: 1fr auto auto;
+      padding: 0.5rem;
     }
   }
 </style>

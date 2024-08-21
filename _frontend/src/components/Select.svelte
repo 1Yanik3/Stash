@@ -24,7 +24,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main
   bind:this={main}
-  on:click={() => {
+  onclick={() => {
     const rect = main.getBoundingClientRect()
     top = rect.bottom + 4
     left = rect.left
@@ -56,7 +56,7 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <span
         class:active={o.value === value}
-        on:mousedown={() => {
+        onmousedown={() => {
           value = o.value
           onchange(o)
           open = false
@@ -78,6 +78,10 @@
     cursor: pointer;
 
     position: relative;
+
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
 
     width: max-content;
     padding: $padding;
@@ -101,18 +105,15 @@
       transform: translateY(-50%);
     }
 
+    .icon {
+      padding-left: 0.25rem;
+    }
+
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         filter: brightness(110%);
       }
-    }
-
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-
-    .icon {
-      padding-left: 0.25rem;
     }
   }
 

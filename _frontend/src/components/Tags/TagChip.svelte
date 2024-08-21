@@ -1,22 +1,35 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import Icon from "$components/Icon.svelte"
   import getIconForTagName from "$lib/getIconForTagName"
-//   import { tooltip } from "$reusables/tooltip"
 
-  export let tag: string
-  export let forceShowName = false
-  export let compact = false
+  let {
+    tag,
+    forceShowName = false,
+    compact = false,
+    onclick = () => {},
+    oncontextmenu = () => {}
+  }: {
+    tag: string
+    forceShowName?: boolean
+    compact?: boolean
+    onclick: (e: MouseEvent) => void
+    oncontextmenu: (e: MouseEvent) => void
+  } = $props()
+
   const icon = getIconForTagName(tag)
-
-  const dispatch = createEventDispatcher()
 </script>
 
 {#key tag}
   <span
     class:compact
-    on:click|preventDefault={() => dispatch("click")}
+    onclick={e => {
+      e.preventDefault()
+      onclick(e)
+    }}
+    oncontextmenu={e => {
+      e.preventDefault()
+      oncontextmenu(e)
+    }}
   >
     {#if $icon != "mdiFolderOutline" && $icon != "mdiFolderHidden" && !forceShowName}
       <Icon name={$icon} size={compact ? 0.9 : 1} />

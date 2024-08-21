@@ -9,6 +9,7 @@
 
   // TODO: Remove duplication
   const handleTagsKeyDown = (e: KeyboardEvent, medium: Media) => {
+    e.stopPropagation()
     const value: string = (e.target as any).value
     if (e.key == "Enter" && value) {
       fetch(`/api/media/${medium.id}/tag`, {
@@ -62,7 +63,7 @@
       <b
         role="textbox"
         contenteditable
-        on:input={e => {
+        oninput={e => {
           fetch(`/api/group-together/${medium.groupedIntoNamesId}`, {
             method: "PUT",
             body: JSON.stringify({
@@ -89,7 +90,7 @@
       role="textbox"
       contenteditable
       bind:innerText={medium.name}
-      on:input={e => {
+      oninput={e => {
         fetch(`/api/media/${medium.id}/rename`, {
           method: "PUT",
           body: JSON.stringify({
@@ -100,15 +101,12 @@
     />
     <div class="tags">
       {#each medium.tags as tag}
-        <span class="tag" on:contextmenu={() => removeTagFromMedia(tag, medium)}
+        <span class="tag" oncontextmenu={() => removeTagFromMedia(tag, medium)}
           >{tag}</span
         >
       {/each}
 
-      <input
-        type="text"
-        on:keydown|stopPropagation={e => handleTagsKeyDown(e, medium)}
-      />
+      <input type="text" onkeydown={e => handleTagsKeyDown(e, medium)} />
     </div>
   </main>
 {/if}

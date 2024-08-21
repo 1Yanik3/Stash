@@ -9,7 +9,6 @@
   let { data } = $props()
 
   const addNewTag = async () => {
-    console.log(prompts)
     const { ok, status, statusText, text } = await fetch(
       "/settings/icon-assignments",
       {
@@ -56,7 +55,7 @@
 
 <SettingsPageContent title="Icon Assignments">
   {#snippet headerActions()}
-    <Button card icon="mdiPlus" on:click={addNewTag}>Add new Tag</Button>
+    <Button card icon="mdiPlus" onclick={addNewTag}>Add new Tag</Button>
   {/snippet}
 
   <div class="grid">
@@ -76,8 +75,8 @@
           </div>
         </div>
         <!-- <div class="actions">
-            <Button icon="mdiPencil" on:click={() => editTag(tag)} />
-            <Button icon="mdiTrashCan" on:click={() => deleteTag(tag)} />
+            <Button icon="mdiPencil" onclick={() => editTag(tag)} />
+            <Button icon="mdiTrashCan" onclick={() => deleteTag(tag)} />
             </div> -->
       </div>
     {/each}

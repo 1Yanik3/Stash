@@ -112,7 +112,7 @@
   <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
     {#each chapters as chapter}
       <Button
-        on:click={() => {
+        onclick={() => {
           goToChapter(chapter)
           chapterSelectionPopupOpen = false
         }}
@@ -127,22 +127,26 @@
   <main
     class="story-view"
     class:is-mobile={$settings.mobileLayout}
-    on:mousedown={processTouchAreas}
+    onmousedown={processTouchAreas}
     bind:this={mainElement}
   >
     <!-- Chapters -->
     <div class:buttonsHidden>
       <div class="button">
-        <Button icon="mdiArrowLeft" on:click={() => (story = null)} />
+        <Button icon="mdiArrowLeft" onclick={() => (story = null)} />
         <div
           class="spacer"
-          on:mousedown|capture|stopPropagation={() => (buttonsHidden = true)}
+          onmousedown={(e: MouseEvent) => {
+            e.preventDefault()
+            e.stopPropagation()
+            buttonsHidden = true
+          }}
         />
-        <Button icon="mdiFormatFont" on:click={() => (serif = !serif)} />
+        <Button icon="mdiFormatFont" onclick={() => (serif = !serif)} />
         {#if $settings.mobileLayout}
           <Button
             icon="mdiFormatHeaderPound"
-            on:click={() => (chapterSelectionPopupOpen = true)}
+            onclick={() => (chapterSelectionPopupOpen = true)}
           />
         {/if}
       </div>
@@ -150,7 +154,7 @@
         {#each chapters as chapter, i}
           <Button
             icon={null}
-            on:click={e => {
+            onclick={e => {
               e.preventDefault()
               goToChapter(chapter)
             }}
@@ -181,7 +185,7 @@
   <main class="stories-grid">
     {#await pageData.streamed.stories then stories}
       {#each stories as story}
-        <div class="story" on:click={() => selectStory(story)}>
+        <div class="story" onclick={() => selectStory(story)}>
           <div class="title">
             {story.title}
           </div>

@@ -3,6 +3,8 @@
 
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { tagsController } from "$lib/controllers/TagsController.svelte"
   import { controller, selectedTags, viewMode } from "$lib/stores"
 
   import type { PageData } from "../../routes/[cluster]/$types"
@@ -11,8 +13,6 @@
   import ImageGridStories from "./ImageGrid_Stories.svelte"
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
   import ImageGridTable from "./ImageGrid_Table.svelte"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   $: pageData = $page.data as PageData
 </script>
@@ -28,7 +28,7 @@
         <Button
           card
           icon="mdiFolderArrowUpOutline"
-          on:click={() =>
+          onclick={() =>
             selectedTags.set([
               $selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
             ])}
@@ -52,7 +52,7 @@
           <Button
             card
             icon="mdiFolderArrowDownOutline"
-            on:click={() => selectedTags.set([tag.join("/").toLowerCase()])}
+            onclick={() => selectedTags.set([tag.join("/").toLowerCase()])}
           >
             {tag.slice(-1)}
           </Button>

@@ -15,7 +15,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore event_directive_deprecated -->
 <main
-  on:click={() => {
+  onclick={() => {
     state = !state
     if (toggle) toggle(state)
     if (state == true && enable) enable(true)
@@ -69,6 +69,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover div {
         filter: brightness(1.2);
       }

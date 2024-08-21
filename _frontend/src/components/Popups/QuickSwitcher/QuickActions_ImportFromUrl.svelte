@@ -53,12 +53,12 @@
           type="url"
           placeholder="https://..."
           bind:value={url}
-          on:keydown={e => {
+          onkeydown={e => {
             // @ts-ignore
             if (e.key === "Enter") searchUrl()
           }}
         />
-        <Button icon="mdiSearchWeb" on:click={searchUrl} />
+        <Button icon="mdiSearchWeb" onclick={searchUrl} />
       </div>
       {#if metadata}
         <img src={metadata.thumbnail} alt="" />
@@ -79,9 +79,13 @@
         <div class="tags">
           {#each tags as tag}
             <span
-              on:contextmenu|preventDefault={() =>
-                (tags = tags.filter(t => t != tag))}>{tag}</span
+              oncontextmenu={e => {
+                e.preventDefault()
+                tags = tags.filter(t => t != tag)
+              }}
             >
+              {tag}
+            </span>
           {/each}
           {#if tags.length == 0}
             <span>No Tag</span>
@@ -101,7 +105,7 @@
       card
       icon="mdiDownload"
       disabled={!metadata || loading}
-      on:click={download}
+      onclick={download}
       shortcut={{ modifier: "meta", key: "enter" }}
     >
       Download

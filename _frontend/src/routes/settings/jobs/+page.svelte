@@ -26,7 +26,7 @@
       <Button
         noMargin
         icon="mdiInformation"
-        on:click={() => (jobDetails = entry)}
+        onclick={() => (jobDetails = entry)}
       />
     </div>
   </Table>

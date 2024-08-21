@@ -49,7 +49,7 @@
     ></textarea>
 
     <div style="display: flex; justify-content: right">
-      <Button card on:click={submitStory} icon="mdiSend">Create</Button>
+      <Button card onclick={submitStory} icon="mdiSend">Create</Button>
     </div>
   </main>
 </Popup>

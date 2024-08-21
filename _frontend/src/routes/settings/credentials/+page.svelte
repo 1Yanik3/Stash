@@ -58,7 +58,7 @@
         <Button
           noMargin
           icon="mdiPencil"
-          on:click={async () => {
+          onclick={async () => {
             const newName = await prompts.text("New name", entry.username)
             if (newName) editUsername(entry.id, newName)
           }}
@@ -71,7 +71,7 @@
         <Button
           noMargin
           icon="mdiPencil"
-          on:click={async () => {
+          onclick={async () => {
             const newClusters = await prompts.selectMultiple(
               "Permitted Clusters",
               data.allClusters.map(c => ({
@@ -103,6 +103,7 @@
     }
 
     &:not(:hover) {
+
       .floating {
         display: none;
       }

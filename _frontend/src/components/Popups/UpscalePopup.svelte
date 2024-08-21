@@ -71,7 +71,7 @@
         <div class="side">
           <span>Before</span>
 
-          <Button card on:click={() => (isVisible = false)} icon="mdiCancel">
+          <Button card onclick={() => (isVisible = false)} icon="mdiCancel">
             Keep Old
           </Button>
         </div>
@@ -87,7 +87,7 @@
 
           <Button
             card
-            on:click={upscalePopup_keepNewFunction}
+            onclick={upscalePopup_keepNewFunction}
             icon="mdiFloppyVariant"
           >
             Keep New
@@ -99,14 +99,14 @@
         <div>
           <Button
             card
-            on:click={() => startUpscale("normal")}
+            onclick={() => startUpscale("normal")}
             icon="mdiBicyclePennyFarthing"
           >
             Normal Upscale
           </Button>
           <Button
             card
-            on:click={() => startUpscale("anime")}
+            onclick={() => startUpscale("anime")}
             icon="mdiBrushVariant"
           >
             Anime Upscale

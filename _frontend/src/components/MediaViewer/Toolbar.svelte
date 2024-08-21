@@ -131,14 +131,14 @@
   class:windowControlsSpacer={$settings.windowControlsSpacer}
 >
   <section>
-    <button on:click={() => visibleMedium.set(null)}>
+    <button onclick={() => visibleMedium.set(null)}>
       <Icon name="mdiClose" size={0.8} />
     </button>
   </section>
 
   <div>
     <button
-      on:click={() => {
+      onclick={() => {
         fetch(`/api/media/${$visibleMedium?.id}/favourited`, {
           method: "PUT",
           body: JSON.stringify({
@@ -164,7 +164,7 @@
       {/if}
     </button>
     {#each $visibleMedium?.tags || [] as tag (tag)}
-      <TagChip {tag} on:contextmenu={() => removeTagFromMedia(tag)} />
+      <TagChip {tag} oncontextmenu={() => removeTagFromMedia(tag)} />
     {/each}
     {#if pageData.cluster.type != "collection" || $visibleMedium?.tags.length != 1}
       <TagInputField
@@ -175,7 +175,7 @@
 
   <section>
     <button
-      on:click={() => {
+      onclick={() => {
         isFullscreen.set(!$isFullscreen)
         if ($isFullscreen) {
           document.documentElement.requestFullscreen()
@@ -188,7 +188,7 @@
     </button>
 
     <button
-      on:click={() => {
+      onclick={() => {
         dropdownVisible = !dropdownVisible
       }}
     >
@@ -200,7 +200,7 @@
 <Dropdown visible={dropdownVisible} top={44} right={8}>
   <Button
     icon="mdiInformationOutline"
-    on:click={() => {
+    onclick={() => {
       $controller.setPopup("Media Details")
       dropdownVisible = false
     }}
@@ -210,7 +210,7 @@
 
   <Button
     icon="mdiFileReplace"
-    on:click={() => {
+    onclick={() => {
       replaceWithLocalMedia()
       dropdownVisible = false
     }}
@@ -222,7 +222,7 @@
   {#if $visibleMedium?.type.startsWith("video")}
     <Button
       icon="mdiFileReplaceOutline"
-      on:click={() => {
+      onclick={() => {
         replaceThumbnail()
         dropdownVisible = false
       }}
@@ -231,7 +231,7 @@
     </Button>
   {/if}
 
-  <!-- <button on:click={() => upscalePopup_open = true}>
+  <!-- <button onclick={() => upscalePopup_open = true}>
     <Icon name="mdiResize" size={0.8}/>
   </button> -->
 
@@ -245,7 +245,7 @@
 
   <Button
     icon="mdiOpenInNew"
-    on:click={() => {
+    onclick={() => {
       window.open(
         `${$page.data.serverURL}/file/${$visibleMedium?.id}`,
         "_blank"

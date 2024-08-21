@@ -8,7 +8,7 @@
 </script>
 
 <svelte:window
-  on:mouseup={e => {
+  onmouseup={e => {
     // @ts-ignore
     if (!document.querySelector("#dropdownContainer")?.contains(e.target))
       onresult(null)
@@ -17,7 +17,7 @@
 
 <Dropdown top={50} right={8} position="absolute">
   {#each options as option}
-    <Button active={option == value} on:click={() => onresult(option)}>
+    <Button active={option == value} onclick={() => onresult(option)}>
       {option.substring(0, 1).toUpperCase() + option.substring(1)}
     </Button>
   {/each}

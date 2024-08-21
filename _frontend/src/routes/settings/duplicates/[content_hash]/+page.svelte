@@ -106,7 +106,7 @@
     <Button
       card
       icon="mdiDebugStepOver"
-      on:click={() => {
+      onclick={() => {
         fetch(`${$page.url.href}/ignore`, {
           method: "PUT"
         })
@@ -130,7 +130,7 @@
       icon="mdiSourceMerge"
       disabled={!attributesToTransfer.some(a => a.selectedIndex != -1)}
       highlighted
-      on:click={() => {
+      onclick={() => {
         console.log({
           update: Object.fromEntries(
             attributesToTransfer.map(a => [
