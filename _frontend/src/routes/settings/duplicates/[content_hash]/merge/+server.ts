@@ -41,11 +41,6 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 400
     })
   }
-  if (!data.attributesToKeep.favourited) {
-    return new Response("Did not specify 'attributesToKeep.favourited'", {
-      status: 400
-    })
-  }
   if (!data.attributesToKeep.tags) {
     return new Response("Did not specify 'attributesToKeep.tags'", {
       status: 400
