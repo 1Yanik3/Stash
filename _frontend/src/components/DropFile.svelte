@@ -61,7 +61,7 @@
 
       const data = new FormData()
       data.append("file", files[i])
-      data.append("selectedTags", tags.join(","))
+      data.append("selectedTags", tags.map(t => t.id).join(","))
 
       await new Promise(resolve => {
         let ajax = new XMLHttpRequest()
@@ -134,7 +134,7 @@
                 tags = tags.filter(t => t != tag)
               }}
             >
-              {tag}
+              {tag.tag}
             </span>
           {/each}
           {#if tags.length == 0}
