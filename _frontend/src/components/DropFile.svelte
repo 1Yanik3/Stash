@@ -61,7 +61,7 @@
 
       const data = new FormData()
       data.append("file", files[i])
-      data.append("selectedTags", tags.map(t => t.id).join(","))
+      data.append("selectedTags", JSON.stringify(tags.map(t => t.id)))
 
       await new Promise(resolve => {
         let ajax = new XMLHttpRequest()
@@ -80,7 +80,7 @@
         ajax.addEventListener("load", resolve, false)
         ajax.addEventListener("error", () => console.log("Error"), false)
         ajax.addEventListener("abort", () => console.log("Aborted"), false)
-        ajax.open("POST", `/api/cluster/${$page.params.cluster}/media`)
+        ajax.open("POST", `${$page.data.serverURL}/api/cluster/${$page.params.cluster}/media`)
         ajax.send(data)
       })
 

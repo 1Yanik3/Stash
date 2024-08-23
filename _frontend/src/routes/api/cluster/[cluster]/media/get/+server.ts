@@ -11,6 +11,8 @@ export type MediaGetRequestBodyData = {
   offset: number
   favouritesOnly: boolean
   specialFilterAttribute: string | null
+  seed: number
+  activeSortingMethod: number
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {
@@ -34,6 +36,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         ${assembleSpecialFilterAttributeFilter(body.specialFilterAttribute)}
       GROUP BY
         "Media"."id"
+      ${await assembleOrderBy(body)}
       LIMIT ${pageSize}
       OFFSET ${body.offset}
     `)
@@ -71,5 +74,15 @@ const assembleSpecialFilterAttributeFilter = (
     `
   return /*sql*/ `
     AND "Media"."specialFilterAttribute" = '${specialFilterAttribute}'
+  `
+}
+
+const assembleOrderBy = async (body: MediaGetRequestBodyData) => {
+  if (sortingMethods[body.activeSortingMethod].icon === "mdiSort")
+    await prisma.$executeRawUnsafe(/*sql*/ `
+      SELECT setseed(${body.seed});
+    `)
+  return /*sql*/ `
+    ORDER BY ${sortingMethods[body.activeSortingMethod].orderBy}
   `
 }

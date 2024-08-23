@@ -89,7 +89,14 @@ class MediaController {
           tags: tagsController.selectedTags.map(t => t.id),
           offset,
           favouritesOnly: get(favouritesOnly),
-          specialFilterAttribute: this.filter_specialFilterAttribute
+          specialFilterAttribute: this.filter_specialFilterAttribute,
+          seed: get(seed),
+          activeSortingMethod:
+            get(page).params.cluster == "Camp Buddy"
+              ? sortingMethods.findIndex(
+                  a => a.icon == "mdiSortAlphabeticalAscending"
+                )
+              : sortingMethods.indexOf(get(activeSortingMethod))
         } satisfies MediaGetRequestBodyData)
       }
     )
