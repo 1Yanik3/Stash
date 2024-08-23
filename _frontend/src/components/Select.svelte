@@ -13,6 +13,7 @@
     }[]
     value?: T
     width?: number
+    hideName?: boolean
     onchange?: (value: T) => void
   }
 
@@ -20,6 +21,7 @@
     options,
     value = $bindable(options[0].value),
     width = 150,
+    hideName = false,
     onchange = () => {}
   }: Props = $props()
 
@@ -46,9 +48,11 @@
       <Icon size={0.8} name={options.find(o => o.value == value)?.icon} />
     </div>
   {/if}
-  <span>
-    {options.find(o => o.value == value)?.name || value}
-  </span>
+  {#if !hideName}
+    <span>
+      {options.find(o => o.value == value)?.name || value}
+    </span>
+  {/if}
   <div class="arrow">
     <Icon size={0.8} name="mdiChevronDown" />
   </div>
@@ -67,7 +71,7 @@
         class:active={o.value === value}
         onmousedown={() => {
           value = o.value
-          onchange(o)
+          onchange(o.value)
           open = false
         }}
       >
@@ -131,7 +135,6 @@
 
     display: grid;
 
-    background: var(--color-dark-level-base);
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
@@ -140,6 +143,8 @@
       margin-top: 1px;
       padding: 5px;
       outline: 1px solid var(--border-color-base);
+      text-wrap: nowrap;
+      background: var(--color-dark-level-base);
 
       &:hover {
         background: var(--color-dark-level-2);

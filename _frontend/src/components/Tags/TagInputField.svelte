@@ -1,21 +1,26 @@
 <script lang="ts">
   import FuzzySearch from "fuzzy-search"
-  import { createEventDispatcher } from "svelte"
 
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import {
+    tagsController,
+    type TagExtended
+  } from "$lib/controllers/TagsController.svelte"
+  import { settings } from "$lib/stores"
 
-  let value: string
-  let focused = false
-  export let alwaysExpanded = false
+  let value = $state("")
+  let focused = $state(false)
 
-  let selectionIndex = -1
+  let selectionIndex = $state(-1)
   let inputElement: HTMLInputElement
 
   export function focus() {
     inputElement.focus()
   }
 
-  const dispatch = createEventDispatcher()
+  let {
+    alwaysExpanded = false,
+    onselected = (() => {}) as (tag: TagExtended) => void
+  } = $props()
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
@@ -26,12 +31,11 @@
         if (selectionIndex <= results.length) selectionIndex++
         break
       case "Enter":
-        if (selectionIndex >= 0) dispatch("selected", results[selectionIndex])
-        else dispatch("selected", value)
+        onselected(results[selectionIndex])
         break
       case "Tab":
         e.preventDefault()
-        dispatch("selected", results[0])
+        onselected(results[0])
         value = ""
         break
       default:
@@ -41,14 +45,20 @@
   }
 
   //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
-  $: searcher = new FuzzySearch(tagsController.tags_flat, ["tag"], {
-    caseSensitive: false,
-    sort: true
-  })
-  $: results = searcher
-    .search(value)
-    .slice(0, 10)
-    .map(t => t.tag)
+  let searcher = $derived(
+    new FuzzySearch(tagsController.tags_flat, ["tag"], {
+      caseSensitive: false,
+      sort: true
+    })
+  )
+  const executeSearch = (query: string) => {
+    if (!searcher) return []
+
+    return searcher
+      .search(query)
+      .slice(0, $settings.mobileLayout ? 15 : 10) as TagExtended[]
+  }
+  let results: TagExtended[] = $derived(executeSearch(value))
 </script>
 
 <main>
@@ -69,7 +79,7 @@
     <div class="results">
       {#each results as result, i}
         <!-- TODO: Add count -->
-        <span class:active={i == selectionIndex}>{result}</span>
+        <span class:active={i == selectionIndex}>{result.tag}</span>
       {/each}
     </div>
   {/if}

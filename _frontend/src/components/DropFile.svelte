@@ -3,6 +3,11 @@
 
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import {
+    tagsController,
+    type TagBase,
+    type TagExtended
+  } from "$lib/controllers/TagsController.svelte"
   import { uploadPopupOpen } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -11,7 +16,6 @@
   import Icon from "./Icon.svelte"
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
-  import { tagsController, type TagBase, type TagExtended } from "$lib/controllers/TagsController.svelte"
 
   let tags: TagExtended[] = $state.link(tagsController.selectedTags)
   let tagInputElement: TagInputField | null = $state(null)
@@ -80,7 +84,10 @@
         ajax.addEventListener("load", resolve, false)
         ajax.addEventListener("error", () => console.log("Error"), false)
         ajax.addEventListener("abort", () => console.log("Aborted"), false)
-        ajax.open("POST", `${$page.data.serverURL}/api/cluster/${$page.params.cluster}/media`)
+        ajax.open(
+          "POST",
+          `${$page.data.serverURL}/api/cluster/${$page.params.cluster}/media`
+        )
         ajax.send(data)
       })
 
@@ -119,7 +126,7 @@
           <TagInputField
             bind:this={tagInputElement}
             alwaysExpanded
-            on:selected={({ detail }) => (tags = tags.concat([detail]))}
+            onselected={tag => (tags = tags.concat(tag))}
           />
           <div>
             <Key key="shift" />
@@ -129,6 +136,7 @@
         <div class="tagsList">
           {#each tags as tag}
             <span
+              class="tag"
               oncontextmenu={e => {
                 e.preventDefault()
                 tags = tags.filter(t => t != tag)
@@ -237,21 +245,21 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+    }
 
-      .tagsList {
-        display: flex;
+    .tagsList {
+      display: flex;
 
-        span {
-          cursor: pointer;
+      .tag {
+        cursor: pointer;
 
-          margin: 0.15em;
-          margin-right: 0.25em;
-          padding: 0.3em 0.5em;
+        margin: 0.15em;
+        margin-right: 0.25em;
+        padding: 0.3em 0.5em;
 
-          background: var(--color-dark-level-2);
-          border: 1px solid var(--color-dark-level-1);
-          border-radius: 3px;
-        }
+        background: var(--color-dark-level-2);
+        border: 1px solid var(--color-dark-level-1);
+        border-radius: 3px;
       }
     }
   }
