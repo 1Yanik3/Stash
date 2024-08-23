@@ -30,16 +30,9 @@ model Clusters {
   Media   Media[]
 
   credentials Credentials[]
+  Tags        Tags[]
 
   @@index([name])
-}
-
-enum CountAttribute {
-  solo
-  two
-  three
-  group
-  unknown
 }
 
 model Tags {
@@ -49,8 +42,9 @@ model Tags {
   collapsed Boolean @default(false)
 
   parentId Int?
-  parent   Tags?   @relation("ParentChildTags", fields: [parentId], references: [id])
-  children Tags[]  @relation("ParentChildTags")
+  parent   Tags?      @relation("ParentChildTags", fields: [parentId], references: [id])
+  children Tags[]     @relation("ParentChildTags")
+  clusters Clusters[]
   media    Media[]
 }
 

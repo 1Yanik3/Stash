@@ -1,29 +1,30 @@
 <script lang="ts">
   export let visible = true
-  export let top = 0
-  export let right = 0
-  export let bottom = 0
-  export let left = 0
+  export let top: number | null = null
+  export let right: number | null = null
+  export let bottom: number | null = null
+  export let left: number | null = null
   export let position: "absolute" | "fixed" = "fixed"
   export let width: "unset" | number = "unset"
 
   $: style = (() => {
     let style = ""
-    if (top) style += `top: ${top}px;`
-    if (right) style += `right: ${right}px;`
-    if (bottom) style += `bottom: ${bottom}px;`
-    if (left) style += `left: ${left}px;`
+    if (top != null) style += `top: ${top}px;`
+    if (right != null) style += `right: ${right}px;`
+    if (bottom != null) style += `bottom: ${bottom}px;`
+    if (left != null) style += `left: ${left}px;`
     return style
   })()
 </script>
 
 <main
+  style:display={visible ? "block" : "none"}
   {style}
   style:position
   id="dropdownContainer"
   style:width={width == "unset" ? "unset" : `${width}px`}
 >
-  <div class="moreActionsDropdown" style:display={visible ? "block" : "none"}>
+  <div class="moreActionsDropdown">
     <slot />
   </div>
 </main>
@@ -32,7 +33,7 @@
   main {
     z-index: 10;
 
-    padding: 5px 0;
+    // padding: 5px 0;
 
     background: var(--color-dark-level-base);
     border: 1px solid var(--border-color-1);

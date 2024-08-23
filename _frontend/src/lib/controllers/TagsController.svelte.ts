@@ -10,6 +10,7 @@ import {
 } from "$lib/stores"
 
 import { setMethods } from "../../types"
+import { prompts } from "./PromptController"
 
 export type TagBase = {
   id: number
@@ -106,6 +107,27 @@ export default class TagsController {
         callback(tag.collapsed)
       }
     })
+  }
+
+  public createTag = async (parentTag: TagExtended | null = null) => {
+    const name = await prompts.text("Enter the name of the new tag")
+    if (!name) return
+
+    // TODO: Icon
+
+    await fetch(`/api/cluster/${get(page).params.cluster}/tags`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        parentId: parentTag ? parentTag.id : null
+      })
+    }).then(async res => {
+      if (!res.ok) {
+        console.error("Failed to create tag: ", await res.text())
+      }
+    })
+
+    this.updateTags()
   }
 }
 

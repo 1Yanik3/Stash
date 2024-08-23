@@ -1,9 +1,10 @@
-import { json, type RequestHandler } from "@sveltejs/kit"
+import { error, json, type RequestHandler } from "@sveltejs/kit"
 
 import { setMethods } from "$lib/../types"
 import prisma from "$lib/server/prisma"
 
 export const GET: RequestHandler = async ({ params, url }) => {
+
   //   const activeSetMethod =
   //     setMethods[+(url.searchParams.get("activeSetMethod") || 0)]
   //   const tags = url.searchParams.get("tags")?.split(",") || []
@@ -36,7 +37,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 
   return json(
     await prisma.$queryRawUnsafe(/*sql*/ `
-       WITH RECURSIVE
+        WITH RECURSIVE
             TagHierarchy AS (
                 -- Base case: start with all tags
                 SELECT
@@ -69,14 +70,15 @@ export const GET: RequestHandler = async ({ params, url }) => {
                 GROUP BY
                     "Tags"."id"
             ),
-            ParentTags AS (
-                -- Find parent tags which are parents of tags with media
-                SELECT DISTINCT
-                    "Tags"."id"
+            TagsWithCluster AS (
+                -- Find tags associated with the current cluster
+                SELECT
+                    "Tags"."id" AS tag_id
                 FROM
                     "Tags"
-                INNER JOIN TagHierarchy ON TagHierarchy."parentId" = "Tags"."id"
-                INNER JOIN TagsWithMedia ON TagsWithMedia.tag_id = TagHierarchy.id
+                INNER JOIN "_ClustersToTags" ON "_ClustersToTags"."B" = "Tags"."id"
+                WHERE
+                    "_ClustersToTags"."A" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${params.cluster}')
             )
         SELECT
             "Tags".*,
@@ -84,10 +86,33 @@ export const GET: RequestHandler = async ({ params, url }) => {
         FROM
             "Tags"
         LEFT JOIN TagsWithMedia ON "Tags"."id" = TagsWithMedia.tag_id
-        WHERE
-            "Tags"."id" IN (SELECT id FROM ParentTags)
-            OR TagsWithMedia.media_count > 0;
-
+        WHERE "Tags"."id" IN (SELECT tag_id FROM TagsWithCluster)
     `)
   )
 }
+
+export const POST: RequestHandler = async ({ request, params }) => {
+    const { name, parentId } = await request.json()
+  
+    if (!name) throw error(400, "Missing name")
+  
+    if (!parentId) {
+      const parent = await prisma.tags.findUnique({ where: { id: parentId } })
+      if (parent) throw error(409, "Provided parent does not exist")
+    }
+  
+    await prisma.tags.create({
+      data: {
+        tag: name,
+        parentId: parentId,
+        clusters: {
+            connect: {
+                name: params.cluster
+            }
+        }
+      }
+    })
+  
+    return new Response(null, { status: 200 })
+  }
+  

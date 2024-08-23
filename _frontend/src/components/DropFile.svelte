@@ -151,22 +151,24 @@
         </div>
       </div>
 
-      <div class="files">
-        <b>Files</b>
-        <b>Status</b>
-        {#each files as f, i}
-          <span>{f.name}</span>
-          <span>
-            {#if uploadStarted}
-              {#if uploadProgress == i}
-                {uploadPercentage}
+      <div class="files-wrapper">
+        <div class="files">
+          <b>Files</b>
+          <b>Status</b>
+          {#each files as f, i}
+            <span>{f.name}</span>
+            <span>
+              {#if uploadStarted}
+                {#if uploadProgress == i}
+                  {uploadPercentage}
+                {/if}
+                {#if uploadProgress > i}
+                  Done
+                {/if}
               {/if}
-              {#if uploadProgress > i}
-                Done
-              {/if}
-            {/if}
-          </span>
-        {/each}
+            </span>
+          {/each}
+        </div>
       </div>
     </main>
 
@@ -229,21 +231,26 @@
       }
     }
 
-    .files {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.25em;
-      align-items: end;
+    .files-wrapper {
+      overflow-y: scroll;
+      max-height: 50vh;
+      
+      .files {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.25em;
+        align-items: end;
 
-      b:first-child {
-        font-size: 1.1em;
-        font-weight: 500;
-      }
+        b:first-child {
+          font-size: 1.1em;
+          font-weight: 500;
+        }
 
-      span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
     }
 
