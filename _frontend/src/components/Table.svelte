@@ -8,17 +8,21 @@
 
 <table class:borderless>
   {#if headers}
-    <tr>
-      {#each headers as header}
-        <th>{header}</th>
-      {/each}
-    </tr>
+    <thead>
+      <tr>
+        {#each headers as header}
+          <th>{header}</th>
+        {/each}
+      </tr>
+    </thead>
   {/if}
-  {#each data as entry, i}
-    <tr>
-      <slot {entry} {i} />
-    </tr>
-  {/each}
+  <tbody>
+    {#each data as entry, i}
+      <tr>
+        <slot {entry} {i} />
+      </tr>
+    {/each}
+  </tbody>
 </table>
 
 <style>

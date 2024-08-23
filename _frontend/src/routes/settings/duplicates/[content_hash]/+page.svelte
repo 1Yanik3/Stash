@@ -9,6 +9,7 @@
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "./$types"
+  import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
 
   export let data: PageData
 
@@ -21,11 +22,10 @@
     selectedIndex: number
     formatter?: (value: any) => string
   }[] = [
-    { attr: "id", name: "ID / File", selectedIndex: -1 },
+    { attr: "id", name: "ID / File", selectedIndex: 0 },
     { attr: "name", name: "Name", selectedIndex: -1 },
     { attr: "clustersId", name: "Clusters ID", selectedIndex: -1 },
     { attr: "favourited", name: "Favourited", selectedIndex: -1 },
-    { attr: "tags", name: "Tags", selectedIndex: -1 },
     {
       attr: "createdDate",
       name: "Created Date",
@@ -43,8 +43,20 @@
       name: "Grouped Into Names ID",
       selectedIndex: -1
     },
-    { attr: "countAttribute", name: "Count Attribute", selectedIndex: -1 }
+    {
+      attr: "specialFilterAttribute",
+      name: "Special Filter Attribute",
+      selectedIndex: -1
+    }
   ]
+
+  let tags = [
+    ...new Set(
+      data.duplicate_media
+        .flatMap(m => m.tags.map(t => ({ id: t.id, tag: t.tag })))
+        .map(o => JSON.stringify(o))
+    )
+  ].map(s => JSON.parse(s))
 
   $: attributesToTransfer.forEach((a, i) => {
     if (
@@ -55,10 +67,26 @@
       attributesToTransfer[i].selectedIndex = 0
     }
   })
+
+  const getValueToKeep = (
+    attribute: (typeof attributesToTransfer)[number]["attr"]
+  ) => {
+    const dominantObject = attributesToTransfer.find(a => a.attr === attribute)
+    if (!dominantObject) throw new Error("Attribute not found!")
+    return data.duplicate_media[dominantObject.selectedIndex][attribute] as any
+  }
 </script>
 
 <Popup title="Merge" on:close={() => goto("/settings/duplicates")}>
   <main>
+    <div class="row">
+      <span>Tags</span>
+      <div style="display: flex">
+        {#each tags as tag}
+          <span class="tag">{tag.tag}</span>
+        {/each}
+      </div>
+    </div>
     <Table borderless data={data.duplicate_media} let:entry let:i>
       <td>
         {#if entry.type.startsWith("image")}
@@ -81,18 +109,29 @@
       </td>
       <td>
         {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
-          <div class="row" class:disabled={selectedIndex != i}>
-            <span>{name}</span>
+          <div
+            class="row"
+            class:disabled={data.duplicate_media.every(
+              m => m[attr] === data.duplicate_media[0][attr]
+            )}
+          >
+            <span class:disabled={selectedIndex != -1}>{name}</span>
             {#if formatter}
-              <span>{formatter(entry[attr])}</span>
+              <span class:disabled={selectedIndex != -1}
+                >{formatter(entry[attr])}</span
+              >
             {:else}
-              <span>{entry[attr]}</span>
+              <span class:disabled={selectedIndex != -1}>{entry[attr]}</span>
             {/if}
             <div class="div">
               <Toggle
                 state={selectedIndex == i}
-                on:enable={() => {
+                enable={() => {
                   attributesToTransfer[j].selectedIndex = i
+                  console.log(attributesToTransfer[j])
+                }}
+                disable={() => {
+                  attributesToTransfer[j].selectedIndex = -1
                 }}
               />
             </div>
@@ -125,28 +164,46 @@
   </svelte:fragment>
 
   <svelte:fragment slot="actionsRight">
-    <Button
-      card
-      icon="mdiSourceMerge"
-      disabled={!attributesToTransfer.some(a => a.selectedIndex != -1)}
-      highlighted
-      onclick={() => {
-        console.log({
-          update: Object.fromEntries(
-            attributesToTransfer.map(a => [
-              a.attr,
-              data.duplicate_media[a.selectedIndex][a.attr]
-            ])
-          ),
-          delete: data.duplicate_media
-            .filter((_, i) => i != attributesToTransfer[i].selectedIndex)
-            .map(({ id }) => id)
-        })
-        throw new Error("Not implemented")
-      }}
-    >
-      Merge
-    </Button>
+    {#key attributesToTransfer}
+      <Button
+        card
+        icon="mdiSourceMerge"
+        highlighted
+        onclick={() => {
+          fetch(`${$page.url.href}/merge`, {
+            method: "PUT",
+            body: JSON.stringify({
+              idToKeep: getValueToKeep("id"),
+              idsToRemove: data.duplicate_media
+                .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
+                .map(m => m.id),
+              attributesToKeep: {
+                clustersId: getValueToKeep("clustersId"),
+                createdDate: getValueToKeep("createdDate"),
+                date: getValueToKeep("date"),
+                favourited: getValueToKeep("favourited"),
+                groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
+                name: getValueToKeep("name"),
+                specialFilterAttribute: getValueToKeep(
+                  "specialFilterAttribute"
+                ),
+                tags: tags.map(t => t.id)
+              }
+            } satisfies DuplicatesMergeServerPutRequestData)
+          })
+          //   .then(async () => {
+          //     await invalidateAll()
+          //     goto("/settings/duplicates")
+          //   })
+          //   .catch(e => {
+          //     console.error(e)
+          //     window.alert("An error occurred!")
+          //   })
+        }}
+      >
+        Merge
+      </Button>
+    {/key}
   </svelte:fragment>
 </Popup>
 
@@ -177,14 +234,28 @@
       gap: 1rem;
       align-items: center;
 
-      &.disabled div {
+      &.disabled {
         pointer-events: none;
         opacity: 0.5;
       }
 
-      &:not(.disabled) span {
+      .disabled {
         opacity: 0.5;
       }
     }
+  }
+
+  .tag {
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+
+    margin: 0.15em;
+    padding: 0.3em 0.5em;
+
+    background: var(--color-dark-level-2);
+    border: 1px solid var(--color-dark-level-1);
+    border-radius: 3px;
   }
 </style>

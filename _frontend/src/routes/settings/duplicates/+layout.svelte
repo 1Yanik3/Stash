@@ -20,32 +20,33 @@
           crossorigin="use-credentials"
         />
       {/each}
-    </td>
-    <div class="actions">
-      <Button
-        icon="mdiSourceMerge"
-        card
-        noMargin
-        href={`/settings/duplicates/${entry.content_hash}`}
-      >
-        Merge
-      </Button>
-      <Button
-        card
-        noMargin
-        icon="mdiDebugStepOver"
-        onclick={() => {
-          fetch(`${$page.url.href}/${entry.content_hash}/ignore`, {
-            method: "PUT"
-          })
-            .then(() => invalidateAll())
-            .catch(e => {
-              console.error(e)
-              window.alert("An error occurred!")
+      
+      <div class="actions">
+        <Button
+          icon="mdiSourceMerge"
+          card
+          noMargin
+          href={`/settings/duplicates/${entry.content_hash}`}
+        >
+          Merge
+        </Button>
+        <Button
+          card
+          noMargin
+          icon="mdiDebugStepOver"
+          onclick={() => {
+            fetch(`${$page.url.href}/${entry.content_hash}/ignore`, {
+              method: "PUT"
             })
-        }}>Ignore</Button
-      >
-    </div>
+              .then(() => invalidateAll())
+              .catch(e => {
+                console.error(e)
+                window.alert("An error occurred!")
+              })
+          }}>Ignore</Button
+        >
+      </div>
+    </td>
   </Table>
 
   <slot />
