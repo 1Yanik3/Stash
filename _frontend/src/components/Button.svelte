@@ -33,7 +33,7 @@
     transparentButton = false,
     oncontextmenu = (() => {}) as (e: MouseEvent) => void,
     onclick = (() => {}) as (e: MouseEvent) => void,
-    children = () => [] as any as Snippet | null
+    children = null
   } = $props()
 
   //   export let tooltip: any = {
@@ -112,13 +112,13 @@
   <div class="section">
     {#if (icon || iconNoTyping) != null}
       <!-- @ts-ignore -->
-      <div class="spacer">
-        <Icon nameAlt={icon || iconNoTyping || "mdiHelp"} size={"1.25em"} />
-      </div>
+      <Icon nameAlt={icon || iconNoTyping || "mdiHelp"} size={"1.25em"} />
     {/if}
-    <span>
-      {@render (children as Snippet)()}
-    </span>
+    {#if children}
+      <span>
+        {@render (children as Snippet)()}
+      </span>
+    {/if}
     {#if shortcut}
       <div style="display: flex;margin-left: 5px">
         <Key compact key={shortcut.modifier} />
@@ -200,7 +200,6 @@
       border: 1px solid var(--border-color-1);
 
       @media (hover: hover) and (pointer: fine) {
-
         &:hover {
           background: var(--color-dark-level-2-hover);
           border: 1px solid var(--border-color-1-hover);
@@ -218,11 +217,8 @@
       grid-auto-flow: column;
       align-items: center;
 
-      .spacer {
-        margin-right: 0.35em;
-      }
-
       span {
+        margin-left: 0.35em;
         overflow: hidden;
         font-weight: 200;
         text-overflow: ellipsis;
@@ -234,20 +230,12 @@
       align-items: center;
       justify-content: center;
 
-      .section {
-
-        .spacer {
-          margin-right: unset;
-        }
-      }
-
       span {
         display: none;
       }
     }
 
     &.right {
-
       &,
       .section {
         flex-direction: row-reverse;
@@ -255,9 +243,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
-
         &:not(.transparentButton) {
           background: var(--color-dark-level-2);
           border: 1px solid var(--border-color-1);

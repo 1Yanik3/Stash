@@ -18,6 +18,7 @@
 
     <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
     <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
+    <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
     <Button icon="mdiPassport" href="/settings/credentials">Credentials</Button>
     <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
     <Button

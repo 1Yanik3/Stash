@@ -18,12 +18,12 @@
   <main class:mobile={$settings.mobileLayout}>
     <div class="header">
       <Select
-        onchange={({ name }) => {
+        onchange={(name) => {
           goto(`/${name}`)
         }}
-        value={$page.data.cluster.id}
+        value={$page.data.cluster.name}
         options={pageData.clusters.map(c => ({
-          value: c.id,
+          value: c.name,
           name: c.name,
           icon: c.icon as any
         }))}

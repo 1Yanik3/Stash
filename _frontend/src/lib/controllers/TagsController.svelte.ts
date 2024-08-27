@@ -1,6 +1,7 @@
 import { get } from "svelte/store"
 
 import { page } from "$app/stores"
+import query from "$lib/client/call"
 import type { possibleIcons } from "$lib/possibleIcons"
 import {
   activeSetMethod,
@@ -23,6 +24,7 @@ export type TagBase = {
 
 export type TagExtended = TagBase & {
   children: TagExtended[]
+  indirectCount: number
 }
 
 export default class TagsController {
@@ -53,16 +55,13 @@ export default class TagsController {
   public selectedTags: TagExtended[] = $state([])
 
   public updateTags = async () => {
-    const tagRequest = await fetch(
-      `/api/cluster/${get(page).params.cluster}/tags?${new URLSearchParams({
-        tags: this.selectedTags.map(t => t.id).join(","),
-        activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-        mediaTypeFilter: get(mediaTypeFilter),
-        favouritesOnly: get(favouritesOnly).toString()
-      }).toString()}`
+    this.updateHierarchicalTags(
+      await query("getTags", {
+        cluster: get(page).params.cluster,
+        favouritesOnly: get(favouritesOnly),
+        mediaTypeFilter: get(mediaTypeFilter)
+      })
     )
-
-    this.updateHierarchicalTags(await tagRequest.json())
   }
 
   private updateHierarchicalTags = async (data: TagBase[]) => {
@@ -72,7 +71,8 @@ export default class TagsController {
     data.forEach(tag => {
       tagMap[tag.id] = {
         ...tag,
-        children: []
+        children: [],
+        indirectCount: 0
       }
     })
 
@@ -84,14 +84,31 @@ export default class TagsController {
       if (tag.parentId === null) {
         result.push(tagMap[tag.id])
       } else {
+        if (!tagMap[tag.parentId]) {
+          console.error("Tag with ID", tag.id, "does not exist")
+          return
+        }
         tagMap[tag.parentId].children.push(tagMap[tag.id])
+      }
+    })
+
+    // Step 3: Calculate indirect counts
+    const calculateIndirectCounts = (tag: TagExtended) => {
+      tag.children.forEach(child => {
+        calculateIndirectCounts(child)
+        tag.indirectCount += child.count + child.indirectCount
+      })
+    }
+    data.forEach(tag => {
+      if (tag.parentId === null) {
+        calculateIndirectCounts(tagMap[tag.id])
       }
     })
 
     this.tags_hierarchy = result.sort((a, b) =>
       get(page).params.cluster == "Camp Buddy"
         ? b.tag.localeCompare(a.tag)
-        : b.count - a.count
+        : (b.count + b.indirectCount) - (a.count + a.indirectCount)
     )
   }
 

@@ -95,6 +95,7 @@
     display: flex;
     gap: 0.35rem;
     align-items: center;
+    user-select: none;
 
     width: max-content;
     padding: $padding;
@@ -134,6 +135,7 @@
     z-index: 999;
 
     display: grid;
+    user-select: none;
 
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,

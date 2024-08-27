@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { ClusterType } from "@prisma/client/wasm"
+  import { mount, unmount } from "svelte"
 
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/Button.svelte"
   import Icon from "$components/Icon.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/Table.svelte"
+  import query from "$lib/client/call"
   import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"
 
@@ -14,7 +15,13 @@
 
   export let data: PageData
 
-  let popup: AddNewClusterPopup | null = null
+  const ClusterType = [
+    "normal",
+    "collection",
+    "screenshots",
+    "stories",
+    "withName"
+  ]
 
   const editClusterAttribute = async (
     id: number,
@@ -31,7 +38,7 @@
       return
     }
 
-    if (attribute == "type" && !Object.keys(ClusterType).includes(value)) {
+    if (attribute == "type" && !ClusterType.includes(value)) {
       window.alert(`Invalid type: ${value}`)
       return
     }
@@ -57,15 +64,16 @@
     <Button
       card
       icon="mdiPlus"
-      onclick={() =>
-        (popup = new AddNewClusterPopup({
+      onclick={async () => {
+        const element = mount(AddNewClusterPopup, {
           target: document.body,
           props: {
             close: () => {
-              popup?.$destroy()
+              unmount(element)
             }
           }
-        }))}
+        })
+      }}
     >
       Add new cluster
     </Button>
@@ -113,7 +121,7 @@
           onclick={async ({ detail }) => {
             const newType = await prompts.dropdown(
               detail.target?.closest("td"),
-              Object.keys(ClusterType),
+              ClusterType,
               entry.type
             )
             if (newType && newType != entry.type)
@@ -136,7 +144,6 @@
     }
 
     &:not(:hover) {
-
       .floating {
         display: none;
       }

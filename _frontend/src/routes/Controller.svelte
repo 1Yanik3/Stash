@@ -27,7 +27,7 @@
   onMount(() => {
     mediaController.init()
     tagsController.init()
-    console.log("%cControllers mounted", "color: grey");
+    console.log("%cControllers mounted", "color: grey")
   })
 
   beforeNavigate(() => {
@@ -36,11 +36,11 @@
     mediaController.filter_specialFilterAttribute = null
   })
 
-  afterNavigate(() => {
+  afterNavigate(data => {
     selectedMediaIds.set([])
     mediaController.visibleMedium = null
     tagsController.updateTags()
-    mediaController.updateMedia()
+    mediaController.updateMedia(data.to?.params?.cluster)
   })
 
   // TODO: reimplment this

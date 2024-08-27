@@ -33,7 +33,7 @@
 <main>
   <Button
     styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
-    count={tag.count}
+    count={tag.count + tag.indirectCount}
     icon={iconOverwrite ||
       tag.icon ||
       (tag.collapsed ? "mdiFolderHidden" : "mdiFolderOutline")}

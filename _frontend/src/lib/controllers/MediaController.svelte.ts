@@ -35,12 +35,12 @@ class MediaController {
       }
     )
 
-    traverse.subscribe(this.updateMedia)
-    activeSetMethod.subscribe(this.updateMedia)
-    favouritesOnly.subscribe(this.updateMedia)
-    mediaTypeFilter.subscribe(this.updateMedia)
-    activeSortingMethod.subscribe(this.updateMedia)
-    seed.subscribe(this.updateMedia)
+    traverse.subscribe(() => this.updateMedia)
+    activeSetMethod.subscribe(() => this.updateMedia)
+    favouritesOnly.subscribe(() => this.updateMedia)
+    mediaTypeFilter.subscribe(() => this.updateMedia)
+    activeSortingMethod.subscribe(() => this.updateMedia)
+    seed.subscribe(() => this.updateMedia)
 
     this.alreadyInitialized = true
   }
@@ -51,8 +51,8 @@ class MediaController {
 
   public filter_specialFilterAttribute: string | null = $state(null)
 
-  public updateMedia = async () => {
-    this.setMedia(await this.loadMedia(0))
+  public updateMedia = async (newCluster: string | undefined = undefined) => {
+    this.setMedia(await this.loadMedia(0, newCluster))
   }
 
   private setMedia = async (media: typeof this.media) => {
@@ -61,7 +61,10 @@ class MediaController {
   }
 
   private isCurrentlyLoadingNewMedia = false
-  private loadMedia = async (offset: number) => {
+  private loadMedia = async (
+    offset: number,
+    cluster = get(page).params.cluster
+  ) => {
     if (this.isCurrentlyLoadingNewMedia) return []
     this.isCurrentlyLoadingNewMedia = true
 
@@ -81,25 +84,22 @@ class MediaController {
     //     seed: get(seed).toString()
     //   }
 
-    const mediaRequest = await fetch(
-      `/api/cluster/${get(page).params.cluster}/media/get`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          tags: tagsController.selectedTags.map(t => t.id),
-          offset,
-          favouritesOnly: get(favouritesOnly),
-          specialFilterAttribute: this.filter_specialFilterAttribute,
-          seed: get(seed),
-          activeSortingMethod:
-            get(page).params.cluster == "Camp Buddy"
-              ? sortingMethods.findIndex(
-                  a => a.icon == "mdiSortAlphabeticalAscending"
-                )
-              : sortingMethods.indexOf(get(activeSortingMethod))
-        } satisfies MediaGetRequestBodyData)
-      }
-    )
+    const mediaRequest = await fetch(`/api/cluster/${cluster}/media/get`, {
+      method: "POST",
+      body: JSON.stringify({
+        tags: tagsController.selectedTags.map(t => t.id),
+        offset,
+        favouritesOnly: get(favouritesOnly),
+        specialFilterAttribute: this.filter_specialFilterAttribute,
+        seed: get(seed),
+        activeSortingMethod:
+          cluster == "Camp Buddy"
+            ? sortingMethods.findIndex(
+                a => a.icon == "mdiSortAlphabeticalAscending"
+              )
+            : sortingMethods.indexOf(get(activeSortingMethod))
+      } satisfies MediaGetRequestBodyData)
+    })
 
     const data = (await mediaRequest.json()) as (Media & { tags: string })[]
     const processedData = data.map(m => ({
