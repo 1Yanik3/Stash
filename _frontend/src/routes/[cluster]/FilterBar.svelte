@@ -167,6 +167,8 @@
 
 <style lang="scss">
   main {
+    -webkit-app-region: drag;
+
     background: var(--color-dark-level-1);
     border-bottom: 1px solid var(--border-color-base);
 

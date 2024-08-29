@@ -10,7 +10,6 @@
     controller,
     imageSuffixParameter,
     isFullscreen,
-    settings
   } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -112,7 +111,6 @@
 {#if mediaController.visibleMedium}
   <main
     class:fullscreen={$isFullscreen}
-    class:windowControlsSpacer={$settings.windowControlsSpacer}
   >
     <section>
       <button onclick={() => (mediaController.visibleMedium = null)}>
@@ -306,10 +304,6 @@
       background: none;
       border-bottom: none;
       box-shadow: none;
-
-      &.windowControlsSpacer {
-        left: 4.625em;
-      }
 
       div,
       section {

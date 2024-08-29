@@ -15,7 +15,7 @@
     }
   }
 
-  let filterBarVisible = true
+  let filterBarVisible = false
 </script>
 
 <main class:mobile={$settings.mobileLayout}>

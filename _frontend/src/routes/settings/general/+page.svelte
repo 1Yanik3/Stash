@@ -23,9 +23,9 @@
       <span>Window-Controls spacing</span>
       <Toggle
         state={$settings.windowControlsSpacer}
-        on:toggle={e =>
+        toggle={e =>
           settings.update(s => {
-            s.windowControlsSpacer = e.detail
+            s.windowControlsSpacer = e
             return s
           })}
       />

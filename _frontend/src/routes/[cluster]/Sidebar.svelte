@@ -14,10 +14,13 @@
 </script>
 
 {#if $page.data.cluster.type != "stories"}
-  <main class:mobile={$settings.mobileLayout}>
+  <main
+    class:mobile={$settings.mobileLayout}
+    class:windowControlsSpacer={$settings.windowControlsSpacer}
+  >
     <div class="header">
       <Select
-        onchange={(name) => {
+        onchange={name => {
           goto(`/${name}`)
         }}
         value={$page.data.cluster.name}
@@ -78,6 +81,10 @@
       width: 100%;
       height: 80vh;
       border: none;
+    }
+
+    &.windowControlsSpacer {
+      padding-top: 1.5rem;
     }
 
     .header {
