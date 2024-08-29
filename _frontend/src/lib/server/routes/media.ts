@@ -13,6 +13,7 @@ export const getMedia = async (d: {
   specialFilterAttribute: string | null
   seed: number
   activeSortingMethod: number
+  countOfTags: number
 }) => {
   return (await prisma.$queryRawUnsafe(/*sql*/ `
         SELECT
@@ -20,8 +21,8 @@ export const getMedia = async (d: {
             STRING_AGG ("Tags"."id"::text, ',') as tags
         FROM
             "Media"
-            RIGHT JOIN "_MediaToTags" ON "_MediaToTags"."A" = "Media"."id"
-            RIGHT JOIN "Tags" ON "_MediaToTags"."B" = "Tags"."id"
+            LEFT JOIN "_MediaToTags" ON "_MediaToTags"."A" = "Media"."id"
+            LEFT JOIN "Tags" ON "_MediaToTags"."B" = "Tags"."id"
         WHERE
             "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${d.cluster}')
             ${assembleTagsFilter(d.tags)}
@@ -29,6 +30,7 @@ export const getMedia = async (d: {
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
         GROUP BY
             "Media"."id"
+        ${assembleCountOfTagsFilter(d.countOfTags)}
         ${await assembleOrderBy(d)}
         LIMIT ${pageSize}
         OFFSET ${d.offset}
@@ -79,5 +81,12 @@ const assembleOrderBy = async (d: {
       `)
   return /*sql*/ `
       ORDER BY ${sortingMethods[d.activeSortingMethod].orderBy}
+    `
+}
+
+const assembleCountOfTagsFilter = (countOfTags: number) => {
+  if (countOfTags < 0) return ""
+  return /*sql*/ `
+        HAVING COUNT("Tags"."id") = ${countOfTags}
     `
 }

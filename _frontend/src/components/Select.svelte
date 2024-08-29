@@ -81,7 +81,7 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <span
         class:active={o.value === value}
-        onmousedown={() => {
+        onclick={e => {
           value = o.value
           onchange(o.value)
           open = false

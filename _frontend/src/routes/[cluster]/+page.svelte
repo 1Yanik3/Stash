@@ -5,6 +5,7 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { actionBar, actionBars, isFullscreen, settings } from "$lib/stores"
 
+  import FilterBar from "./FilterBar.svelte"
   import Sidebar from "./Sidebar.svelte"
 
   const onscroll = (e: Event) => {
@@ -13,19 +14,26 @@
       mediaController.loadMoreMedia()
     }
   }
+
+  let filterBarVisible = true
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
   {#if !$isFullscreen && !$settings.mobileLayout}
-    <Sidebar />
+    <Sidebar bind:filterBarVisible />
   {/if}
 
   {#if !$isFullscreen}
-    <section id="imageGallerySection" on:scroll={onscroll}>
-      <DropFile>
-        <ImageGrid />
-      </DropFile>
-    </section>
+    <div class="center">
+      {#if filterBarVisible}
+        <FilterBar />
+      {/if}
+      <section id="imageGallerySection" on:scroll={onscroll}>
+        <DropFile>
+          <ImageGrid />
+        </DropFile>
+      </section>
+    </div>
   {/if}
 
   {#if $actionBar}
@@ -44,15 +52,21 @@
     display: flex;
     background: var(--color-dark-level-base);
 
-    #imageGallerySection {
-      position: relative;
-
-      overflow: scroll;
-      flex-basis: 0;
+    .center {
+      display: flex;
+      flex-direction: column;
       flex-grow: 1;
 
-      min-width: 350px;
-      padding: 1em;
+      #imageGallerySection {
+        position: relative;
+
+        overflow: scroll;
+        flex-basis: 0;
+        flex-grow: 1;
+
+        min-width: 350px;
+        padding: 1em;
+      }
     }
 
     &.mobile {

@@ -6,10 +6,8 @@ import { page } from "$app/stores"
 import query from "$lib/client/call"
 import {
   activeSetMethod,
-  activeSortingMethod,
   mediaTypeFilter,
   pageSize,
-  seed,
   traverse
 } from "$lib/stores"
 
@@ -35,8 +33,6 @@ class MediaController {
     traverse.subscribe(() => this.updateMedia)
     activeSetMethod.subscribe(() => this.updateMedia)
     mediaTypeFilter.subscribe(() => this.updateMedia)
-    activeSortingMethod.subscribe(() => this.updateMedia)
-    seed.subscribe(() => this.updateMedia)
 
     this.alreadyInitialized = true
   }
@@ -47,8 +43,12 @@ class MediaController {
 
   public filters = $state({
     specialFilterAttribute: null as string | null,
-    favouritesOnly: false
+    favouritesOnly: false,
+    countOfTags: -1
   })
+
+  public activeSortingMethod = $state(3)
+  public seed = $state(Math.random())
 
   public updateMedia = async (newCluster: string | undefined = undefined) => {
     console.debug(
@@ -76,19 +76,16 @@ class MediaController {
       cluster,
       tags: tagsController.selectedTags.map(t => t.id),
       offset,
-      seed: get(seed),
-      activeSortingMethod:
-        cluster == "Camp Buddy"
-          ? sortingMethods.findIndex(
-              a => a.icon == "mdiSortAlphabeticalAscending"
-            )
-          : sortingMethods.indexOf(get(activeSortingMethod)),
-        ...this.filters
+      seed: this.seed,
+      activeSortingMethod: this.activeSortingMethod,
+      ...this.filters
     })
+
+    console.log({ data })
 
     const processedData = data.map(m => ({
       ...m,
-      tags: m.tags.split(",").map(t => +t)
+      tags: m.tags?.split(",").map(t => +t) || []
     })) satisfies MediaType[]
     this.isCurrentlyLoadingNewMedia = false
     return processedData

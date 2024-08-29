@@ -6,12 +6,11 @@
   import { settings } from "$lib/stores"
 
   import type { PageData } from "./$types"
-  import SidebarFilterSection from "./SidebarFilterSection.svelte"
   import SidebatTagsSection from "./SidebarTagsSection.svelte"
 
   $: pageData = $page.data as PageData
 
-  let showFilters = false
+  export let filterBarVisible = false
 </script>
 
 {#if $page.data.cluster.type != "stories"}
@@ -40,18 +39,11 @@
       <Button
         icon="mdiFilter"
         onclick={() => {
-          showFilters = !showFilters
+          filterBarVisible = !filterBarVisible
         }}
-        active={showFilters}
         noMargin
       />
     </div>
-
-    {#if showFilters}
-      <div class="filters">
-        <SidebarFilterSection />
-      </div>
-    {/if}
 
     <div class="tags-section">
       <SidebatTagsSection />
@@ -64,20 +56,18 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 
     width: 250px;
     height: 100vh;
 
     background: var(--color-dark-level-1);
-    border-right: 1px solid var(--border-color-base);
-
-    .filters {
-      padding-bottom: 0.5rem;
-    }
 
     .tags-section {
       flex-grow: 1;
       border-top: 1px solid var(--border-color-base);
+      border-right: 1px solid var(--border-color-base);
+      padding-top: 0.5rem;
 
       &::-webkit-scrollbar {
         display: none;

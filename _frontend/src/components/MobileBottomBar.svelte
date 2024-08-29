@@ -13,7 +13,6 @@
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../routes/[cluster]/$types"
-  import SidebarFilterSection from "../routes/[cluster]/SidebarFilterSection.svelte"
   import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
   import Button from "./Button.svelte"
   import Icon from "./Icon.svelte"
@@ -61,7 +60,8 @@
 
 {#if filtersSelectionDropdownVisible}
   <Dropdown bottom={84} right={8}>
-    <SidebarFilterSection />
+    TODO
+    <!-- <SidebarFilterSection /> -->
   </Dropdown>
 {/if}
 

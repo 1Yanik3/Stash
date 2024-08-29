@@ -40,9 +40,7 @@ export let selectedMediaIds: Writable<String[]> = writable([])
 
 // Media Filters
 export let activeSetMethod = writable(setMethods[0])
-export let activeSortingMethod = writable(sortingMethods[3])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
-export let seed = writable(Math.random())
 export let traverse = writable(false)
 export let viewMode: Writable<"normal" | "table"> = writable("normal")
 
