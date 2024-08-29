@@ -30,18 +30,19 @@
     console.log("%cControllers mounted", "color: grey")
   })
 
+  const reset = (newClusterName: string | undefined) => {
+    tagsController.updateTags(newClusterName)
+    mediaController.updateMedia(newClusterName)
+  }
+
   beforeNavigate(() => {
     thumbnailSuffixParameter.set(null)
-    tagsController.selectedTags = []
-    mediaController.filter_specialFilterAttribute = null
-  })
-
-  afterNavigate(data => {
     selectedMediaIds.set([])
-    mediaController.visibleMedium = null
-    tagsController.updateTags()
-    mediaController.updateMedia(data.to?.params?.cluster)
+    tagsController.selectedTags = []
+    mediaController.filters.specialFilterAttribute = null
+    mediaController.pages = []
   })
+  afterNavigate(data => reset(data.to?.params?.cluster))
 
   // TODO: reimplment this
   // visibleMedium.subscribe(() => {

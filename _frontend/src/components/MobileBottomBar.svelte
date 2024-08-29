@@ -1,11 +1,11 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
   import {
     activeSetMethod,
     controller,
-    favouritesOnly,
     mediaTypeFilter,
     traverse
   } from "$lib/stores"
@@ -29,7 +29,7 @@
     ($traverse ? 1 : 0) +
     ($activeSetMethod.title == "AND" ? 1 : 0) +
     ($mediaTypeFilter ? 1 : 0) +
-    ($favouritesOnly ? 1 : 0)
+    (mediaController.filters.favouritesOnly ? 1 : 0)
 </script>
 
 {#if clusterSelectionDropdownVisible}

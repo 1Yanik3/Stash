@@ -5,13 +5,13 @@ import query from "$lib/client/call"
 import type { possibleIcons } from "$lib/possibleIcons"
 import {
   activeSetMethod,
-  favouritesOnly,
   mediaTypeFilter,
   traverse
 } from "$lib/stores"
 
 import { setMethods } from "../../types"
 import { prompts } from "./PromptController"
+import { mediaController } from "./MediaController.svelte"
 
 export type TagBase = {
   id: number
@@ -35,17 +35,17 @@ export default class TagsController {
       return
     }
 
-    $effect(() => {
-      if (
-        this.selectedTags ||
-        // TODO: stop being stores
-        traverse ||
-        activeSetMethod ||
-        favouritesOnly ||
-        mediaTypeFilter
-      )
-        this.updateTags()
-    })
+    // $effect(() => {
+    //   if (
+    //     this.selectedTags ||
+    //     // TODO: stop being stores
+    //     traverse ||
+    //     activeSetMethod ||
+    //     favouritesOnly ||
+    //     mediaTypeFilter
+    //   )
+    //     this.updateTags()
+    // })
 
     this.alreadyInitialized = true
   }
@@ -54,11 +54,11 @@ export default class TagsController {
   public tags_hierarchy: TagExtended[] = $state([])
   public selectedTags: TagExtended[] = $state([])
 
-  public updateTags = async () => {
+  public updateTags = async (newClusterName: string = get(page).params.cluster) => {
     this.updateHierarchicalTags(
       await query("getTags", {
-        cluster: get(page).params.cluster,
-        favouritesOnly: get(favouritesOnly),
+        cluster: newClusterName,
+        favouritesOnly: mediaController.filters.favouritesOnly,
         mediaTypeFilter: get(mediaTypeFilter)
       })
     )

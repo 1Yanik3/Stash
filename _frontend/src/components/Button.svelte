@@ -151,7 +151,6 @@
 
     padding: 0.5em 0.75em;
 
-    font-weight: 200;
     text-decoration: none;
 
     border: 1px solid transparent;
@@ -220,7 +219,7 @@
       span {
         margin-left: 0.35em;
         overflow: hidden;
-        font-weight: 200;
+        font-weight: 300;
         text-overflow: ellipsis;
         white-space: nowrap;
       }

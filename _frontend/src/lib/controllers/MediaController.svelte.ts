@@ -3,19 +3,18 @@ import { md5 } from "hash-wasm"
 import { get } from "svelte/store"
 
 import { page } from "$app/stores"
+import query from "$lib/client/call"
 import {
   activeSetMethod,
   activeSortingMethod,
-  favouritesOnly,
   mediaTypeFilter,
   pageSize,
   seed,
   traverse
 } from "$lib/stores"
 
-import type { MediaGetRequestBodyData } from "../../routes/api/cluster/[cluster]/media/get/+server"
-import { setMethods, sortingMethods } from "../../types"
-import { tagsController, type TagExtended } from "./TagsController.svelte"
+import { sortingMethods } from "../../types"
+import { tagsController } from "./TagsController.svelte"
 
 export type MediaType = Media & { tags: number[] }
 
@@ -27,17 +26,14 @@ class MediaController {
       return
     }
 
-    $effect(
-      (
-        _ = [tagsController.selectedTags, this.filter_specialFilterAttribute]
-      ) => {
-        this.updateMedia()
-      }
-    )
+    $effect((_ = [tagsController.selectedTags, this.filters]) => {
+      console.group("%cUpdating via effect", "color: grey; font-weight: normal")
+      this.updateMedia()
+      console.groupEnd()
+    })
 
     traverse.subscribe(() => this.updateMedia)
     activeSetMethod.subscribe(() => this.updateMedia)
-    favouritesOnly.subscribe(() => this.updateMedia)
     mediaTypeFilter.subscribe(() => this.updateMedia)
     activeSortingMethod.subscribe(() => this.updateMedia)
     seed.subscribe(() => this.updateMedia)
@@ -49,9 +45,17 @@ class MediaController {
   public media: MediaType[] = $state([])
   public pages: { hash: string; media: Media[] }[] = $state([])
 
-  public filter_specialFilterAttribute: string | null = $state(null)
+  public filters = $state({
+    specialFilterAttribute: null as string | null,
+    favouritesOnly: false
+  })
 
   public updateMedia = async (newCluster: string | undefined = undefined) => {
+    console.debug(
+      `%cUpdating media with new cluster: ${newCluster}`,
+      "color: grey"
+    )
+    this.setMedia([])
     this.setMedia(await this.loadMedia(0, newCluster))
   }
 
@@ -68,40 +72,20 @@ class MediaController {
     if (this.isCurrentlyLoadingNewMedia) return []
     this.isCurrentlyLoadingNewMedia = true
 
-    // ?${new URLSearchParams({
-    //     traverse: get(traverse).toString(),
-    //     tags: tagsController.selectedTags.map(t => t.id).join(","),
-    //     activeSetMethod: setMethods.indexOf(get(activeSetMethod)).toString(),
-    //     mediaTypeFilter: get(mediaTypeFilter),
-    //     favouritesOnly: get(favouritesOnly).toString(),
-    //     activeSortingMethod: (get(page).params.cluster == "Camp Buddy"
-    //       ? sortingMethods.findIndex(
-    //           a => a.icon == "mdiSortAlphabeticalAscending"
-    //         )
-    //       : sortingMethods.indexOf(get(activeSortingMethod))
-    //     ).toString(),
-    //     offset: offset.toString(),
-    //     seed: get(seed).toString()
-    //   }
-
-    const mediaRequest = await fetch(`/api/cluster/${cluster}/media/get`, {
-      method: "POST",
-      body: JSON.stringify({
-        tags: tagsController.selectedTags.map(t => t.id),
-        offset,
-        favouritesOnly: get(favouritesOnly),
-        specialFilterAttribute: this.filter_specialFilterAttribute,
-        seed: get(seed),
-        activeSortingMethod:
-          cluster == "Camp Buddy"
-            ? sortingMethods.findIndex(
-                a => a.icon == "mdiSortAlphabeticalAscending"
-              )
-            : sortingMethods.indexOf(get(activeSortingMethod))
-      } satisfies MediaGetRequestBodyData)
+    const data = await query("getMedia", {
+      cluster,
+      tags: tagsController.selectedTags.map(t => t.id),
+      offset,
+      seed: get(seed),
+      activeSortingMethod:
+        cluster == "Camp Buddy"
+          ? sortingMethods.findIndex(
+              a => a.icon == "mdiSortAlphabeticalAscending"
+            )
+          : sortingMethods.indexOf(get(activeSortingMethod)),
+        ...this.filters
     })
 
-    const data = (await mediaRequest.json()) as (Media & { tags: string })[]
     const processedData = data.map(m => ({
       ...m,
       tags: m.tags.split(",").map(t => +t)

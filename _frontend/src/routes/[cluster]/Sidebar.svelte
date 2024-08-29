@@ -28,6 +28,7 @@
           icon: c.icon as any
         }))}
         width={-1}
+        allowMouseWheel
       />
       <Button
         icon="mdiCog"

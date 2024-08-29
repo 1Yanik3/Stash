@@ -14,6 +14,7 @@
     value?: T
     width?: number
     hideName?: boolean
+    allowMouseWheel?: boolean
     onchange?: (value: T) => void
   }
 
@@ -22,6 +23,7 @@
     value = $bindable(options[0].value),
     width = 150,
     hideName = false,
+    allowMouseWheel = false,
     onchange = () => {}
   }: Props = $props()
 
@@ -42,6 +44,16 @@
     open = !open
   }}
   style:min-width={width > 0 ? `${width}px` : "100%"}
+  onwheel={e => {
+    if (!allowMouseWheel) return
+    const index = options.findIndex(o => o.value === value)
+    if (e.deltaY > 0) {
+      value = options[index + 1]?.value || options[0].value
+    } else {
+      value = options[index - 1]?.value || options[options.length - 1].value
+    }
+    onchange(value)
+  }}
 >
   {#if options.find(o => o.value == value)?.icon}
     <div class="icon">

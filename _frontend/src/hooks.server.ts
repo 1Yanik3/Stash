@@ -27,7 +27,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (event.url.pathname.startsWith("/signin")) {
       return new Response(null, {
         status: 307,
-        headers: { location: "/People" }
+        headers: { location: "/Secret" }
       })
     }
   }

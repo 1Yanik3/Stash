@@ -10,7 +10,6 @@
   import {
     activeSetMethod,
     activeSortingMethod,
-    favouritesOnly,
     mediaTypeFilter,
     seed,
     traverse
@@ -28,7 +27,7 @@
     hidden
     icon="mdiBookshelf"
     onclick={() => {
-      selectedTags.set([])
+      tagsController.selectedTags = []
     }}
     active={tagsController.selectedTags.length == 0}
   >
@@ -191,16 +190,15 @@
     </Button>
   {/if}
 
+  <!-- tooltip={{
+    title: $derived(mediaController.filters.favouritesOnly ? "Only Favourited" : "All Media"),
+    position: "right"
+  }} -->
   <Button
-    icon={$favouritesOnly ? "mdiStar" : "mdiStarOutline"}
+    icon={mediaController.filters.favouritesOnly ? "mdiStar" : "mdiStarOutline"}
     onclick={() => {
-      favouritesOnly.set(!$favouritesOnly)
-    }}
-    tooltip={{
-      title: derived(favouritesOnly, $favouritesOnly =>
-        $favouritesOnly ? "Only Favourited" : "All Media"
-      ),
-      position: "right"
+      mediaController.filters.favouritesOnly =
+        !mediaController.filters.favouritesOnly
     }}
   >
     Favourited
@@ -210,7 +208,7 @@
 <!-- TODO: Make dynamic -->
 {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
   <Select
-    bind:value={mediaController.filter_specialFilterAttribute}
+    bind:value={mediaController.filters.specialFilterAttribute}
     options={[
       { value: null, name: "All" },
       { value: "solo", name: "Solo", icon: "mdiAccount" },
