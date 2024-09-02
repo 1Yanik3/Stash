@@ -199,6 +199,7 @@
       border: 1px solid var(--border-color-1);
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
           background: var(--color-dark-level-2-hover);
           border: 1px solid var(--border-color-1-hover);
@@ -217,8 +218,10 @@
       align-items: center;
 
       span {
-        margin-left: 0.35em;
         overflow: hidden;
+
+        margin-left: 0.35em;
+
         font-weight: 300;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -235,6 +238,7 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
@@ -242,7 +246,9 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
+
         &:not(.transparentButton) {
           background: var(--color-dark-level-2);
           border: 1px solid var(--border-color-1);

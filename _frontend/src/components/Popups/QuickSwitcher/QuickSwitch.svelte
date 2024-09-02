@@ -12,7 +12,7 @@
   {promise}
   searchAttributes={["tag"]}
   onselected={d => {
-    tagsController.selectedTags = [d]
+    mediaController.filters.selectedTags = [d]
   }}
 >
   {#snippet children(result)}

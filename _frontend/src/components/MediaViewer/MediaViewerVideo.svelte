@@ -277,6 +277,7 @@
         }
 
         &:not(:hover) {
+
           & > video {
             display: none;
           }

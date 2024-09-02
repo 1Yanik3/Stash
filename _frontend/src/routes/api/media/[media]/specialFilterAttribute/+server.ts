@@ -7,13 +7,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
   console.log(
     await prisma.media.update({
-        where: {
-          id: params.media
-        },
-        data: {
-          specialFilterAttribute
-        }
-      })
+      where: {
+        id: params.media
+      },
+      data: {
+        specialFilterAttribute
+      }
+    })
   )
 
   return new Response()

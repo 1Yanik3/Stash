@@ -101,13 +101,13 @@
 
   main {
     cursor: pointer;
+    user-select: none;
 
     position: relative;
 
     display: flex;
     gap: 0.35rem;
     align-items: center;
-    user-select: none;
 
     width: max-content;
     padding: $padding;
@@ -136,6 +136,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         filter: brightness(110%);
       }
@@ -143,11 +144,12 @@
   }
 
   .options {
+    user-select: none;
+
     position: absolute;
     z-index: 999;
 
     display: grid;
-    user-select: none;
 
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
@@ -156,9 +158,11 @@
     span {
       margin-top: 1px;
       padding: 5px;
-      outline: 1px solid var(--border-color-base);
+
       text-wrap: nowrap;
+
       background: var(--color-dark-level-base);
+      outline: 1px solid var(--border-color-base);
 
       &:hover {
         background: var(--color-dark-level-2);

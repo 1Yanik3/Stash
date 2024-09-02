@@ -3,6 +3,7 @@
   import { fade } from "svelte/transition"
 
   import { page } from "$app/stores"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
@@ -37,7 +38,7 @@
       onclick={() => {
         const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagId)
 
-        if (matchingTag) tagsController.selectedTags = [matchingTag]
+        if (matchingTag) mediaController.filters.selectedTags = [matchingTag]
       }}
     >
       <img
@@ -100,6 +101,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         transform: scale(1.03);
         filter: brightness(0.85);

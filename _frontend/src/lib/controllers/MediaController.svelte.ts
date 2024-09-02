@@ -11,8 +11,7 @@ import {
   traverse
 } from "$lib/stores"
 
-import { sortingMethods } from "../../types"
-import { tagsController } from "./TagsController.svelte"
+import type { TagExtended } from "./TagsController.svelte"
 
 export type MediaType = Media & { tags: number[] }
 
@@ -24,7 +23,7 @@ class MediaController {
       return
     }
 
-    $effect((_ = [tagsController.selectedTags, this.filters]) => {
+    $effect((_ = [this.filters]) => {
       console.group("%cUpdating via effect", "color: grey; font-weight: normal")
       this.updateMedia()
       console.groupEnd()
@@ -44,18 +43,26 @@ class MediaController {
   public filters = $state({
     specialFilterAttribute: null as string | null,
     favouritesOnly: false,
-    countOfTags: -1
+    countOfTags: -1,
+    activeSortingMethod: 3,
+    seed: Math.random(),
+    selectedTags: [] as TagExtended[]
   })
+  private _filtersOverrides: typeof this.filters | null = null
 
-  public activeSortingMethod = $state(3)
-  public seed = $state(Math.random())
-
-  public updateMedia = async (newCluster: string | undefined = undefined) => {
+  public updateMedia = async (
+    newCluster: string | undefined = undefined,
+    filters: typeof this.filters | null = null
+  ) => {
     console.debug(
-      `%cUpdating media with new cluster: ${newCluster}`,
+      `%cUpdating media with new cluster: ${newCluster} to ${get(page).params.cluster}`,
       "color: grey"
     )
+
     this.setMedia([])
+
+    if (filters) this._filtersOverrides = filters
+
     this.setMedia(await this.loadMedia(0, newCluster))
   }
 
@@ -74,14 +81,17 @@ class MediaController {
 
     const data = await query("getMedia", {
       cluster,
-      tags: tagsController.selectedTags.map(t => t.id),
+      tags: (this._filtersOverrides || this.filters).selectedTags.map(
+        t => t.id
+      ),
       offset,
-      seed: this.seed,
-      activeSortingMethod: this.activeSortingMethod,
-      ...this.filters
+      ...(this._filtersOverrides || this.filters)
     })
 
-    console.log({ data })
+    $effect.root(() => {
+      this._filtersOverrides = null
+      this.filters = this._filtersOverrides || this.filters
+    })
 
     const processedData = data.map(m => ({
       ...m,

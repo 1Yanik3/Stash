@@ -130,6 +130,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         background: var(--color-dark-level-1-hover);
         border: 1px solid var(--border-color-1-hover);

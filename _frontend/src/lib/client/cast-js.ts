@@ -1,3 +1,4 @@
+//@ts-nocheck
 if (window.chrome && !window.chrome.cast) {
   var t = document.createElement("script")
   ;(t.src =

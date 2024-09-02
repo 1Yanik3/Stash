@@ -246,10 +246,10 @@
   }
 
   .tag {
+    cursor: pointer;
+
     display: flex;
     align-items: center;
-
-    cursor: pointer;
 
     margin: 0.15em;
     padding: 0.3em 0.5em;

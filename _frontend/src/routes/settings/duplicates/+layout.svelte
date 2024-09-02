@@ -20,7 +20,7 @@
           crossorigin="use-credentials"
         />
       {/each}
-      
+
       <div class="actions">
         <Button
           icon="mdiSourceMerge"

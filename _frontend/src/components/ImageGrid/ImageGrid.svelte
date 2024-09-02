@@ -14,7 +14,7 @@
   $: pageData = $page.data as PageData
 </script>
 
-{#if pageData.cluster.type == "collection" && !tagsController.selectedTags.length}
+{#if pageData.cluster.type == "collection" && !mediaController.filters.selectedTags.length}
   <ImageGridCollection />
 {:else if pageData.cluster.type == "stories"}
   <ImageGridStories />
@@ -22,16 +22,16 @@
   <!-- TODO -->
   <!-- {#if pageData.cluster.type == "collection"}
     <div id="collectionGroups">
-      {#if tagsController.selectedTags.length == 1 && tagsController.selectedTags[0].includes("/")}
+      {#if mediaController.filters.selectedTags.length == 1 && mediaController.filters.selectedTags[0].includes("/")}
         <Button
           card
           icon="mdiFolderArrowUpOutline"
           onclick={() =>
             selectedTags.set([
-              tagsController.selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
+              mediaController.filters.selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
             ])}
         >
-          {tagsController.selectedTags[0].replace(/\/.+$/, "")}
+          {mediaController.filters.selectedTags[0].replace(/\/.+$/, "")}
         </Button>
       {/if}
 
@@ -40,10 +40,10 @@
           .filter(t => t.tag
               .join("/")
               .toLowerCase()
-              .startsWith(tagsController.selectedTags[0].toString()))
+              .startsWith(mediaController.filters.selectedTags[0].toString()))
           .filter(t => t.tag
                 .join("/")
-                .toLowerCase() != tagsController.selectedTags[0].toString())
+                .toLowerCase() != mediaController.filters.selectedTags[0].toString())
           .sort((a, b) => a.tag
               .join("/")
               .localeCompare(b.tag.join("/"))) as { tag }}

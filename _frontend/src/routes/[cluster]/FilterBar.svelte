@@ -25,7 +25,7 @@
     onclick={() => {
       selectedTags.set(["SHOW_TRASHED"])
     }}
-    active={tagsController.selectedTags[0] == "SHOW_TRASHED"}
+    active={mediaController.filters.selectedTags[0] == "SHOW_TRASHED"}
   >
     Trashed
   </Button> -->
@@ -76,9 +76,9 @@
     noMargin
     icon="mdiBookshelf"
     onclick={() => {
-      tagsController.selectedTags = []
+      mediaController.filters.selectedTags = []
     }}
-    active={tagsController.selectedTags.length == 0}
+    active={mediaController.filters.selectedTags.length == 0}
   >
     All
   </Button>
@@ -87,14 +87,15 @@
     noMargin
     disabled={["collection", "stories"].includes(pageData.cluster?.type)}
     onclick={() => {
-      mediaController.activeSortingMethod =
-        (mediaController.activeSortingMethod + 1) % sortingMethods.length
+      mediaController.filters.activeSortingMethod =
+        (mediaController.filters.activeSortingMethod + 1) %
+        sortingMethods.length
     }}
     oncontextmenu={e => {
       e.preventDefault()
-      mediaController.seed = Math.random()
+      mediaController.filters.seed = Math.random()
     }}
-    icon={sortingMethods[mediaController.activeSortingMethod].icon}
+    icon={sortingMethods[mediaController.filters.activeSortingMethod].icon}
   >
     Sorting Method
   </Button>
@@ -167,15 +168,15 @@
 
 <style lang="scss">
   main {
-    -webkit-app-region: drag;
-
-    background: var(--color-dark-level-1);
-    border-bottom: 1px solid var(--border-color-base);
-
     display: flex;
     gap: 0.5rem;
     align-items: center;
 
     height: 51.75px;
+
+    background: var(--color-dark-level-1);
+    border-bottom: 1px solid var(--border-color-base);
+
+    -webkit-app-region: drag;
   }
 </style>

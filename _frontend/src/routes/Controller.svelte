@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  import { afterNavigate, beforeNavigate, goto } from "$app/navigation"
+  import { beforeNavigate, goto } from "$app/navigation"
   import { page } from "$app/stores"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
@@ -30,19 +30,23 @@
     console.log("%cControllers mounted", "color: grey")
   })
 
-  const reset = (newClusterName: string | undefined) => {
-    tagsController.updateTags(newClusterName)
-    mediaController.updateMedia(newClusterName)
-  }
+  //   const reset = (newClusterName: string | undefined) => {
+  //     tagsController.updateTags(newClusterName)
+  //     mediaController.updateMedia(newClusterName)
+  //   }
 
-  beforeNavigate(() => {
+  beforeNavigate(data => {
     thumbnailSuffixParameter.set(null)
     selectedMediaIds.set([])
-    tagsController.selectedTags = []
-    mediaController.filters.specialFilterAttribute = null
     mediaController.pages = []
+    tagsController.updateTags(data.to?.params?.cluster)
+    mediaController.updateMedia(data.to?.params?.cluster, {
+      ...mediaController.filters,
+      selectedTags: [],
+      specialFilterAttribute: null
+    })
   })
-  afterNavigate(data => reset(data.to?.params?.cluster))
+  //   afterNavigate(data => reset())
 
   // TODO: reimplment this
   // visibleMedium.subscribe(() => {

@@ -17,12 +17,12 @@
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
 
-  let tags: TagExtended[] = $state.link(tagsController.selectedTags)
+  let tags: TagExtended[] = $state.link(mediaController.filters.selectedTags)
   let tagInputElement: TagInputField | null = $state(null)
 
   onMount(() => {
     uploadPopupOpen.subscribe(() => {
-      if (tags) tags = tagsController.selectedTags
+      if (tags) tags = mediaController.filters.selectedTags
       if (uploadProgress) uploadProgress = 0
       if (uploadPercentage) uploadPercentage = 0
       if (files) files = []
@@ -234,7 +234,7 @@
     .files-wrapper {
       overflow-y: scroll;
       max-height: 50vh;
-      
+
       .files {
         display: grid;
         grid-template-columns: 1fr auto;

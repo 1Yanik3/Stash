@@ -1,19 +1,15 @@
-
-FROM golang:1.22.1
-
-# Set destination for COPY
+FROM golang:1.22.1 as builder
 WORKDIR /app
 
-# Download Go modules
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY *.go ./
 
-# Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/gatekeeper
 
-EXPOSE 80
 
-# Run
+FROM scratch
+COPY --from=builder /app/gatekeeper /app/gatekeeper
+EXPOSE 80
 CMD ["/app/gatekeeper"]

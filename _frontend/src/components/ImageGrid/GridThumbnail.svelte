@@ -1,7 +1,10 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import Icon from "$components/Icon.svelte"
-  import { mediaController, type MediaType } from "$lib/controllers/MediaController.svelte"
+  import {
+    mediaController,
+    type MediaType
+  } from "$lib/controllers/MediaController.svelte"
   import { selectedMediaIds, thumbnailSuffixParameter } from "$lib/stores"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
@@ -86,7 +89,8 @@
         <img
           src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
           alt={medium.name}
-          class:active={!disableActive && mediaController.visibleMedium == medium}
+          class:active={!disableActive &&
+            mediaController.visibleMedium == medium}
           crossorigin="use-credentials"
           class:disableZoom
         />
@@ -128,6 +132,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

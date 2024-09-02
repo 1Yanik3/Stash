@@ -1,12 +1,8 @@
 import { get } from "svelte/store"
 
-import { prompts } from "$lib/controllers/PromptController"
-import {
-  controller,
-  thumbnailSuffixParameter,
-  videoElement,
-} from "$lib/stores"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
+import { prompts } from "$lib/controllers/PromptController"
+import { controller, thumbnailSuffixParameter, videoElement } from "$lib/stores"
 
 const dataURItoBlob = (dataURI: string) => {
   // convert base64 to raw binary data held in a string

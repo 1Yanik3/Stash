@@ -1,10 +1,7 @@
 <script lang="ts">
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
-  import {
-    controller,
-    thumbnailSuffixParameter
-  } from "$lib/stores"
+  import { controller, thumbnailSuffixParameter } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
   import Button from "../Button.svelte"
@@ -28,7 +25,9 @@
     )
   }
 
-  const rename = async (suggestedName = mediaController.visibleMedium?.name) => {
+  const rename = async (
+    suggestedName = mediaController.visibleMedium?.name
+  ) => {
     if (!mediaController.visibleMedium) return
 
     const newName = await prompts.text("Enter new name", suggestedName)
@@ -101,16 +100,17 @@
               icon="mdiImageRefresh"
               noMargin
               onclick={() => {
-                fetch(`/api/media/${mediaController.visibleMedium?.id}/thumbnail/reset`).then(
-                  () =>
-                    setTimeout(
-                      () =>
-                        thumbnailSuffixParameter.set({
-                          mediaId: mediaController.visibleMedium?.id as string,
-                          suffix: Math.random().toString(16).substring(2, 8)
-                        }),
-                      200
-                    )
+                fetch(
+                  `/api/media/${mediaController.visibleMedium?.id}/thumbnail/reset`
+                ).then(() =>
+                  setTimeout(
+                    () =>
+                      thumbnailSuffixParameter.set({
+                        mediaId: mediaController.visibleMedium?.id as string,
+                        suffix: Math.random().toString(16).substring(2, 8)
+                      }),
+                    200
+                  )
                 )
               }}
             />
@@ -118,12 +118,12 @@
               icon="mdiReload"
               noMargin
               onclick={() => {
-                fetch(`/api/media/${mediaController.visibleMedium?.id}/metadata/reload`).then(
-                  () => {
-                    // TODO: Reload does not work
-                    mediaController.updateMedia()
-                  }
-                )
+                fetch(
+                  `/api/media/${mediaController.visibleMedium?.id}/metadata/reload`
+                ).then(() => {
+                  // TODO: Reload does not work
+                  mediaController.updateMedia()
+                })
               }}
             />
           </div>
@@ -136,12 +136,17 @@
 
         <div>
           <Icon name="mdiMoveResize" />
-          <span>{mediaController.visibleMedium.width}x{mediaController.visibleMedium.height}</span>
+          <span
+            >{mediaController.visibleMedium.width}x{mediaController
+              .visibleMedium.height}</span
+          >
         </div>
 
         <div>
           <Icon name="mdiCalendar" />
-          <span>{toIsoString(new Date(mediaController.visibleMedium.date))}</span>
+          <span
+            >{toIsoString(new Date(mediaController.visibleMedium.date))}</span
+          >
         </div>
       </section>
     </main>

@@ -1,7 +1,7 @@
-import * as tags from './tags'
-import * as media from './media'
+import * as media from "./media"
+import * as tags from "./tags"
 
 export default {
-    ...tags,
-    ...media
+  ...tags,
+  ...media
 }

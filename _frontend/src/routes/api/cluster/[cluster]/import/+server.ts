@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         connect: {
           id: +params.cluster
         }
-      },
+      }
     }
   })
 

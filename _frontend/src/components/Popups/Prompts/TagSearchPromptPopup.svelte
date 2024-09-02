@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { TagExtended } from "$lib/controllers/TagsController.svelte"
+
   import TagInputField from "../../Tags/TagInputField.svelte"
   import PromptFramework from "./_PromptFramework.svelte"
 
@@ -14,8 +15,6 @@
   <label>
     <span>{question}:</span>
 
-    <TagInputField
-      onselected={onresult}
-    />
+    <TagInputField onselected={onresult} />
   </label>
 </PromptFramework>

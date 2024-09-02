@@ -137,9 +137,9 @@
       <div class="icon">
         <Icon name="mdiTagMultiple" />
       </div>
-      {#if tagsController.selectedTags.length > 0}
+      {#if mediaController.filters.selectedTags.length > 0}
         <div class="dot">
-          <span>{tagsController.selectedTags.length}</span>
+          <span>{mediaController.filters.selectedTags.length}</span>
         </div>
       {/if}
     </div>

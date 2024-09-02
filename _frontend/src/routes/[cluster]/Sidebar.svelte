@@ -68,9 +68,9 @@
 
     .tags-section {
       flex-grow: 1;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--border-color-base);
       border-right: 1px solid var(--border-color-base);
-      padding-top: 0.5rem;
 
       &::-webkit-scrollbar {
         display: none;

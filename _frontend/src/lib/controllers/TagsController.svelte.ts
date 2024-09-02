@@ -3,15 +3,10 @@ import { get } from "svelte/store"
 import { page } from "$app/stores"
 import query from "$lib/client/call"
 import type { possibleIcons } from "$lib/possibleIcons"
-import {
-  activeSetMethod,
-  mediaTypeFilter,
-  traverse
-} from "$lib/stores"
+import { activeSetMethod, mediaTypeFilter, traverse } from "$lib/stores"
 
-import { setMethods } from "../../types"
-import { prompts } from "./PromptController"
 import { mediaController } from "./MediaController.svelte"
+import { prompts } from "./PromptController"
 
 export type TagBase = {
   id: number
@@ -35,26 +30,16 @@ export default class TagsController {
       return
     }
 
-    // $effect(() => {
-    //   if (
-    //     this.selectedTags ||
-    //     // TODO: stop being stores
-    //     traverse ||
-    //     activeSetMethod ||
-    //     favouritesOnly ||
-    //     mediaTypeFilter
-    //   )
-    //     this.updateTags()
-    // })
-
     this.alreadyInitialized = true
+    this.updateTags()
   }
 
   public tags_flat: TagExtended[] = $state([])
   public tags_hierarchy: TagExtended[] = $state([])
-  public selectedTags: TagExtended[] = $state([])
 
-  public updateTags = async (newClusterName: string = get(page).params.cluster) => {
+  public updateTags = async (
+    newClusterName: string = get(page).params.cluster
+  ) => {
     this.updateHierarchicalTags(
       await query("getTags", {
         cluster: newClusterName,
@@ -108,7 +93,7 @@ export default class TagsController {
     this.tags_hierarchy = result.sort((a, b) =>
       get(page).params.cluster == "Camp Buddy"
         ? b.tag.localeCompare(a.tag)
-        : (b.count + b.indirectCount) - (a.count + a.indirectCount)
+        : b.count + b.indirectCount - (a.count + a.indirectCount)
     )
   }
 

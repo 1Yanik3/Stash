@@ -6,11 +6,7 @@
   import Select from "$components/Select.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import {
-    controller,
-    imageSuffixParameter,
-    isFullscreen,
-  } from "$lib/stores"
+  import { controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -109,9 +105,7 @@
 />
 
 {#if mediaController.visibleMedium}
-  <main
-    class:fullscreen={$isFullscreen}
-  >
+  <main class:fullscreen={$isFullscreen}>
     <section>
       <button onclick={() => (mediaController.visibleMedium = null)}>
         <Icon name="mdiClose" size={0.8} />
@@ -276,17 +270,6 @@
     section {
       display: flex;
       align-items: center;
-
-      div {
-        cursor: pointer;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 30px;
-        height: 30px;
-      }
 
       button {
         outline: none;

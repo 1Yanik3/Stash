@@ -1,5 +1,6 @@
 <script lang="ts">
   import Button from "$components/Button.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
     tagsController,
     type TagExtended
@@ -40,25 +41,34 @@
     onclick={e => {
       selectedMediaIds.set([])
       if (e.altKey) {
-        if (tagsController.selectedTags.some(t => t.id == tag.id))
-          tagsController.selectedTags = tagsController.selectedTags.filter(
-            t => t.id != tag.id
-          )
-        else tagsController.selectedTags = [...tagsController.selectedTags, tag]
+        if (mediaController.filters.selectedTags.some(t => t.id == tag.id))
+          mediaController.filters.selectedTags =
+            mediaController.filters.selectedTags.filter(t => t.id != tag.id)
+        else
+          mediaController.filters.selectedTags = [
+            ...mediaController.filters.selectedTags,
+            tag
+          ]
       } else {
-        tagsController.selectedTags = [tag]
+        mediaController.filters.selectedTags = [tag]
       }
     }}
     oncontextmenu={e => {
       e.preventDefault()
       showDropdown = !showDropdown
     }}
-    active={tagsController.selectedTags.some(t => t.id == tag.id)}
+    active={mediaController.filters.selectedTags.some(t => t.id == tag.id)}
   >
     {nameOverwrite || tag.tag}
   </Button>
 
-  <Dropdown visible={showDropdown} top={40} left={10}  right={8} position="absolute">
+  <Dropdown
+    visible={showDropdown}
+    top={40}
+    left={10}
+    right={8}
+    position="absolute"
+  >
     <Button
       onclick={() => {
         tagsController.toggleTag(
@@ -75,14 +85,14 @@
       {tag.collapsed ? "Uncollapse" : "Collapse"}
     </Button>
     <Button
-        onclick={() => {
-            tagsController.createTag(tag)
-            showDropdown = false
-        }}
-        noMargin
-        icon="mdiTagPlus"
+      onclick={() => {
+        tagsController.createTag(tag)
+        showDropdown = false
+      }}
+      noMargin
+      icon="mdiTagPlus"
     >
-        Create new subtag
+      Create new subtag
     </Button>
   </Dropdown>
 </main>
