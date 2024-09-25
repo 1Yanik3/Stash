@@ -36,12 +36,10 @@
       <span
         onclick={async () => {
           console.info("connect")
-          const availableDevices = await query("discoverFcastDevices")
-          const selectedAddress = await prompts.select(
-            "Select a device",
-            availableDevices.map(d => d.address)
+          const address = await prompts.text(
+            "What ip address should I connect to?"
           )
-          if (selectedAddress) client = new FCastController(selectedAddress)
+          if (address) client = new FCastController(address)
         }}
       >
         <Icon name="mdiCastOff" size={0.8} />

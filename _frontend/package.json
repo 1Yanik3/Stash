@@ -47,7 +47,6 @@
     "cookie": "^0.6.0",
     "fuzzy-search": "^3.2.1",
     "mdi-svelte": "^1.1.2",
-    "node-dns-sd": "^1.0.1",
     "pretty-bytes": "^6.1.1",
     "select-files": "^1.0.1",
     "svelte-dropzone": "^1.0.6",
