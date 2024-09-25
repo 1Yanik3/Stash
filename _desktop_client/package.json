@@ -1,0 +1,22 @@
+{
+  "name": "electron-project-init",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --mac --arm64"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^32.1.2",
+    "electron-builder": "^25.0.5"
+  },
+  "build": {
+    "productName": "Stash",
+    "appId": "ms.ant.stash"
+    
+  }
+}

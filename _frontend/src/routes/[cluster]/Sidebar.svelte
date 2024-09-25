@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
@@ -11,13 +13,19 @@
   $: pageData = $page.data as PageData
 
   export let filterBarVisible = false
+
+  let windowControlsSpacerVisible = $page.data.userAgent?.includes("Electron")
+
+  onMount(() => {
+    // @ts-ignore
+    window.fullscreenChanged = (state: boolean) => {
+      windowControlsSpacerVisible = !state
+    }
+  })
 </script>
 
 {#if $page.data.cluster.type != "stories"}
-  <main
-    class:mobile={$settings.mobileLayout}
-    class:windowControlsSpacer={$settings.windowControlsSpacer}
-  >
+  <main class:mobile={$settings.mobileLayout} class:windowControlsSpacerVisible>
     <div class="header">
       <Select
         onchange={name => {
@@ -83,7 +91,7 @@
       border: none;
     }
 
-    &.windowControlsSpacer {
+    &.windowControlsSpacerVisible {
       padding-top: 1.5rem;
     }
 

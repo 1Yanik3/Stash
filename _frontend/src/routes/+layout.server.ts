@@ -37,7 +37,7 @@ const getClusters = async (token: string) => {
   })
 }
 
-export const load: LayoutServerLoad = async ({ url, cookies }) => {
+export const load: LayoutServerLoad = async ({ request, url, cookies }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts1", url.pathname)
 
   let serverURL = "https://stash.hera.lan"
@@ -45,6 +45,7 @@ export const load: LayoutServerLoad = async ({ url, cookies }) => {
   console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
   return {
+    userAgent: request.headers.get("user-agent") || "Unknown",
     clusters: await getClusters(cookies.get("session") || ""),
     serverURL
   }

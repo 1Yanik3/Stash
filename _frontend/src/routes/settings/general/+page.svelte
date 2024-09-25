@@ -20,18 +20,6 @@
     </div>
 
     <div>
-      <span>Window-Controls spacing</span>
-      <Toggle
-        state={$settings.windowControlsSpacer}
-        toggle={e =>
-          settings.update(s => {
-            s.windowControlsSpacer = e
-            return s
-          })}
-      />
-    </div>
-
-    <div>
       <span>Mobile Navigation Touch areas</span>
       <Select
         options={[

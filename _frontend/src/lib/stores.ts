@@ -48,7 +48,6 @@ export let viewMode: Writable<"normal" | "table"> = writable("normal")
 export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
-  windowControlsSpacer: false,
   imageTapAction: "zoom" as "zoom" | "navigate",
   mobileLayout: false,
   tooltipEnabled: true,
