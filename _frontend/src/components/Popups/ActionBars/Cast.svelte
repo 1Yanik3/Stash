@@ -2,7 +2,6 @@
   import { fade } from "svelte/transition"
 
   import { page } from "$app/stores"
-  import query from "$lib/client/call"
   import { FCastController, PlaybackStateState } from "$lib/client/fcast.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
@@ -10,10 +9,14 @@
 
   import Icon from "../../Icon.svelte"
 
-  let playbackProgress = 0
   let disableSeeking = $state(false)
   let seekVideo: HTMLVideoElement | null = $state(null)
   let client: FCastController | null = $state(null)
+  let playbackProgress = $derived(
+    client &&
+      // @ts-ignore
+      (client.playbackState?.time / client.playbackState?.duration) * 100
+  )
 
   $effect(() => {
     if (mediaController.visibleMedium && client)
@@ -96,31 +99,31 @@
           size={0.8}
         />
       </span>
+
+      <!-- go forward 15 sec -->
+      <span
+        class:disabled={!client?.playbackState?.time}
+        onclick={() => {
+          // @ts-ignore
+          client?.seek(client?.playbackState?.time + 15)
+        }}
+        transition:fade={{ duration: 100 }}
+      >
+        <Icon name="mdiFastForward15" size={0.8} />
+      </span>
+
+      <!-- go forward 60 sec -->
+      <span
+        class:disabled={!client?.playbackState?.time}
+        onclick={() => {
+          // @ts-ignore
+          client?.seek(client?.playbackState?.time + 60)
+        }}
+        transition:fade={{ duration: 100 }}
+      >
+        <Icon name="mdiFastForward60" size={0.8} />
+      </span>
     {/if}
-
-    <!-- go forward 60 sec -->
-    <span
-      class:disabled={!client?.playbackState?.time}
-      onclick={() => {
-        // @ts-ignore
-        client?.seek(client?.playbackState?.time + 60)
-      }}
-      transition:fade={{ duration: 100 }}
-    >
-      <Icon name="mdiFastForward60" size={0.8} />
-    </span>
-
-    <!-- go forward 15 sec -->
-    <span
-      class:disabled={!client?.playbackState?.time}
-      onclick={() => {
-        // @ts-ignore
-        client?.seek(client?.playbackState?.time + 15)
-      }}
-      transition:fade={{ duration: 100 }}
-    >
-      <Icon name="mdiFastForward15" size={0.8} />
-    </span>
   </section>
 
   <section class="last">
@@ -157,11 +160,14 @@
     {/if}
   </section>
 
-  {#if mediaController.visibleMedium?.type.startsWith("video")}
+  {#if mediaController.visibleMedium?.type.startsWith("video") && client}
     <div
       class="playbackStatus"
       onclick={e => {
-        client?.seek((e.clientY * 100) / window.innerHeight)
+        client?.seek(
+          (e.clientY / window.innerHeight) *
+            (client.playbackState?.duration || 0)
+        )
       }}
       onmousemove={e => {
         if (seekVideo) {

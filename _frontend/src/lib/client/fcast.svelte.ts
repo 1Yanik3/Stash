@@ -7,6 +7,7 @@ export enum PlaybackStateState {
 
 type PlaybackState = {
   time: number
+  duration: number
   state: PlaybackStateState
 }
 
@@ -64,8 +65,10 @@ export class FCastController {
       url: `https://stash.any.gay/file/${media.id}?session=udhmunznya`
     }
     if (media.type.startsWith("image")) {
-        playMessage.container = "video/mp4"
-        playMessage.url = `https://stash.any.gay/worker/img-to-mp4/${media.id}?session=udhmunznya`
+      playMessage.container = "video/mp4"
+      playMessage.url = `https://stash.any.gay/worker/img-to-mp4/${media.id}?session=udhmunznya`
+      this.pause()
+      this.seek(0)
     }
     this.sendWebSocketPacket(Opcode.Play, playMessage)
   }
@@ -260,7 +263,8 @@ export class FCastController {
     if (!this.selectedHost) return
 
     const [host, port] = this.selectedHost.split(":")
-    const wsUrl = `ws://${host}:${port}`
+    // TODO: Remove duplication
+    const wsUrl = `https://stash.hera.lan/ws/${host}/${port}`
     const socket = new WebSocket(wsUrl)
 
     socket.onopen = () => {
