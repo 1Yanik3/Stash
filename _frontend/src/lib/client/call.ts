@@ -1,4 +1,4 @@
-import type routes from "$lib/server/routes"
+import type routes from "$lib/server/routes/_index"
 
 export default function query<Endpoint extends keyof typeof routes>(
   endpoint: Endpoint,

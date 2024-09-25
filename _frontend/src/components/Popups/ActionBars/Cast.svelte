@@ -1,121 +1,50 @@
 <script lang="ts">
-  import { onMount } from "svelte"
   import { fade } from "svelte/transition"
 
-  import { browser } from "$app/environment"
   import { page } from "$app/stores"
-  import type Castjs from "$lib/client/cast-js"
+  import query from "$lib/client/call"
+  import { FCastController, PlaybackStateState } from "$lib/client/fcast.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { prompts } from "$lib/controllers/PromptController"
   import { controller, settings } from "$lib/stores"
 
   import Icon from "../../Icon.svelte"
 
-  let videoPlaying = true
-  let currentTime = 0
   let playbackProgress = 0
-  let newVideo = false
+  let disableSeeking = $state(false)
+  let seekVideo: HTMLVideoElement | null = $state(null)
+  let client: FCastController | null = $state(null)
 
-  let connected = false
-  let cjs: null | Castjs
-
-  onMount(async () => {
-    if (!browser) return
-
-    // Setup CastJS
-    cjs = new (await import("$lib/client/cast-js")).default()
-    cjs.on("connect", () => {
-      console.log("connect")
-      connected = true
-    })
-    cjs.on("disconnect", () => {
-      console.log("disconnect")
-      connected = false
-    })
-    cjs.on("available", () => {
-      console.log("available")
-    })
-    cjs.on("statechange", () => {
-      console.log("statechange", cjs?.state)
-      videoPlaying = cjs?.state === "playing"
-    })
-    cjs.on("timeupdate", () => {
-      console.log("timeupdate")
-      currentTime = cjs?.time
-      playbackProgress = cjs?.progress
-    })
-    cjs.on("playing", () => {
-      console.log("playing")
-      videoPlaying = true
-      if (newVideo) {
-        cjs?.seek(0, false)
-        newVideo = false
-      }
-    })
-    cjs.on("pause", () => {
-      console.log("pause")
-      videoPlaying = false
-    })
-    cjs.on("end", () => {
-      console.log("end")
-    })
-    cjs.on("error", () => {
-      console.log("error")
-    })
-  })
-
-  const cast = (media = mediaController.visibleMedium) => {
-    if (!cjs) return
-
-    console.info("casting", media?.id || null)
-
-    window.cjs = cjs
-    // cjs.disconnect()
-    // console.log("disconnected")
-
-    if (media) {
-      console.log(`https://stash.any.gay/file/${media.id}?session=udhmunznya`)
-      cjs.cast(`https://stash.any.gay/file/${media.id}?session=udhmunznya`, {
-        poster: `https://stash.any.gay/file/api/media/${media.id}/thumbnail`,
-        title: media.name
-      })
-      newVideo = true
-    } else {
-      console.log("home")
-      cjs.cast(
-        "https://cdn.discordapp.com/attachments/995660268241682462/1263555370937221230/ant.ms_capybara_sketch_dark_background_82e81000-ef94-4631-95dd-8f9ddd764160.png?ex=669aa924&is=669957a4&hm=78ee3f6a2ebe0bd1efe65b75c75c9abe474e28279c7b18adbe0810397fa95a10&",
-        {
-          title: "Stash",
-          description: "Select something to play ;)"
-        }
-      )
-    }
-  }
   $effect(() => {
-    if (mediaController.visibleMedium && connected) cast(mediaController.visibleMedium)
+    if (mediaController.visibleMedium && client)
+      client.play(mediaController.visibleMedium)
   })
-
-  let disableSeeking = false
-  let seekVideo: HTMLVideoElement | null
 </script>
 
 <main>
   <section class="first">
-    {#if connected}
+    {#if client}
       <span
-        class:disabled={!mediaController.visibleMedium}
         onclick={() => {
           console.info("disconnect")
-          cjs?.disconnect()
+          client?.disconnect()
         }}
       >
-        <Icon name="mdiCastOff" size={0.8} />
+        <Icon name="mdiCastConnected" size={0.8} />
       </span>
     {:else}
       <span
-        class:disabled={!mediaController.visibleMedium}
-        onclick={() => cast()}
+        onclick={async () => {
+          console.info("connect")
+          const availableDevices = await query("discoverFcastDevices")
+          const selectedAddress = await prompts.select(
+            "Select a device",
+            availableDevices.map(d => d.address)
+          )
+          if (selectedAddress) client = new FCastController(selectedAddress)
+        }}
       >
-        <Icon name="mdiCast" size={0.8} />
+        <Icon name="mdiCastOff" size={0.8} />
       </span>
     {/if}
 
@@ -127,21 +56,26 @@
   </section>
 
   <section>
-    <!-- {#if $visibleMedium?.type.startsWith("image")}
-
-        {/if} -->
     {#if mediaController.visibleMedium?.type.startsWith("video")}
-      <!-- go forward 60 sec -->
+      <!-- go backward 60 sec -->
       <span
-        onclick={() => cjs?.seek(currentTime - 60, false)}
+        class:disabled={!client?.playbackState?.time}
+        onclick={() => {
+          // @ts-ignore
+          client?.seek(client?.playbackState?.time - 60)
+        }}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind60" size={0.8} />
       </span>
 
-      <!-- go forward 15 sec -->
+      <!-- go backward 15 sec -->
       <span
-        onclick={() => cjs?.seek(currentTime - 15, false)}
+        class:disabled={!client?.playbackState?.time}
+        onclick={() => {
+          // @ts-ignore
+          client?.seek(client?.playbackState?.time - 15)
+        }}
         transition:fade={{ duration: 100 }}
       >
         <Icon name="mdiRewind15" size={0.8} />
@@ -149,50 +83,87 @@
 
       <!-- play/pause -->
       <span
+        class:disabled={!client?.playbackState}
         onclick={() => {
-          console.debug({ videoPlaying })
-          if (videoPlaying) cjs?.pause()
-          else cjs?.play()
+          if (client?.playbackState?.state == PlaybackStateState.PLAYING)
+            client?.pause()
+          else client?.resume()
         }}
         transition:fade={{ duration: 100 }}
       >
-        <Icon name={videoPlaying ? "mdiPause" : "mdiPlay"} size={0.8} />
+        <Icon
+          name={client?.playbackState?.state == PlaybackStateState.PLAYING
+            ? "mdiPause"
+            : "mdiPlay"}
+          size={0.8}
+        />
       </span>
+    {/if}
 
-      <!-- go forward 15 sec -->
+    <!-- go forward 60 sec -->
+    <span
+      class:disabled={!client?.playbackState?.time}
+      onclick={() => {
+        // @ts-ignore
+        client?.seek(client?.playbackState?.time + 60)
+      }}
+      transition:fade={{ duration: 100 }}
+    >
+      <Icon name="mdiFastForward60" size={0.8} />
+    </span>
+
+    <!-- go forward 15 sec -->
+    <span
+      class:disabled={!client?.playbackState?.time}
+      onclick={() => {
+        // @ts-ignore
+        client?.seek(client?.playbackState?.time + 15)
+      }}
+      transition:fade={{ duration: 100 }}
+    >
+      <Icon name="mdiFastForward15" size={0.8} />
+    </span>
+  </section>
+
+  <section class="last">
+    {#if mediaController.visibleMedium}
       <span
-        onclick={() => cjs?.seek(currentTime + 15, false)}
-        transition:fade={{ duration: 100 }}
+        onclick={() => {
+          fetch(`/api/media/${mediaController.visibleMedium?.id}/favourited`, {
+            method: "PUT",
+            body: JSON.stringify({
+              favourited: !mediaController.visibleMedium?.favourited
+            })
+          })
+            .then(() => {
+              if (!mediaController.visibleMedium) return
+              const tmp = mediaController.visibleMedium
+              tmp.favourited = !mediaController.visibleMedium.favourited
+              mediaController.visibleMedium = tmp
+            })
+            .catch(console.error)
+        }}
       >
-        <Icon name="mdiFastForward15" size={0.8} />
+        {#if mediaController.visibleMedium.favourited}
+          <Icon name="mdiStar" size={0.8} />
+        {:else}
+          <Icon name="mdiStarOutline" size={0.8} />
+        {/if}
       </span>
-
-      <!-- go forward 60 sec -->
-      <span
-        onclick={() => cjs?.seek(currentTime + 60, false)}
-        transition:fade={{ duration: 100 }}
-      >
-        <Icon name="mdiFastForward60" size={0.8} />
+      <span onclick={() => $controller.goToPreviousMedia()}>
+        <Icon name="mdiChevronLeft" size={0.8} />
+      </span>
+      <span onclick={() => $controller.goToNextMedia()}>
+        <Icon name="mdiChevronRight" size={0.8} />
       </span>
     {/if}
   </section>
 
-  <section class="last">
-    <span onclick={() => $controller.goToPreviousMedia()}>
-      <Icon name="mdiChevronLeft" size={0.8} />
-    </span>
-    <span onclick={() => $controller.goToNextMedia()}>
-      <Icon name="mdiChevronRight" size={0.8} />
-    </span>
-  </section>
-
   {#if mediaController.visibleMedium?.type.startsWith("video")}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="playbackStatus"
       onclick={e => {
-        cjs?.seek((e.clientY * 100) / window.innerHeight, true)
+        client?.seek((e.clientY * 100) / window.innerHeight)
       }}
       onmousemove={e => {
         if (seekVideo) {
@@ -204,7 +175,7 @@
         }
       }}
     >
-      <div style:height="{playbackProgress}%" />
+      <div style:height="{playbackProgress}%"></div>
 
       {#if !$settings.mobileLayout && !disableSeeking}
         <video
@@ -264,8 +235,12 @@
         background 100ms,
         border 100ms;
 
-      @media (hover: hover) and (pointer: fine) {
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
 
+      @media (hover: hover) and (pointer: fine) {
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);

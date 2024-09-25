@@ -115,6 +115,7 @@
     <div>
       <button
         onclick={() => {
+            // TODO: Rmove duplication
           fetch(`/api/media/${mediaController.visibleMedium?.id}/favourited`, {
             method: "PUT",
             body: JSON.stringify({

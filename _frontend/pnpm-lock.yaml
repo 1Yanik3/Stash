@@ -23,6 +23,9 @@ importers:
       mdi-svelte:
         specifier: ^1.1.2
         version: 1.1.2
+      node-dns-sd:
+        specifier: ^1.0.1
+        version: 1.0.1
       pretty-bytes:
         specifier: ^6.1.1
         version: 6.1.1
@@ -1395,6 +1398,9 @@ packages:
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  node-dns-sd@1.0.1:
+    resolution: {integrity: sha512-GCL6FgvkHoDnvJ1Yamf8mY16lYymWmYxjne4q1MC9C8sTZn9XR3BbwsrBQGikMESMFDFLC5MovNZn6wFl1yrdQ==}
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -3163,6 +3169,8 @@ snapshots:
   nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
+
+  node-dns-sd@1.0.1: {}
 
   node-fetch@2.7.0:
     dependencies:

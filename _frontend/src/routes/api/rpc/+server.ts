@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit"
 
-import routes from "$lib/server/routes"
+import routes from "$lib/server/routes/_index"
 
 import type { RequestHandler } from "./$types"
 
