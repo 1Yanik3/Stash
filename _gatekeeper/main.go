@@ -7,9 +7,15 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 
+	"github.com/gorilla/websocket"
 	_ "github.com/jackc/pgx/v4/stdlib" // PostgreSQL driver
 )
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool { return true }, // In production, you may want stricter origin checks.
+}
 
 func main() {
 	// Load environment variables
@@ -63,6 +69,22 @@ func main() {
 	fs_seek := http.FileServer(http.Dir("./thumbnails"))
 	http.Handle("/thumb/", authMiddleware(http.StripPrefix("/thumb", fs_seek)))
 
+	// WebSocket handler
+	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
+		// Extract target IP and port from the URL path
+		pathParts := strings.Split(r.URL.Path, "/")
+		if len(pathParts) < 4 {
+			http.Error(w, "Invalid WebSocket target format. Must be /ws/<ip>/<port>", http.StatusBadRequest)
+			return
+		}
+
+		targetIP := pathParts[2]
+		targetPort := pathParts[3]
+
+		targetURL := "ws://" + targetIP + ":" + targetPort + "/"
+		proxyWebSocket(w, r, targetURL)
+	})
+
 	// Set up the reverse proxy for all other requests
 	targetURL, err := url.Parse(proxyTargetURL)
 	if err != nil {
@@ -80,6 +102,54 @@ func main() {
 	log.Printf("Server is listening on port %s...", port)
 	if err := http.ListenAndServe(port, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
+	}
+}
+
+// proxyWebSocket handles the WebSocket proxying between the client and the target server
+func proxyWebSocket(w http.ResponseWriter, r *http.Request, targetURL string) {
+	// Upgrade the client connection to WebSocket
+	clientConn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		http.Error(w, "Failed to upgrade WebSocket", http.StatusInternalServerError)
+		log.Printf("WebSocket upgrade error: %v", err)
+		return
+	}
+	defer clientConn.Close()
+
+	// Dial the target WebSocket server
+	targetConn, _, err := websocket.DefaultDialer.Dial(targetURL, nil)
+	if err != nil {
+		http.Error(w, "Failed to connect to target WebSocket", http.StatusBadGateway)
+		log.Printf("WebSocket dial error: %v", err)
+		return
+	}
+	defer targetConn.Close()
+
+	// Proxy data between client and target server
+	errChan := make(chan error, 2)
+
+	go copyWebSocketData(clientConn, targetConn, errChan)
+	go copyWebSocketData(targetConn, clientConn, errChan)
+
+	// Wait for any error from either direction
+	if err := <-errChan; err != nil {
+		log.Printf("WebSocket proxy error: %v", err)
+	}
+}
+
+// copyWebSocketData copies data between two WebSocket connections
+func copyWebSocketData(src, dst *websocket.Conn, errChan chan error) {
+	for {
+		messageType, message, err := src.ReadMessage()
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		if err := dst.WriteMessage(messageType, message); err != nil {
+			errChan <- err
+			return
+		}
 	}
 }
 
