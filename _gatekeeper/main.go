@@ -29,11 +29,6 @@ func main() {
 		log.Fatal("PROXY_TARGET_URL environment variable is not set")
 	}
 
-	workerProxyTargetURL := os.Getenv("WORKER_PROXY_TARGET_URL")
-	if workerProxyTargetURL == "" {
-		log.Fatal("WORKER_PROXY_TARGET_URL environment variable is not set")
-	}
-
 	// Database connection setup
 	db, err := sql.Open("pgx", dbURL)
 	if err != nil {
@@ -89,18 +84,6 @@ func main() {
 		targetURL := "ws://" + targetIP + ":" + targetPort + "/"
 		proxyWebSocket(w, r, targetURL)
 	})
-
-	// Set up the reverse proxy worker
-	workerTargetURL, err := url.Parse(workerProxyTargetURL)
-	if err != nil {
-		log.Fatalf("Failed to parse worker target URL: %v", err)
-	}
-
-	workerProxy := httputil.NewSingleHostReverseProxy(workerTargetURL)
-	http.Handle("/worker/", authMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Proxy request to the target server
-		workerProxy.ServeHTTP(w, r)
-	})))
 
 	// Set up the reverse proxy for all other requests
 	targetURL, err := url.Parse(proxyTargetURL)

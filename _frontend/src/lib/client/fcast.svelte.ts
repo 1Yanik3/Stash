@@ -60,17 +60,10 @@ export class FCastController {
 
   public play = (media: Media): void => {
     // TODO: Make configurable and dynamic
-    const playMessage = {
+    this.sendWebSocketPacket(Opcode.Play, {
       container: media.type,
       url: `https://stash.any.gay/file/${media.id}?session=udhmunznya`
-    }
-    if (media.type.startsWith("image")) {
-      playMessage.container = "video/mp4"
-      playMessage.url = `https://stash.any.gay/worker/img-to-mp4/${media.id}?session=udhmunznya`
-      this.pause()
-      this.seek(0)
-    }
-    this.sendWebSocketPacket(Opcode.Play, playMessage)
+    })
   }
 
   private playUrl = (url: string, type: string): void => {

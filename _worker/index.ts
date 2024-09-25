@@ -1,44 +1,10 @@
 import prisma from "./prisma";
 import { readdirSync } from "fs";
 import { join, extname } from "path";
-import ffmpeg from "fluent-ffmpeg";
 
 import { Job } from "@prisma/client";
 
 const registeredJobs = await importAllTsFiles();
-
-// TODO: Total rework of this pls
-Bun.serve({
-  port: 3000,
-  async fetch(req) {
-    const url = new URL(req.url);
-    if (url.pathname.startsWith("/worker/img-to-mp4/")) {
-      const inputImagePath = url.pathname.replace("/worker/img-to-mp4/", "");
-      const outputPath = "./tmp/" +  inputImagePath + ".mp4";
-      console.log(`Converting image to video: ${inputImagePath} -> ${outputPath}`);
-      const res: Response = await new Promise((resolve, reject) => {
-        ffmpeg(`./media/${inputImagePath}`)
-          .loop(1) // Loop the input image
-          .videoCodec("libx264") // Set video codec to H.264
-          .videoFilters("fps=1") // Resize to even dimensions
-          .size('1920x?')
-          .duration(1) // Set duration to 1 seconds
-          .outputOptions("-pix_fmt yuv420p") // Set pixel format
-          .save(outputPath) // Save the output file
-          .on("end", async () => {
-            console.log("Video conversion completed successfully!");
-            resolve(new Response(Bun.file(outputPath)));
-          })
-          .on("error", (err) => {
-            console.error("Error occurred during conversion: " + err.message);
-            reject(new Response(null, { status: 500 }));
-          });
-      });
-      return res;
-    }
-    return new Response(null, { status: 404 });
-  },
-});
 
 while (true) {
   const openJobs = await prisma.job.findMany({
