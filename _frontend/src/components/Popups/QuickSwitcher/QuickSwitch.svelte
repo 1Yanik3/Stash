@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"

@@ -5,7 +5,7 @@ import { pageSize } from "$lib/stores"
 
 import { sortingMethods } from "../../../types"
 
-export const getMedia = async (d: {
+export const media_query_from_database = async (d: {
   cluster: string
   tags: number[]
   offset: number

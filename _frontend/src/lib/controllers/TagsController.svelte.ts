@@ -41,7 +41,7 @@ export default class TagsController {
     newClusterName: string = get(page).params.cluster
   ) => {
     this.updateHierarchicalTags(
-      await query("getTags", {
+      await query("tags_query_from_database", {
         cluster: newClusterName,
         favouritesOnly: mediaController.filters.favouritesOnly,
         mediaTypeFilter: get(mediaTypeFilter)

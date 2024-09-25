@@ -1,6 +1,6 @@
 import prisma from "../prisma"
 
-export const getTags = async (d: {
+export const tags_query_from_database = async (d: {
   cluster: string
   mediaTypeFilter: string
   favouritesOnly: boolean

@@ -79,7 +79,7 @@ class MediaController {
     if (this.isCurrentlyLoadingNewMedia) return []
     this.isCurrentlyLoadingNewMedia = true
 
-    const data = await query("getMedia", {
+    const data = await query("media_query_from_database", {
       cluster,
       tags: (this._filtersOverrides || this.filters).selectedTags.map(
         t => t.id

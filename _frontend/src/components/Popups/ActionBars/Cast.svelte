@@ -90,10 +90,9 @@
       )
     }
   }
-  // TODO: reimplement this
-  //   visibleMedium.subscribe(newValue => {
-  //     if (connected) cast(newValue)
-  //   })
+  $effect(() => {
+    if (mediaController.visibleMedium && connected) cast(mediaController.visibleMedium)
+  })
 
   let disableSeeking = false
   let seekVideo: HTMLVideoElement | null
