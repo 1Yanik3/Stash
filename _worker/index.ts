@@ -20,7 +20,7 @@ Bun.serve({
         ffmpeg(`./media/${inputImagePath}`)
           .loop(1) // Loop the input image
           .videoCodec("libx264") // Set video codec to H.264
-          .videoFilters("scale=1920x1080,fps=1") // Resize to even dimensions
+          .videoFilters("scale='if(gte(iw/ih,16/9),1920,-1)':'if(gte(iw/ih,16/9),-1,1080)', fps=1") // Resize to even dimensions
           .duration(1) // Set duration to 1 seconds
           .outputOptions("-pix_fmt yuv420p") // Set pixel format
           .save(outputPath) // Save the output file

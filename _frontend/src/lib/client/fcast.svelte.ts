@@ -65,7 +65,7 @@ export class FCastController {
     }
     if (media.type.startsWith("image")) {
         playMessage.container = "video/mp4"
-        playMessage.url = `https://stash.any.gay/worker//${media.id}?session=udhmunznya`
+        playMessage.url = `https://stash.any.gay/worker/img-to-mp4/${media.id}?session=udhmunznya`
     }
     this.sendWebSocketPacket(Opcode.Play, playMessage)
   }
