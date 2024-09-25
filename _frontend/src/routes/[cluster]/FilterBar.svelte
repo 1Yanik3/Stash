@@ -1,17 +1,12 @@
 <script lang="ts">
-  import { derived } from "svelte/store"
 
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
-  import SidebarSection from "$components/SidebarSection.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
-  import { activeSetMethod, mediaTypeFilter, traverse } from "$lib/stores"
 
-  import { setMethods, sortingMethods } from "../../types"
+  import { sortingMethods } from "../../types"
   import type { PageData } from "./$types"
-  import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   $: pageData = $page.data as PageData
 </script>
@@ -81,6 +76,16 @@
     active={mediaController.filters.selectedTags.length == 0}
   >
     All
+  </Button>
+
+  <Button
+    icon={mediaController.filters.favouritesOnly ? "mdiStar" : "mdiStarOutline"}
+    onclick={() => {
+      mediaController.filters.favouritesOnly =
+        !mediaController.filters.favouritesOnly
+    }}
+  >
+    Favourited
   </Button>
 
   <Button
