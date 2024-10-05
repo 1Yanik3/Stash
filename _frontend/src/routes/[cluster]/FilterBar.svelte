@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
@@ -67,18 +66,20 @@
 </SidebarSection> -->
 
 <main>
-  <Button
-    noMargin
-    icon="mdiBookshelf"
-    onclick={() => {
-      mediaController.filters.selectedTags = []
-    }}
-    active={mediaController.filters.selectedTags.length == 0}
-  >
-    All
-  </Button>
+  {#if mediaController.filters.selectedTags.length}
+    <Button
+      noMargin
+      icon="mdiBackspace"
+      onclick={() => {
+        mediaController.filters.selectedTags = []
+      }}
+    >
+      Clear Tag Selection
+    </Button>
+  {/if}
 
   <Button
+    noMargin
     icon={mediaController.filters.favouritesOnly ? "mdiStar" : "mdiStarOutline"}
     onclick={() => {
       mediaController.filters.favouritesOnly =
@@ -88,30 +89,30 @@
     Favourited
   </Button>
 
-  <Button
-    noMargin
-    disabled={["collection", "stories"].includes(pageData.cluster?.type)}
-    onclick={() => {
-      mediaController.filters.activeSortingMethod =
-        (mediaController.filters.activeSortingMethod + 1) %
-        sortingMethods.length
-    }}
+  <Select
+    large
+    width={175}
+    bind:value={mediaController.filters.activeSortingMethod}
+    options={sortingMethods.map((method, i) => ({
+      value: i,
+      name: method.title,
+      icon: method.icon
+    }))}
     oncontextmenu={e => {
       e.preventDefault()
       mediaController.filters.seed = Math.random()
     }}
-    icon={sortingMethods[mediaController.filters.activeSortingMethod].icon}
-  >
-    Sorting Method
-  </Button>
+  />
 
   <!-- TODO: Make dynamic -->
   <!-- TODO: Move to dropdown rather than select -->
   {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
     <Select
+      large
+      width={110}
       bind:value={mediaController.filters.specialFilterAttribute}
       options={[
-        { value: null, name: "All" },
+        { value: null, name: "People: All" },
         { value: "solo", name: "Solo", icon: "mdiAccount" },
         { value: "two", name: "Two", icon: "mdiAccountMultiple" },
         { value: "three", name: "Three", icon: "mdiAccountGroup" },
@@ -121,28 +122,30 @@
     />
   {/if}
 
-  <Button
-    noMargin
-    icon={mediaController.filters.countOfTags == 0
-      ? "mdiNumeric0"
-      : mediaController.filters.countOfTags == 1
-        ? "mdiNumeric1"
-        : mediaController.filters.countOfTags == 2
-          ? "mdiNumeric2"
-          : mediaController.filters.countOfTags == 3
-            ? "mdiNumeric3"
-            : "mdiAllInclusive"}
-    onclick={() => {
-      if (mediaController.filters.countOfTags < 3) {
-        mediaController.filters.countOfTags++
-      } else {
-        mediaController.filters.countOfTags = -1
-      }
-    }}
-    active={mediaController.filters.countOfTags != -1}
-  >
-    Number of Tags
-  </Button>
+  <Select
+    large
+    width={175}
+    bind:value={mediaController.filters.countOfTags}
+    options={[
+      { value: -1, name: "Number of Tags", icon: "mdiAllInclusive" },
+      { value: 0, name: "Number of Tags", icon: "mdiNumeric0" },
+      { value: 1, name: "Number of Tags", icon: "mdiNumeric1" },
+      { value: 2, name: "Number of Tags", icon: "mdiNumeric2" },
+      { value: 3, name: "Number of Tags", icon: "mdiNumeric3" }
+    ]}
+  />
+
+  <Select
+    large
+    width={175}
+    bind:value={mediaController.filters.minResolution}
+    options={[
+      { value: null, name: "Minimum Resolution", icon: "mdiAllInclusive" },
+      { value: 720, name: "720p", icon: "mdiStandardDefinition" },
+      { value: 1080, name: "1080p", icon: "mdiHighDefinition" },
+      { value: 2160, name: "2160p", icon: "mdiVideo4kBox" },
+    ]}
+  />
 
   <!-- <Button
     noMargin

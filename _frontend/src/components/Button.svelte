@@ -144,6 +144,7 @@
   a {
     cursor: pointer;
     user-select: none;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;

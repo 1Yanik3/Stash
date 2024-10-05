@@ -46,7 +46,8 @@ class MediaController {
     countOfTags: -1,
     activeSortingMethod: 3,
     seed: Math.random(),
-    selectedTags: [] as TagExtended[]
+    selectedTags: [] as TagExtended[],
+    minResolution: null as number | null
   })
   private _filtersOverrides: typeof this.filters | null = null
 

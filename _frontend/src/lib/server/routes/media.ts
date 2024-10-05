@@ -14,6 +14,7 @@ export const media_query_from_database = async (d: {
   seed: number
   activeSortingMethod: number
   countOfTags: number
+  minResolution: number | null
 }) => {
   return (await prisma.$queryRawUnsafe(/*sql*/ `
         SELECT
@@ -28,6 +29,7 @@ export const media_query_from_database = async (d: {
             ${assembleTagsFilter(d.tags)}
             ${assembleFavouritesOnlyFilter(d.favouritesOnly)}
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
+            ${assembleMinResultionFilter(d.minResolution)}
         GROUP BY
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
@@ -35,6 +37,18 @@ export const media_query_from_database = async (d: {
         LIMIT ${pageSize}
         OFFSET ${d.offset}
     `)) as (Media & { tags: string })[]
+}
+
+const assembleMinResultionFilter = (minResolution: number | null) => {
+  if (!minResolution) return ""
+  return /*sql*/`
+    AND (
+        "Media"."width" >= ${minResolution}
+        OR
+
+        "Media"."height" >= ${minResolution}
+    )
+  `
 }
 
 const assembleTagsFilter = (tags: number[]) => {

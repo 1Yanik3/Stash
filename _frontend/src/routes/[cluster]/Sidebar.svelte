@@ -5,7 +5,7 @@
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
-  import { settings } from "$lib/stores"
+  import { settings, windowControlsSpacerVisible } from "$lib/stores"
 
   import type { PageData } from "./$types"
   import SidebatTagsSection from "./SidebarTagsSection.svelte"
@@ -13,19 +13,13 @@
   $: pageData = $page.data as PageData
 
   export let filterBarVisible = false
-
-  let windowControlsSpacerVisible = $page.data.userAgent?.includes("Electron")
-
-  onMount(() => {
-    // @ts-ignore
-    window.fullscreenChanged = (state: boolean) => {
-      windowControlsSpacerVisible = !state
-    }
-  })
 </script>
 
 {#if $page.data.cluster.type != "stories"}
-  <main class:mobile={$settings.mobileLayout} class:windowControlsSpacerVisible>
+  <main
+    class:mobile={$settings.mobileLayout}
+    class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
+  >
     <div class="header">
       <Select
         onchange={name => {

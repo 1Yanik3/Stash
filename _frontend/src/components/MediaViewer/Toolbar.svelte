@@ -19,6 +19,7 @@
   $: pageData = $page.data as PageData
 
   let dropdownVisible = false
+  export let hideControls
 
   const addTagToMedia = (tagId: number) => {
     fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {
@@ -115,7 +116,7 @@
     <div>
       <button
         onclick={() => {
-            // TODO: Rmove duplication
+          // TODO: Rmove duplication
           fetch(`/api/media/${mediaController.visibleMedium?.id}/favourited`, {
             method: "PUT",
             body: JSON.stringify({
@@ -170,18 +171,20 @@
     </div>
 
     <section>
-      <button
-        onclick={() => {
-          isFullscreen.set(!$isFullscreen)
-          if ($isFullscreen) {
-            document.documentElement.requestFullscreen()
-          } else {
-            document.exitFullscreen()
-          }
-        }}
-      >
-        <Icon name="mdiFullscreen" size={0.8} />
-      </button>
+      {#if !hideControls}
+        <button
+          onclick={() => {
+            isFullscreen.set(!$isFullscreen)
+            if ($isFullscreen) {
+              document.documentElement.requestFullscreen()
+            } else {
+              document.exitFullscreen()
+            }
+          }}
+        >
+          <Icon name="mdiFullscreen" size={0.8} />
+        </button>
+      {/if}
 
       <button
         onclick={() => {
@@ -256,6 +259,7 @@
     justify-content: space-between;
 
     min-width: calc(100% - 4em);
+    height: 33px;
     padding: 0.35em;
 
     background: var(--color-dark-level-1);

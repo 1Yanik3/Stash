@@ -43,7 +43,7 @@
   }
 </script>
 
-<Popup title="Media Details" on:close={() => $controller.setPopup(null)}>
+<Popup title="Media Details" onclose={() => $controller.setPopup(null)}>
   {#if mediaController.visibleMedium}
     <main>
       <div>

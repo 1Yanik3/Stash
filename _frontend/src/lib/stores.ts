@@ -25,6 +25,7 @@ export const actionBars = {
   AutoScroll: AutoScroll
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
+export let windowControlsSpacerVisible = writable(false)
 
 export let uploadPopupOpen = writable(false)
 

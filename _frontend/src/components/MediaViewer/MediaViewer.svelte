@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
@@ -13,8 +15,6 @@
   import MediaViewerImage from "./MediaViewerImage.svelte"
   import MediaViewerVideo from "./MediaViewerVideo.svelte"
   import Toolbar from "./Toolbar.svelte"
-
-  $: pageData = $page.data as PageData
 
   let mediaElement: HTMLElement
   let isZoomedIn = false
@@ -33,11 +33,42 @@
   //     else preloadedImageUrl = ""
   //   }
   //   $: updatePreloadedImageUrl($visibleMedium)
+
+  let hideControls = false
+  let hideTimeout: NodeJS.Timeout
+
+  const hideControlsAfterTimeout = () => {
+    clearTimeout(hideTimeout)
+    hideTimeout = setTimeout(() => {
+      hideControls = true
+    }, 3000)
+  }
+
+  onMount(() => {
+    const handleMouseMove = () => {
+      hideControls = false
+      hideControlsAfterTimeout()
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mouseleave", () => {
+      hideControls = true
+      clearTimeout(hideTimeout)
+    })
+
+    hideControlsAfterTimeout()
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+      clearTimeout(hideTimeout)
+    }
+  })
 </script>
 
 <Shortcut
   key="Escape"
   action={() => {
+    isFullscreen.set(false)
     mediaController.visibleMedium = null
   }}
 />
@@ -45,7 +76,7 @@
 {#if mediaController.visibleMedium}
   <main class:fullscreen={$isFullscreen} class:mobile={$settings.mobileLayout}>
     <div class="toolbar">
-      <Toolbar />
+      <Toolbar {hideControls} />
     </div>
     <div
       id="media"
@@ -66,7 +97,7 @@
       {#if mediaController.visibleMedium.type.startsWith("image")}
         <MediaViewerImage />
       {:else if mediaController.visibleMedium.type.startsWith("video")}
-        <MediaViewerVideo />
+        <MediaViewerVideo {hideControls} />
       {:else}
         <span>{mediaController.visibleMedium.name}</span>
       {/if}

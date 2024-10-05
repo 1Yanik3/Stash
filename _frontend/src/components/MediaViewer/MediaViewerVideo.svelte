@@ -79,14 +79,19 @@
     }
   }
 
+  export let hideControls
+
   //   TODO: reimplment this
   //   visibleMedium.subscribe(() => {
   //     disableSeeking = false
-  //   })
+  //   });
 </script>
 
-<main>
+<main class:hide-controls={hideControls}>
   <video
+    onclick={() => {
+        paused = !paused
+    }}
     src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
     autoplay
     bind:this={video}
@@ -277,7 +282,6 @@
         }
 
         &:not(:hover) {
-
           & > video {
             display: none;
           }
@@ -293,6 +297,15 @@
           border-radius: 5px;
         }
       }
+    }
+  }
+
+  .hide-controls {
+    cursor: none;
+
+    .controls {
+      opacity: 0;
+      transition: opacity 0.5s;
     }
   }
 </style>

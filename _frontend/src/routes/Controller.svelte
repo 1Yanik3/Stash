@@ -16,7 +16,8 @@
     actionBar,
     actionBars,
     selectedMediaIds,
-    thumbnailSuffixParameter
+    thumbnailSuffixParameter,
+    windowControlsSpacerVisible
   } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -98,6 +99,15 @@
   export const setPopup = (newPopup: typeof popup) => (popup = newPopup)
   export const setActionBar = (newActionBar: keyof typeof actionBars | null) =>
     actionBar.set(newActionBar)
+
+  windowControlsSpacerVisible.set($page.data.userAgent?.includes("Electron"))
+
+  onMount(() => {
+    // @ts-ignore
+    window.fullscreenChanged = (state: boolean) => {
+      windowControlsSpacerVisible.set(!state)
+    }
+  })
 </script>
 
 {#if Popup}

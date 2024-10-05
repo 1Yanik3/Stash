@@ -12,19 +12,25 @@
       icon?: keyof typeof possibleIcons
     }[]
     value?: T
+    prefix?: string
     width?: number
     hideName?: boolean
     allowMouseWheel?: boolean
+    large?: boolean
     onchange?: (value: T) => void
+    oncontextmenu?: (e: MouseEvent) => void
   }
 
   let {
     options,
     value = $bindable(options[0].value),
+    prefix = "",
     width = 150,
     hideName = false,
     allowMouseWheel = false,
-    onchange = () => {}
+    large = false,
+    onchange = () => {},
+    oncontextmenu = () => {}
   }: Props = $props()
 
   let main: HTMLElement
@@ -37,6 +43,8 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main
   bind:this={main}
+  class:large
+  {oncontextmenu}
   onclick={() => {
     const rect = main.getBoundingClientRect()
     top = rect.bottom + 4
@@ -62,6 +70,7 @@
   {/if}
   {#if !hideName}
     <span>
+      {prefix ? `${prefix}: ` : ""}
       {options.find(o => o.value == value)?.name || value}
     </span>
   {/if}
@@ -97,8 +106,6 @@
 {/if}
 
 <style lang="scss">
-  $padding: 4.25px;
-
   main {
     cursor: pointer;
     user-select: none;
@@ -110,7 +117,7 @@
     align-items: center;
 
     width: max-content;
-    padding: $padding;
+    padding: 4.25px;
 
     font-size: 14px;
     font-weight: 200;
@@ -124,6 +131,11 @@
 
     transition: all 200ms ease;
 
+    &.large {
+      padding: 8px;
+      border-radius: 5px;
+    }
+
     .arrow {
       position: absolute;
       top: 50%;
@@ -136,7 +148,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         filter: brightness(110%);
       }
@@ -148,6 +159,7 @@
 
     position: absolute;
     z-index: 999;
+    margin-left: 10px;
 
     display: grid;
 
