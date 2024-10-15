@@ -16,6 +16,7 @@
     actionBar,
     actionBars,
     selectedMediaIds,
+    settings,
     thumbnailSuffixParameter,
     windowControlsSpacerVisible
   } from "$lib/stores"
@@ -49,17 +50,15 @@
   })
   //   afterNavigate(data => reset())
 
-  // TODO: reimplment this
   // visibleMedium.subscribe(() => {
   //   imageSuffixParameter.set("")
   // })
-  // onMount(() => {
-  //   visibleMedium.subscribe(newMedium => {
-  //     if ($settings.mobileLayout) {
-  //       setPopup(newMedium ? "Media Viewer Mobile" : null)
-  //     }
-  //   })
-  // })
+
+  $effect(() => {
+    if ($settings.mobileLayout) {
+      setPopup(mediaController.visibleMedium ? "Media Viewer Mobile" : null)
+    }
+  })
 
   // TODO: Move to controller
   export const goToPreviousMedia = async () => {
