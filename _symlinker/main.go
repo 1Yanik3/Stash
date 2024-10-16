@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	_ "github.com/lib/pq"
 )
@@ -56,7 +57,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if mediaType != "video" {
+		if !strings.HasPrefix(mediaType, "video") {
 			continue
 		}
 
