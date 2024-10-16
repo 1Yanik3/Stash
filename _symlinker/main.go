@@ -62,13 +62,13 @@ func main() {
 		}
 
 		// Create the directory structure
-		dirPath := fmt.Sprintf("/hierarchy/%s_%d.mp4", tagName, tagID)
+		dirPath := fmt.Sprintf("/hierarchy/%s_%d", tagName, tagID)
 		if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 			log.Fatal(err)
 		}
 
 		// Create the symlink
-		symlinkPath := filepath.Join(dirPath, fmt.Sprintf("%s_%s", mediaName, mediaID))
+		symlinkPath := filepath.Join(dirPath, fmt.Sprintf("%s_%s.mp4", mediaName, mediaID))
 		targetPath := fmt.Sprintf("/media/%s", mediaID)
 		if err := os.Symlink(targetPath, symlinkPath); err != nil {
 			log.Fatal(err)
