@@ -26,7 +26,7 @@ func main() {
 	defer db.Close()
 
 	// Delete old links
-	if err := os.RemoveAll("/hierarchy"); err != nil {
+	if err := os.RemoveAll("/hierarchy/*"); err != nil {
 		log.Fatal(err)
 	}
 
