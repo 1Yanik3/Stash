@@ -7,8 +7,7 @@
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
-  import QuickActions from "$components/Popups/QuickSwitcher/QuickActions.svelte"
-  import QuickSwitch from "$components/Popups/QuickSwitcher/QuickSwitch.svelte"
+  import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
@@ -84,7 +83,6 @@
   }
 
   const popups = {
-    "Quick Actions": QuickActions,
     "Quick Actions Import": QuickActionsImport,
     "Quick Switch": QuickSwitch,
     Shortcuts: ShortcutPopup,
@@ -118,13 +116,6 @@
   key="o"
   action={() => {
     popup = "Quick Switch"
-  }}
-/>
-<Shortcut
-  meta
-  key="k"
-  action={() => {
-    popup = "Quick Actions"
   }}
 />
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />

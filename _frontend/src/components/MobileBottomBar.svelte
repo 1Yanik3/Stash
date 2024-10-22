@@ -1,190 +1,66 @@
 <script lang="ts">
-  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
-  import {
-    activeSetMethod,
-    controller,
-    mediaTypeFilter,
-    traverse
-  } from "$lib/stores"
-  import Dropdown from "$reusables/Dropdown.svelte"
-  import Popup from "$reusables/Popup.svelte"
+  import { controller } from "$lib/stores"
 
   import type { PageData } from "../routes/[cluster]/$types"
-  import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
-  import Button from "./Button.svelte"
+  import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
   import Icon from "./Icon.svelte"
 
   $: pageData = $page.data as PageData
 
-  let clusterSelectionDropdownVisible = false
-  let filtersSelectionDropdownVisible = false
-  let menuDropdownVisible = false
-  let tagsSheetOpen = false
-
-  $: filterCount =
-    ($traverse ? 1 : 0) +
-    ($activeSetMethod.title == "AND" ? 1 : 0) +
-    ($mediaTypeFilter ? 1 : 0) +
-    (mediaController.filters.favouritesOnly ? 1 : 0)
+  let tagsSidebarVisible = false
 </script>
 
-{#if clusterSelectionDropdownVisible}
-  <Dropdown bottom={84} left={8}>
-    {#each pageData.clusters.sort((a, b) => a.sortOrder - b.sortOrder) as c}
-      <Button
-        iconNoTyping={c.icon}
-        href="/{c.name}"
-        active={c.id == pageData.cluster?.id &&
-          !$page.url.pathname.startsWith("/settings")}
-        onclick={() => (clusterSelectionDropdownVisible = false)}
-      >
-        {c.name}
-      </Button>
+{#if tagsSidebarVisible}
+  <div class="sidebar">
+    {#each tagsController.tags_hierarchy as tag}
+      <SidebarHierarchyEntry {tag} />
     {/each}
-  </Dropdown>
-{/if}
-
-{#if tagsSheetOpen}
-  <Popup
-    bottomSheet
-    onclose={() => {
-      tagsSheetOpen = false
-    }}
-  >
-    <SidebarTagsSection />
-  </Popup>
-{/if}
-
-{#if filtersSelectionDropdownVisible}
-  <Dropdown bottom={84} right={8}>
-    TODO
-    <!-- <SidebarFilterSection /> -->
-  </Dropdown>
-{/if}
-
-{#if menuDropdownVisible}
-  <Dropdown bottom={84} right={8}>
-    <Button
-      icon="mdiCog"
-      href="/settings/general"
-      onclick={() => (menuDropdownVisible = false)}
-    >
-      Settings
-    </Button>
-
-    <Button
-      icon="mdiConsole"
-      onclick={() => {
-        $controller.setPopup("Quick Actions")
-        menuDropdownVisible = false
-      }}
-    >
-      Quick Actions
-    </Button>
-
-    <Button
-      icon="mdiMagnify"
-      onclick={() => {
-        $controller.setPopup("Quick Switch")
-        menuDropdownVisible = false
-      }}
-    >
-      Quick Switch
-    </Button>
-  </Dropdown>
+  </div>
 {/if}
 
 <main>
-  <!-- Cluster Selection -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  {#if $page.url.pathname.startsWith("/settings")}
-    <div class="button" onmousedown={() => goto("/")}>
-      <div class="iconContainer">
-        <div class="icon">
-          <Icon name="mdiArrowLeft" />
-        </div>
-      </div>
-      <span class="label"> Go Back </span>
-    </div>
-  {:else}
-    <div
-      class="button"
-      class:active={!$page.url.pathname.startsWith("/settings")}
-      onmousedown={() =>
-        (clusterSelectionDropdownVisible = !clusterSelectionDropdownVisible)}
-    >
-      <div class="iconContainer">
-        <div class="icon">
-          <Icon
-            nameAlt={pageData.clusters.find(c => c.id == pageData.cluster?.id)
-              ?.icon}
-          />
-        </div>
-      </div>
-      <span class="label">
-        {pageData.clusters.find(c => c.id == pageData.cluster?.id)?.name}
-      </span>
-    </div>
-  {/if}
-
-  <!-- Tags Section -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="button" onmousedown={() => (tagsSheetOpen = !tagsSheetOpen)}>
-    <div class="iconContainer">
-      <div class="icon">
-        <Icon name="mdiTagMultiple" />
-      </div>
-      {#if mediaController.filters.selectedTags.length > 0}
-        <div class="dot">
-          <span>{mediaController.filters.selectedTags.length}</span>
-        </div>
-      {/if}
-    </div>
-    <span class="label"> Tags </span>
-  </div>
-
-  <!-- Filter Section -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="button"
-    class:active={filterCount}
-    onmousedown={() =>
-      (filtersSelectionDropdownVisible = !filtersSelectionDropdownVisible)}
+    onmousedown={() => (tagsSidebarVisible = !tagsSidebarVisible)}
   >
     <div class="iconContainer">
       <div class="icon">
-        <Icon name="mdiFilter" />
+        <Icon name="mdiTag" />
       </div>
-      {#if filterCount}
-        <div class="dot">
-          <span>{filterCount}</span>
-        </div>
-      {/if}
     </div>
-    <span class="label"> Filters </span>
   </div>
 
-  <!-- Menu Section -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="button"
-    class:active={$page.url.pathname.startsWith("/settings")}
-    onmousedown={() => (menuDropdownVisible = !menuDropdownVisible)}
-  >
-    <div class="iconContainer">
-      <div class="icon">
-        <Icon name="mdiMenu" />
-      </div>
+  <div class="title">
+    <span>
+      {pageData.cluster?.name}
+    </span>
+  </div>
+
+  <div class="button" onmousedown={() => $controller.setPopup("Quick Switch")}>
+    <div class="icon">
+      <Icon name="mdiCardSearch" />
     </div>
-    <span class="label"> Menu </span>
   </div>
 </main>
 
 <style lang="scss">
   @use "sass:color";
+  $bottom-bar-height: 56px;
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: $bottom-bar-height;
+    width: 100%;
+    background: var(--color-dark-level-1);
+    z-index: 1000;
+    overflow-y: auto;
+    scrollbar-width: none;
+    scroll-padding: 38px;
+  }
 
   main {
     // TODO: Make dynamic
@@ -194,20 +70,25 @@
     gap: 8px;
     justify-content: space-between;
 
-    padding: 0 20px;
+    padding: 4px 0;
 
     background: $background-color;
+
+    .title {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
 
     .button {
       display: flex;
       flex-direction: column;
       gap: 4px;
       align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
 
-      padding-top: 12px;
-      padding-bottom: 16px;
-
-      .iconContainer {
+      .icon {
         position: relative;
 
         display: flex;
@@ -218,55 +99,6 @@
         height: 32px;
 
         border-radius: 16px;
-
-        .icon {
-          opacity: 90%;
-        }
-
-        .dot {
-          position: absolute;
-          top: -4px;
-          right: 4px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          width: 16px;
-          height: 16px;
-
-          background: #bbb;
-          border-radius: 8px;
-
-          span {
-            font-size: 12px;
-            font-weight: 500;
-            color: #000;
-          }
-        }
-      }
-
-      .label {
-        font-size: 12px;
-        font-weight: 500;
-        line-height: 12px;
-        opacity: 90%;
-      }
-
-      &.active {
-
-        .label {
-          font-weight: 700;
-          opacity: 90%;
-        }
-
-        .iconContainer {
-          background: color.adjust($color: $background-color, $lightness: 10%);
-
-          .icon {
-            opacity: 100%;
-          }
-        }
       }
     }
   }

@@ -175,26 +175,27 @@
     }
 
     &.mobile {
-
       section {
         display: grid;
         align-content: start;
 
         width: 100vw;
         max-width: 100vw;
-        // height: 100vh;
+        height: calc(100vh - 56px - 2rem);
         max-height: 100vh;
-
+        align-self: flex-start;
+        box-shadow: none;
+        padding: 1rem;
+        border-radius: 0;
         border: none;
 
         #content {
-          justify-content: center;
+          border: none;
         }
       }
     }
 
     &.fullscreen {
-
       section {
         display: grid;
         grid-template-rows: auto 1fr;

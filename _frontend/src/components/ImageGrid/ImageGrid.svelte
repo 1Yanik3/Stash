@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from "svelte/transition"
+
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
@@ -64,11 +66,13 @@
       <ImageGridTable media={mediaController.media} />
     {:else}
       {#each mediaController.pages as { hash, media }, i (hash)}
-        {#if pageData.cluster.type == "withName"}
-          <ImageGridStudios {media} {i} />
-        {:else}
-          <ImageGridPage {media} {i} />
-        {/if}
+        <div transition:fade>
+          {#if pageData.cluster.type == "withName"}
+            <ImageGridStudios {media} {i} />
+          {:else}
+            <ImageGridPage {media} {i} />
+          {/if}
+        </div>
       {/each}
     {/if}
   </section>
