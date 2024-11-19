@@ -47,7 +47,8 @@ class MediaController {
     activeSortingMethod: 3,
     seed: Math.random(),
     selectedTags: [] as TagExtended[],
-    minResolution: null as number | null
+    minResolution: null as number | null,
+    mediaType: "all" as "all" | "image" | "video"
   })
   private _filtersOverrides: typeof this.filters | null = null
 

@@ -2,6 +2,7 @@
   import Fuse from "fuse.js"
   import { onMount } from "svelte"
 
+  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Icon from "$components/Icon.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -14,7 +15,7 @@
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import { goto } from "$app/navigation"
+  import { sortingMethods } from "../../types"
 
   // TODO: Move to a seperate file (after moving controller to a seperate file)
   const actions: typeof resultRowValues = [
@@ -38,6 +39,7 @@
   let searcher: InstanceType<typeof Fuse> | null = $state(null)
   let value = $state("")
   let selectedIndex = $state(0)
+  let submenuOverwrite: typeof resultRowValues = $state([])
 
   const gatherAllTags = async () => {
     const tags: typeof resultRowValues = []
@@ -79,9 +81,100 @@
   const gatherAllFilters = async () =>
     [
       {
-        icon: "mdiStarOutline",
+        icon: "mdiBackspace",
+        label: "@clear",
+        onEnter: () => {
+          mediaController.filters.selectedTags = []
+          mediaController.filters.favouritesOnly = false
+          mediaController.filters.activeSortingMethod = 0
+          $controller.setPopup(null)
+        }
+      },
+      {
+        icon: "mdiAllInclusive",
+        label: "@all",
+        onEnter: () => {
+          mediaController.filters.selectedTags = []
+        }
+      },
+      {
+        icon: mediaController.filters.favouritesOnly
+          ? "mdiStar"
+          : "mdiStarOutline",
         label: "@favourited",
-        action: "All"
+        action: mediaController.filters.favouritesOnly ? "ON" : "OFF",
+        onEnter: () => {
+          mediaController.filters.favouritesOnly =
+            !mediaController.filters.favouritesOnly
+          refreshFilters()
+        }
+      },
+      ...sortingMethods.map((s, i) => ({
+        icon: s.icon,
+        label: `@sort/${s.title}`,
+        action:
+          mediaController.filters.activeSortingMethod == i ? "ON" : undefined,
+        onEnter: () => {
+          console.log("hi")
+          if (
+            i == mediaController.filters.activeSortingMethod &&
+            sortingMethods[mediaController.filters.activeSortingMethod].id ==
+              "Random"
+          ) {
+            mediaController.filters.seed = Math.random()
+            console.log("seed")
+          } else {
+            mediaController.filters.activeSortingMethod = i
+            refreshFilters()
+          }
+        }
+      })),
+      {
+        icon: "mdiImage",
+        label: "@type/image",
+        action: mediaController.filters.mediaType == "image" ? "ON" : "",
+        onEnter: () => {
+          mediaController.filters.mediaType = "image"
+          refreshFilters()
+        }
+      },
+      {
+        icon: "mdiVideo",
+        label: "@type/video",
+        action: mediaController.filters.mediaType == "video" ? "ON" : "",
+        onEnter: () => {
+          mediaController.filters.mediaType = "video"
+          refreshFilters()
+        }
+      },
+      {
+        icon: "mdiMultimedia",
+        label: "@type/all",
+        action: mediaController.filters.mediaType == "all" ? "ON" : "",
+        onEnter: () => {
+          mediaController.filters.mediaType = "all"
+          refreshFilters()
+        }
+      },
+      {
+        icon: "mdiPound",
+        label: "@minResolution",
+        action: mediaController.filters.minResolution || "",
+        onTab: () => {
+          submenuOverwrite = [
+            { res: null, icon: "mdiAllInclusive" },
+            { res: 720, icon: "mdiStandardDefinition" },
+            { res: 1080, icon: "mdiHighDefinition" },
+            { res: 2160, icon: "mdiVideo4kBox" }
+          ].map(({ res, icon }) => ({
+            label: `@minResolution/${res}`,
+            icon: icon as keyof typeof possibleIcons,
+            onEnter: () => {
+              mediaController.filters.minResolution = res
+              refreshFilters()
+            }
+          }))
+        }
       }
     ] satisfies typeof resultRowValues
 
@@ -102,16 +195,19 @@
     onEnter?: (e: KeyboardEvent) => void
   }[] = $derived(executeSearch(value))
 
-  Promise.all([
-    actions,
-    gatherAllTags(),
-    gatherAllFilters(),
-    gatherAllClusters()
-  ]).then(data => {
-    searcher = new Fuse(data.flat(), {
-      keys: ["label"]
+  const refreshFilters = () =>
+    Promise.all([
+      actions,
+      gatherAllTags(),
+      gatherAllFilters(),
+      gatherAllClusters()
+    ]).then(data => {
+      searcher = new Fuse(data.flat(), {
+        keys: ["label"]
+      })
     })
-  })
+
+  refreshFilters()
 
   onMount(() => {
     const input = document.getElementById(
@@ -135,21 +231,34 @@
         } else if (e.key == "ArrowDown") {
           if (selectedIndex <= resultRowValues.length) selectedIndex++
         } else if (e.key == "Enter") {
-          resultRowValues[selectedIndex].onEnter?.(e)
+          ;(
+            resultRowValues[selectedIndex].onEnter ||
+            resultRowValues[selectedIndex].onTab
+          )?.(e)
         } else if (e.key == "Tab") {
+          e.preventDefault()
           resultRowValues[selectedIndex].onTab?.(e)
+        } else if (e.key == "Backspace") {
+          if (submenuOverwrite.length) {
+            submenuOverwrite = []
+            e.preventDefault()
+          }
         } else {
           selectedIndex = 0
         }
       }}
     />
     <div class="search-result-section">
-      {#each resultRowValues as result, i}
+      {#each submenuOverwrite.length ? submenuOverwrite : resultRowValues as result, i}
         <div class="result-row" class:selected={selectedIndex == i}>
           <div class="icon">
             <Icon name={result.icon} size={0.8} />
           </div>
-          <span class="label">{result.label}</span>
+          <span class="label">
+            {result.label}{#if result.onTab}
+              /...
+            {/if}
+          </span>
           {#if result.action}
             <div class="action">{result.action}</div>
           {/if}
@@ -168,7 +277,7 @@
 <style lang="scss">
   main {
     display: grid;
-    gap: 0.5rem;
+    gap: 1rem;
     min-width: 450px;
 
     input {
@@ -181,10 +290,12 @@
     }
 
     .search-result-section {
+      display: grid;
+      gap: 0.5rem;
       .result-row {
         display: flex;
         gap: 0.5rem;
-        padding: 0.5rem;
+        padding: 0.25rem;
         border-radius: 0.25rem;
 
         .icon {
@@ -207,6 +318,7 @@
           background-color: var(--color-dark-level-3);
           border-radius: 0.5rem;
           padding: 0.25rem 0.5rem;
+          font-size: 14px;
         }
 
         &.selected {

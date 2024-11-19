@@ -15,6 +15,7 @@ export const media_query_from_database = async (d: {
   activeSortingMethod: number
   countOfTags: number
   minResolution: number | null
+  mediaType: "all" | "image" | "video"
 }) => {
   return (await prisma.$queryRawUnsafe(/*sql*/ `
         SELECT
@@ -30,6 +31,7 @@ export const media_query_from_database = async (d: {
             ${assembleFavouritesOnlyFilter(d.favouritesOnly)}
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
             ${assembleMinResultionFilter(d.minResolution)}
+            ${assembleMediaTypeFilter(d.mediaType)}
         GROUP BY
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
@@ -41,7 +43,7 @@ export const media_query_from_database = async (d: {
 
 const assembleMinResultionFilter = (minResolution: number | null) => {
   if (!minResolution) return ""
-  return /*sql*/`
+  return /*sql*/ `
     AND (
         "Media"."width" >= ${minResolution}
         OR
@@ -102,5 +104,12 @@ const assembleCountOfTagsFilter = (countOfTags: number) => {
   if (countOfTags < 0) return ""
   return /*sql*/ `
         HAVING COUNT("Tags"."id") = ${countOfTags}
+    `
+}
+
+const assembleMediaTypeFilter = (mediaType: "all" | "image" | "video") => {
+  if (mediaType === "all") return ""
+  return /*sql*/ `
+        AND "Media"."type" LIKE '${mediaType}%'
     `
 }

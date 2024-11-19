@@ -66,44 +66,6 @@
 </SidebarSection> -->
 
 <main>
-  {#if mediaController.filters.selectedTags.length}
-    <Button
-      noMargin
-      icon="mdiBackspace"
-      onclick={() => {
-        mediaController.filters.selectedTags = []
-      }}
-    >
-      Clear Tag Selection
-    </Button>
-  {/if}
-
-  <Button
-    noMargin
-    icon={mediaController.filters.favouritesOnly ? "mdiStar" : "mdiStarOutline"}
-    onclick={() => {
-      mediaController.filters.favouritesOnly =
-        !mediaController.filters.favouritesOnly
-    }}
-  >
-    Favourited
-  </Button>
-
-  <Select
-    large
-    width={175}
-    bind:value={mediaController.filters.activeSortingMethod}
-    options={sortingMethods.map((method, i) => ({
-      value: i,
-      name: method.title,
-      icon: method.icon
-    }))}
-    oncontextmenu={e => {
-      e.preventDefault()
-      mediaController.filters.seed = Math.random()
-    }}
-  />
-
   <!-- TODO: Make dynamic -->
   <!-- TODO: Move to dropdown rather than select -->
   {#if pageData.cluster.id == 2 || pageData.cluster.id == 6}
@@ -134,19 +96,6 @@
       { value: 3, name: "Number of Tags", icon: "mdiNumeric3" }
     ]}
   />
-
-  <Select
-    large
-    width={175}
-    bind:value={mediaController.filters.minResolution}
-    options={[
-      { value: null, name: "Minimum Resolution", icon: "mdiAllInclusive" },
-      { value: 720, name: "720p", icon: "mdiStandardDefinition" },
-      { value: 1080, name: "1080p", icon: "mdiHighDefinition" },
-      { value: 2160, name: "2160p", icon: "mdiVideo4kBox" },
-    ]}
-  />
-
   <!-- <Button
     noMargin
     disabled={pageData.cluster?.type == "stories"}
