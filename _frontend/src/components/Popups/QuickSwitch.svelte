@@ -14,6 +14,26 @@
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
+  import { goto } from "$app/navigation"
+
+  // TODO: Move to a seperate file (after moving controller to a seperate file)
+  const actions: typeof resultRowValues = [
+    {
+      icon: "mdiImport",
+      label: "/Import",
+      onEnter: () => {
+        $controller.setPopup("Quick Actions Import")
+      }
+    },
+    {
+      icon: "mdiCast",
+      label: "/Cast",
+      onEnter: () => {
+        $controller.setPopup(null)
+        $controller.setActionBar("Cast")
+      }
+    }
+  ]
 
   let searcher: InstanceType<typeof Fuse> | null = $state(null)
   let value = $state("")
@@ -48,7 +68,11 @@
       cluster =>
         ({
           icon: cluster.icon as any,
-          label: `!${cluster.name}`
+          label: `!${cluster.name}`,
+          onEnter: () => {
+            goto(`/${cluster.name}`)
+            $controller.setPopup(null)
+          }
         }) satisfies (typeof resultRowValues)[number]
     )
 
@@ -78,13 +102,16 @@
     onEnter?: (e: KeyboardEvent) => void
   }[] = $derived(executeSearch(value))
 
-  Promise.all([gatherAllTags(), gatherAllFilters(), gatherAllClusters()]).then(
-    data => {
-      searcher = new Fuse(data.flat(), {
-        keys: ["label"]
-      })
-    }
-  )
+  Promise.all([
+    actions,
+    gatherAllTags(),
+    gatherAllFilters(),
+    gatherAllClusters()
+  ]).then(data => {
+    searcher = new Fuse(data.flat(), {
+      keys: ["label"]
+    })
+  })
 
   onMount(() => {
     const input = document.getElementById(
@@ -101,6 +128,7 @@
       type="search"
       placeholder="Search for #tags, @filters, !clusters, or /commands"
       bind:value
+      autocomplete="off"
       onkeydown={(e: KeyboardEvent) => {
         if (e.key == "ArrowUp") {
           if (selectedIndex > 0) selectedIndex--
@@ -128,12 +156,12 @@
         </div>
       {/each}
     </div>
-    <div class="currently-selected-section">
+    <!-- <div class="currently-selected-section">
       <div class="badge">
         <Icon name="mdiTag" size={0.8} />
         <span>#pet/cats</span>
       </div>
-    </div>
+    </div> -->
   </main>
 </Popup>
 

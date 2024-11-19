@@ -1,13 +1,9 @@
-import type { Media } from "@prisma/client/wasm"
 import { persisted } from "svelte-local-storage-store"
 import { writable, type Writable } from "svelte/store"
 
-import AutoScroll from "$components/Popups/ActionBars/AutoScroll.svelte"
 import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
 
-import type Controller from "../routes/Controller.svelte"
 import { setMethods, sortingMethods } from "../types"
-import { tagsController } from "./controllers/TagsController.svelte"
 
 // Core Parts
 export let controller: Writable<Controller> = writable()
@@ -22,7 +18,6 @@ export let collapsedTags: Writable<string[]> = writable([])
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)
 export const actionBars = {
   Cast: QuickActionsCast,
-  AutoScroll: AutoScroll
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
 export let windowControlsSpacerVisible = writable(false)

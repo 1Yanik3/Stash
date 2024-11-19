@@ -5,6 +5,7 @@
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings, windowControlsSpacerVisible } from "$lib/stores"
 
   import type { PageData } from "./$types"
@@ -45,6 +46,10 @@
         icon="mdiFilter"
         onclick={() => {
           filterBarVisible = !filterBarVisible
+        }}
+        oncontextmenu={e => {
+          e.preventDefault()
+          mediaController.filters.selectedTags = []
         }}
         noMargin
       />

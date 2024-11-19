@@ -11,14 +11,15 @@
   $: pageData = $page.data as PageData
 
   let data: {
-    tagId: number
-    tagTag: string
-    mediaId: number
+    tagid: number
+    tag: string
+    mediaid: number
   }[] = []
 
   onMount(async () => {
     const res = await fetch(`/api/cluster/${pageData.cluster.id}/index`)
     data = await res.json()
+    console.log(data)
   })
 
   let filter = ""
@@ -32,21 +33,20 @@
     </label>
   </div>
 
-  {#each data.filter(d => d.tagTag.includes(filter.toLowerCase())) as d}
+  {#each data.filter(d => d.tag.includes(filter.toLowerCase())) as d}
     <span
       class="tag"
       onclick={() => {
-        const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagId)
-
+        const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagid)
         if (matchingTag) mediaController.filters.selectedTags = [matchingTag]
       }}
     >
       <img
-        src={`${$page.data.serverURL}/api/media/${d.mediaId}/thumbnail`}
+        src={`${$page.data.serverURL}/api/media/${d.mediaid}/thumbnail`}
         alt=""
       />
 
-      <span>{d.tagTag}</span>
+      <span>{d.tag}</span>
     </span>
   {/each}
 </main>

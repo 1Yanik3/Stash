@@ -118,6 +118,13 @@
     popup = "Quick Switch"
   }}
 />
+<Shortcut
+  meta
+  key="k"
+  action={() => {
+    popup = "Quick Switch"
+  }}
+/>
 <Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
 <Shortcut meta key="," action={() => goto("/settings/general")} />
 
