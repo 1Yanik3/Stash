@@ -1,4 +1,7 @@
 import type { Media } from "@prisma/client"
+import { get } from "svelte/store"
+
+import { page } from "$app/stores"
 
 export enum PlaybackStateState {
   PLAYING = 1,
@@ -43,7 +46,7 @@ export class FCastController {
   private buffer = new Uint8Array(this.MAXIMUM_PACKET_LENGTH)
 
   constructor(ip: string, port: number = 46898) {
-    const wsUrl = `https://stash.hera.lan/ws/${ip}/${port}`
+    const wsUrl = `${get(page).data.serverURL}/ws/${ip}/${port}`
     this.selectedHost = `${ip}:${port}`
     this.closeCurrentWebSocket()
 
@@ -257,7 +260,7 @@ export class FCastController {
 
     const [host, port] = this.selectedHost.split(":")
     // TODO: Remove duplication
-    const wsUrl = `https://stash.hera.lan/ws/${host}/${port}`
+    const wsUrl = `${get(page).data.serverURL}/ws/${host}/${port}`
     const socket = new WebSocket(wsUrl)
 
     socket.onopen = () => {
