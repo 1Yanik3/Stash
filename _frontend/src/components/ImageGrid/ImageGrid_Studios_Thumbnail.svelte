@@ -73,10 +73,12 @@
         preload="auto"
         style="
             position: absolute;
-            top: 0; left: 0;
             z-index: 100;
+            top: 0; left: 0;
+
             width: 100%;
             height: 100%;
+
             object-fit: cover;
         "
       >
@@ -174,6 +176,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         background: var(--color-dark-level-1-hover);
         border: 1px solid var(--border-color-1-hover);

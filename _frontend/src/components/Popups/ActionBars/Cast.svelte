@@ -240,11 +240,12 @@
         border 100ms;
 
       &.disabled {
-        opacity: 0.5;
         pointer-events: none;
+        opacity: 0.5;
       }
 
       @media (hover: hover) and (pointer: fine) {
+
         &:not(.disabled):hover {
           background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);

@@ -148,6 +148,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         filter: brightness(110%);
       }
@@ -159,9 +160,10 @@
 
     position: absolute;
     z-index: 999;
-    margin-left: 10px;
 
     display: grid;
+
+    margin-left: 10px;
 
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,

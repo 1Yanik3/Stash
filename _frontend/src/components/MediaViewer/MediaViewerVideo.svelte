@@ -90,7 +90,7 @@
 <main class:hide-controls={hideControls}>
   <video
     onclick={() => {
-        paused = !paused
+      paused = !paused
     }}
     src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
     autoplay
@@ -282,6 +282,7 @@
         }
 
         &:not(:hover) {
+
           & > video {
             display: none;
           }

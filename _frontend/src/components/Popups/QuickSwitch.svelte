@@ -338,7 +338,9 @@
       margin: -0.5rem;
       margin-bottom: 0;
       padding: 0.5rem;
+
       font-size: 1rem;
+
       border: none;
       border-bottom: 1px solid var(--border-color-1);
     }
@@ -346,6 +348,7 @@
     .search-result-section {
       display: grid;
       gap: 0.5rem;
+
       .result-row {
         display: flex;
         gap: 0.5rem;
@@ -361,18 +364,21 @@
 
         .label {
           display: flex;
-          align-items: center;
           flex-grow: 1;
+          align-items: center;
         }
 
         .action {
           display: flex;
           align-items: center;
           justify-content: center;
+
+          padding: 0.25rem 0.5rem;
+
+          font-size: 14px;
+
           background-color: var(--color-dark-level-3);
           border-radius: 0.5rem;
-          padding: 0.25rem 0.5rem;
-          font-size: 14px;
         }
 
         &.selected {
@@ -391,9 +397,11 @@
       .badge {
         display: flex;
         align-items: center;
+
+        padding: 0.25rem 0.5rem;
+
         background-color: var(--color-dark-level-2);
         border: 1px solid var(--border-color-1);
-        padding: 0.25rem 0.5rem;
         border-radius: 0.5rem;
 
         span {

@@ -59,6 +59,7 @@
     height: 100vh;
 
     background: var(--color-dark-level-1);
+
     -webkit-app-region: drag;
 
     .tags-section {

@@ -1,13 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
+  import { browser } from "$app/environment"
   import { beforeNavigate, goto } from "$app/navigation"
   import { page } from "$app/stores"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
-  import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
+  import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
@@ -22,7 +23,6 @@
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
-  import { browser } from "$app/environment"
 
   let pageData = $page.data as PageData
 
@@ -31,8 +31,8 @@
     tagsController.init()
     console.log("%cControllers mounted", "color: grey")
     if (browser) {
-        // @ts-ignore
-        window.mediaController = mediaController
+      // @ts-ignore
+      window.mediaController = mediaController
     }
   })
 

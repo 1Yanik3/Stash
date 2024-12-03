@@ -17,7 +17,7 @@ export let collapsedTags: Writable<string[]> = writable([])
 // Navigation and Layout
 export let mobileBottomBarVisible: Writable<boolean> = writable(true)
 export const actionBars = {
-  Cast: QuickActionsCast,
+  Cast: QuickActionsCast
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
 export let windowControlsSpacerVisible = writable(false)

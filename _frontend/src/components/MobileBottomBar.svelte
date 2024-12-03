@@ -50,16 +50,20 @@
   $bottom-bar-height: 56px;
 
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: $bottom-bar-height;
-    width: 100%;
-    background: var(--color-dark-level-1);
-    z-index: 1000;
-    overflow-y: auto;
     scrollbar-width: none;
     scroll-padding: 38px;
+
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    bottom: $bottom-bar-height;
+    left: 0;
+
+    overflow-y: auto;
+
+    width: 100%;
+
+    background: var(--color-dark-level-1);
   }
 
   main {
@@ -75,9 +79,9 @@
     background: $background-color;
 
     .title {
-      font-size: 16px;
       display: flex;
       align-items: center;
+      font-size: 16px;
     }
 
     .button {
@@ -86,6 +90,7 @@
       gap: 4px;
       align-items: center;
       justify-content: center;
+
       padding: 0.5rem;
 
       .icon {
