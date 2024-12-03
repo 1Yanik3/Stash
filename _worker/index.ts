@@ -11,6 +11,9 @@ while (true) {
     where: {
       status: "created",
     },
+    orderBy: {
+      priority: "desc",
+    },
   });
 
   for (const job of openJobs) {

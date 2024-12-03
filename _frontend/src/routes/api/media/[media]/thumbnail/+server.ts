@@ -19,7 +19,8 @@ export const GET: RequestHandler = async ({ params }) => {
     await prisma.job.create({
       data: {
         name: "createMediaThumbnail",
-        data: JSON.stringify({ id: params.media })
+        data: JSON.stringify({ id: params.media }),
+        priority: 10
       }
     })
 

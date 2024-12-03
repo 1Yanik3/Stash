@@ -34,14 +34,16 @@ export const POST: RequestHandler = async ({ params, request }) => {
   await prisma.job.create({
     data: {
       name: "updateMediaMetadataFromFile",
-      data: JSON.stringify({ id: id, initial: true })
+      data: JSON.stringify({ id: id, initial: true }),
+      priority: 15
     }
   })
 
   await prisma.job.create({
     data: {
       name: "createMediaThumbnail",
-      data: JSON.stringify({ id: id })
+      data: JSON.stringify({ id: id }),
+      priority: 10
     }
   })
 
