@@ -1,11 +1,13 @@
-import MistralClient from "@mistralai/mistralai"
+import { Mistral } from "@mistralai/mistralai"
 import { error } from "@sveltejs/kit"
 
 import { env } from "$env/dynamic/private"
 
 import type { RequestHandler } from "./$types"
 
-const client = new MistralClient(env["MISTRAL_API_KEY"])
+const client = new Mistral({
+  apiKey: env["MISTRAL_API_KEY"]
+})
 
 export const POST: RequestHandler = async ({ request }) => {
   let { prompt, model } = await request.json()
@@ -14,12 +16,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
   if (!model) model = "mistral-small"
 
-  const chatResponse = await client.chat({
+  const chatResponse = await client.chat.complete({
     model,
     messages: [{ role: "user", content: prompt }]
   })
 
-  return new Response(chatResponse.choices[0].message.content, {
-    status: 200
-  })
+  return new Response(
+    (chatResponse.choices &&
+      chatResponse.choices[0].message.content?.toString()) ||
+      "",
+    {
+      status: 200
+    }
+  )
 }

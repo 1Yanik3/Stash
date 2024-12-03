@@ -58,6 +58,15 @@
   })
 </script>
 
+<svelte:head>
+  <link
+    rel="prefetch"
+    type="image/webp"
+    href="{$page.data.serverURL}/thumb/{medium.id}.webp"
+    crossorigin="use-credentials"
+  />
+</svelte:head>
+
 <IntersectionObserver
   on:click={e => leftClick(e.detail)}
   once={true}
@@ -132,7 +141,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

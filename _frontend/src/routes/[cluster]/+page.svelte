@@ -9,7 +9,7 @@
 
   const onscroll = (e: Event) => {
     const target = e.target as HTMLDivElement
-    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 500) {
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 2500) {
       mediaController.loadMoreMedia()
     }
   }

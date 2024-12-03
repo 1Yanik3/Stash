@@ -180,7 +180,8 @@
         {#each mediaToPreload as { id }}
           <link
             rel="prefetch"
-            href="{pageData.serverURL}/api/media/{id}/thumbnail"
+            type="image/webp"
+            href="{pageData.serverURL}/thumb/{id}.webp"
             crossorigin="use-credentials"
           />
         {/each}
