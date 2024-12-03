@@ -48,6 +48,7 @@
     mediaController.pages = []
     tagsController.updateTags(data.to?.params?.cluster)
     mediaController.selectedTags = []
+    mediaController.prefetchedQueryForTagId = null
     mediaController.updateMedia(data.to?.params?.cluster, {
       ...mediaController.filters,
       specialFilterAttribute: null

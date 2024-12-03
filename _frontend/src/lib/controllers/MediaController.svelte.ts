@@ -62,8 +62,6 @@ class MediaController {
       "color: grey"
     )
 
-    this.setMedia([])
-
     if (filters) this._filtersOverrides = filters
 
     this.setMedia(await this.loadMedia(0, newCluster))
@@ -100,6 +98,10 @@ class MediaController {
     offset: number,
     cluster = get(page).params.cluster
   ) => {
+    // TODO: This is ridiculous, there must be a better way
+    if ([this.selectedTags, this.filters, this._filtersOverrides].length) {
+    }
+
     if (this.isCurrentlyLoadingNewMedia) return []
     this.isCurrentlyLoadingNewMedia = true
 
@@ -125,9 +127,6 @@ class MediaController {
         offset,
         ...(this._filtersOverrides || this.filters)
       })
-    } else {
-      if ((this.selectedTags, [this._filtersOverrides, this.filters])) {
-      }
     }
 
     const data = await dataPromise
