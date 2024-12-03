@@ -38,7 +38,6 @@ export let selectedMediaIds: Writable<String[]> = writable([])
 export let activeSetMethod = writable(setMethods[0])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 export let traverse = writable(false)
-export let viewMode: Writable<"normal" | "table"> = writable("normal")
 
 // Elements
 export let videoElement: Writable<HTMLVideoElement | null> = writable(null)

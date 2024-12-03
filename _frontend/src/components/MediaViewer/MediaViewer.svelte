@@ -11,7 +11,6 @@
   } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"
 
-  import type { PageData } from "../../routes/[cluster]/$types"
   import MediaViewerImage from "./MediaViewerImage.svelte"
   import MediaViewerVideo from "./MediaViewerVideo.svelte"
   import Toolbar from "./Toolbar.svelte"
@@ -19,20 +18,21 @@
   let mediaElement: HTMLElement
   let isZoomedIn = false
 
-  //   TODO: reimplment this
   let preloadedImageUrl = ""
-  //   const updatePreloadedImageUrl = async (_: typeof $visibleMedium) => {
-  //     const mediaIndex = mediaController.media.findIndex(
-  //       m => m.id == $visibleMedium?.id
-  //     )
+  const updatePreloadedImageUrl = async (
+    _: typeof mediaController.visibleMedium
+  ) => {
+    const mediaIndex = mediaController.media.findIndex(
+      m => m.id == mediaController.visibleMedium?.id
+    )
 
-  //     if (mediaIndex < mediaController.media.length - 1)
-  //       preloadedImageUrl = `${pageData.serverURL}/file/${
-  //         mediaController.media[mediaIndex + 1].id
-  //       }${$imageSuffixParameter}`
-  //     else preloadedImageUrl = ""
-  //   }
-  //   $: updatePreloadedImageUrl($visibleMedium)
+    if (mediaIndex < mediaController.media.length - 1)
+      preloadedImageUrl = `${$page.data.serverURL}/file/${
+        mediaController.media[mediaIndex + 1].id
+      }${$imageSuffixParameter}`
+    else preloadedImageUrl = ""
+  }
+  $: updatePreloadedImageUrl(mediaController.visibleMedium)
 
   let hideControls = false
   let hideTimeout: NodeJS.Timeout

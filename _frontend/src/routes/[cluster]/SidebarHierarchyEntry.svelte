@@ -9,6 +9,8 @@
   import { selectedMediaIds } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
 
+  import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
+
   let {
     tag,
     indent = 0,
@@ -34,7 +36,9 @@
 <main>
   <Button
     styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
-    count={tag.count + tag.indirectCount}
+    count={tag.count}
+    title="Total: {tag.count +
+      tag.indirectCount} (direct count: {tag.count}, indirect count: {tag.indirectCount})"
     icon={iconOverwrite ||
       tag.icon ||
       (tag.collapsed ? "mdiFolderHidden" : "mdiFolderOutline")}
@@ -98,8 +102,8 @@
 </main>
 
 {#if tag.children && !tag.collapsed}
-  {#each tag.children.sort((a, b) => a.tag.localeCompare(b.tag)) as c}
-    <svelte:self indent={indent + 1} tag={c} />
+  {#each tag.children as c}
+    <SidebarHierarchyEntry indent={indent + 1} tag={{ ...c }} />
   {/each}
 {/if}
 

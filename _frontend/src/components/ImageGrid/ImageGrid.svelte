@@ -4,14 +4,12 @@
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
-  import { viewMode } from "$lib/stores"
 
   import type { PageData } from "../../routes/[cluster]/$types"
   import ImageGridCollection from "./ImageGrid_Collection.svelte"
   import ImageGridPage from "./ImageGrid_Page.svelte"
   import ImageGridStories from "./ImageGrid_Stories.svelte"
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
-  import ImageGridTable from "./ImageGrid_Table.svelte"
 
   $: pageData = $page.data as PageData
 </script>
@@ -62,19 +60,15 @@
   {/if} -->
 
   <section>
-    {#if $viewMode == "table"}
-      <ImageGridTable media={mediaController.media} />
-    {:else}
-      {#each mediaController.pages as { hash, media }, i (hash)}
-        <div transition:fade>
-          {#if pageData.cluster.type == "withName"}
-            <ImageGridStudios {media} {i} />
-          {:else}
-            <ImageGridPage {media} {i} />
-          {/if}
-        </div>
-      {/each}
-    {/if}
+    {#each mediaController.pages as { hash, media }, i (hash)}
+      <div transition:fade>
+        {#if pageData.cluster.type == "withName"}
+          <ImageGridStudios {media} {i} />
+        {:else}
+          <ImageGridPage {media} {i} />
+        {/if}
+      </div>
+    {/each}
   </section>
 {/if}
 

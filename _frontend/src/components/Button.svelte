@@ -31,6 +31,7 @@
     styleOverride = "",
     download = null as null | true,
     transparentButton = false,
+    title = null as null | string,
     oncontextmenu = (() => {}) as (e: MouseEvent) => void,
     onclick = (() => {}) as (e: MouseEvent) => void,
     children = null
@@ -108,6 +109,7 @@
   class:isDraggingOver
   class:card
   class:disabled
+  {title}
 >
   <div class="section">
     {#if (icon || iconNoTyping) != null}

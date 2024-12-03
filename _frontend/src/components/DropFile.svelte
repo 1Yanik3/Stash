@@ -17,7 +17,7 @@
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
 
-  let tags: TagExtended[] = $state.link(mediaController.filters.selectedTags)
+  let tags: TagExtended[] = $state([])
   let tagInputElement: TagInputField | null = $state(null)
 
   onMount(() => {

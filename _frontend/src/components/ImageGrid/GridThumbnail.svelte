@@ -90,7 +90,7 @@
           src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
           alt={medium.name}
           class:active={!disableActive &&
-            mediaController.visibleMedium == medium}
+            mediaController.visibleMedium?.id == medium.id}
           crossorigin="use-credentials"
           class:disableZoom
         />

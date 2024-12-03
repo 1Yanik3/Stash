@@ -85,6 +85,10 @@
 
     if (mediaIndex < mediaController.media.length - 1)
       mediaController.visibleMedium = mediaController.media[mediaIndex + 1]
+    else
+      mediaController.loadMoreMedia().then(() => {
+        mediaController.visibleMedium = mediaController.media[mediaIndex + 1]
+      })
   }
 
   const popups = {

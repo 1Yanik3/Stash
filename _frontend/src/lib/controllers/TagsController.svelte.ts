@@ -90,11 +90,18 @@ export default class TagsController {
       }
     })
 
-    this.tags_hierarchy = result.sort((a, b) =>
+    const sortFunction = (a: TagExtended, b: TagExtended) =>
       get(page).params.cluster == "Camp Buddy"
         ? b.tag.localeCompare(a.tag)
         : b.count + b.indirectCount - (a.count + a.indirectCount)
-    )
+
+    const sortChildren = (tag: TagExtended) => {
+      tag.children = tag.children.sort(sortFunction)
+      tag.children.forEach(sortChildren)
+      return tag
+    }
+
+    this.tags_hierarchy = result.map(sortChildren).sort(sortFunction)
   }
 
   public toggleTag = (tag: TagBase, callback: (collapsed: boolean) => {}) => {
