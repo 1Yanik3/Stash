@@ -179,8 +179,8 @@
       {#await mediaController.prefetchedQueryForTagId[1] then mediaToPreload}
         {#each mediaToPreload as { id }}
           <link
-            rel="prefetch"
-            type="image/webp"
+            rel="preload"
+            as="image"
             href="{pageData.serverURL}/thumb/{id}.webp"
             crossorigin="use-credentials"
           />

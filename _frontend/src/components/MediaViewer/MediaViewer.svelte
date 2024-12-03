@@ -30,7 +30,10 @@
 
     const output = []
     for (let i = 1; i <= 3; i++) {
-      if (mediaIndex + i < mediaController.media.length) {
+      if (
+        mediaIndex + i < mediaController.media.length &&
+        mediaController.media[mediaIndex + i].type.startsWith("image")
+      ) {
         output.push(
           `${$page.data.serverURL}/file/${
             mediaController.media[mediaIndex + i].id
@@ -119,7 +122,7 @@
   </main>
 
   {#each preloadedImageUrls as href}
-    <link rel="prefetch" {href} crossorigin="use-credentials" />
+    <link rel="preload" as="image" {href} crossorigin="use-credentials" />
   {/each}
 {/if}
 

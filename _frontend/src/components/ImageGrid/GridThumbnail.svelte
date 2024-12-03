@@ -60,8 +60,8 @@
 
 <svelte:head>
   <link
-    rel="prefetch"
-    type="image/webp"
+    rel="preload"
+    as="image"
     href="{$page.data.serverURL}/thumb/{medium.id}.webp"
     crossorigin="use-credentials"
   />
