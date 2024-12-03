@@ -2,7 +2,10 @@
   import { onMount } from "svelte"
 
   import { page } from "$app/stores"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import {
+    mediaController,
+    type MediaType
+  } from "$lib/controllers/MediaController.svelte"
   import {
     controller,
     imageSuffixParameter,
@@ -15,26 +18,36 @@
   import MediaViewerVideo from "./MediaViewerVideo.svelte"
   import Toolbar from "./Toolbar.svelte"
 
-  let mediaElement: HTMLElement
+  let mediaElement: HTMLElement | null = $state(null)
   let isZoomedIn = false
 
-  let preloadedImageUrl = ""
-  const updatePreloadedImageUrl = async (
-    _: typeof mediaController.visibleMedium
-  ) => {
+  const getPreloadedImageUrls = (visibleMedium: MediaType | null) => {
+    if (!visibleMedium) return []
+
     const mediaIndex = mediaController.media.findIndex(
-      m => m.id == mediaController.visibleMedium?.id
+      m => m.id == visibleMedium?.id
     )
 
-    if (mediaIndex < mediaController.media.length - 1)
-      preloadedImageUrl = `${$page.data.serverURL}/file/${
-        mediaController.media[mediaIndex + 1].id
-      }${$imageSuffixParameter}`
-    else preloadedImageUrl = ""
-  }
-  $: updatePreloadedImageUrl(mediaController.visibleMedium)
+    const output = []
+    for (let i = 1; i <= 3; i++) {
+      if (mediaIndex + i < mediaController.media.length) {
+        output.push(
+          `${$page.data.serverURL}/file/${
+            mediaController.media[mediaIndex + i].id
+          }${$imageSuffixParameter}`
+        )
+      } else {
+        break
+      }
+    }
 
-  let hideControls = false
+    return output
+  }
+  let preloadedImageUrls = $derived(
+    getPreloadedImageUrls(mediaController.visibleMedium)
+  )
+
+  let hideControls = $state(false)
   let hideTimeout: NodeJS.Timeout
 
   const hideControlsAfterTimeout = () => {
@@ -83,8 +96,9 @@
       bind:this={mediaElement}
       class:darkened={$isFullscreen}
       class:isZoomedIn
-      on:pointerdown={e => {
+      onpointerdown={e => {
         if ($settings.imageTapAction == "navigate") {
+          // @ts-ignore
           const { width } = mediaElement.getBoundingClientRect()
 
           if (e.clientY > window.innerHeight - 200) return
@@ -104,13 +118,9 @@
     </div>
   </main>
 
-  {#if preloadedImageUrl}
-    <link
-      rel="prefetch"
-      href={preloadedImageUrl}
-      crossorigin="use-credentials"
-    />
-  {/if}
+  {#each preloadedImageUrls as href}
+    <link rel="prefetch" {href} crossorigin="use-credentials" />
+  {/each}
 {/if}
 
 <style lang="scss">

@@ -41,14 +41,15 @@
   //     mediaController.updateMedia(newClusterName)
   //   }
 
+  // TODO: This is horrible
   beforeNavigate(data => {
     thumbnailSuffixParameter.set(null)
     selectedMediaIds.set([])
     mediaController.pages = []
     tagsController.updateTags(data.to?.params?.cluster)
+    mediaController.selectedTags = []
     mediaController.updateMedia(data.to?.params?.cluster, {
       ...mediaController.filters,
-      selectedTags: [],
       specialFilterAttribute: null
     })
   })
@@ -170,3 +171,20 @@
     goto(`/${cluster.name}`)
   }}
 />
+
+<!-- TODO: Make toggle for less bandwith usage -->
+<svelte:head>
+  {#if mediaController.prefetchedQueryForTagId}
+    {#key mediaController.prefetchedQueryForTagId[0]}
+      {#await mediaController.prefetchedQueryForTagId[1] then mediaToPreload}
+        {#each mediaToPreload as { id }}
+          <link
+            rel="prefetch"
+            href="{pageData.serverURL}/api/media/{id}/thumbnail"
+            crossorigin="use-credentials"
+          />
+        {/each}
+      {/await}
+    {/key}
+  {/if}
+</svelte:head>

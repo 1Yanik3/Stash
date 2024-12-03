@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import { fade } from "svelte/transition"
 
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -25,7 +24,7 @@
   let filter = ""
 </script>
 
-<main transition:fade={{ duration: 150 }}>
+<main>
   <div class="search">
     <label>
       Search
@@ -38,7 +37,7 @@
       class="tag"
       onclick={() => {
         const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagid)
-        if (matchingTag) mediaController.filters.selectedTags = [matchingTag]
+        if (matchingTag) mediaController.selectedTags = [matchingTag]
       }}
     >
       <img

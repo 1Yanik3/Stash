@@ -22,7 +22,7 @@
 
   onMount(() => {
     uploadPopupOpen.subscribe(() => {
-      if (tags) tags = mediaController.filters.selectedTags
+      if (tags) tags = mediaController.selectedTags
       if (uploadProgress) uploadProgress = 0
       if (uploadPercentage) uploadPercentage = 0
       if (files) files = []

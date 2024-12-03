@@ -17,7 +17,7 @@
         method: "POST",
         body: JSON.stringify({
           filename,
-          selectedTags: mediaController.filters.selectedTags.map(t => t.id)
+          selectedTags: mediaController.selectedTags.map(t => t.id)
         })
       }
     )

@@ -52,8 +52,8 @@ const gatherAllTags = async () => {
       label: `#${parentPrefix}${tag.tag}${tag.children.length ? "/" : ""}`,
       action: tag.count,
       onEnter: (e: KeyboardEvent) => {
-        if (e.shiftKey) mediaController.filters.selectedTags.push(tag)
-        else mediaController.filters.selectedTags = [tag]
+        if (e.shiftKey) mediaController.selectedTags.push(tag)
+        else mediaController.selectedTags = [tag]
         get(controller).setPopup(null)
       }
     })
@@ -104,7 +104,7 @@ const gatherAllFilters = async () =>
       icon: "mdiBackspace",
       label: "@clear",
       onEnter: () => {
-        mediaController.filters.selectedTags = []
+        mediaController.selectedTags = []
         mediaController.filters.favouritesOnly = false
         mediaController.filters.activeSortingMethod = 0
         get(controller).setPopup(null)
@@ -114,7 +114,7 @@ const gatherAllFilters = async () =>
       icon: "mdiAllInclusive",
       label: "@all",
       onEnter: () => {
-        mediaController.filters.selectedTags = []
+        mediaController.selectedTags = []
       }
     },
     {

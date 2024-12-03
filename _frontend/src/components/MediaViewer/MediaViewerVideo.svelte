@@ -288,6 +288,8 @@
           }
         }
 
+        /* stylelint-disable-next-line no-descending-specificity */
+
         & > video {
           position: absolute;
           bottom: 40px;

@@ -1,5 +1,6 @@
 import type { Media } from "@prisma/client/wasm"
 import { md5 } from "hash-wasm"
+import { untrack } from "svelte"
 import { get } from "svelte/store"
 
 import { page } from "$app/stores"
@@ -40,13 +41,13 @@ class MediaController {
   public media: MediaType[] = $state([])
   public pages: { hash: string; media: Media[] }[] = $state([])
 
+  public selectedTags: TagExtended[] = $state([])
   public filters = $state({
     specialFilterAttribute: null as string | null,
     favouritesOnly: false,
     countOfTags: -1,
     activeSortingMethod: 3,
     seed: Math.random(),
-    selectedTags: [] as TagExtended[],
     minResolution: null as number | null,
     mediaType: "all" as "all" | "image" | "video"
   })
@@ -73,7 +74,28 @@ class MediaController {
     this.pages = await calculatePages(media)
   }
 
-  private isCurrentlyLoadingNewMedia = false
+  public prefetchedQueryForTagId:
+    | [number, ReturnType<typeof query<"media_query_from_database">>]
+    | null = $state(null)
+  public prefetchMediaForTag = async (tag: TagExtended) => {
+    if (
+      this.prefetchedQueryForTagId &&
+      this.prefetchedQueryForTagId[0] == tag.id
+    )
+      return
+    this.prefetchedQueryForTagId = [
+      tag.id,
+      query("media_query_from_database", {
+        cluster: get(page).params.cluster,
+        tags: [tag.id],
+        offset: 0,
+        ...(this._filtersOverrides || this.filters)
+      })
+    ]
+  }
+
+  public isCurrentlyLoadingNewMedia = false
+  // TODO: Make easier to read / more organised
   private loadMedia = async (
     offset: number,
     cluster = get(page).params.cluster
@@ -81,14 +103,34 @@ class MediaController {
     if (this.isCurrentlyLoadingNewMedia) return []
     this.isCurrentlyLoadingNewMedia = true
 
-    const data = await query("media_query_from_database", {
-      cluster,
-      tags: (this._filtersOverrides || this.filters).selectedTags.map(
-        t => t.id
-      ),
-      offset,
-      ...(this._filtersOverrides || this.filters)
+    let dataPromise: ReturnType<
+      typeof query<"media_query_from_database">
+    > | null = null
+
+    untrack(() => {
+      if (
+        this.prefetchedQueryForTagId &&
+        this.selectedTags.length == 1 &&
+        this.selectedTags[0].id == this.prefetchedQueryForTagId[0]
+      ) {
+        dataPromise = this.prefetchedQueryForTagId[1]
+        this.prefetchedQueryForTagId = null
+      }
     })
+
+    if (dataPromise === null) {
+      dataPromise = query("media_query_from_database", {
+        cluster,
+        tags: this.selectedTags.map(t => t.id),
+        offset,
+        ...(this._filtersOverrides || this.filters)
+      })
+    } else {
+      if ((this.selectedTags, [this._filtersOverrides, this.filters])) {
+      }
+    }
+
+    const data = await dataPromise
 
     $effect.root(() => {
       this._filtersOverrides = null

@@ -45,23 +45,22 @@
     onclick={e => {
       selectedMediaIds.set([])
       if (e.altKey) {
-        if (mediaController.filters.selectedTags.some(t => t.id == tag.id))
-          mediaController.filters.selectedTags =
-            mediaController.filters.selectedTags.filter(t => t.id != tag.id)
+        if (mediaController.selectedTags.some(t => t.id == tag.id))
+          mediaController.selectedTags = mediaController.selectedTags.filter(
+            t => t.id != tag.id
+          )
         else
-          mediaController.filters.selectedTags = [
-            ...mediaController.filters.selectedTags,
-            tag
-          ]
+          mediaController.selectedTags = [...mediaController.selectedTags, tag]
       } else {
-        mediaController.filters.selectedTags = [tag]
+        mediaController.selectedTags = [tag]
       }
     }}
     oncontextmenu={e => {
       e.preventDefault()
       showDropdown = !showDropdown
     }}
-    active={mediaController.filters.selectedTags.some(t => t.id == tag.id)}
+    onmouseenter={() => mediaController.prefetchMediaForTag(tag)}
+    active={mediaController.selectedTags.some(t => t.id == tag.id)}
   >
     {nameOverwrite || tag.tag}
   </Button>

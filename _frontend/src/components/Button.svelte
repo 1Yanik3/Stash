@@ -34,6 +34,7 @@
     title = null as null | string,
     oncontextmenu = (() => {}) as (e: MouseEvent) => void,
     onclick = (() => {}) as (e: MouseEvent) => void,
+    onmouseenter = (() => {}) as (e: MouseEvent) => void,
     children = null
   } = $props()
 
@@ -106,6 +107,7 @@
   class:transparentButton
   {oncontextmenu}
   {onclick}
+  {onmouseenter}
   class:isDraggingOver
   class:card
   class:disabled

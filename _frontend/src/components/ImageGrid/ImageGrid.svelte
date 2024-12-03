@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { fade } from "svelte/transition"
-
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { tagsController } from "$lib/controllers/TagsController.svelte"
@@ -14,7 +12,7 @@
   $: pageData = $page.data as PageData
 </script>
 
-{#if pageData.cluster.type == "collection" && !mediaController.filters.selectedTags.length}
+{#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}
   <ImageGridCollection />
 {:else if pageData.cluster.type == "stories"}
   <ImageGridStories />
@@ -22,16 +20,16 @@
   <!-- TODO -->
   <!-- {#if pageData.cluster.type == "collection"}
     <div id="collectionGroups">
-      {#if mediaController.filters.selectedTags.length == 1 && mediaController.filters.selectedTags[0].includes("/")}
+      {#if mediaController.selectedTags.length == 1 && mediaController.selectedTags[0].includes("/")}
         <Button
           card
           icon="mdiFolderArrowUpOutline"
           onclick={() =>
             selectedTags.set([
-              mediaController.filters.selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
+              mediaController.selectedTags[0].replace(/\/[^\/]+$/, "").toLowerCase()
             ])}
         >
-          {mediaController.filters.selectedTags[0].replace(/\/.+$/, "")}
+          {mediaController.selectedTags[0].replace(/\/.+$/, "")}
         </Button>
       {/if}
 
@@ -40,10 +38,10 @@
           .filter(t => t.tag
               .join("/")
               .toLowerCase()
-              .startsWith(mediaController.filters.selectedTags[0].toString()))
+              .startsWith(mediaController.selectedTags[0].toString()))
           .filter(t => t.tag
                 .join("/")
-                .toLowerCase() != mediaController.filters.selectedTags[0].toString())
+                .toLowerCase() != mediaController.selectedTags[0].toString())
           .sort((a, b) => a.tag
               .join("/")
               .localeCompare(b.tag.join("/"))) as { tag }}
@@ -61,7 +59,7 @@
 
   <section>
     {#each mediaController.pages as { hash, media }, i (hash)}
-      <div transition:fade>
+      <div>
         {#if pageData.cluster.type == "withName"}
           <ImageGridStudios {media} {i} />
         {:else}
