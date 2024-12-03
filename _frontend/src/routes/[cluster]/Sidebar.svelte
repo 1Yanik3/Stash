@@ -12,8 +12,6 @@
   import SidebatTagsSection from "./SidebarTagsSection.svelte"
 
   $: pageData = $page.data as PageData
-
-  export let filterBarVisible = false
 </script>
 
 {#if $page.data.cluster.type != "stories"}
@@ -41,17 +39,6 @@
         active={$page.url.pathname.startsWith("/settings")}
         noMargin
         styleOverride="margin-left: 1rem"
-      />
-      <Button
-        icon="mdiFilter"
-        onclick={() => {
-          filterBarVisible = !filterBarVisible
-        }}
-        oncontextmenu={e => {
-          e.preventDefault()
-          mediaController.filters.selectedTags = []
-        }}
-        noMargin
       />
     </div>
 

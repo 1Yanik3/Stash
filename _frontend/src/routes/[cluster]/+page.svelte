@@ -5,7 +5,6 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { actionBar, actionBars, isFullscreen, settings } from "$lib/stores"
 
-  import FilterBar from "./FilterBar.svelte"
   import Sidebar from "./Sidebar.svelte"
 
   const onscroll = (e: Event) => {
@@ -14,20 +13,15 @@
       mediaController.loadMoreMedia()
     }
   }
-
-  let filterBarVisible = false
 </script>
 
 <main class:mobile={$settings.mobileLayout}>
   {#if !$isFullscreen && !$settings.mobileLayout}
-    <Sidebar bind:filterBarVisible />
+    <Sidebar />
   {/if}
 
   {#if !$isFullscreen}
     <div class="center">
-      {#if filterBarVisible}
-        <FilterBar />
-      {/if}
       <section id="imageGallerySection" on:scroll={onscroll}>
         <DropFile>
           <ImageGrid />

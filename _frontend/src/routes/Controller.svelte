@@ -22,6 +22,7 @@
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
+  import { browser } from "$app/environment"
 
   let pageData = $page.data as PageData
 
@@ -29,6 +30,10 @@
     mediaController.init()
     tagsController.init()
     console.log("%cControllers mounted", "color: grey")
+    if (browser) {
+        // @ts-ignore
+        window.mediaController = mediaController
+    }
   })
 
   //   const reset = (newClusterName: string | undefined) => {

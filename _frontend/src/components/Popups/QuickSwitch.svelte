@@ -175,6 +175,62 @@
             }
           }))
         }
+      },
+      // TODO: Make dynamic
+      ...($page.data.cluster.id == 2 || $page.data.cluster.id == 6
+        ? [
+            {
+              icon: "mdiAccountMultiple",
+              label: "@subjects",
+              action: mediaController.filters.specialFilterAttribute || "",
+              onTab: () => {
+                submenuOverwrite = [
+                  { value: null, name: "All", icon: "mdiAllInclusive" },
+                  { value: "solo", name: "Solo", icon: "mdiAccount" },
+                  { value: "two", name: "Two", icon: "mdiAccountMultiple" },
+                  { value: "three", name: "Three", icon: "mdiAccountGroup" },
+                  {
+                    value: "group",
+                    name: "Group",
+                    icon: "mdiAccountMultiplePlus"
+                  },
+                  {
+                    value: "show_unknown",
+                    name: "Unknown",
+                    icon: "mdiAccountQuestion"
+                  }
+                ].map(({ value, name, icon }) => ({
+                  label: `@subjects/${name}`,
+                  icon: icon as keyof typeof possibleIcons,
+                  onEnter: () => {
+                    mediaController.filters.specialFilterAttribute = value
+                    refreshFilters()
+                  }
+                }))
+              }
+            } satisfies (typeof resultRowValues)[number]
+          ]
+        : []),
+      {
+        icon: "mdiPound",
+        label: "@numberOfTags",
+        action: mediaController.filters.countOfTags || "",
+        onTab: () => {
+          submenuOverwrite = [
+            { value: -1, name: "All", icon: "mdiAllInclusive" },
+            { value: 0, name: "0", icon: "mdiNumeric0" },
+            { value: 1, name: "1", icon: "mdiNumeric1" },
+            { value: 2, name: "2", icon: "mdiNumeric2" },
+            { value: 3, name: "3", icon: "mdiNumeric3" }
+          ].map(({ value, name, icon }) => ({
+            label: `@numberOfTags/${name}`,
+            icon: icon as keyof typeof possibleIcons,
+            onEnter: () => {
+              mediaController.filters.countOfTags = value
+              refreshFilters()
+            }
+          }))
+        }
       }
     ] satisfies typeof resultRowValues
 
@@ -226,23 +282,21 @@
       bind:value
       autocomplete="off"
       onkeydown={(e: KeyboardEvent) => {
+        const selected = (
+          submenuOverwrite.length ? submenuOverwrite : resultRowValues
+        )[selectedIndex]
         if (e.key == "ArrowUp") {
           if (selectedIndex > 0) selectedIndex--
         } else if (e.key == "ArrowDown") {
           if (selectedIndex <= resultRowValues.length) selectedIndex++
         } else if (e.key == "Enter") {
-          ;(
-            resultRowValues[selectedIndex].onEnter ||
-            resultRowValues[selectedIndex].onTab
-          )?.(e)
+          ;(selected.onEnter || selected.onTab)?.(e)
         } else if (e.key == "Tab") {
           e.preventDefault()
-          resultRowValues[selectedIndex].onTab?.(e)
-        } else if (e.key == "Backspace") {
-          if (submenuOverwrite.length) {
-            submenuOverwrite = []
-            e.preventDefault()
-          }
+          selected.onTab?.(e)
+        } else if (e.key == "Backspace" && submenuOverwrite.length) {
+          submenuOverwrite = []
+          e.preventDefault()
         } else {
           selectedIndex = 0
         }
