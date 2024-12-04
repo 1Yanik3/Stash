@@ -106,8 +106,12 @@
       distanceMovedPercentage * SECONDS_TO_SEEK_PER_PERCENT
   }
 
-  const ontouchend = () => {
+  const ontouchend = (e: TouchEvent) => {
     if ($settings.mediaTouchAction !== "seek") return
+    const distanceMoved = e.changedTouches[0].clientX - startedTouchingAtX
+    if (Math.abs(distanceMoved) < 3) {
+      paused = !paused
+    }
     hideControls = true
   }
 </script>
@@ -310,6 +314,7 @@
         }
 
         &:not(:hover) {
+
           & > video {
             display: none;
           }
