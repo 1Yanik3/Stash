@@ -100,7 +100,7 @@
       class:darkened={$isFullscreen}
       class:isZoomedIn
       onpointerdown={e => {
-        if ($settings.imageTapAction == "navigate") {
+        if ($settings.mediaTouchAction == "navigate") {
           // @ts-ignore
           const { width } = mediaElement.getBoundingClientRect()
 

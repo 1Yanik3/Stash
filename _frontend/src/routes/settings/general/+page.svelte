@@ -11,9 +11,9 @@
       <span>Tooltip Enabled</span>
       <Toggle
         state={$settings.tooltipEnabled}
-        on:toggle={e =>
+        toggle={detail =>
           settings.update(s => {
-            s.tooltipEnabled = e.detail
+            s.tooltipEnabled = detail
             return s
           })}
       />
@@ -24,9 +24,10 @@
       <Select
         options={[
           { value: "navigate", name: "Navigate" },
-          { value: "zoom", name: "Zoom" }
+          { value: "zoom", name: "Zoom" },
+          { value: "seek", name: "Seek" }
         ]}
-        bind:value={$settings.imageTapAction}
+        bind:value={$settings.mediaTouchAction}
       />
     </div>
 

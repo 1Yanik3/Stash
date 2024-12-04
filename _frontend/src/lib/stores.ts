@@ -43,7 +43,7 @@ export let traverse = writable(false)
 export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
-  imageTapAction: "zoom" as "zoom" | "navigate",
+  mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
   mobileLayout: false,
   tooltipEnabled: true,
   theme: "default" as "default" | "light" | "amoled"

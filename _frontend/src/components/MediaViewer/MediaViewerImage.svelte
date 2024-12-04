@@ -9,7 +9,7 @@
   let zoomMode: "none" | "original" | "fit" = "none"
 
   const toggleZoom = (e: MouseEvent) => {
-    if ($settings.imageTapAction != "zoom") return
+    if ($settings.mediaTouchAction != "zoom") return
 
     if (zoomMode == "none" && e.button == 0) {
       const targetCords = {
@@ -73,12 +73,12 @@
   }
 
   const calculateCursor = (e: MouseEvent) => {
-    if ($settings.imageTapAction == "zoom") {
+    if ($settings.mediaTouchAction == "zoom") {
       cursor = zoomMode == "none" ? "zoom-in" : "zoom-out"
       return
     }
 
-    if ($settings.imageTapAction == "navigate") {
+    if ($settings.mediaTouchAction == "navigate") {
       const { width } = mainElement.getBoundingClientRect()
 
       if (e.clientY > window.innerHeight - 100) cursor = "default"

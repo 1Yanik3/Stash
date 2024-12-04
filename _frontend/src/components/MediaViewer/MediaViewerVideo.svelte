@@ -79,18 +79,43 @@
     }
   }
 
-  export let hideControls
+  export let hideControls = false
 
   //   TODO: reimplment this
   //   visibleMedium.subscribe(() => {
   //     disableSeeking = false
   //   });
+
+  const SECONDS_TO_SEEK_PER_PERCENT = 10
+  let startedTouchingAtTime = 0
+  let startedTouchingAtX = 0
+
+  const ontouchstart = (e: TouchEvent) => {
+    if ($settings.mediaTouchAction !== "seek") return
+    hideControls = false
+    startedTouchingAtTime = video.currentTime
+    startedTouchingAtX = e.touches[0].clientX
+  }
+
+  const ontouchmove = (e: TouchEvent) => {
+    if ($settings.mediaTouchAction !== "seek") return
+    const distanceMoved = e.touches[0].clientX - startedTouchingAtX
+    const distanceMovedPercentage = (distanceMoved / videoElementWidth) * 100
+    video.currentTime =
+      startedTouchingAtTime +
+      distanceMovedPercentage * SECONDS_TO_SEEK_PER_PERCENT
+  }
+
+  const ontouchend = () => {
+    if ($settings.mediaTouchAction !== "seek") return
+    hideControls = true
+  }
 </script>
 
 <main class:hide-controls={hideControls}>
   <video
     onclick={() => {
-      paused = !paused
+      if ($settings.mediaTouchAction !== "seek") paused = !paused
     }}
     src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
     autoplay
@@ -99,6 +124,9 @@
     bind:currentTime
     bind:duration
     bind:volume
+    {ontouchstart}
+    {ontouchmove}
+    {ontouchend}
     onplaying={() => {
       if (video.duration <= 5) video.loop = true
     }}
@@ -282,7 +310,6 @@
         }
 
         &:not(:hover) {
-
           & > video {
             display: none;
           }
