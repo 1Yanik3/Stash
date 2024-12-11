@@ -14,7 +14,7 @@ COPY src ./src
 RUN pnpm run build && pnpm prune --prod
 
 # Stage 2: Final stage with optimized production image
-FROM node:alpine
+FROM node:20-alpine3.20
 
 WORKDIR /app
 COPY --from=builder /app ./
