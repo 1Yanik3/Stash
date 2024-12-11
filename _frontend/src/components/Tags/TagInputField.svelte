@@ -2,7 +2,7 @@
   import FuzzySearch from "fuzzy-search"
 
   import {
-    tagsController,
+    default as tagsController,
     type TagExtended
   } from "$lib/controllers/TagsController.svelte"
   import { settings } from "$lib/stores"
@@ -46,7 +46,7 @@
 
   //   TODO: this should be all and not just some of the tags (aka: should ignore filters)
   let searcher = $derived(
-    new FuzzySearch(tagsController.tags_flat, ["tag"], {
+    new FuzzySearch(Object.values(tagsController.tagMap), ["tag"], {
       caseSensitive: false,
       sort: true
     })

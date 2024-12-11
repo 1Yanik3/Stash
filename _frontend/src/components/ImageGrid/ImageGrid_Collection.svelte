@@ -3,7 +3,7 @@
 
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
 
@@ -35,8 +35,8 @@
   {#each data.filter(d => d.tag.includes(filter.toLowerCase())) as d}
     <span
       class="tag"
-      onclick={() => {
-        const matchingTag = tagsController.tags_flat.find(t => t.id == d.tagid)
+      onclick={async () => {
+        const matchingTag = tagsController.tagMap[d.tagid]
         if (matchingTag) mediaController.selectedTags = [matchingTag]
       }}
     >
@@ -100,7 +100,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         transform: scale(1.03);
         filter: brightness(0.85);

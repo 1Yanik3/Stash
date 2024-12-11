@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { onMount } from "svelte"
-
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import Select from "$components/Select.svelte"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings, windowControlsSpacerVisible } from "$lib/stores"
 
   import type { PageData } from "./$types"

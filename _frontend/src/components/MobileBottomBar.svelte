@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
   import { controller } from "$lib/stores"
 
   import type { PageData } from "../routes/[cluster]/$types"
@@ -14,7 +14,7 @@
 
 {#if tagsSidebarVisible}
   <div class="sidebar">
-    {#each tagsController.tags_hierarchy as tag}
+    {#each tagsController.tagsHierarchy as tag}
       <SidebarHierarchyEntry {tag} />
     {/each}
   </div>

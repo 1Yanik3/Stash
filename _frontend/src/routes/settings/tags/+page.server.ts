@@ -16,6 +16,12 @@ export const load = (async () => {
             id: true,
             tag: true
           }
+        },
+        clusters: {
+          select: {
+            id: true,
+            name: true
+          }
         }
       },
       orderBy: {

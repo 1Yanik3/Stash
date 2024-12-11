@@ -4,7 +4,7 @@ import { goto } from "$app/navigation"
 import { page } from "$app/stores"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import {
-  tagsController,
+  default as tagsController,
   type TagExtended
 } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
@@ -62,7 +62,7 @@ const gatherAllTags = async () => {
     )
   }
 
-  tagsController.tags_hierarchy.forEach(tag => addTagAndChildrenToArray(tag))
+  tagsController.tagsHierarchy.forEach(tag => addTagAndChildrenToArray(tag))
 
   return tags
 }

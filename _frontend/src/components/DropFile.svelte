@@ -4,8 +4,6 @@
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
-    tagsController,
-    type TagBase,
     type TagExtended
   } from "$lib/controllers/TagsController.svelte"
   import { uploadPopupOpen } from "$lib/stores"

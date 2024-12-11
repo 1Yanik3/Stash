@@ -6,9 +6,8 @@ import { get } from "svelte/store"
 import { page } from "$app/stores"
 import query from "$lib/client/call"
 import {
-  activeSetMethod,
   mediaTypeFilter,
-  pageSize,
+  PAGE_SIZE,
   traverse
 } from "$lib/stores"
 
@@ -31,7 +30,6 @@ class MediaController {
     })
 
     traverse.subscribe(() => this.updateMedia)
-    activeSetMethod.subscribe(() => this.updateMedia)
     mediaTypeFilter.subscribe(() => this.updateMedia)
 
     this.alreadyInitialized = true
@@ -75,17 +73,17 @@ class MediaController {
   public prefetchedQueryForTagId:
     | [number, ReturnType<typeof query<"media_query_from_database">>]
     | null = $state(null)
-  public prefetchMediaForTag = async (tag: TagExtended) => {
+  public prefetchMediaForTag = async (tagId: number) => {
     if (
       this.prefetchedQueryForTagId &&
-      this.prefetchedQueryForTagId[0] == tag.id
+      this.prefetchedQueryForTagId[0] == tagId
     )
       return
     this.prefetchedQueryForTagId = [
-      tag.id,
+      tagId,
       query("media_query_from_database", {
         cluster: get(page).params.cluster,
-        tags: [tag.id],
+        tags: [tagId],
         offset: 0,
         ...(this._filtersOverrides || this.filters)
       })
@@ -168,10 +166,10 @@ const calculatePages = async (media: Media[]) => {
   for (
     let i = 0;
     i <
-    Math.max(Math.ceil(media.length / pageSize), _mediaController.pages.length);
+    Math.max(Math.ceil(media.length / PAGE_SIZE), _mediaController.pages.length);
     i++
   ) {
-    const page = media.slice(i * pageSize, (i + 1) * pageSize)
+    const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
     if (!page.length) break
 
     const hash = await md5(page.map(m => m.id).join())

@@ -1,7 +1,7 @@
 import type { Media } from "@prisma/client"
 
 import prisma from "$lib/server/prisma"
-import { pageSize } from "$lib/stores"
+import { PAGE_SIZE } from "$lib/stores"
 
 import { sortingMethods } from "../../../types"
 
@@ -36,7 +36,7 @@ export const media_query_from_database = async (d: {
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
         ${await assembleOrderBy(d)}
-        LIMIT ${pageSize}
+        LIMIT ${PAGE_SIZE}
         OFFSET ${d.offset}
     `)) as (Media & { tags: string })[]
 }

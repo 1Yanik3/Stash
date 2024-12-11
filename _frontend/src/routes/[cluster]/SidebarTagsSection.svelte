@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { page } from "$app/stores"
   import SidebarSection from "$components/SidebarSection.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
   import { settings } from "$lib/stores"
 
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
@@ -8,8 +9,10 @@
 
 <main class:mobile={$settings.mobileLayout}>
   <SidebarSection>
-    {#each tagsController.tags_hierarchy as tag}
-      <SidebarHierarchyEntry {tag} />
+    {#each Object.values(tagsController.tagMap)
+      .filter(t => !t.parentId)
+      .sort( (a, b) => ($page.params.cluster == "Camp Buddy" ? b.tag.localeCompare(a.tag) : b.count + b.indirectCount - (a.count + a.indirectCount)) ) as tag}
+      <SidebarHierarchyEntry tagId={tag.id} />
     {/each}
   </SidebarSection>
 </main>

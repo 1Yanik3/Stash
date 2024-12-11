@@ -11,20 +11,23 @@
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
   import {
     actionBar,
     actionBars,
-    selectedMediaIds,
     settings,
-    thumbnailSuffixParameter,
     windowControlsSpacerVisible
   } from "$lib/stores"
+  import vars from "$lib/vars.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
 
   let pageData = $page.data as PageData
+
+  $effect(() => {
+    vars.clusterName = $page.params.cluster
+  })
 
   onMount(() => {
     mediaController.init()
@@ -43,16 +46,18 @@
 
   // TODO: This is horrible
   beforeNavigate(data => {
-    thumbnailSuffixParameter.set(null)
-    selectedMediaIds.set([])
-    mediaController.pages = []
-    tagsController.updateTags(data.to?.params?.cluster)
-    mediaController.selectedTags = []
-    mediaController.prefetchedQueryForTagId = null
-    mediaController.updateMedia(data.to?.params?.cluster, {
-      ...mediaController.filters,
-      specialFilterAttribute: null
-    })
+    // vars.clusterName = data.to?.params?.clusterName || pageData.cluster.name
+    // console.log(vars, data.to?.params?.clusterName, pageData.cluster.name)
+    // thumbnailSuffixParameter.set(null)
+    // selectedMediaIds.set([])
+    // mediaController.pages = []
+    // tagsController.updateTags(data.to?.params?.cluster)
+    // mediaController.selectedTags = []
+    // mediaController.prefetchedQueryForTagId = null
+    // mediaController.updateMedia(data.to?.params?.cluster, {
+    //   ...mediaController.filters,
+    //   specialFilterAttribute: null
+    // })
   })
   //   afterNavigate(data => reset())
 

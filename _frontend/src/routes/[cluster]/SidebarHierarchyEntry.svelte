@@ -1,10 +1,8 @@
 <script lang="ts">
+  import { page } from "$app/stores"
   import Button from "$components/Button.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import {
-    tagsController,
-    type TagExtended
-  } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"
   import { selectedMediaIds } from "$lib/stores"
   import Dropdown from "$reusables/Dropdown.svelte"
@@ -12,12 +10,12 @@
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 
   let {
-    tag,
+    tagId,
     indent = 0,
     nameOverwrite = "",
     iconOverwrite = null
   }: {
-    tag: TagExtended
+    tagId: number
     indent?: number
     nameOverwrite?: string
     iconOverwrite?: keyof typeof possibleIcons | null
@@ -36,33 +34,46 @@
 <main>
   <Button
     styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
-    count={tag.count}
-    title="Total: {tag.count +
-      tag.indirectCount} (direct count: {tag.count}, indirect count: {tag.indirectCount})"
+    count={tagsController.tagMap[tagId].count}
+    title="Total: {tagsController.tagMap[tagId].count +
+      tagsController.tagMap[tagId].indirectCount} (direct count: {tagsController
+      .tagMap[tagId].count}, indirect count: {tagsController.tagMap[tagId]
+      .indirectCount})"
     icon={iconOverwrite ||
-      tag.icon ||
-      (tag.collapsed ? "mdiFolderHidden" : "mdiFolderOutline")}
+      tagsController.tagMap[tagId].icon ||
+      (tagsController.tagMap[tagId].collapsed
+        ? "mdiFolderHidden"
+        : "mdiFolderOutline")}
     onclick={e => {
       selectedMediaIds.set([])
       if (e.altKey) {
-        if (mediaController.selectedTags.some(t => t.id == tag.id))
+        if (
+          mediaController.selectedTags.some(
+            t => t.id == tagsController.tagMap[tagId].id
+          )
+        )
           mediaController.selectedTags = mediaController.selectedTags.filter(
-            t => t.id != tag.id
+            t => t.id != tagsController.tagMap[tagId].id
           )
         else
-          mediaController.selectedTags = [...mediaController.selectedTags, tag]
+          mediaController.selectedTags = [
+            ...mediaController.selectedTags,
+            tagsController.tagMap[tagId]
+          ]
       } else {
-        mediaController.selectedTags = [tag]
+        mediaController.selectedTags = [tagsController.tagMap[tagId]]
       }
     }}
     oncontextmenu={e => {
       e.preventDefault()
       showDropdown = !showDropdown
     }}
-    onmouseenter={() => mediaController.prefetchMediaForTag(tag)}
-    active={mediaController.selectedTags.some(t => t.id == tag.id)}
+    onmouseenter={() => mediaController.prefetchMediaForTag(tagId)}
+    active={mediaController.selectedTags.some(
+      t => t.id == tagsController.tagMap[tagId].id
+    )}
   >
-    {nameOverwrite || tag.tag}
+    {nameOverwrite || tagsController.tagMap[tagId].tag}
   </Button>
 
   <Dropdown
@@ -75,21 +86,27 @@
     <Button
       onclick={() => {
         tagsController.toggleTag(
-          tag,
-          collapsed => (tag = { ...tag, collapsed })
+          tagsController.tagMap[tagId],
+          collapsed => (
+            tagsController.tagMap[tagId],
+            (tagsController.tagMap[tagId] = {
+              ...tagsController.tagMap[tagId],
+              collapsed
+            })
+          )
         )
         showDropdown = false
       }}
       noMargin
-      icon={tag.collapsed
+      icon={tagsController.tagMap[tagId].collapsed
         ? "mdiArrowExpandVertical"
         : "mdiArrowCollapseVertical"}
     >
-      {tag.collapsed ? "Uncollapse" : "Collapse"}
+      {tagsController.tagMap[tagId].collapsed ? "Uncollapse" : "Collapse"}
     </Button>
     <Button
       onclick={() => {
-        tagsController.createTag(tag)
+        tagsController.createTag(tagsController.tagMap[tagId])
         showDropdown = false
       }}
       noMargin
@@ -100,9 +117,11 @@
   </Dropdown>
 </main>
 
-{#if tag.children && !tag.collapsed}
-  {#each tag.children as c}
-    <SidebarHierarchyEntry indent={indent + 1} tag={{ ...c }} />
+{#if tagsController.tagMap[tagId].children && !tagsController.tagMap[tagId].collapsed}
+  {#each tagsController.tagMap[tagId].children
+    .map(t => t.id)
+    .sort( (a, b) => ($page.params.cluster == "Camp Buddy" ? tagsController.tagMap[b].tag.localeCompare(tagsController.tagMap[a].tag) : tagsController.tagMap[b].count + tagsController.tagMap[b].indirectCount - (tagsController.tagMap[a].count + tagsController.tagMap[a].indirectCount)) ) as c}
+    <SidebarHierarchyEntry indent={indent + 1} tagId={c} />
   {/each}
 {/if}
 

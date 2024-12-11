@@ -3,13 +3,10 @@ import { writable, type Writable } from "svelte/store"
 
 import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
 
-import { setMethods, sortingMethods } from "../types"
-
-// Core Parts
 export let controller: Writable<Controller> = writable()
 
 // Constants
-export const pageSize = 50
+export const PAGE_SIZE = 50
 
 // Page Data
 export let collapsedTags: Writable<string[]> = writable([])
@@ -35,7 +32,6 @@ export let imageSuffixParameter: Writable<String> = writable("")
 export let selectedMediaIds: Writable<String[]> = writable([])
 
 // Media Filters
-export let activeSetMethod = writable(setMethods[0])
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
 export let traverse = writable(false)
 

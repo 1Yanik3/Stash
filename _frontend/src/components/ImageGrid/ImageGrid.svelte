@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
   import ImageGridCollection from "./ImageGrid_Collection.svelte"

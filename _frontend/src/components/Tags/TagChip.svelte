@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "$components/Icon.svelte"
-  import { tagsController } from "$lib/controllers/TagsController.svelte"
+  import tagsController from "$lib/controllers/TagsController.svelte"
 
   let {
     tag,
@@ -16,7 +16,7 @@
     oncontextmenu?: (e: MouseEvent) => void
   } = $props()
 
-  let _tag = $derived(tagsController.tags_flat.find(t => t.id == tag))
+  let _tag = $derived(tagsController.tagMap[tag])
 </script>
 
 {#key _tag}

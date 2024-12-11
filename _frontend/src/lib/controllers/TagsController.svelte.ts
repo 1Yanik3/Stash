@@ -3,7 +3,8 @@ import { get } from "svelte/store"
 import { page } from "$app/stores"
 import query from "$lib/client/call"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { activeSetMethod, mediaTypeFilter, traverse } from "$lib/stores"
+import { mediaTypeFilter } from "$lib/stores"
+import vars from "$lib/vars.svelte"
 
 import { mediaController } from "./MediaController.svelte"
 import { prompts } from "./PromptController"
@@ -22,8 +23,11 @@ export type TagExtended = TagBase & {
   indirectCount: number
 }
 
-export default class TagsController {
+export class TagsController {
   private alreadyInitialized = false
+
+  public tagMap: Record<number, TagExtended> = $state({})
+
   public init = () => {
     if (this.alreadyInitialized) {
       console.log("TagsController already initialized!")
@@ -31,78 +35,73 @@ export default class TagsController {
     }
 
     this.alreadyInitialized = true
-    this.updateTags()
-  }
+    // this.updateTags()
 
-  public tags_flat: TagExtended[] = $state([])
-  public tags_hierarchy: TagExtended[] = $state([])
-
-  public updateTags = async (
-    newClusterName: string = get(page).params.cluster
-  ) => {
-    this.updateHierarchicalTags(
-      await query("tags_query_from_database", {
-        cluster: newClusterName,
-        favouritesOnly: mediaController.filters.favouritesOnly,
-        mediaTypeFilter: get(mediaTypeFilter)
-      })
-    )
-  }
-
-  private updateHierarchicalTags = async (data: TagBase[]) => {
-    const tagMap: { [key: string]: TagExtended } = {}
-
-    // Step 1: Create a map of all tags
-    data.forEach(tag => {
-      tagMap[tag.id] = {
-        ...tag,
-        children: [],
-        indirectCount: 0
-      }
-    })
-
-    this.tags_flat = Object.values(tagMap)
-
-    // Step 2: Build the hierarchy
-    const result: TagExtended[] = []
-    data.forEach(tag => {
-      if (tag.parentId === null) {
-        result.push(tagMap[tag.id])
-      } else {
-        if (!tagMap[tag.parentId]) {
-          console.error("Tag with ID", tag.id, "does not exist")
-          return
+    $effect(() => {
+      const clusterName = vars.clusterName
+      console.log("updating with ", vars.clusterName)
+      ;(async () => {
+        if (!clusterName) {
+          return {}
         }
-        tagMap[tag.parentId].children.push(tagMap[tag.id])
-      }
+
+        const data: TagBase[] = await query("tags_query_from_database", {
+          cluster: clusterName,
+          favouritesOnly: mediaController.filters.favouritesOnly,
+          mediaTypeFilter: get(mediaTypeFilter)
+        })
+
+        const tmpTagMap: Awaited<typeof this.tagMap> = {}
+
+        // Step 1: Create a map of all tags
+        data.forEach(tag => {
+          tmpTagMap[tag.id] = {
+            ...tag,
+            children: [],
+            indirectCount: 0
+          }
+        })
+
+        // Step 2: Build the hierarchy
+        data.forEach(tag => {
+          if (tag.parentId != null) {
+            if (!tmpTagMap[tag.parentId]) {
+              console.error("Tag with ID", tag.id, "does not exist")
+              return
+            }
+            tmpTagMap[tag.parentId].children.push(tmpTagMap[tag.id])
+          }
+        })
+
+        // Step 3: Calculate indirect counts
+        const calculateIndirectCounts = (tag: TagExtended) => {
+          tag.children.forEach(child => {
+            calculateIndirectCounts(child)
+            tag.indirectCount += child.count + child.indirectCount
+          })
+        }
+        data.forEach(tag => {
+          if (tag.parentId === null) {
+            calculateIndirectCounts(tmpTagMap[tag.id])
+          }
+        })
+
+        this.tagMap = tmpTagMap
+      })()
     })
-
-    // Step 3: Calculate indirect counts
-    const calculateIndirectCounts = (tag: TagExtended) => {
-      tag.children.forEach(child => {
-        calculateIndirectCounts(child)
-        tag.indirectCount += child.count + child.indirectCount
-      })
-    }
-    data.forEach(tag => {
-      if (tag.parentId === null) {
-        calculateIndirectCounts(tagMap[tag.id])
-      }
-    })
-
-    const sortFunction = (a: TagExtended, b: TagExtended) =>
-      get(page).params.cluster == "Camp Buddy"
-        ? b.tag.localeCompare(a.tag)
-        : b.count + b.indirectCount - (a.count + a.indirectCount)
-
-    const sortChildren = (tag: TagExtended) => {
-      tag.children = tag.children.sort(sortFunction)
-      tag.children.forEach(sortChildren)
-      return tag
-    }
-
-    this.tags_hierarchy = result.map(sortChildren).sort(sortFunction)
   }
+
+  //   public updateTags = async (
+  //     newClusterName: string = get(page).params.cluster
+  //   ) => {
+  //     this.updateHierarchicalTags(
+  //       await query("tags_query_from_database", {
+  //         cluster: newClusterName,
+  //         favouritesOnly: mediaController.filters.favouritesOnly,
+  //         mediaTypeFilter: get(mediaTypeFilter)
+  //       })
+  //     )
+  //   }
 
   public toggleTag = (tag: TagBase, callback: (collapsed: boolean) => {}) => {
     callback(!tag.collapsed)
@@ -136,8 +135,10 @@ export default class TagsController {
       }
     })
 
-    this.updateTags()
+    // this.updateTags()
   }
 }
 
-export const tagsController = new TagsController()
+// const tagsController = new TagsController()
+
+export default new TagsController()
