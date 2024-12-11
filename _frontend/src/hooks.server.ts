@@ -9,6 +9,7 @@ Sentry.init({
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: import.meta.env.DEV,
+  integrations: [Sentry.prismaIntegration()],
 });
 
 // If you have custom handlers, make sure to place them after `sentryHandle()` in the `sequence` function.
