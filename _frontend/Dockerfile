@@ -1,9 +1,8 @@
 # Stage 1: Builder
-FROM node:alpine as builder
+FROM node:20-alpine3.20 as builder
 WORKDIR /app
 
 RUN npm install -g pnpm
-RUN apk add openssl1.1-compat
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY schema.prisma .
