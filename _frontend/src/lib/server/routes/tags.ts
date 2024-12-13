@@ -1,7 +1,7 @@
 import prisma from "../prisma"
 
 export const tags_query_from_database = async (d: {
-  cluster: string
+  cluster: string | null
   mediaTypeFilter: string
   favouritesOnly: boolean
 }) => {
@@ -44,8 +44,12 @@ export const tags_query_from_database = async (d: {
                     "Tags"
                 LEFT JOIN "_MediaToTags" ON "_MediaToTags"."B" = "Tags"."id"
                 LEFT JOIN "Media" ON "_MediaToTags"."A" = "Media"."id"
-                WHERE
-                    "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')
+                ${
+                  d.cluster
+                    ? `WHERE
+                    "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')`
+                    : ""
+                }
                 GROUP BY
                     "Tags"."id"
             ),
@@ -56,8 +60,12 @@ export const tags_query_from_database = async (d: {
                 FROM
                     "Tags"
                 INNER JOIN "_ClustersToTags" ON "_ClustersToTags"."B" = "Tags"."id"
-                WHERE
-                    "_ClustersToTags"."A" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')
+                ${
+                  d.cluster
+                    ? `WHERE
+                    "_ClustersToTags"."A" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')`
+                    : ""
+                }
             ),
             AllRelatedTags AS (
                 -- Get all tags related to the TagsWithCluster (including parent tags)
@@ -84,3 +92,13 @@ export const tags_query_from_database = async (d: {
         WHERE "Tags"."id" IN (SELECT "id" FROM AllRelatedTags);
     `)) as any
 }
+
+export const tag_update_icon = async (d: { tagId: number; newIcon: string }) =>
+  await prisma.tags.update({
+    where: {
+      id: d.tagId
+    },
+    data: {
+      icon: d.newIcon
+    }
+  })

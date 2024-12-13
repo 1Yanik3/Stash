@@ -2,6 +2,7 @@ import { get } from "svelte/store"
 
 import { page } from "$app/stores"
 import query from "$lib/client/call"
+import assembleTagHierarchyMap from "$lib/helpers/assembleTagHierarchyMap"
 import type { possibleIcons } from "$lib/possibleIcons"
 import { mediaTypeFilter } from "$lib/stores"
 import vars from "$lib/vars.svelte"
@@ -21,6 +22,7 @@ export type TagBase = {
 export type TagExtended = TagBase & {
   children: TagExtended[]
   indirectCount: number
+  indirectIcon: string | null
 }
 
 export class TagsController {
@@ -51,27 +53,7 @@ export class TagsController {
           mediaTypeFilter: get(mediaTypeFilter)
         })
 
-        const tmpTagMap: Awaited<typeof this.tagMap> = {}
-
-        // Step 1: Create a map of all tags
-        data.forEach(tag => {
-          tmpTagMap[tag.id] = {
-            ...tag,
-            children: [],
-            indirectCount: 0
-          }
-        })
-
-        // Step 2: Build the hierarchy
-        data.forEach(tag => {
-          if (tag.parentId != null) {
-            if (!tmpTagMap[tag.parentId]) {
-              console.error("Tag with ID", tag.id, "does not exist")
-              return
-            }
-            tmpTagMap[tag.parentId].children.push(tmpTagMap[tag.id])
-          }
-        })
+        const tmpTagMap = assembleTagHierarchyMap(data)
 
         // Step 3: Calculate indirect counts
         const calculateIndirectCounts = (tag: TagExtended) => {

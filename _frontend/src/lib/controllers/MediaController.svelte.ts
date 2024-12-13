@@ -5,11 +5,7 @@ import { get } from "svelte/store"
 
 import { page } from "$app/stores"
 import query from "$lib/client/call"
-import {
-  mediaTypeFilter,
-  PAGE_SIZE,
-  traverse
-} from "$lib/stores"
+import { mediaTypeFilter, PAGE_SIZE, traverse } from "$lib/stores"
 
 import type { TagExtended } from "./TagsController.svelte"
 
@@ -166,7 +162,10 @@ const calculatePages = async (media: Media[]) => {
   for (
     let i = 0;
     i <
-    Math.max(Math.ceil(media.length / PAGE_SIZE), _mediaController.pages.length);
+    Math.max(
+      Math.ceil(media.length / PAGE_SIZE),
+      _mediaController.pages.length
+    );
     i++
   ) {
     const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)

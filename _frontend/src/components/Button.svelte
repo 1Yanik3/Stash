@@ -12,6 +12,7 @@
   let {
     icon = null as keyof typeof possibleIcons | null,
     iconNoTyping = null as string | null,
+    iconOpacity = 1,
     count = null as number | null,
     active = false,
     href = null as string | null,
@@ -116,7 +117,11 @@
   <div class="section">
     {#if (icon || iconNoTyping) != null}
       <!-- @ts-ignore -->
-      <Icon nameAlt={icon || iconNoTyping || "mdiHelp"} size={"1.25em"} />
+      <Icon
+        nameAlt={icon || iconNoTyping || "mdiHelp"}
+        size={"1.25em"}
+        opacity={iconOpacity}
+      />
     {/if}
     {#if children}
       <span>

@@ -3,9 +3,7 @@
 
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import {
-    type TagExtended
-  } from "$lib/controllers/TagsController.svelte"
+  import { type TagExtended } from "$lib/controllers/TagsController.svelte"
   import { uploadPopupOpen } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"

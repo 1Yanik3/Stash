@@ -7,6 +7,7 @@
 
   export let size: number | string = 1
   export let color: any = null
+  export let opacity = 1
 
   // size
   if (Number(size)) size = Number(size)
@@ -33,11 +34,15 @@
 </script>
 
 {#if (name || nameAlt).startsWith("mdi")}
-  <svg viewBox="0 0 24 24" {style}>
+  <svg style:opacity viewBox="0 0 24 24" {style}>
     <path d={possibleIconsAlt[name || nameAlt]} />
   </svg>
 {:else if (name || nameAlt).startsWith("extra")}
-  <svg style="position: absolute; width: 0; height: 0" aria-hidden="true">
+  <svg
+    style:opacity
+    style="position: absolute; width: 0; height: 0"
+    aria-hidden="true"
+  >
     <symbol
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 135.5 135.5"
@@ -46,7 +51,7 @@
       {@html possibleIconsAlt[name || nameAlt]}
     </symbol>
   </svg>
-  <svg viewBox="0 0 20 20" {style}>
+  <svg style:opacity viewBox="0 0 20 20" {style}>
     <use xlink:href="#{name || nameAlt}" stroke="#FFF" />
   </svg>
 {:else}

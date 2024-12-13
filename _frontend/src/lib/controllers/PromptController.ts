@@ -1,12 +1,14 @@
 import { mount, unmount } from "svelte"
 
 import CodePromptPopup from "$components/Popups/Prompts/CodePromptPopup.svelte"
+import IconPromptPopup from "$components/Popups/Prompts/IconPromptPopup.svelte"
 import NotifyPromptPopup from "$components/Popups/Prompts/NotifyPromptPopup.svelte"
 import SelectMultiplePromptPopup from "$components/Popups/Prompts/SelectMultiplePromptPopup.svelte"
 import SelectPromptDropdown from "$components/Popups/Prompts/SelectPromptDropdown.svelte"
 import SelectPromptPopup from "$components/Popups/Prompts/SelectPromptPopup.svelte"
 import TagSearchPromptPopup from "$components/Popups/Prompts/TagSearchPromptPopup.svelte"
 import TextPromptPopup from "$components/Popups/Prompts/TextPromptPopup.svelte"
+import type { possibleIcons } from "$lib/possibleIcons"
 
 export const prompts = {
   text: (question: string, value = ""): Promise<string | null> =>
@@ -18,6 +20,25 @@ export const prompts = {
           value,
           onresult: (result: string | null) => {
             if (result != null) resolve(result)
+            else resolve(null)
+            unmount(element)
+          }
+        }
+      })
+    }),
+
+  icon: (
+    question: string,
+    value = ""
+  ): Promise<keyof typeof possibleIcons | null> =>
+    new Promise(resolve => {
+      const element = mount(IconPromptPopup, {
+        target: document.body,
+        props: {
+          question,
+          value,
+          onresult: (result: string | null) => {
+            if (result != null) resolve(result as any)
             else resolve(null)
             unmount(element)
           }
@@ -96,6 +117,7 @@ export const prompts = {
         props: {
           question,
           value,
+          //   TODO
           onresult: (result: string | null) => {
             if (result != null) resolve(result)
             else resolve(null)

@@ -29,6 +29,16 @@
   //     }
   //   })
   let showDropdown = $state(false)
+
+  const [icon, iconOpacity] = (() => {
+    if (iconOverwrite) return [iconOverwrite, 1]
+    if (tagsController.tagMap[tagId].icon)
+      return [tagsController.tagMap[tagId].icon, 1]
+    if (tagsController.tagMap[tagId].indirectIcon)
+      return [tagsController.tagMap[tagId].indirectIcon, 0.35]
+    if (tagsController.tagMap[tagId].collapsed) return ["mdiFolderHidden", 1]
+    return ["mdiFolderOutline", 1]
+  })() as any
 </script>
 
 <main>
@@ -39,11 +49,8 @@
       tagsController.tagMap[tagId].indirectCount} (direct count: {tagsController
       .tagMap[tagId].count}, indirect count: {tagsController.tagMap[tagId]
       .indirectCount})"
-    icon={iconOverwrite ||
-      tagsController.tagMap[tagId].icon ||
-      (tagsController.tagMap[tagId].collapsed
-        ? "mdiFolderHidden"
-        : "mdiFolderOutline")}
+    {icon}
+    {iconOpacity}
     onclick={e => {
       selectedMediaIds.set([])
       if (e.altKey) {
