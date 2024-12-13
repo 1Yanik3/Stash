@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"

@@ -2,7 +2,7 @@
   import FuzzySearch from "fuzzy-search"
   import { onMount, type Snippet } from "svelte"
 
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { controller, settings } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 

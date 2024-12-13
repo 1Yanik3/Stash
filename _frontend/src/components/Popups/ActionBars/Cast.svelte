@@ -7,7 +7,7 @@
   import { prompts } from "$lib/controllers/PromptController"
   import { controller, settings } from "$lib/stores"
 
-  import Icon from "../../Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
 
   let disableSeeking = $state(false)
   let seekVideo: HTMLVideoElement | null = $state(null)

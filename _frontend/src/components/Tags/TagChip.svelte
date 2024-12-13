@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "$components/Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
 
   let {

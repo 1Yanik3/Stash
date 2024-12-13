@@ -1,7 +1,7 @@
 <script lang="ts">
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import Select from "$components/Select.svelte"
-  import Toggle from "$components/Toggle.svelte"
+  import Select from "$components/elements/Select.svelte"
+  import Toggle from "$components/elements/Toggle.svelte"
   import { settings } from "$lib/stores"
 </script>
 

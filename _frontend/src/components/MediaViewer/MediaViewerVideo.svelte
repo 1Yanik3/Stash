@@ -4,7 +4,7 @@
   import { onMount } from "svelte"
 
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings, videoElement } from "$lib/stores"
   import Shortcut from "$reusables/Shortcut.svelte"

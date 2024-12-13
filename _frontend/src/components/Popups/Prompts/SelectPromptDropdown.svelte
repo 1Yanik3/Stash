@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
 
   interface Props {

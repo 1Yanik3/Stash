@@ -2,7 +2,7 @@
   import { onMount } from "svelte"
   import { fade, scale } from "svelte/transition"
 
-  import Icon from "$components/Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
 
   import { controller, settings } from "../lib/stores"
 

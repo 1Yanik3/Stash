@@ -2,21 +2,22 @@
   import { onMount } from "svelte"
 
   import { page } from "$app/stores"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
+  import Key from "$components/elements/Key.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { type TagExtended } from "$lib/controllers/TagsController.svelte"
   import { uploadPopupOpen } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
-  import Button from "./Button.svelte"
-  import Icon from "./Icon.svelte"
-  import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
+
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: import("svelte").Snippet
   }
 
-  let { children }: Props = $props();
+  let { children }: Props = $props()
 
   let tags: TagExtended[] = $state([])
   let tagInputElement: TagInputField | null = $state(null)
@@ -108,7 +109,7 @@
 {#if $uploadPopupOpen}
   <Shortcut shift key="T" action={() => tagInputElement?.focus()} />
 
-  <Popup title="Upload Files" on:close={() => ($uploadPopupOpen = false)}>
+  <Popup title="Upload Files" onclose={() => ($uploadPopupOpen = false)}>
     <main>
       {#if !uploadStarted}
         <div
@@ -174,22 +175,18 @@
     </main>
 
     {#snippet actionsLeft()}
-      
-        <Button card onclick={() => ($uploadPopupOpen = false)}>Cancel</Button>
-      
-      {/snippet}
+      <Button card onclick={() => ($uploadPopupOpen = false)}>Cancel</Button>
+    {/snippet}
 
     {#snippet actionsRight()}
-      
-        <Button
-          card
-          highlighted
-          icon="mdiUpload"
-          onclick={upload}
-          shortcut={{ modifier: "meta", key: "enter" }}
-        />
-      
-      {/snippet}
+      <Button
+        card
+        highlighted
+        icon="mdiUpload"
+        onclick={upload}
+        shortcut={{ modifier: "meta", key: "enter" }}
+      />
+    {/snippet}
   </Popup>
 {/if}
 

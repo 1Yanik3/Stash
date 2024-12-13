@@ -4,7 +4,7 @@
   import SvelteMarkdown from "svelte-markdown"
 
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { controller, mobileBottomBarVisible, settings } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -113,7 +113,7 @@
 <svelte:window onpopstate={() => (story = null)} />
 
 {#if chapterSelectionPopupOpen}
-  <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
+  <Popup onclose={() => (chapterSelectionPopupOpen = false)} bottomSheet>
     {#each chapters as chapter}
       <Button
         onclick={() => {

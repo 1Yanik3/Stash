@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
   import { mobileBottomBarVisible, settings } from "$lib/stores"
 

@@ -3,7 +3,7 @@
 
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
-  import Select from "$components/Select.svelte"
+    import Select from "$components/elements/Select.svelte"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
@@ -11,8 +11,8 @@
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import Button from "../Button.svelte"
-  import Icon from "../Icon.svelte"
+  import Button from "$components/elements/Button.svelte"
+    import Icon from "$components/elements/Icon.svelte"
   import TagChip from "../Tags/TagChip.svelte"
   import TagInputField from "../Tags/TagInputField.svelte"
 

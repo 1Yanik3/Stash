@@ -5,7 +5,7 @@
 
   import type { PageData } from "../routes/[cluster]/$types"
   import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
-  import Icon from "./Icon.svelte"
+    import Icon from "$components/elements/Icon.svelte"
 
   let pageData = $derived($page.data as PageData)
 

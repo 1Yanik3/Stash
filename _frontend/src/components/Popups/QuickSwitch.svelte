@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  import Icon from "$components/Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import { refreshFilters } from "$lib/client/QuickSwitchHelpers/filters.svelte"
   import {
     executeSearch,

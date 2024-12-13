@@ -1,8 +1,8 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import Table from "$components/Table.svelte"
+  import Table from "$components/elements/Table.svelte"
   import { prompts } from "$lib/controllers/PromptController"
 
   import type { PageData } from "./$types"

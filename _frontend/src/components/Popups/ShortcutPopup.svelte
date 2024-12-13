@@ -2,7 +2,7 @@
   import { controller } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
-  import Key from "../Key.svelte"
+    import Key from "$components/elements/Key.svelte"
 </script>
 
 <Popup title="Shortcuts" onclose={() => console.log($controller.setPopup())}>

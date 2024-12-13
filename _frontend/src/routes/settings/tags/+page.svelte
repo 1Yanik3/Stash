@@ -1,10 +1,10 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
-  import Icon from "$components/Icon.svelte"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import Table from "$components/Table.svelte"
+  import Table from "$components/elements/Table.svelte"
   import query from "$lib/client/call.js"
   import { prompts } from "$lib/controllers/PromptController.js"
 

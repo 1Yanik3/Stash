@@ -5,7 +5,7 @@
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import Button from "../Button.svelte"
+  import Button from "$components/elements/Button.svelte"
 
   let pageData = $derived($page.data as PageData)
 

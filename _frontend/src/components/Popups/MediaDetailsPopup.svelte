@@ -4,8 +4,8 @@
   import { controller, thumbnailSuffixParameter } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
-  import Button from "../Button.svelte"
-  import Icon from "../Icon.svelte"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
 
   function toIsoString(date: Date) {
     const pad = (num: number) => (num < 10 ? "0" : "") + num

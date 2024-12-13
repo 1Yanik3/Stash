@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { possibleIcons } from "$lib/possibleIcons"
 
-  import Icon from "./Icon.svelte"
+    import Icon from "$components/elements/Icon.svelte"
 
   type T = $$Generic<Record>
 

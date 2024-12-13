@@ -2,10 +2,10 @@
   import { mount, unmount } from "svelte"
 
   import { invalidateAll } from "$app/navigation"
-  import Button from "$components/Button.svelte"
-  import Icon from "$components/Icon.svelte"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import Table from "$components/Table.svelte"
+  import Table from "$components/elements/Table.svelte"
   import query from "$lib/client/call"
   import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"

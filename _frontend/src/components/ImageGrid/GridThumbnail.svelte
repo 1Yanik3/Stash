@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import Icon from "$components/Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import {
     mediaController,
     type MediaType

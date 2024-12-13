@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte"
 
   import { page } from "$app/stores"
-  import Icon from "$components/Icon.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
   import {
     mediaController,

@@ -2,8 +2,8 @@
   import FuzzySearch from "fuzzy-search"
   import { onMount } from "svelte"
 
-  import Button from "$components/Button.svelte"
-  import Icon from "$components/Icon.svelte"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
   import { possibleIcons } from "$lib/possibleIcons"
 
   import PromptFramework from "./_PromptFramework.svelte"

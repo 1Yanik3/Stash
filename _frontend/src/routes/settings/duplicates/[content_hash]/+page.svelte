@@ -5,9 +5,9 @@
 
   import { goto, invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
-  import Button from "$components/Button.svelte"
-  import Table from "$components/Table.svelte"
-  import Toggle from "$components/Toggle.svelte"
+  import Button from "$components/elements/Button.svelte"
+  import Table from "$components/elements/Table.svelte"
+  import Toggle from "$components/elements/Toggle.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "./$types"
@@ -85,7 +85,7 @@
   }
 </script>
 
-<Popup title="Merge" on:close={() => goto("/settings/duplicates")}>
+<Popup title="Merge" onclose={() => goto("/settings/duplicates")}>
   <main>
     <div class="row">
       <span>Tags</span>

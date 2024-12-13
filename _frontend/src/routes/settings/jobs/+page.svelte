@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import Table from "$components/Table.svelte"
+  import Table from "$components/elements/Table.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   let { data } = $props()

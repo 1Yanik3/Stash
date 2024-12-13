@@ -2,7 +2,7 @@
   import { ClusterType } from "@prisma/client/wasm"
 
   import { invalidateAll } from "$app/navigation"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { possibleIcons } from "$lib/possibleIcons"
   import Popup from "$reusables/Popup.svelte"
 
@@ -44,7 +44,7 @@
   }
 </script>
 
-<Popup title="Add new Cluster" on:close={close}>
+<Popup title="Add new Cluster" onclose={close}>
   <section>
     <label for="e-name"> Name </label>
     <input

@@ -2,7 +2,7 @@
   import type { Media } from "@prisma/client/wasm"
 
   import { invalidateAll } from "$app/navigation"
-  import Button from "$components/Button.svelte"
+  import Button from "$components/elements/Button.svelte"
   import { settings } from "$lib/stores"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
