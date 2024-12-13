@@ -6,15 +6,14 @@
   import GridThumbnail from "./GridThumbnail.svelte"
 
   interface Props {
-    media: Media[];
-    i: number;
+    media: Media[]
   }
 
-  let { media, i }: Props = $props();
+  let { media }: Props = $props()
 </script>
 
 <Grid
-  autoResize={true}
+  autoResize={false}
   useResizeObserver={true}
   defaultDirection="start"
   gap={14}
@@ -22,6 +21,6 @@
   useTransform={true}
 >
   {#each media as medium}
-    <GridThumbnail {medium} {i} />
+    <GridThumbnail {medium} />
   {/each}
 </Grid>

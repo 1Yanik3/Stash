@@ -43,10 +43,10 @@
 
   let serif = $state(false)
 
-  let mainElement: HTMLElement = $state()
-  let contentElement: HTMLDivElement = $state()
-  let scrollElement: HTMLDivElement = $state()
-  let scrollElementSpacer: HTMLDivElement = $state()
+  let mainElement: HTMLElement = $state() as any
+  let contentElement: HTMLDivElement = $state() as any
+  let scrollElement: HTMLDivElement = $state() as any
+  let scrollElementSpacer: HTMLDivElement = $state() as any
 
   const selectStory = async (
     _story: Awaited<typeof pageData.streamed.stories>[number]

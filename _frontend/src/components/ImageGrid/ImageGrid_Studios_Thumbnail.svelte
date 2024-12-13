@@ -45,7 +45,7 @@
   }
 
   let showSeekPreview = $state(false)
-  let thumbElement: HTMLDivElement = $state()
+  let thumbElement: HTMLDivElement = $state() as any
   let seekVideo: HTMLVideoElement | null = $state(null)
 
   const processSeeking = (e: MouseEvent | TouchEvent) => {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from "svelte/transition"
+
   import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
   import {
@@ -9,27 +11,25 @@
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   interface Props {
-    i: number;
-    medium: MediaType;
-    disableActive?: boolean;
-    rigidAspectRatio?: boolean;
-    disableZoom?: boolean;
+    medium: MediaType
+    disableActive?: boolean
+    rigidAspectRatio?: boolean
+    disableZoom?: boolean
   }
 
   let {
-    i,
     medium,
     disableActive = false,
     rigidAspectRatio = false,
     disableZoom = false
-  }: Props = $props();
+  }: Props = $props()
 
   const dragStartHandler = (e: DragEvent) => {
     e.stopPropagation()
     e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
   }
 
-  let element: HTMLDivElement = $state()
+  let element: HTMLDivElement = $state() as any
   // visibleMedium.subscribe(async () => {
   //     if (!element) return
 
@@ -79,9 +79,8 @@
 
 <IntersectionObserver
   on:click={e => leftClick(e.detail)}
-  once={true}
+  once
   top={500}
-  
   style={`position: relative`}
 >
   {#snippet children({ intersecting })}
@@ -104,17 +103,16 @@
         />
       </svg>
 
-      {#if intersecting || i == 0}
-        {#await new Promise(resolve => resolve(true)) then}
-          <img
-            src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
-            alt={medium.name}
-            class:active={!disableActive &&
-              mediaController.visibleMedium?.id == medium.id}
-            crossorigin="use-credentials"
-            class:disableZoom
-          />
-        {/await}
+      {#if intersecting}
+        <img
+          in:fade={{ duration: 100 }}
+          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
+          alt={medium.name}
+          class:active={!disableActive &&
+            mediaController.visibleMedium?.id == medium.id}
+          crossorigin="use-credentials"
+          class:disableZoom
+        />
 
         {#if medium.favourited}
           <div style="position: absolute; right: 0.25em; bottom: 0.25em;">
@@ -153,7 +151,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

@@ -47,7 +47,7 @@
     return () => resizeObserver.unobserve(video)
   })
 
-  let video: HTMLVideoElement = $state()
+  let video: HTMLVideoElement = $state() as any
   run(() => {
     videoElement.set(video)
   });
@@ -62,7 +62,7 @@
 
   let playbackPercentage = $derived((currentTime / duration) * 100)
 
-  let rangeSlider: HTMLDivElement = $state()
+  let rangeSlider: HTMLDivElement = $state() as any
   let thumbIsLifted = $state(false)
 
   const processMousePositionToTime = (e: MouseEvent | TouchEvent) => {

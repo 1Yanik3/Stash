@@ -19,7 +19,7 @@
     }
   }
 
-  let inputElement: HTMLTextAreaElement = $state()
+  let inputElement: HTMLTextAreaElement = $state() as any
   onMount(() => {
     inputElement.focus()
   })

@@ -62,7 +62,9 @@ const gatherAllTags = async () => {
     )
   }
 
-  tagsController.tagsHierarchy.forEach(tag => addTagAndChildrenToArray(tag))
+  Object.values(tagsController.tagMap).forEach(tag =>
+    addTagAndChildrenToArray(tag)
+  )
 
   return tags
 }

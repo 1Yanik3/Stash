@@ -3,8 +3,8 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings } from "$lib/stores"
 
-  let mainElement: HTMLElement = $state()
-  let imageElement: HTMLImageElement = $state()
+  let mainElement: HTMLElement = $state() as any
+  let imageElement: HTMLImageElement = $state() as any
 
   let zoomMode: "none" | "original" | "fit" = "none"
 
