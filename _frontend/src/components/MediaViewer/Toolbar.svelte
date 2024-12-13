@@ -16,10 +16,10 @@
   import TagChip from "../Tags/TagChip.svelte"
   import TagInputField from "../Tags/TagInputField.svelte"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 
-  let dropdownVisible = false
-  export let hideControls
+  let dropdownVisible = $state(false)
+  let { hideControls } = $props();
 
   const addTagToMedia = (tagId: number) => {
     fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {

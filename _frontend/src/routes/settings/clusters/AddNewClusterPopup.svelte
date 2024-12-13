@@ -6,12 +6,16 @@
   import { possibleIcons } from "$lib/possibleIcons"
   import Popup from "$reusables/Popup.svelte"
 
-  export let close: () => void
+  interface Props {
+    close: () => void;
+  }
 
-  let name = ""
-  let icon = ""
-  let type = "normal"
-  let errors: string[] = []
+  let { close }: Props = $props();
+
+  let name = $state("")
+  let icon = $state("")
+  let type = $state("normal")
+  let errors: string[] = $state([])
 
   const validate = () => {
     errors = []
@@ -71,19 +75,23 @@
     </select>
   </section>
 
-  <svelte:fragment slot="actionsLeft">
-    <Button card onclick={close}>Cancel</Button>
-  </svelte:fragment>
+  {#snippet actionsLeft()}
+  
+      <Button card onclick={close}>Cancel</Button>
+    
+  {/snippet}
 
-  <svelte:fragment slot="actionsRight">
-    <Button
-      card
-      highlighted
-      icon="mdiPlus"
-      onclick={addNewCluster}
-      shortcut={{ modifier: "meta", key: "enter" }}
-    />
-  </svelte:fragment>
+  {#snippet actionsRight()}
+  
+      <Button
+        card
+        highlighted
+        icon="mdiPlus"
+        onclick={addNewCluster}
+        shortcut={{ modifier: "meta", key: "enter" }}
+      />
+    
+  {/snippet}
 </Popup>
 
 <style lang="scss">

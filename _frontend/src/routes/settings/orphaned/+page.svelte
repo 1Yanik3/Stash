@@ -6,7 +6,11 @@
 
   import type { PageData } from "./$types"
 
-  export let data: PageData
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const importOrphan = async (cluster: number, filename: string) => {
     const response = await fetch(`/settings/orphaned/${filename}`, {
@@ -31,28 +35,30 @@
 </script>
 
 <SettingsPageContent title="Orphaned Files">
-  <Table data={data.unimportedFiles} let:entry>
-    <td>
-      <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
-      {#each data.clusters as cluster}
+  <Table data={data.unimportedFiles} >
+    {#snippet children({ entry })}
+        <td>
+        <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
+        {#each data.clusters as cluster}
+          <Button
+            noMargin
+            onclick={() => {
+              importOrphan(cluster.id, entry)
+            }}
+          >
+            {cluster.name}
+          </Button>
+        {/each}
         <Button
           noMargin
+          icon="mdiTrashCan"
           onclick={() => {
-            importOrphan(cluster.id, entry)
+            deleteOrphan(entry)
           }}
-        >
-          {cluster.name}
-        </Button>
-      {/each}
-      <Button
-        noMargin
-        icon="mdiTrashCan"
-        onclick={() => {
-          deleteOrphan(entry)
-        }}
-      />
-    </td>
-  </Table>
+        />
+      </td>
+          {/snippet}
+    </Table>
 </SettingsPageContent>
 
 <style lang="scss">

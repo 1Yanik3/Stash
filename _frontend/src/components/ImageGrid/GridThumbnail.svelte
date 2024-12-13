@@ -8,18 +8,28 @@
   import { selectedMediaIds, thumbnailSuffixParameter } from "$lib/stores"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
-  export let i: number
-  export let medium: MediaType
-  export let disableActive = false
-  export let rigidAspectRatio = false
-  export let disableZoom = false
+  interface Props {
+    i: number;
+    medium: MediaType;
+    disableActive?: boolean;
+    rigidAspectRatio?: boolean;
+    disableZoom?: boolean;
+  }
+
+  let {
+    i,
+    medium,
+    disableActive = false,
+    rigidAspectRatio = false,
+    disableZoom = false
+  }: Props = $props();
 
   const dragStartHandler = (e: DragEvent) => {
     e.stopPropagation()
     e.dataTransfer?.setData("text/plain", `mediaId_${medium.id}`)
   }
 
-  let element: HTMLDivElement
+  let element: HTMLDivElement = $state()
   // visibleMedium.subscribe(async () => {
   //     if (!element) return
 
@@ -47,7 +57,7 @@
     }
   }
 
-  let suffix = ""
+  let suffix = $state("")
   thumbnailSuffixParameter.subscribe(() => {
     if ($thumbnailSuffixParameter == null) {
       suffix = ""
@@ -71,47 +81,49 @@
   on:click={e => leftClick(e.detail)}
   once={true}
   top={500}
-  let:intersecting
+  
   style={`position: relative`}
 >
-  <div
-    on:dragstart={dragStartHandler}
-    bind:this={element}
-    class:selected={$selectedMediaIds.includes(medium.id)}
-    class:rigidAspectRatio
-  >
-    <svg
-      viewBox={`0 0 ${medium.width} ${medium.height}`}
-      xmlns="http://www.w3.org/2000/svg"
+  {#snippet children({ intersecting })}
+    <div
+      ondragstart={dragStartHandler}
+      bind:this={element}
+      class:selected={$selectedMediaIds.includes(medium.id)}
+      class:rigidAspectRatio
     >
-      <rect
-        width={medium.width}
-        height={medium.height}
-        x="0"
-        y="0"
-        fill="var(--color-lowest)"
-      />
-    </svg>
-
-    {#if intersecting || i == 0}
-      {#await new Promise(resolve => resolve(true)) then}
-        <img
-          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
-          alt={medium.name}
-          class:active={!disableActive &&
-            mediaController.visibleMedium?.id == medium.id}
-          crossorigin="use-credentials"
-          class:disableZoom
+      <svg
+        viewBox={`0 0 ${medium.width} ${medium.height}`}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width={medium.width}
+          height={medium.height}
+          x="0"
+          y="0"
+          fill="var(--color-lowest)"
         />
-      {/await}
+      </svg>
 
-      {#if medium.favourited}
-        <div style="position: absolute; right: 0.25em; bottom: 0.25em;">
-          <Icon name="mdiStar" size={0.8} />
-        </div>
+      {#if intersecting || i == 0}
+        {#await new Promise(resolve => resolve(true)) then}
+          <img
+            src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
+            alt={medium.name}
+            class:active={!disableActive &&
+              mediaController.visibleMedium?.id == medium.id}
+            crossorigin="use-credentials"
+            class:disableZoom
+          />
+        {/await}
+
+        {#if medium.favourited}
+          <div style="position: absolute; right: 0.25em; bottom: 0.25em;">
+            <Icon name="mdiStar" size={0.8} />
+          </div>
+        {/if}
       {/if}
-    {/if}
-  </div>
+    </div>
+  {/snippet}
 </IntersectionObserver>
 
 <style lang="scss">

@@ -8,7 +8,7 @@
   import type { PageData } from "./$types"
   import SidebatTagsSection from "./SidebarTagsSection.svelte"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 </script>
 
 {#if $page.data.cluster.type != "stories"}

@@ -2,22 +2,36 @@
   import Button from "$components/Button.svelte"
   import Popup from "$reusables/Popup.svelte"
 
-  export let oncancel: () => void
-  export let onok: () => void
 
-  export let noCancel = false
+  interface Props {
+    oncancel: () => void;
+    onok: () => void;
+    noCancel?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    oncancel,
+    onok,
+    noCancel = false,
+    children
+  }: Props = $props();
 </script>
 
 <Popup onclose={oncancel}>
-  <slot />
+  {@render children?.()}
 
-  <svelte:fragment slot="actionsLeft">
-    {#if !noCancel}
-      <Button card icon={null} onclick={oncancel}>Cancel</Button>
-    {/if}
-  </svelte:fragment>
+  {#snippet actionsLeft()}
+  
+      {#if !noCancel}
+        <Button card icon={null} onclick={oncancel}>Cancel</Button>
+      {/if}
+    
+  {/snippet}
 
-  <svelte:fragment slot="actionsRight">
-    <Button card icon={null} highlighted onclick={onok}>Ok</Button>
-  </svelte:fragment>
+  {#snippet actionsRight()}
+  
+      <Button card icon={null} highlighted onclick={onok}>Ok</Button>
+    
+  {/snippet}
 </Popup>

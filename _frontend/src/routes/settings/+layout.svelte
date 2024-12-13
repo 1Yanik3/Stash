@@ -37,7 +37,7 @@
       count={data.unimported_count}>Orphaned Files</Button
     >
 
-    <div class="divider" />
+    <div class="divider"></div>
 
     <Button icon="mdiChartBar" href="/settings/statistics">Statistics</Button>
     <Button icon="mdiInformationOutline" href="/settings/about">About</Button>

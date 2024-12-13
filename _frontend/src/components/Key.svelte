@@ -1,8 +1,12 @@
 <script lang="ts">
   import Icon from "./Icon.svelte"
 
-  export let key: string
-  export let compact = false
+  interface Props {
+    key: string;
+    compact?: boolean;
+  }
+
+  let { key, compact = false }: Props = $props();
 
   const iconOverwrites: any = {
     escape: "mdiKeyboardEsc",

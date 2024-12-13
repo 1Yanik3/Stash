@@ -9,7 +9,7 @@
   import ImageGridStories from "./ImageGrid_Stories.svelte"
   import ImageGridStudios from "./ImageGrid_Studios.svelte"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 </script>
 
 {#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}

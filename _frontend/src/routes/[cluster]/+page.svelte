@@ -22,7 +22,7 @@
 
   {#if !$isFullscreen}
     <div class="center">
-      <section id="imageGallerySection" on:scroll={onscroll}>
+      <section id="imageGallerySection" {onscroll}>
         <DropFile>
           <ImageGrid />
         </DropFile>
@@ -31,7 +31,8 @@
   {/if}
 
   {#if $actionBar}
-    <svelte:component this={actionBars[$actionBar]} />
+    {@const SvelteComponent = actionBars[$actionBar]}
+    <SvelteComponent />
   {/if}
 
   {#if mediaController.visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}

@@ -5,8 +5,12 @@
 
   import GridThumbnail from "./GridThumbnail.svelte"
 
-  export let media: Media[]
-  export let i: number
+  interface Props {
+    media: Media[];
+    i: number;
+  }
+
+  let { media, i }: Props = $props();
 </script>
 
 <Grid

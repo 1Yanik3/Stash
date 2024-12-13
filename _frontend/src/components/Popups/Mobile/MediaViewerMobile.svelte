@@ -17,7 +17,7 @@
   }
 </script>
 
-<svelte:window on:popstate={onPopState} />
+<svelte:window onpopstate={onPopState} />
 
 {#if !$actionBar}
   <main>

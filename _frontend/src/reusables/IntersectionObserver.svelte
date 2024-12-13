@@ -1,20 +1,38 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { createEventDispatcher, onMount } from "svelte"
 
   const dispatch = createEventDispatcher()
 
-  export let once = false
-  export let top = 0
-  export let bottom = 0
-  export let left = 0
-  export let right = 0
-  export let delay = 0
-  export let style: string = ""
+  interface Props {
+    once?: boolean;
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+    delay?: number;
+    style?: string;
+    children?: import('svelte').Snippet<[any]>;
+  }
 
-  let intersecting = false
-  let container: Element
+  let {
+    once = false,
+    top = 0,
+    bottom = 0,
+    left = 0,
+    right = 0,
+    delay = 0,
+    style = "",
+    children
+  }: Props = $props();
 
-  $: if (intersecting) dispatch("intersecting")
+  let intersecting = $state(false)
+  let container: Element = $state()
+
+  run(() => {
+    if (intersecting) dispatch("intersecting")
+  });
 
   // @ts-ignore
   onMount(async () => {
@@ -44,5 +62,5 @@
 </script>
 
 <div bind:this={container} onclick={e => dispatch("click", e)} {style}>
-  <slot {intersecting}></slot>
+  {@render children?.({ intersecting, })}
 </div>

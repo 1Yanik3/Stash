@@ -7,11 +7,11 @@
   import type { PageData } from "../../routes/[cluster]/$types"
   import Button from "../Button.svelte"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 
-  let title = ""
-  let source = ""
-  let content = ""
+  let title = $state("")
+  let source = $state("")
+  let content = $state("")
 
   const submitStory = async () => {
     const response = await fetch(

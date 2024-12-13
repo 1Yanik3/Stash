@@ -7,9 +7,9 @@
   import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
   import Icon from "./Icon.svelte"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 
-  let tagsSidebarVisible = false
+  let tagsSidebarVisible = $state(false)
 </script>
 
 {#if tagsSidebarVisible}

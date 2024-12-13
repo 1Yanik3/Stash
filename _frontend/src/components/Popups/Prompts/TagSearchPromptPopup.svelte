@@ -4,14 +4,18 @@
   import TagInputField from "../../Tags/TagInputField.svelte"
   import PromptFramework from "./_PromptFramework.svelte"
 
-  export let question: string
-  export let value: string
-  export let onresult: (value: TagExtended | null) => void
+  interface Props {
+    question: string;
+    value: string;
+    onresult: (value: TagExtended | null) => void;
+  }
+
+  let { question, value, onresult }: Props = $props();
 </script>
 
 <!-- TODO: FIX -->
 <PromptFramework oncancel={() => onresult(null)} onok={() => onresult(null)}>
-  <!-- svelte-ignore a11y-label-has-associated-control -->
+  <!-- svelte-ignore a11y_label_has_associated_control -->
   <label>
     <span>{question}:</span>
 

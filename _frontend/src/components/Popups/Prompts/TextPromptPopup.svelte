@@ -3,11 +3,15 @@
 
   import PromptFramework from "./_PromptFramework.svelte"
 
-  export let question: string
-  export let value: string
-  let _value = value
+  let _value = $state(value)
 
-  export let onresult: (value: string | null) => void
+  interface Props {
+    question: string;
+    value: string;
+    onresult: (value: string | null) => void;
+  }
+
+  let { question, value, onresult }: Props = $props();
 
   const onInput = (e: KeyboardEvent) => {
     if (e.key == "Enter") {
@@ -15,7 +19,7 @@
     }
   }
 
-  let inputElement: HTMLTextAreaElement
+  let inputElement: HTMLTextAreaElement = $state()
   onMount(() => {
     inputElement.focus()
   })
@@ -32,7 +36,7 @@
       bind:this={inputElement}
       bind:value={_value}
       onkeydown={onInput}
-    />
+></textarea>
   </label>
 </PromptFramework>
 

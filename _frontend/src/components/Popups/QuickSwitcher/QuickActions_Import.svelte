@@ -5,8 +5,8 @@
 
   import FuzzyPopupTemplate from "./FuzzyPopupTemplate.svelte"
 
-  let loading = false
-  let value = ""
+  let loading = $state(false)
+  let value = $state("")
 
   const importElement = async (filename: string) => {
     loading = true
@@ -34,7 +34,7 @@
       .then(res => res.json())
       .then(d => d as string[])
   }
-  $: promise = getPromise(loading)
+  let promise = $derived(getPromise(loading))
 </script>
 
 {#if loading}

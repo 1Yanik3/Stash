@@ -7,49 +7,56 @@
 
   import type { LayoutData } from "./$types"
 
-  export let data: LayoutData
+  interface Props {
+    data: LayoutData;
+    children?: import('svelte').Snippet;
+  }
+
+  let { data, children }: Props = $props();
 </script>
 
 <SettingsPageContent title="Duplicates">
-  <Table data={data.duplicates} let:entry>
-    <td>
-      {#each entry.media_ids as id}
-        <img
-          src={`${$page.data.serverURL}/api/media/${id}/thumbnail`}
-          alt={id}
-          crossorigin="use-credentials"
-        />
-      {/each}
+  <Table data={data.duplicates} >
+    {#snippet children({ entry })}
+        <td>
+        {#each entry.media_ids as id}
+          <img
+            src={`${$page.data.serverURL}/api/media/${id}/thumbnail`}
+            alt={id}
+            crossorigin="use-credentials"
+          />
+        {/each}
 
-      <div class="actions">
-        <Button
-          icon="mdiSourceMerge"
-          card
-          noMargin
-          href={`/settings/duplicates/${entry.content_hash}`}
-        >
-          Merge
-        </Button>
-        <Button
-          card
-          noMargin
-          icon="mdiDebugStepOver"
-          onclick={() => {
-            fetch(`${$page.url.href}/${entry.content_hash}/ignore`, {
-              method: "PUT"
-            })
-              .then(() => invalidateAll())
-              .catch(e => {
-                console.error(e)
-                window.alert("An error occurred!")
+        <div class="actions">
+          <Button
+            icon="mdiSourceMerge"
+            card
+            noMargin
+            href={`/settings/duplicates/${entry.content_hash}`}
+          >
+            Merge
+          </Button>
+          <Button
+            card
+            noMargin
+            icon="mdiDebugStepOver"
+            onclick={() => {
+              fetch(`${$page.url.href}/${entry.content_hash}/ignore`, {
+                method: "PUT"
               })
-          }}>Ignore</Button
-        >
-      </div>
-    </td>
-  </Table>
+                .then(() => invalidateAll())
+                .catch(e => {
+                  console.error(e)
+                  window.alert("An error occurred!")
+                })
+            }}>Ignore</Button
+          >
+        </div>
+      </td>
+          {/snippet}
+    </Table>
 
-  <slot />
+  {@render children?.()}
 </SettingsPageContent>
 
 <style lang="scss">

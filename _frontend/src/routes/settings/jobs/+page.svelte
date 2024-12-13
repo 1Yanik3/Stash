@@ -18,18 +18,20 @@
 </script>
 
 <SettingsPageContent title="Jobs">
-  <Table headers={["id", "name", "status"]} data={data.jobs} let:entry>
-    <td>{entry.id}</td>
-    <td>{entry.name}</td>
-    <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td>
-    <div>
-      <Button
-        noMargin
-        icon="mdiInformation"
-        onclick={() => (jobDetails = entry)}
-      />
-    </div>
-  </Table>
+  <Table headers={["id", "name", "status"]} data={data.jobs} >
+    {#snippet children({ entry })}
+        <td>{entry.id}</td>
+      <td>{entry.name}</td>
+      <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td>
+      <div>
+        <Button
+          noMargin
+          icon="mdiInformation"
+          onclick={() => (jobDetails = entry)}
+        />
+      </div>
+          {/snippet}
+    </Table>
 </SettingsPageContent>
 
 {#if jobDetails}

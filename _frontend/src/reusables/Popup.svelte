@@ -6,12 +6,30 @@
 
   import { controller, settings } from "../lib/stores"
 
-  export let title = ""
-  export let hideHeader = false
-  export let bottomSheet = false
-  export let fullscreen = false
 
-  export let onclose = () => {}
+  interface Props {
+    title?: string;
+    hideHeader?: boolean;
+    bottomSheet?: boolean;
+    fullscreen?: boolean;
+    onclose?: any;
+    headerElement?: import('svelte').Snippet;
+    actionsLeft?: import('svelte').Snippet;
+    actionsRight?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    title = "",
+    hideHeader = false,
+    bottomSheet = false,
+    fullscreen = false,
+    onclose = () => {},
+    headerElement,
+    actionsLeft,
+    actionsRight,
+    children
+  }: Props = $props();
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key != "Escape") return
@@ -31,7 +49,7 @@
   }
 </script>
 
-<svelte:window onkeydown={onKeyDown} on:popstate={onPopState} />
+<svelte:window onkeydown={onKeyDown} onpopstate={onPopState} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -54,12 +72,12 @@
       <div id="header">
         {#if bottomSheet}
           <!-- svelte-ignore element_invalid_self_closing_tag -->
-          <div class="centralBlob" onclick={onclose} />
+          <div class="centralBlob" onclick={onclose}></div>
         {:else}
           <h2>{title}</h2>
 
-          {#if $$slots.headerElement}
-            <slot name="headerElement" />
+          {#if headerElement}
+            {@render headerElement?.()}
           {/if}
 
           <button onclick={onclose}>
@@ -70,15 +88,15 @@
     {/if}
     <div
       id="content"
-      class:hasActions={$$slots.actionsLeft || $$slots.actionsRight}
+      class:hasActions={actionsLeft || actionsRight}
     >
-      <slot />
+      {@render children?.()}
     </div>
-    {#if $$slots.actionsLeft || $$slots.actionsRight}
+    {#if actionsLeft || actionsRight}
       <div class="actions">
-        <slot name="actionsLeft" />
+        {@render actionsLeft?.()}
         <div class="spacer"></div>
-        <slot name="actionsRight" />
+        {@render actionsRight?.()}
       </div>
     {/if}
   </section>

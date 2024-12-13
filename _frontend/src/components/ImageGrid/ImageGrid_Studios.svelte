@@ -8,10 +8,14 @@
 
   import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
-  export let media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
-  export let i: number
+  interface Props {
+    media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>;
+    i: number;
+  }
 
-  const getProcessedMedia = (oldMedia: typeof media) => {
+  let { media, i }: Props = $props();
+
+  const getProcessedMedia = $state((oldMedia: typeof media) => {
     let alreadyProcessedGroupedInto: number[] = []
     let newMedia: typeof media = []
     for (let i = 0; i < media.length; i++) {
@@ -26,7 +30,7 @@
       }
     }
     return newMedia
-  }
+  })
 
   const getSortedMatchingMedia = (medium: (typeof media)[0]) => {
     return medium.groupedIntoNamesId == null
@@ -36,59 +40,61 @@
           .sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  let selectedMedia: string[] = []
+  let selectedMedia: string[] = $state([])
 </script>
 
 <IntersectionObserver
   once={true}
   top={750}
-  let:intersecting
+  
   delay={i > 0 ? 300 : 0}
 >
-  {#if intersecting}
-    <main class:isMobile={$settings.mobileLayout}>
-      {#if selectedMedia.length}
-        <div class="groupActions">
-          <Button
-            card
-            icon="mdiGroup"
-            disabled={selectedMedia.length <= 1}
-            onclick={() => {
-              // TODO: Allow grouping of media with UI
-              fetch(`/api/group-together`, {
-                method: "POST",
-                body: JSON.stringify(selectedMedia)
-              }).then(() => invalidateAll())
-            }}>Group</Button
-          >
-          <Button card icon="mdiUngroup" disabled={selectedMedia.length > 1}
-            >Ungroup</Button
-          >
-        </div>
-      {/if}
-
-      {#each getProcessedMedia(media) as medium}
-        <ImageGridStudiosThumbnail
-          {medium}
-          onclick={() => (medium.expanded = !medium.expanded)}
-          parent={medium.groupedIntoNamesId != null}
-          bind:selectedMedia
-        />
-
-        {#if medium.groupedIntoNamesId != null && medium.expanded}
-          <div style="grid-column: 1/-1;" />
-          {#each getSortedMatchingMedia(medium) as subMedium}
-            <ImageGridStudiosThumbnail
-              sub
-              medium={subMedium}
-              bind:selectedMedia
-            />
-          {/each}
-          <div style="grid-column: 1/-1;" />
+  {#snippet children({ intersecting })}
+    {#if intersecting}
+      <main class:isMobile={$settings.mobileLayout}>
+        {#if selectedMedia.length}
+          <div class="groupActions">
+            <Button
+              card
+              icon="mdiGroup"
+              disabled={selectedMedia.length <= 1}
+              onclick={() => {
+                // TODO: Allow grouping of media with UI
+                fetch(`/api/group-together`, {
+                  method: "POST",
+                  body: JSON.stringify(selectedMedia)
+                }).then(() => invalidateAll())
+              }}>Group</Button
+            >
+            <Button card icon="mdiUngroup" disabled={selectedMedia.length > 1}
+              >Ungroup</Button
+            >
+          </div>
         {/if}
-      {/each}
-    </main>
-  {/if}
+
+        {#each getProcessedMedia(media) as medium}
+          <ImageGridStudiosThumbnail
+            {medium}
+            onclick={() => (medium.expanded = !medium.expanded)}
+            parent={medium.groupedIntoNamesId != null}
+            bind:selectedMedia
+          />
+
+          {#if medium.groupedIntoNamesId != null && medium.expanded}
+            <div style="grid-column: 1/-1;"></div>
+            {#each getSortedMatchingMedia(medium) as subMedium}
+              <ImageGridStudiosThumbnail
+                sub
+                medium={subMedium}
+                bind:selectedMedia
+              />
+            {/each}
+            <div style="grid-column: 1/-1;"></div>
+          {/if}
+        {/each}
+      </main>
+    {/if}
+  {/snippet}
 </IntersectionObserver>
 
 <style lang="scss">

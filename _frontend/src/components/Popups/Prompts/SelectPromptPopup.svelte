@@ -1,10 +1,19 @@
 <script lang="ts">
   import PromptFramework from "./_PromptFramework.svelte"
 
-  export let question: string
-  export let options: string[]
-  export let value: string
-  export let onresult: (value: string | null) => void
+  interface Props {
+    question: string;
+    options: string[];
+    value: string;
+    onresult: (value: string | null) => void;
+  }
+
+  let {
+    question,
+    options,
+    value = $bindable(),
+    onresult
+  }: Props = $props();
 </script>
 
 <PromptFramework oncancel={() => onresult(null)} onok={() => onresult(value)}>

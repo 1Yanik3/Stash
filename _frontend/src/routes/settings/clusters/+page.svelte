@@ -13,7 +13,11 @@
   import type { PageData } from "./$types"
   import AddNewClusterPopup from "./AddNewClusterPopup.svelte"
 
-  export let data: PageData
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const ClusterType = [
     "normal",
@@ -82,55 +86,57 @@
   <Table
     headers={["Id", "Icon", "Name", "Type"]}
     data={data.clusters}
-    let:entry
+    
   >
-    <td>
-      {entry.id}
-    </td>
-    <td>
-      <Icon nameAlt={entry.icon} />
-      {entry.icon}
-      <div class="floating">
-        <Button
-          icon="mdiPencil"
-          onclick={async () => {
-            // TODO: Icon Picker
-            const newIcon = await prompts.text("New icon", entry.icon)
-            if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
-          }}
-        />
-      </div>
-    </td>
-    <td>
-      {entry.name}
-      <div class="floating">
-        <Button
-          icon="mdiPencil"
-          onclick={async () => {
-            const newName = await prompts.text("New name", entry.name)
-            if (newName) editClusterAttribute(entry.id, "name", newName)
-          }}
-        />
-      </div>
-    </td>
-    <td>
-      {entry.type.substring(0, 1).toUpperCase() + entry.type.substring(1)}
-      <div class="floating">
-        <Button
-          icon="mdiPencil"
-          onclick={async ({ detail }) => {
-            const newType = await prompts.dropdown(
-              detail.target?.closest("td"),
-              ClusterType,
-              entry.type
-            )
-            if (newType && newType != entry.type)
-              editClusterAttribute(entry.id, "type", newType)
-          }}
-        />
-      </div>
-    </td>
-  </Table>
+    {#snippet children({ entry })}
+        <td>
+        {entry.id}
+      </td>
+      <td>
+        <Icon nameAlt={entry.icon} />
+        {entry.icon}
+        <div class="floating">
+          <Button
+            icon="mdiPencil"
+            onclick={async () => {
+              // TODO: Icon Picker
+              const newIcon = await prompts.text("New icon", entry.icon)
+              if (newIcon) editClusterAttribute(entry.id, "icon", newIcon)
+            }}
+          />
+        </div>
+      </td>
+      <td>
+        {entry.name}
+        <div class="floating">
+          <Button
+            icon="mdiPencil"
+            onclick={async () => {
+              const newName = await prompts.text("New name", entry.name)
+              if (newName) editClusterAttribute(entry.id, "name", newName)
+            }}
+          />
+        </div>
+      </td>
+      <td>
+        {entry.type.substring(0, 1).toUpperCase() + entry.type.substring(1)}
+        <div class="floating">
+          <Button
+            icon="mdiPencil"
+            onclick={async ({ detail }) => {
+              const newType = await prompts.dropdown(
+                detail.target?.closest("td"),
+                ClusterType,
+                entry.type
+              )
+              if (newType && newType != entry.type)
+                editClusterAttribute(entry.id, "type", newType)
+            }}
+          />
+        </div>
+      </td>
+          {/snippet}
+    </Table>
 </SettingsPageContent>
 
 <style lang="scss">

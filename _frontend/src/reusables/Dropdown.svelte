@@ -1,20 +1,34 @@
 <script lang="ts">
-  export let visible = true
-  export let top: number | null = null
-  export let right: number | null = null
-  export let bottom: number | null = null
-  export let left: number | null = null
-  export let position: "absolute" | "fixed" = "fixed"
-  export let width: "unset" | number = "unset"
+  interface Props {
+    visible?: boolean;
+    top?: number | null;
+    right?: number | null;
+    bottom?: number | null;
+    left?: number | null;
+    position?: "absolute" | "fixed";
+    width?: "unset" | number;
+    children?: import('svelte').Snippet;
+  }
 
-  $: style = (() => {
+  let {
+    visible = true,
+    top = null,
+    right = null,
+    bottom = null,
+    left = null,
+    position = "fixed",
+    width = "unset",
+    children
+  }: Props = $props();
+
+  let style = $derived((() => {
     let style = ""
     if (top != null) style += `top: ${top}px;`
     if (right != null) style += `right: ${right}px;`
     if (bottom != null) style += `bottom: ${bottom}px;`
     if (left != null) style += `left: ${left}px;`
     return style
-  })()
+  })())
 </script>
 
 <main
@@ -25,7 +39,7 @@
   style:width={width == "unset" ? "unset" : `${width}px`}
 >
   <div class="moreActionsDropdown">
-    <slot />
+    {@render children?.()}
   </div>
 </main>
 

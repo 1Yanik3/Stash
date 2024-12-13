@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { Readable } from "svelte/store"
 
-  export let title: Readable<string>
-  export let x: number
-  export let y: number
-  export let position: "top" | "bottom" | "left" | "right"
+  interface Props {
+    title: Readable<string>;
+    x: number;
+    y: number;
+    position: "top" | "bottom" | "left" | "right";
+  }
+
+  let {
+    title,
+    x,
+    y,
+    position
+  }: Props = $props();
 </script>
 
 <div

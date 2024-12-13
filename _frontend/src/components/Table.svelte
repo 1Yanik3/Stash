@@ -1,9 +1,19 @@
 <script lang="ts">
   type T = $$Generic<Record>
 
-  export let headers: string[] | null = null
-  export let data: T[]
-  export let borderless = false
+  interface Props {
+    headers?: string[] | null;
+    data: T[];
+    borderless?: boolean;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let {
+    headers = null,
+    data,
+    borderless = false,
+    children
+  }: Props = $props();
 </script>
 
 <table class:borderless>
@@ -19,7 +29,7 @@
   <tbody>
     {#each data as entry, i}
       <tr>
-        <slot {entry} {i} />
+        {@render children?.({ entry, i, })}
       </tr>
     {/each}
   </tbody>

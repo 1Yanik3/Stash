@@ -37,9 +37,11 @@
     <input type="password" id="password" />
   </div>
 
-  <svelte:fragment slot="actionsRight">
-    <Button card icon={null} highlighted onclick={login}>Login</Button>
-  </svelte:fragment>
+  {#snippet actionsRight()}
+  
+      <Button card icon={null} highlighted onclick={login}>Login</Button>
+    
+  {/snippet}
 </Popup>
 
 <style lang="scss">

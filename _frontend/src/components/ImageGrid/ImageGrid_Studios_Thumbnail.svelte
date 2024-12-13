@@ -13,11 +13,20 @@
 
   const dispatch = createEventDispatcher()
 
-  export let selectedMedia: string[]
-  export let medium: MediaType
 
-  export let parent = false
-  export let sub = false
+  interface Props {
+    selectedMedia: string[];
+    medium: MediaType;
+    parent?: boolean;
+    sub?: boolean;
+  }
+
+  let {
+    selectedMedia = $bindable(),
+    medium,
+    parent = false,
+    sub = false
+  }: Props = $props();
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
@@ -35,9 +44,9 @@
     }
   }
 
-  let showSeekPreview = false
-  let thumbElement: HTMLDivElement
-  let seekVideo: HTMLVideoElement | null = null
+  let showSeekPreview = $state(false)
+  let thumbElement: HTMLDivElement = $state()
+  let seekVideo: HTMLVideoElement | null = $state(null)
 
   const processSeeking = (e: MouseEvent | TouchEvent) => {
     showSeekPreview = e.shiftKey

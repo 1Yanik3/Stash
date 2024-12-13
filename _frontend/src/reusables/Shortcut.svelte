@@ -1,15 +1,27 @@
 <script lang="ts">
-  export let alt = false
-  export let opt = false
-  export let meta = false
-  export let control = false
-  export let shift = false
-  export let modifier: "alt" | "opt" | "meta" | "control" | "shift" | null =
-    null
 
-  export let key: string
 
-  export let action: Function
+  interface Props {
+    alt?: boolean;
+    opt?: boolean;
+    meta?: boolean;
+    control?: boolean;
+    shift?: boolean;
+    modifier?: "alt" | "opt" | "meta" | "control" | "shift" | null;
+    key: string;
+    action: Function;
+  }
+
+  let {
+    alt = false,
+    opt = false,
+    meta = false,
+    control = false,
+    shift = false,
+    modifier = null,
+    key,
+    action
+  }: Props = $props();
 
   let handler = (e: KeyboardEvent) => {
     if (

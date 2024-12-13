@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onMount } from "svelte"
 
   import { page } from "$app/stores"
@@ -31,7 +33,7 @@
     )
   }
 
-  let videoElementWidth: number
+  let videoElementWidth: number = $state()
   onMount(() => {
     const resizeObserver = new ResizeObserver(entries => {
       const entry = entries.at(0)
@@ -45,21 +47,23 @@
     return () => resizeObserver.unobserve(video)
   })
 
-  let video: HTMLVideoElement
-  $: videoElement.set(video)
-  let seekVideo: HTMLVideoElement | null
+  let video: HTMLVideoElement = $state()
+  run(() => {
+    videoElement.set(video)
+  });
+  let seekVideo: HTMLVideoElement | null = $state()
 
-  let paused = false
-  let currentTime = 0
-  let duration = 0
-  let volume = 0.5
-  let disableSeeking = false
+  let paused = $state(false)
+  let currentTime = $state(0)
+  let duration = $state(0)
+  let volume = $state(0.5)
+  let disableSeeking = $state(false)
   let currentSeekPosition: number = 0
 
-  $: playbackPercentage = (currentTime / duration) * 100
+  let playbackPercentage = $derived((currentTime / duration) * 100)
 
-  let rangeSlider: HTMLDivElement
-  let thumbIsLifted = false
+  let rangeSlider: HTMLDivElement = $state()
+  let thumbIsLifted = $state(false)
 
   const processMousePositionToTime = (e: MouseEvent | TouchEvent) => {
     const startX = rangeSlider.getBoundingClientRect().left
@@ -79,7 +83,11 @@
     }
   }
 
-  export let hideControls = false
+  interface Props {
+    hideControls?: boolean;
+  }
+
+  let { hideControls = $bindable(false) }: Props = $props();
 
   //   TODO: reimplment this
   //   visibleMedium.subscribe(() => {

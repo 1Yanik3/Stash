@@ -18,55 +18,57 @@
   <Table
     headers={["Id", "Icons", "Tag", "Media count", "Clusters"]}
     data={data.tags}
-    let:entry
+    
   >
-    <td>
-      {entry.id}
-    </td>
-    <td align="center">
-      {#if entry.icon}
-        <Icon nameAlt={entry.icon} />
-      {:else if entry.indirectIcon}
-        <Icon nameAlt={entry.indirectIcon} opacity={0.35} />
-      {/if}
-      <!-- TODO: Make reusable -->
-      <div class="floating">
-        <Button
-          icon="mdiPencil"
-          onclick={async () => {
-            const newIcon = await prompts.icon(
-              "Select a new icon",
-              entry.icon || ""
+    {#snippet children({ entry })}
+        <td>
+        {entry.id}
+      </td>
+      <td align="center">
+        {#if entry.icon}
+          <Icon nameAlt={entry.icon} />
+        {:else if entry.indirectIcon}
+          <Icon nameAlt={entry.indirectIcon} opacity={0.35} />
+        {/if}
+        <!-- TODO: Make reusable -->
+        <div class="floating">
+          <Button
+            icon="mdiPencil"
+            onclick={async () => {
+              const newIcon = await prompts.icon(
+                "Select a new icon",
+                entry.icon || ""
+              )
+              if (newIcon) {
+                const previousIcon = entry.icon
+                query("tag_update_icon", { tagId: entry.id, newIcon })
+                  .catch(e => {
+                    console.error(e)
+                    entry.icon = previousIcon
+                  })
+                  .then(() => invalidateAll())
+              }
+            }}
+          />
+        </div>
+      </td>
+      <td style="text-transform: capitalize">
+        {entry.tag}
+      </td>
+      <td>
+        {entry.count}
+      </td>
+      <td>
+        {data.tagClusterMappings[entry.id] &&
+          data.tagClusterMappings[entry.id]
+            .map(
+              cluster =>
+                ($page.data as PageData).clusters.find(c => c.id == cluster)?.name
             )
-            if (newIcon) {
-              const previousIcon = entry.icon
-              query("tag_update_icon", { tagId: entry.id, newIcon })
-                .catch(e => {
-                  console.error(e)
-                  entry.icon = previousIcon
-                })
-                .then(() => invalidateAll())
-            }
-          }}
-        />
-      </div>
-    </td>
-    <td>
-      {entry.tag}
-    </td>
-    <td>
-      {entry.count}
-    </td>
-    <td>
-      {data.tagClusterMappings[entry.id] &&
-        data.tagClusterMappings[entry.id]
-          .map(
-            cluster =>
-              ($page.data as PageData).clusters.find(c => c.id == cluster)?.name
-          )
-          .join(", ")}
-    </td>
-  </Table>
+            .join(", ")}
+      </td>
+          {/snippet}
+    </Table>
 </SettingsPageContent>
 
 <style lang="scss">

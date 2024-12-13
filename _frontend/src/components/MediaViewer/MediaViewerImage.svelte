@@ -3,8 +3,8 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings } from "$lib/stores"
 
-  let mainElement: HTMLElement
-  let imageElement: HTMLImageElement
+  let mainElement: HTMLElement = $state()
+  let imageElement: HTMLImageElement = $state()
 
   let zoomMode: "none" | "original" | "fit" = "none"
 
@@ -89,7 +89,7 @@
     cursor = "default"
   }
 
-  let cursor = "default"
+  let cursor = $state("default")
 </script>
 
 <main bind:this={mainElement}>

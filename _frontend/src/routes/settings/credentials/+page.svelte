@@ -7,7 +7,11 @@
 
   import type { PageData } from "./$types"
 
-  export let data: PageData
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const editUsername = async (id: number, newUsername: string) => {
     const response = await fetch("/settings/credentials/edit/username", {
@@ -50,46 +54,48 @@
   <Table
     headers={["Username", "Permitted Clusters"]}
     data={data.credentials}
-    let:entry
+    
   >
-    <td>
-      {entry.username}
-      <div class="floating">
-        <Button
-          noMargin
-          icon="mdiPencil"
-          onclick={async () => {
-            const newName = await prompts.text("New name", entry.username)
-            if (newName) editUsername(entry.id, newName)
-          }}
-        />
-      </div>
-    </td>
-    <td>
-      {entry.permittedClusters.map(c => c.name).join(", ")}
-      <div class="floating">
-        <Button
-          noMargin
-          icon="mdiPencil"
-          onclick={async () => {
-            const newClusters = await prompts.selectMultiple(
-              "Permitted Clusters",
-              data.allClusters.map(c => ({
-                value: c.id.toString(),
-                name: c.name
-              })),
-              entry.permittedClusters.map(c => c.id.toString())
-            )
-            if (newClusters)
-              editPermittedClusters(
-                entry.id,
-                newClusters.map(v => +v)
+    {#snippet children({ entry })}
+        <td>
+        {entry.username}
+        <div class="floating">
+          <Button
+            noMargin
+            icon="mdiPencil"
+            onclick={async () => {
+              const newName = await prompts.text("New name", entry.username)
+              if (newName) editUsername(entry.id, newName)
+            }}
+          />
+        </div>
+      </td>
+      <td>
+        {entry.permittedClusters.map(c => c.name).join(", ")}
+        <div class="floating">
+          <Button
+            noMargin
+            icon="mdiPencil"
+            onclick={async () => {
+              const newClusters = await prompts.selectMultiple(
+                "Permitted Clusters",
+                data.allClusters.map(c => ({
+                  value: c.id.toString(),
+                  name: c.name
+                })),
+                entry.permittedClusters.map(c => c.id.toString())
               )
-          }}
-        />
-      </div>
-    </td>
-  </Table>
+              if (newClusters)
+                editPermittedClusters(
+                  entry.id,
+                  newClusters.map(v => +v)
+                )
+            }}
+          />
+        </div>
+      </td>
+          {/snippet}
+    </Table>
 </SettingsPageContent>
 
 <style lang="scss">

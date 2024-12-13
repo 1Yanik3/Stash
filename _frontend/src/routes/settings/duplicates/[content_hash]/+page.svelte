@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import type { Media } from "@prisma/client/wasm"
 
   import { goto, invalidateAll } from "$app/navigation"
@@ -11,7 +13,11 @@
   import type { PageData } from "./$types"
   import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
 
-  export let data: PageData
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const dateFormatter = (input: string) =>
     new Date(input).toLocaleString("en-ca", { hour12: false }).replace(",", "")
@@ -21,7 +27,7 @@
     name: string
     selectedIndex: number
     formatter?: (value: any) => string
-  }[] = [
+  }[] = $state([
     { attr: "id", name: "ID / File", selectedIndex: 0 },
     { attr: "name", name: "Name", selectedIndex: -1 },
     { attr: "clustersId", name: "Clusters ID", selectedIndex: -1 },
@@ -48,7 +54,7 @@
       name: "Special Filter Attribute",
       selectedIndex: -1
     }
-  ]
+  ])
 
   let tags = [
     ...new Set(
@@ -58,15 +64,17 @@
     )
   ].map(s => JSON.parse(s))
 
-  $: attributesToTransfer.forEach((a, i) => {
-    if (
-      data.duplicate_media.every(
-        m => m[a.attr] === data.duplicate_media[0][a.attr]
-      )
-    ) {
-      attributesToTransfer[i].selectedIndex = 0
-    }
-  })
+  run(() => {
+    attributesToTransfer.forEach((a, i) => {
+      if (
+        data.duplicate_media.every(
+          m => m[a.attr] === data.duplicate_media[0][a.attr]
+        )
+      ) {
+        attributesToTransfer[i].selectedIndex = 0
+      }
+    })
+  });
 
   const getValueToKeep = (
     attribute: (typeof attributesToTransfer)[number]["attr"]
@@ -87,124 +95,130 @@
         {/each}
       </div>
     </div>
-    <Table borderless data={data.duplicate_media} let:entry let:i>
-      <td>
-        {#if entry.type.startsWith("image")}
-          <img
-            src={`${$page.data.serverURL}/file/${entry.id}`}
-            alt={entry.id}
-            crossorigin="use-credentials"
-          />
-        {:else if entry.type.startsWith("video")}
-          <!-- svelte-ignore a11y-media-has-caption -->
-          <video controls>
-            <source
+    <Table borderless data={data.duplicate_media}  >
+      {#snippet children({ entry, i })}
+            <td>
+          {#if entry.type.startsWith("image")}
+            <img
               src={`${$page.data.serverURL}/file/${entry.id}`}
-              type={entry.type}
+              alt={entry.id}
+              crossorigin="use-credentials"
             />
-          </video>
-        {:else}
-          <span>ERROR: Unknown format!</span>
-        {/if}
-      </td>
-      <td>
-        {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
-          <div
-            class="row"
-            class:disabled={data.duplicate_media.every(
-              m => m[attr] === data.duplicate_media[0][attr]
-            )}
-          >
-            <span class:disabled={selectedIndex != -1}>{name}</span>
-            {#if formatter}
-              <span class:disabled={selectedIndex != -1}
-                >{formatter(entry[attr])}</span
-              >
-            {:else}
-              <span class:disabled={selectedIndex != -1}>{entry[attr]}</span>
-            {/if}
-            <div class="div">
-              <Toggle
-                state={selectedIndex == i}
-                enable={() => {
-                  attributesToTransfer[j].selectedIndex = i
-                  console.log(attributesToTransfer[j])
-                }}
-                disable={() => {
-                  attributesToTransfer[j].selectedIndex = -1
-                }}
+          {:else if entry.type.startsWith("video")}
+            <!-- svelte-ignore a11y_media_has_caption -->
+            <video controls>
+              <source
+                src={`${$page.data.serverURL}/file/${entry.id}`}
+                type={entry.type}
               />
+            </video>
+          {:else}
+            <span>ERROR: Unknown format!</span>
+          {/if}
+        </td>
+        <td>
+          {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
+            <div
+              class="row"
+              class:disabled={data.duplicate_media.every(
+                m => m[attr] === data.duplicate_media[0][attr]
+              )}
+            >
+              <span class:disabled={selectedIndex != -1}>{name}</span>
+              {#if formatter}
+                <span class:disabled={selectedIndex != -1}
+                  >{formatter(entry[attr])}</span
+                >
+              {:else}
+                <span class:disabled={selectedIndex != -1}>{entry[attr]}</span>
+              {/if}
+              <div class="div">
+                <Toggle
+                  state={selectedIndex == i}
+                  enable={() => {
+                    attributesToTransfer[j].selectedIndex = i
+                    console.log(attributesToTransfer[j])
+                  }}
+                  disable={() => {
+                    attributesToTransfer[j].selectedIndex = -1
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        {/each}
-      </td>
-    </Table>
+          {/each}
+        </td>
+                {/snippet}
+        </Table>
   </main>
 
-  <svelte:fragment slot="actionsLeft">
-    <Button
-      card
-      icon="mdiDebugStepOver"
-      onclick={() => {
-        fetch(`${$page.url.href}/ignore`, {
-          method: "PUT"
-        })
-          .then(async () => {
-            await invalidateAll()
-            goto("/settings/duplicates")
-          })
-          .catch(e => {
-            console.error(e)
-            window.alert("An error occurred!")
-          })
-      }}
-    >
-      Ignore
-    </Button>
-  </svelte:fragment>
-
-  <svelte:fragment slot="actionsRight">
-    {#key attributesToTransfer}
+  {#snippet actionsLeft()}
+  
       <Button
         card
-        icon="mdiSourceMerge"
-        highlighted
+        icon="mdiDebugStepOver"
         onclick={() => {
-          fetch(`${$page.url.href}/merge`, {
-            method: "PUT",
-            body: JSON.stringify({
-              idToKeep: getValueToKeep("id"),
-              idsToRemove: data.duplicate_media
-                .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
-                .map(m => m.id),
-              attributesToKeep: {
-                clustersId: getValueToKeep("clustersId"),
-                createdDate: getValueToKeep("createdDate"),
-                date: getValueToKeep("date"),
-                favourited: getValueToKeep("favourited"),
-                groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
-                name: getValueToKeep("name"),
-                specialFilterAttribute: getValueToKeep(
-                  "specialFilterAttribute"
-                ),
-                tags: tags.map(t => t.id)
-              }
-            } satisfies DuplicatesMergeServerPutRequestData)
+          fetch(`${$page.url.href}/ignore`, {
+            method: "PUT"
           })
-          //   .then(async () => {
-          //     await invalidateAll()
-          //     goto("/settings/duplicates")
-          //   })
-          //   .catch(e => {
-          //     console.error(e)
-          //     window.alert("An error occurred!")
-          //   })
+            .then(async () => {
+              await invalidateAll()
+              goto("/settings/duplicates")
+            })
+            .catch(e => {
+              console.error(e)
+              window.alert("An error occurred!")
+            })
         }}
       >
-        Merge
+        Ignore
       </Button>
-    {/key}
-  </svelte:fragment>
+    
+  {/snippet}
+
+  {#snippet actionsRight()}
+  
+      {#key attributesToTransfer}
+        <Button
+          card
+          icon="mdiSourceMerge"
+          highlighted
+          onclick={() => {
+            fetch(`${$page.url.href}/merge`, {
+              method: "PUT",
+              body: JSON.stringify({
+                idToKeep: getValueToKeep("id"),
+                idsToRemove: data.duplicate_media
+                  .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
+                  .map(m => m.id),
+                attributesToKeep: {
+                  clustersId: getValueToKeep("clustersId"),
+                  createdDate: getValueToKeep("createdDate"),
+                  date: getValueToKeep("date"),
+                  favourited: getValueToKeep("favourited"),
+                  groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
+                  name: getValueToKeep("name"),
+                  specialFilterAttribute: getValueToKeep(
+                    "specialFilterAttribute"
+                  ),
+                  tags: tags.map(t => t.id)
+                }
+              } satisfies DuplicatesMergeServerPutRequestData)
+            })
+            //   .then(async () => {
+            //     await invalidateAll()
+            //     goto("/settings/duplicates")
+            //   })
+            //   .catch(e => {
+            //     console.error(e)
+            //     window.alert("An error occurred!")
+            //   })
+          }}
+        >
+          Merge
+        </Button>
+      {/key}
+    
+  {/snippet}
 </Popup>
 
 <style lang="scss">

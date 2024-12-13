@@ -7,13 +7,13 @@
 
   import type { PageData } from "../../routes/[cluster]/$types"
 
-  $: pageData = $page.data as PageData
+  let pageData = $derived($page.data as PageData)
 
   let data: {
     tagid: number
     tag: string
     mediaid: number
-  }[] = []
+  }[] = $state([])
 
   onMount(async () => {
     const res = await fetch(`/api/cluster/${pageData.cluster.id}/index`)
@@ -21,7 +21,7 @@
     console.log(data)
   })
 
-  let filter = ""
+  let filter = $state("")
 </script>
 
 <main>

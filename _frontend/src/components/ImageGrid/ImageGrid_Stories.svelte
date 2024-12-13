@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import SvelteMarkdown from "svelte-markdown"
 
   import { page } from "$app/stores"
@@ -36,15 +38,15 @@
     }, 0)
   }
 
-  let story: Awaited<typeof pageData.streamed.stories>[number] | null = null
-  let chapters: string[] = []
+  let story: Awaited<typeof pageData.streamed.stories>[number] | null = $state(null)
+  let chapters: string[] = $state([])
 
-  let serif = false
+  let serif = $state(false)
 
-  let mainElement: HTMLElement
-  let contentElement: HTMLDivElement
-  let scrollElement: HTMLDivElement
-  let scrollElementSpacer: HTMLDivElement
+  let mainElement: HTMLElement = $state()
+  let contentElement: HTMLDivElement = $state()
+  let scrollElement: HTMLDivElement = $state()
+  let scrollElementSpacer: HTMLDivElement = $state()
 
   const selectStory = async (
     _story: Awaited<typeof pageData.streamed.stories>[number]
@@ -79,9 +81,11 @@
     // }
   }
 
-  let buttonsHidden = false
-  let chapterSelectionPopupOpen = false
-  $: $mobileBottomBarVisible = !story
+  let buttonsHidden = $state(false)
+  let chapterSelectionPopupOpen = $state(false)
+  run(() => {
+    $mobileBottomBarVisible = !story
+  });
 
   let processTouchAreas = (e: MouseEvent) => {
     // Top touch area (25%) => toggle buttons always on temporarely
@@ -106,7 +110,7 @@
   }
 </script>
 
-<svelte:window on:popstate={() => (story = null)} />
+<svelte:window onpopstate={() => (story = null)} />
 
 {#if chapterSelectionPopupOpen}
   <Popup on:close={() => (chapterSelectionPopupOpen = false)} bottomSheet>
@@ -141,7 +145,7 @@
             e.stopPropagation()
             buttonsHidden = true
           }}
-        />
+></div>
         <Button icon="mdiFormatFont" onclick={() => (serif = !serif)} />
         {#if $settings.mobileLayout}
           <Button
@@ -178,7 +182,7 @@
       <SvelteMarkdown source={story.content} />
     </div>
     <div class="content" bind:this={scrollElement}>
-      <div bind:this={scrollElementSpacer} />
+      <div bind:this={scrollElementSpacer}></div>
     </div>
   </main>
 {:else}

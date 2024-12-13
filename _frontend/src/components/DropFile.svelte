@@ -12,6 +12,11 @@
   import Icon from "./Icon.svelte"
   import Key from "./Key.svelte"
   import TagInputField from "./Tags/TagInputField.svelte"
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   let tags: TagExtended[] = $state([])
   let tagInputElement: TagInputField | null = $state(null)
@@ -168,23 +173,27 @@
       </div>
     </main>
 
-    <svelte:fragment slot="actionsLeft">
-      <Button card onclick={() => ($uploadPopupOpen = false)}>Cancel</Button>
-    </svelte:fragment>
+    {#snippet actionsLeft()}
+      
+        <Button card onclick={() => ($uploadPopupOpen = false)}>Cancel</Button>
+      
+      {/snippet}
 
-    <svelte:fragment slot="actionsRight">
-      <Button
-        card
-        highlighted
-        icon="mdiUpload"
-        onclick={upload}
-        shortcut={{ modifier: "meta", key: "enter" }}
-      />
-    </svelte:fragment>
+    {#snippet actionsRight()}
+      
+        <Button
+          card
+          highlighted
+          icon="mdiUpload"
+          onclick={upload}
+          shortcut={{ modifier: "meta", key: "enter" }}
+        />
+      
+      {/snippet}
   </Popup>
 {/if}
 
-<slot />
+{@render children?.()}
 
 <input id="hidden-input" type="file" bind:value={files} multiple />
 

@@ -3,6 +3,7 @@ import { get, readable, type Readable } from "svelte/store"
 import { settings } from "$lib/stores"
 
 import Tooltip from "./Tooltip.svelte"
+import { mount } from "svelte";
 
 export function tooltip(
   element: HTMLElement,
@@ -35,18 +36,18 @@ export function tooltip(
 
     // TODO: Other directions
 
-    tooltipComponent = new Tooltip({
-      props: {
-        title:
-          typeof options.title == "string"
-            ? readable(options.title)
-            : options.title,
-        position: options.position,
-        x,
-        y
-      },
-      target: document.body
-    })
+    tooltipComponent = mount(Tooltip, {
+          props: {
+            title:
+              typeof options.title == "string"
+                ? readable(options.title)
+                : options.title,
+            position: options.position,
+            x,
+            y
+          },
+          target: document.body
+        })
   }
 
   const mouseLeave = () => {

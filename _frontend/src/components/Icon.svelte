@@ -1,13 +1,23 @@
 <script lang="ts">
   import { possibleIcons } from "$lib/possibleIcons"
 
-  export let name: keyof typeof possibleIcons | null = null
-  export let nameAlt: string = ""
   const possibleIconsAlt = possibleIcons as any
 
-  export let size: number | string = 1
-  export let color: any = null
-  export let opacity = 1
+  interface Props {
+    name?: keyof typeof possibleIcons | null;
+    nameAlt?: string;
+    size?: number | string;
+    color?: any;
+    opacity?: number;
+  }
+
+  let {
+    name = null,
+    nameAlt = "",
+    size = $bindable(1),
+    color = null,
+    opacity = 1
+  }: Props = $props();
 
   // size
   if (Number(size)) size = Number(size)
@@ -30,7 +40,7 @@
   }
 
   // @ts-ignore
-  $: style = getStyles(size, color)
+  let style = $derived(getStyles(size, color))
 </script>
 
 {#if (name || nameAlt).startsWith("mdi")}

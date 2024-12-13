@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: 'onmousedown|preventDefault' is not a valid attribute name -->
 <script>
   // @ts-nocheck
 

@@ -2,9 +2,13 @@
   import Button from "$components/Button.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
 
-  export let options: string[]
-  export let value: string
-  export let onresult: (value: string | null) => void
+  interface Props {
+    options: string[];
+    value: string;
+    onresult: (value: string | null) => void;
+  }
+
+  let { options, value, onresult }: Props = $props();
 </script>
 
 <svelte:window

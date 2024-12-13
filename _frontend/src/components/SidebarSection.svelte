@@ -1,8 +1,18 @@
 <script lang="ts">
-  export let title: string | null = null
 
-  export let justify = false
-  export let horizontal = false
+  interface Props {
+    title?: string | null;
+    justify?: boolean;
+    horizontal?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    title = null,
+    justify = false,
+    horizontal = false,
+    children
+  }: Props = $props();
 </script>
 
 <div class:justified={justify} class:horizontal>
@@ -14,7 +24,7 @@
     </div>
   {/if}
 
-  <slot />
+  {@render children?.()}
 </div>
 
 <style lang="scss">
