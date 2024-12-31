@@ -21,16 +21,21 @@
     iconOverwrite?: keyof typeof possibleIcons | null
   } = $props()
 
-  //   selectedTags.subscribe(tags => {
-  //     if (tags.length == 1 && tags.includes(name.toLowerCase())) {
-  //       setTimeout(() => {
-  //         element?.scrollIntoView({ block: "nearest" })
-  //       }, 100)
-  //     }
-  //   })
+  $effect(() => {
+    if (
+      mediaController.selectedTags.length == 1 &&
+      mediaController.selectedTags[0].id == tagId
+    ) {
+      setTimeout(() => {
+        const element = document.getElementById(`tag-${tagId}`)
+        element?.scrollIntoView({ block: "nearest" })
+      }, 100)
+    }
+  })
+
   let showDropdown = $state(false)
 
-  const [icon, iconOpacity] = (() => {
+  const [icon, iconOpacity] = $derived.by(() => {
     if (iconOverwrite) return [iconOverwrite, 1]
     if (tagsController.tagMap[tagId].icon)
       return [tagsController.tagMap[tagId].icon, 1]
@@ -38,10 +43,10 @@
       return [tagsController.tagMap[tagId].indirectIcon, 0.35]
     if (tagsController.tagMap[tagId].collapsed) return ["mdiFolderHidden", 1]
     return ["mdiFolderOutline", 1]
-  })() as any
+  }) as [keyof typeof possibleIcons, number]
 </script>
 
-<main>
+<main id="tag-{tagId}">
   <Button
     styleOverride="margin-left: {0.75 + indent}em; text-transform: capitalize"
     count={tagsController.tagMap[tagId].count}
