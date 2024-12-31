@@ -6,6 +6,7 @@ import { get } from "svelte/store"
 import { page } from "$app/stores"
 import query from "$lib/client/call"
 import { mediaTypeFilter, PAGE_SIZE, traverse } from "$lib/stores"
+import vars from "$lib/vars.svelte"
 
 import type { TagExtended } from "./TagsController.svelte"
 
@@ -23,6 +24,10 @@ class MediaController {
       console.group("%cUpdating via effect", "color: grey; font-weight: normal")
       this.updateMedia()
       console.groupEnd()
+    })
+
+    $effect(() => {
+      this.updateMedia(vars.clusterName)
     })
 
     traverse.subscribe(() => this.updateMedia)
