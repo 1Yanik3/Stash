@@ -11,5 +11,10 @@ export default function query<Endpoint extends keyof typeof routes>(
       endpoint,
       args
     })
-  }).then(res => res.json())
+  }).then(async res => {
+    if (!res.ok) throw new Error("Failed to fetch")
+    const response = await res.text()
+    if (!response) return null
+    return JSON.parse(response)
+  })
 }

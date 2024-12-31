@@ -29,7 +29,7 @@ export let thumbnailSuffixParameter: Writable<{
 export let imageSuffixParameter: Writable<String> = writable("")
 
 // Selections
-export let selectedMediaIds: Writable<String[]> = writable([])
+export let selectedMediaIds: Writable<string[]> = writable([])
 
 // Media Filters
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")

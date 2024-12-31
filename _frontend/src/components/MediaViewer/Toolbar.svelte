@@ -159,7 +159,12 @@
                 specialFilterAttribute: newValue
               })
             }
-          ).catch(console.error)
+          )
+          .then(() => {
+            if (!mediaController.visibleMedium) return
+            mediaController.visibleMedium.specialFilterAttribute = newValue
+          })
+          .catch(console.error)
         }}
       />
       {#each mediaController.visibleMedium.tags || [] as tag (tag)}

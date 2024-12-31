@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
 
-  import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
   import {
@@ -43,24 +42,6 @@
       }
     }
   }
-
-  let showSeekPreview = $state(false)
-  let thumbElement: HTMLDivElement = $state() as any
-  let seekVideo: HTMLVideoElement | null = $state(null)
-
-  const processSeeking = (e: MouseEvent | TouchEvent) => {
-    showSeekPreview = e.shiftKey
-    if (showSeekPreview && seekVideo) {
-      const startX = thumbElement.getBoundingClientRect().left
-      const endX = thumbElement.getBoundingClientRect().right
-      const playbackPercentage =
-        // @ts-ignore
-        (((e.clientX || e.touches[0].clientX) - startX) / (endX - startX)) * 100
-
-      seekVideo.currentTime = (seekVideo.duration / 100) * playbackPercentage
-      console.log(seekVideo.currentTime)
-    }
-  }
 </script>
 
 <main
@@ -68,32 +49,9 @@
   class:active={mediaController.visibleMedium == medium && !parent}
   class:selected={selectedMedia.includes(medium.id)}
   class:sub
-  onmousemove={processSeeking}
-  ontouchmove={processSeeking}
 >
-  <div class="thumb" bind:this={thumbElement}>
-    <GridThumbnail {medium} i={-1} disableActive rigidAspectRatio disableZoom />
-    {#if showSeekPreview}
-      <video
-        src="{$page.data.serverURL}/thumb/{medium.id}_seek.webm"
-        bind:this={seekVideo}
-        muted
-        crossorigin="use-credentials"
-        preload="auto"
-        style="
-            position: absolute;
-            z-index: 100;
-            top: 0; left: 0;
-
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-        "
-      >
-        <track kind="captions" />
-      </video>
-    {/if}
+  <div class="thumb">
+    <GridThumbnail {medium} disableActive rigidAspectRatio disableZoom />
   </div>
 
   <div class="details">

@@ -2,7 +2,7 @@
   import { onMount } from "svelte"
 
   import { browser } from "$app/environment"
-  import { beforeNavigate, goto } from "$app/navigation"
+  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
@@ -38,32 +38,6 @@
       window.mediaController = mediaController
     }
   })
-
-  //   const reset = (newClusterName: string | undefined) => {
-  //     tagsController.updateTags(newClusterName)
-  //     mediaController.updateMedia(newClusterName)
-  //   }
-
-  // TODO: This is horrible
-  beforeNavigate(data => {
-    // vars.clusterName = data.to?.params?.clusterName || pageData.cluster.name
-    // console.log(vars, data.to?.params?.clusterName, pageData.cluster.name)
-    // thumbnailSuffixParameter.set(null)
-    // selectedMediaIds.set([])
-    // mediaController.pages = []
-    // tagsController.updateTags(data.to?.params?.cluster)
-    // mediaController.selectedTags = []
-    // mediaController.prefetchedQueryForTagId = null
-    // mediaController.updateMedia(data.to?.params?.cluster, {
-    //   ...mediaController.filters,
-    //   specialFilterAttribute: null
-    // })
-  })
-  //   afterNavigate(data => reset())
-
-  // visibleMedium.subscribe(() => {
-  //   imageSuffixParameter.set("")
-  // })
 
   $effect(() => {
     if ($settings.mobileLayout) {

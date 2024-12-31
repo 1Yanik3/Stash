@@ -5,19 +5,22 @@
   import { refreshFilters } from "$lib/client/QuickSwitchHelpers/filters.svelte"
   import {
     executeSearch,
-    updateSearcher,
     type ResultsType
   } from "$lib/client/QuickSwitchHelpers/search.svelte"
   import { controller } from "$lib/stores"
   import Popup from "$reusables/Popup.svelte"
 
   let value = $state("")
+  let startCharacter = $derived(value.length ? value[0] : "")
   let selectedIndex = $state(0)
   let submenuOverwrite: ResultsType = $state([])
   const results = $derived(executeSearch(value))
 
+  $effect(() => {
+    refreshFilters(startCharacter)
+  })
+
   onMount(() => {
-    refreshFilters()
     const input = document.getElementById(
       "quick-switch-input"
     ) as HTMLInputElement

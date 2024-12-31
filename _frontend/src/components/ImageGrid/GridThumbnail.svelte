@@ -66,6 +66,23 @@
     if ($thumbnailSuffixParameter.mediaId == medium.id)
       suffix = `?${$thumbnailSuffixParameter.suffix}`
   })
+
+  // TODO: Move to a separate file (with the use directive?)
+  let showSeekPreview = $state(false)
+  let thumbElement: HTMLDivElement = $state() as any
+  let seekVideo: HTMLVideoElement | null = $state(null)
+  const processSeeking = (e: MouseEvent | TouchEvent) => {
+    showSeekPreview = e.shiftKey
+    if (showSeekPreview && seekVideo) {
+      const startX = thumbElement.getBoundingClientRect().left
+      const endX = thumbElement.getBoundingClientRect().right
+      const playbackPercentage =
+        // @ts-ignore
+        (((e.clientX || e.touches[0].clientX) - startX) / (endX - startX)) * 100
+
+      seekVideo.currentTime = (seekVideo.duration / 100) * playbackPercentage
+    }
+  }
 </script>
 
 <svelte:head>
@@ -89,6 +106,8 @@
       bind:this={element}
       class:selected={$selectedMediaIds.includes(medium.id)}
       class:rigidAspectRatio
+      onmousemove={processSeeking}
+      ontouchmove={processSeeking}
     >
       <svg
         viewBox={`0 0 ${medium.width} ${medium.height}`}
@@ -112,7 +131,31 @@
             mediaController.visibleMedium?.id == medium.id}
           crossorigin="use-credentials"
           class:disableZoom
+          bind:this={thumbElement}
         />
+
+        {#if medium.type.startsWith("video") && showSeekPreview}
+          <video
+            src="{$page.data.serverURL}/thumb/{medium.id}_seek.webm"
+            bind:this={seekVideo}
+            muted
+            crossorigin="use-credentials"
+            preload="auto"
+            style="
+                position: absolute;
+                z-index: 100;
+                top: 0; left: 0;
+
+                width: 100%;
+                height: 100%;
+                
+                border-radius: 3px;
+                object-fit: cover;
+            "
+          >
+            <track kind="captions" />
+          </video>
+        {/if}
 
         {#if medium.favourited}
           <div style="position: absolute; right: 0.25em; bottom: 0.25em;">

@@ -3,45 +3,123 @@ import { get } from "svelte/store"
 import { goto } from "$app/navigation"
 import { page } from "$app/stores"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
+import { prompts } from "$lib/controllers/PromptController"
 import {
   default as tagsController,
   type TagExtended
 } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { actionBar, controller } from "$lib/stores"
+import { actionBar, controller, selectedMediaIds } from "$lib/stores"
 
 import type { PageData } from "../../../routes/[cluster]/$types"
 import { sortingMethods } from "../../../types"
+import query from "../call"
 import { updateSearcher, type ResultsType } from "./search.svelte"
 
-export const refreshFilters = () =>
-  Promise.all([
+let previousValue = ""
+
+export const refreshFilters = (value: string = previousValue) => {
+  previousValue = value
+
+  let promises: (() => Promise<ResultsType>)[] = [
     actions,
-    gatherAllTags(),
-    gatherAllFilters(),
-    gatherAllClusters()
-  ]).then(data => {
+    gatherAllTags,
+    gatherAllFilters,
+    gatherAllClusters
+  ]
+
+  if (value.startsWith("/")) promises = [actions]
+  else if (value.startsWith("!")) promises = [gatherAllClusters]
+  else if (value.startsWith("@")) promises = [gatherAllFilters]
+  else if (value.startsWith("#")) promises = [gatherAllTags]
+
+  Promise.all(promises.map(fn => fn())).then(data => {
     console.log("refreshed filters")
     updateSearcher(data.flat())
   })
+}
 
-const actions: ResultsType = [
-  {
-    icon: "mdiImport",
-    label: "/Import",
-    onEnter: () => {
-      get(controller).setPopup("Quick Actions Import")
+const actions = async () => {
+  const tags: ResultsType = [
+    {
+      icon: "mdiImport",
+      label: "/Import",
+      onEnter: () => {
+        get(controller).setPopup("Quick Actions Import")
+      }
+    },
+    {
+      icon: "mdiCast",
+      label: "/Cast",
+      onEnter: () => {
+        get(controller).setPopup(null)
+        get(controller).setActionBar(get(actionBar) == "Cast" ? null : "Cast")
+      }
     }
-  },
-  {
-    icon: "mdiCast",
-    label: "/Cast",
-    onEnter: () => {
-      get(controller).setPopup(null)
-      get(controller).setActionBar(get(actionBar) == "Cast" ? null : "Cast")
-    }
+  ]
+
+  if (get(selectedMediaIds).length) {
+    tags.push(
+      {
+        icon: "mdiTagPlus",
+        label: "/Add Tags",
+        onEnter: async () => {
+          const tagToAdd = await prompts.tag(
+            "Select a tag to add to the selected media"
+          )
+          if (tagToAdd?.id) {
+            await query("media_bulk_add_tags", {
+              mediaIds: get(selectedMediaIds),
+              tagId: tagToAdd.id
+            })
+            for (const mediaId of get(selectedMediaIds)) {
+              const media = mediaController.media.find(m => m.id == mediaId)
+              if (media && media.tags.find(t => t == tagToAdd.id)) {
+                media.tags = [...media.tags, tagToAdd.id]
+              }
+            }
+            mediaController.setMedia(mediaController.media)
+          }
+        }
+      },
+      {
+        icon: "mdiTagMinus",
+        label: "/Remove Tags",
+        onEnter: async () => {
+          const existingTags = new Set(
+            get(selectedMediaIds).flatMap(
+              mediaId =>
+                mediaController.media.find(m => m.id == mediaId)?.tags || []
+            )
+          )
+            .values()
+            .map(t => `${t} - ${tagsController.tagMap[t].tag}`)
+
+          const tagToRemove = await prompts.select(
+            "Select a tag to remove from the selected media",
+            [...existingTags]
+          )
+          if (tagToRemove) {
+            const [tagId] = tagToRemove.split(" - ")
+            await query("media_bulk_remove_tags", {
+              mediaIds: get(selectedMediaIds),
+              tagId: +tagId
+            })
+            for (const mediaId of get(selectedMediaIds)) {
+              const media = mediaController.media.find(m => m.id == mediaId)
+              if (media && media.tags.find(t => t == +tagId)) {
+                media.tags = media.tags.filter(t => t != +tagId)
+              }
+            }
+            mediaController.setMedia(mediaController.media)
+          }
+        }
+      }
+    )
   }
-]
+
+  return tags
+}
 
 const gatherAllTags = async () => {
   const tags: ResultsType = []

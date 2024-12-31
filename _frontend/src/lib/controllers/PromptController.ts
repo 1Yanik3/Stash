@@ -10,6 +10,8 @@ import TagSearchPromptPopup from "$components/Popups/Prompts/TagSearchPromptPopu
 import TextPromptPopup from "$components/Popups/Prompts/TextPromptPopup.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
 
+import type { TagExtended } from "./TagsController.svelte"
+
 export const prompts = {
   text: (question: string, value = ""): Promise<string | null> =>
     new Promise(resolve => {
@@ -18,7 +20,7 @@ export const prompts = {
         props: {
           question,
           value,
-          onresult: (result: string | null) => {
+          onresult: result => {
             if (result != null) resolve(result)
             else resolve(null)
             unmount(element)
@@ -37,7 +39,7 @@ export const prompts = {
         props: {
           question,
           value,
-          onresult: (result: string | null) => {
+          onresult: result => {
             if (result != null) resolve(result as any)
             else resolve(null)
             unmount(element)
@@ -58,7 +60,7 @@ export const prompts = {
           question,
           options,
           value: value || options[0],
-          onresult: (result: string | null) => {
+          onresult: result => {
             if (result != null) resolve(result)
             else resolve(null)
             unmount(element)
@@ -79,7 +81,7 @@ export const prompts = {
           question,
           options,
           selected: selected || [],
-          onresult: (result: string[] | null) => {
+          onresult: result => {
             if (result != null) resolve(result)
             else resolve(null)
             unmount(element)
@@ -101,7 +103,7 @@ export const prompts = {
           options,
           value: value || options[0],
 
-          onresult: (result: string | null) => {
+          onresult: result => {
             if (result != null) resolve(result)
             else resolve(null)
             unmount(element)
@@ -110,7 +112,7 @@ export const prompts = {
       })
     }),
 
-  tag: (question: string, value = ""): Promise<string | null> =>
+  tag: (question: string, value = ""): Promise<TagExtended | null> =>
     new Promise(resolve => {
       const element = mount(TagSearchPromptPopup, {
         target: document.body,
@@ -118,7 +120,7 @@ export const prompts = {
           question,
           value,
           //   TODO
-          onresult: (result: string | null) => {
+          onresult: result => {
             if (result != null) resolve(result)
             else resolve(null)
             unmount(element)
@@ -133,7 +135,7 @@ export const prompts = {
         target: document.body,
         props: {
           text,
-          onresult: (result: boolean) => {
+          onresult: result => {
             resolve(result)
             unmount(element)
           }
@@ -147,7 +149,7 @@ export const prompts = {
         target: document.body,
         props: {
           text,
-          onresult: (result: boolean) => {
+          onresult: result => {
             resolve(result)
             unmount(element)
           }

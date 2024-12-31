@@ -66,7 +66,8 @@ class MediaController {
     this.setMedia(await this.loadMedia(0, newCluster))
   }
 
-  private setMedia = async (media: typeof this.media) => {
+  // TODO: Change to event
+  public setMedia = async (media: typeof this.media) => {
     this.media = media
     this.pages = await calculatePages(media)
   }
@@ -155,7 +156,7 @@ class MediaController {
 const _mediaController = new MediaController()
 export const mediaController = _mediaController
 
-const calculatePages = async (media: Media[]) => {
+const calculatePages = async (media: MediaType[]) => {
   // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
 
   if (!media.length) {
@@ -176,7 +177,7 @@ const calculatePages = async (media: Media[]) => {
     const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
     if (!page.length) break
 
-    const hash = await md5(page.map(m => m.id).join())
+    const hash = await md5(page.map(m => ([m.id, m.tags])).join())
 
     // If the page has changed, update it
     if (_mediaController.pages[i]?.hash != hash) {
