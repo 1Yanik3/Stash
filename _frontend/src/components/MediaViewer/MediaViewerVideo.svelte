@@ -251,6 +251,8 @@
 
       max-width: 100%;
       max-height: 100%;
+      width: inherit;
+      height: inherit;
 
       object-fit: contain;
       outline: none !important;
@@ -321,7 +323,6 @@
         }
 
         &:not(:hover) {
-
           & > video {
             display: none;
           }

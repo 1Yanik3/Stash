@@ -21,7 +21,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
   await fs.writeFile(filePath, fileBuffer)
 
   // delte thumbnail
-  await fs.rm(thumbnailPath)
+  await fs.rm(thumbnailPath, { force: true })
 
   return new Response()
 }
