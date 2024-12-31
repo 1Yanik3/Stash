@@ -7,10 +7,10 @@
   import Popup from "$reusables/Popup.svelte"
 
   interface Props {
-    close: () => void;
+    close: () => void
   }
 
-  let { close }: Props = $props();
+  let { close }: Props = $props()
 
   let name = $state("")
   let icon = $state("")
@@ -76,21 +76,17 @@
   </section>
 
   {#snippet actionsLeft()}
-  
-      <Button card onclick={close}>Cancel</Button>
-    
+    <Button card onclick={close}>Cancel</Button>
   {/snippet}
 
   {#snippet actionsRight()}
-  
-      <Button
-        card
-        highlighted
-        icon="mdiPlus"
-        onclick={addNewCluster}
-        shortcut={{ modifier: "meta", key: "enter" }}
-      />
-    
+    <Button
+      card
+      highlighted
+      icon="mdiPlus"
+      onclick={addNewCluster}
+      shortcut={{ modifier: "meta", key: "enter" }}
+    />
   {/snippet}
 </Popup>
 

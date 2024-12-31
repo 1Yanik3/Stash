@@ -4,7 +4,7 @@ import { page } from "$app/stores"
 import query from "$lib/client/call"
 import assembleTagHierarchyMap from "$lib/helpers/assembleTagHierarchyMap"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { mediaTypeFilter } from "$lib/stores"
+import { mediaTypeFilter } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
 
 import { mediaController } from "./MediaController.svelte"

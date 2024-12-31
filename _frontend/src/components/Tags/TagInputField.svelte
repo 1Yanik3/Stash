@@ -5,7 +5,7 @@
     default as tagsController,
     type TagExtended
   } from "$lib/controllers/TagsController.svelte"
-  import { settings } from "$lib/stores"
+  import { settings } from "$lib/stores.svelte"
 
   let value = $state("")
   let focused = $state(false)

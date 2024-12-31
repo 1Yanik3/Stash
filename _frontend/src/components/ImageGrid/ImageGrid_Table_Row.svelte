@@ -1,16 +1,16 @@
 <script lang="ts">
-  import ImageGrid_Table_Row from './ImageGrid_Table_Row.svelte';
   import type { Media } from "@prisma/client/wasm"
 
   import GridThumbnail from "./GridThumbnail.svelte"
+  import ImageGrid_Table_Row from "./ImageGrid_Table_Row.svelte"
 
   interface Props {
-    medium: Media & { disabled?: Boolean; expanded?: Boolean };
-    children?: Media[];
-    indent?: number;
+    medium: Media & { disabled?: Boolean; expanded?: Boolean }
+    children?: Media[]
+    indent?: number
   }
 
-  let { medium = $bindable(), children = [], indent = 0 }: Props = $props();
+  let { medium = $bindable(), children = [], indent = 0 }: Props = $props()
 
   // TODO: Remove duplication
   const handleTagsKeyDown = (e: KeyboardEvent, medium: Media) => {
@@ -103,7 +103,7 @@
           })
         })
       }}
-></span>
+    ></span>
     <div class="tags">
       {#each medium.tags as tag}
         <span class="tag" oncontextmenu={() => removeTagFromMedia(tag, medium)}

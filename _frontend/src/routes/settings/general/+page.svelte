@@ -1,8 +1,8 @@
 <script lang="ts">
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Select from "$components/elements/Select.svelte"
   import Toggle from "$components/elements/Toggle.svelte"
-  import { settings } from "$lib/stores"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+  import { settings } from "$lib/stores.svelte"
 </script>
 
 <SettingsPageContent title="General">

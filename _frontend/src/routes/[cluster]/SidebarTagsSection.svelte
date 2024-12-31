@@ -2,7 +2,7 @@
   import { page } from "$app/stores"
   import SidebarSection from "$components/SidebarSection.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
-  import { settings } from "$lib/stores"
+  import { settings } from "$lib/stores.svelte"
 
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 </script>

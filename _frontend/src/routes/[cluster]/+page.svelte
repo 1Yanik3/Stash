@@ -3,7 +3,12 @@
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { actionBar, actionBars, isFullscreen, settings } from "$lib/stores"
+  import {
+    actionBar,
+    actionBars,
+    isFullscreen,
+    settings
+  } from "$lib/stores.svelte"
 
   import Sidebar from "./Sidebar.svelte"
 

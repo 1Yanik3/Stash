@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { prompts } from "$lib/controllers/PromptController"
-  import { controller, thumbnailSuffixParameter } from "$lib/stores"
-  import Popup from "$reusables/Popup.svelte"
-
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
+  import { mediaController } from "$lib/controllers/MediaController.svelte"
+  import { prompts } from "$lib/controllers/PromptController"
+  import { controller } from "$lib/stores.svelte"
+  import vars from "$lib/vars.svelte"
+  import Popup from "$reusables/Popup.svelte"
 
   function toIsoString(date: Date) {
     const pad = (num: number) => (num < 10 ? "0" : "") + num
@@ -105,7 +105,7 @@
                 ).then(() =>
                   setTimeout(
                     () =>
-                      thumbnailSuffixParameter.set({
+                      (vars.thumbnailSuffixParameter = {
                         mediaId: mediaController.visibleMedium?.id as string,
                         suffix: Math.random().toString(16).substring(2, 8)
                       }),

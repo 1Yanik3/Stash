@@ -9,7 +9,7 @@ import {
   type TagExtended
 } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { actionBar, controller, selectedMediaIds } from "$lib/stores"
+import { actionBar, controller, selectedMediaIds } from "$lib/stores.svelte"
 
 import type { PageData } from "../../../routes/[cluster]/$types"
 import { sortingMethods } from "../../../types"

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { page } from "$app/stores"
+  import Icon from "$components/elements/Icon.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
-  import { controller } from "$lib/stores"
+  import { controller } from "$lib/stores.svelte"
 
   import type { PageData } from "../routes/[cluster]/$types"
   import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
-    import Icon from "$components/elements/Icon.svelte"
 
   let pageData = $derived($page.data as PageData)
 

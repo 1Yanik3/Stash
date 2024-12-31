@@ -3,23 +3,27 @@
 
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
-    import Select from "$components/elements/Select.svelte"
-  import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail"
+  import Button from "$components/elements/Button.svelte"
+  import Icon from "$components/elements/Icon.svelte"
+  import Select from "$components/elements/Select.svelte"
+  import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { controller, imageSuffixParameter, isFullscreen } from "$lib/stores"
+  import {
+    controller,
+    imageSuffixParameter,
+    isFullscreen
+  } from "$lib/stores.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import Button from "$components/elements/Button.svelte"
-    import Icon from "$components/elements/Icon.svelte"
   import TagChip from "../Tags/TagChip.svelte"
   import TagInputField from "../Tags/TagInputField.svelte"
 
   let pageData = $derived($page.data as PageData)
 
   let dropdownVisible = $state(false)
-  let { hideControls } = $props();
+  let { hideControls } = $props()
 
   const addTagToMedia = (tagId: number) => {
     fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {
@@ -160,11 +164,11 @@
               })
             }
           )
-          .then(() => {
-            if (!mediaController.visibleMedium) return
-            mediaController.visibleMedium.specialFilterAttribute = newValue
-          })
-          .catch(console.error)
+            .then(() => {
+              if (!mediaController.visibleMedium) return
+              mediaController.visibleMedium.specialFilterAttribute = newValue
+            })
+            .catch(console.error)
         }}
       />
       {#each mediaController.visibleMedium.tags || [] as tag (tag)}

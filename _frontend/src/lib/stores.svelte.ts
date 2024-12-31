@@ -21,11 +21,6 @@ export let windowControlsSpacerVisible = writable(false)
 
 export let uploadPopupOpen = writable(false)
 
-// TODO: Make this work again
-export let thumbnailSuffixParameter: Writable<{
-  mediaId: string
-  suffix: string
-} | null> = writable(null)
 export let imageSuffixParameter: Writable<String> = writable("")
 
 // Selections

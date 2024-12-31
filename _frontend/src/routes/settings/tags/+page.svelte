@@ -3,8 +3,8 @@
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/elements/Table.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import query from "$lib/client/call.js"
   import { prompts } from "$lib/controllers/PromptController.js"
 
@@ -18,10 +18,9 @@
   <Table
     headers={["Id", "Icons", "Tag", "Media count", "Clusters"]}
     data={data.tags}
-    
   >
     {#snippet children({ entry })}
-        <td>
+      <td>
         {entry.id}
       </td>
       <td align="center">
@@ -63,12 +62,13 @@
           data.tagClusterMappings[entry.id]
             .map(
               cluster =>
-                ($page.data as PageData).clusters.find(c => c.id == cluster)?.name
+                ($page.data as PageData).clusters.find(c => c.id == cluster)
+                  ?.name
             )
             .join(", ")}
       </td>
-          {/snippet}
-    </Table>
+    {/snippet}
+  </Table>
 </SettingsPageContent>
 
 <style lang="scss">

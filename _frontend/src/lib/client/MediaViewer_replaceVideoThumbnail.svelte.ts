@@ -1,8 +1,10 @@
 import { get } from "svelte/store"
 
+import { page } from "$app/stores"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
-import { controller, thumbnailSuffixParameter, videoElement } from "$lib/stores"
+import { controller, videoElement } from "$lib/stores.svelte"
+import vars from "$lib/vars.svelte"
 
 const dataURItoBlob = (dataURI: string) => {
   // convert base64 to raw binary data held in a string
@@ -61,15 +63,15 @@ export default async () => {
     return
   }
 
-  await fetch(`/api/media/${mediaId}/thumbnail`, {
+  await fetch(`${get(page).data.serverURL}/api/media/${mediaId}/thumbnail`, {
     method: "POST",
     body: data
   }).then(async () => {
     get(controller).setPopup(null)
   })
 
-  thumbnailSuffixParameter.set({
+  vars.thumbnailSuffixParameter = {
     mediaId,
     suffix: Math.random().toString(16).substring(2, 8)
-  })
+  }
 }

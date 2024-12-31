@@ -7,7 +7,7 @@
     executeSearch,
     type ResultsType
   } from "$lib/client/QuickSwitchHelpers/search.svelte"
-  import { controller } from "$lib/stores"
+  import { controller } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   let value = $state("")

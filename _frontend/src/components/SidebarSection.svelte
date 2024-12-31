@@ -1,10 +1,9 @@
 <script lang="ts">
-
   interface Props {
-    title?: string | null;
-    justify?: boolean;
-    horizontal?: boolean;
-    children?: import('svelte').Snippet;
+    title?: string | null
+    justify?: boolean
+    horizontal?: boolean
+    children?: import("svelte").Snippet
   }
 
   let {
@@ -12,7 +11,7 @@
     justify = false,
     horizontal = false,
     children
-  }: Props = $props();
+  }: Props = $props()
 </script>
 
 <div class:justified={justify} class:horizontal>

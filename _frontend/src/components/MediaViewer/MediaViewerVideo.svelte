@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onMount } from "svelte"
+  import { run } from "svelte/legacy"
 
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { settings, videoElement } from "$lib/stores"
+  import { settings, videoElement } from "$lib/stores.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   const formatDuration = (seconds: number) => {
@@ -50,7 +49,7 @@
   let video: HTMLVideoElement = $state() as any
   run(() => {
     videoElement.set(video)
-  });
+  })
   let seekVideo: HTMLVideoElement | null = $state()
 
   let paused = $state(false)
@@ -84,10 +83,10 @@
   }
 
   interface Props {
-    hideControls?: boolean;
+    hideControls?: boolean
   }
 
-  let { hideControls = $bindable(false) }: Props = $props();
+  let { hideControls = $bindable(false) }: Props = $props()
 
   //   TODO: reimplment this
   //   visibleMedium.subscribe(() => {

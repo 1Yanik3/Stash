@@ -2,18 +2,13 @@
   type T = $$Generic<Record>
 
   interface Props {
-    headers?: string[] | null;
-    data: T[];
-    borderless?: boolean;
-    children?: import('svelte').Snippet<[any]>;
+    headers?: string[] | null
+    data: T[]
+    borderless?: boolean
+    children?: import("svelte").Snippet<[any]>
   }
 
-  let {
-    headers = null,
-    data,
-    borderless = false,
-    children
-  }: Props = $props();
+  let { headers = null, data, borderless = false, children }: Props = $props()
 </script>
 
 <table class:borderless>
@@ -29,7 +24,7 @@
   <tbody>
     {#each data as entry, i}
       <tr>
-        {@render children?.({ entry, i, })}
+        {@render children?.({ entry, i })}
       </tr>
     {/each}
   </tbody>

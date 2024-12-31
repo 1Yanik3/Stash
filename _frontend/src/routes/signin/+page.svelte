@@ -38,9 +38,7 @@
   </div>
 
   {#snippet actionsRight()}
-  
-      <Button card icon={null} highlighted onclick={login}>Login</Button>
-    
+    <Button card icon={null} highlighted onclick={login}>Login</Button>
   {/snippet}
 </Popup>
 

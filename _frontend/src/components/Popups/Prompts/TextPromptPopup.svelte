@@ -6,12 +6,12 @@
   let _value = $state(value)
 
   interface Props {
-    question: string;
-    value: string;
-    onresult: (value: string | null) => void;
+    question: string
+    value: string
+    onresult: (value: string | null) => void
   }
 
-  let { question, value, onresult }: Props = $props();
+  let { question, value, onresult }: Props = $props()
 
   const onInput = (e: KeyboardEvent) => {
     if (e.key == "Enter") {
@@ -36,7 +36,7 @@
       bind:this={inputElement}
       bind:value={_value}
       onkeydown={onInput}
-></textarea>
+    ></textarea>
   </label>
 </PromptFramework>
 

@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import SvelteMarkdown from "svelte-markdown"
+  import { run } from "svelte/legacy"
 
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
-  import { controller, mobileBottomBarVisible, settings } from "$lib/stores"
+  import {
+    controller,
+    mobileBottomBarVisible,
+    settings
+  } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -38,7 +41,8 @@
     }, 0)
   }
 
-  let story: Awaited<typeof pageData.streamed.stories>[number] | null = $state(null)
+  let story: Awaited<typeof pageData.streamed.stories>[number] | null =
+    $state(null)
   let chapters: string[] = $state([])
 
   let serif = $state(false)
@@ -85,7 +89,7 @@
   let chapterSelectionPopupOpen = $state(false)
   run(() => {
     $mobileBottomBarVisible = !story
-  });
+  })
 
   let processTouchAreas = (e: MouseEvent) => {
     // Top touch area (25%) => toggle buttons always on temporarely
@@ -145,7 +149,7 @@
             e.stopPropagation()
             buttonsHidden = true
           }}
-></div>
+        ></div>
         <Button icon="mdiFormatFont" onclick={() => (serif = !serif)} />
         {#if $settings.mobileLayout}
           <Button

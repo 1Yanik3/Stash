@@ -5,12 +5,12 @@
   import PromptFramework from "./_PromptFramework.svelte"
 
   interface Props {
-    question: string;
-    value: string;
-    onresult: (value: TagExtended | null) => void;
+    question: string
+    value: string
+    onresult: (value: TagExtended | null) => void
   }
 
-  let { question, value, onresult }: Props = $props();
+  let { question, value, onresult }: Props = $props()
 </script>
 
 <!-- TODO: FIX -->

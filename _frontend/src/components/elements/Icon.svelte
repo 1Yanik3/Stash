@@ -4,11 +4,11 @@
   const possibleIconsAlt = possibleIcons as any
 
   interface Props {
-    name?: keyof typeof possibleIcons | null;
-    nameAlt?: string;
-    size?: number | string;
-    color?: any;
-    opacity?: number;
+    name?: keyof typeof possibleIcons | null
+    nameAlt?: string
+    size?: number | string
+    color?: any
+    opacity?: number
   }
 
   let {
@@ -17,7 +17,7 @@
     size = $bindable(1),
     color = null,
     opacity = 1
-  }: Props = $props();
+  }: Props = $props()
 
   // size
   if (Number(size)) size = Number(size)

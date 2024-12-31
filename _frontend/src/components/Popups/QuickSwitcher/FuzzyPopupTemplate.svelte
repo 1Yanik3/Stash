@@ -3,7 +3,7 @@
   import { onMount, type Snippet } from "svelte"
 
   import Button from "$components/elements/Button.svelte"
-  import { controller, settings } from "$lib/stores"
+  import { controller, settings } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   type T = $$Generic<Record>

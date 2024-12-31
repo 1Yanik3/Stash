@@ -7,7 +7,8 @@
     mediaController,
     type MediaType
   } from "$lib/controllers/MediaController.svelte"
-  import { selectedMediaIds, thumbnailSuffixParameter } from "$lib/stores"
+  import { selectedMediaIds } from "$lib/stores.svelte"
+  import vars from "$lib/vars.svelte"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   interface Props {
@@ -30,20 +31,21 @@
   }
 
   let element: HTMLDivElement = $state() as any
-  // visibleMedium.subscribe(async () => {
-  //     if (!element) return
 
-  //     const r = element.getBoundingClientRect()
-  //     if ($visibleMedium == medium && !(
-  //         r.top >= 210 &&
-  //         r.bottom <= (window.innerHeight - 210)
-  //     )) {
-  //         element.scrollIntoView({
-  //             block: "nearest",
-  //             behavior: "smooth"
-  //         })
-  //     }
-  // })
+  $effect(() => {
+    if (mediaController.visibleMedium?.id == medium.id) {
+      element.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth"
+      })
+      setTimeout(() => {
+        element.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth"
+        })
+      }, 150)
+    }
+  })
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
@@ -57,15 +59,13 @@
     }
   }
 
-  let suffix = $state("")
-  thumbnailSuffixParameter.subscribe(() => {
-    if ($thumbnailSuffixParameter == null) {
-      suffix = ""
-      return
-    }
-    if ($thumbnailSuffixParameter.mediaId == medium.id)
-      suffix = `?${$thumbnailSuffixParameter.suffix}`
-  })
+  let suffix = $derived(
+    vars.thumbnailSuffixParameter &&
+      vars.thumbnailSuffixParameter.mediaId == medium.id
+      ? `?${vars.thumbnailSuffixParameter.suffix}`
+      : ""
+  )
+  let errorSuffix = $state("")
 
   // TODO: Move to a separate file (with the use directive?)
   let showSeekPreview = $state(false)
@@ -125,13 +125,19 @@
       {#if intersecting}
         <img
           in:fade={{ duration: 100 }}
-          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
+          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}${errorSuffix}`}
           alt={medium.name}
           class:active={!disableActive &&
             mediaController.visibleMedium?.id == medium.id}
           crossorigin="use-credentials"
           class:disableZoom
           bind:this={thumbElement}
+          onerror={() => {
+            if (!suffix)
+              setTimeout(() => {
+                errorSuffix = `?${Math.random().toString(16).substring(2, 8)}`
+              }, 500)
+          }}
         />
 
         {#if medium.type.startsWith("video") && showSeekPreview}
@@ -148,9 +154,9 @@
 
                 width: 100%;
                 height: 100%;
-                
-                border-radius: 3px;
+
                 object-fit: cover;
+                border-radius: 3px;
             "
           >
             <track kind="captions" />

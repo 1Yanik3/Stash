@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { controller } from "$lib/stores"
+  import Key from "$components/elements/Key.svelte"
+  import { controller } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
-
-    import Key from "$components/elements/Key.svelte"
 </script>
 
 <Popup title="Shortcuts" onclose={() => console.log($controller.setPopup())}>

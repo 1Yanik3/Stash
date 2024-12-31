@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
-  import { settings } from "$lib/stores"
+  import { settings } from "$lib/stores.svelte"
 
   let mainElement: HTMLElement = $state() as any
   let imageElement: HTMLImageElement = $state() as any

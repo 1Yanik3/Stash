@@ -1,11 +1,12 @@
 <script lang="ts">
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
-  import { mobileBottomBarVisible, settings } from "$lib/stores"
+  import { mobileBottomBarVisible, settings } from "$lib/stores.svelte"
+
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: import("svelte").Snippet
   }
 
-  let { children }: Props = $props();
+  let { children }: Props = $props()
 </script>
 
 <main class:mobile={$settings.mobileLayout}>

@@ -2,8 +2,8 @@
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
-    import Select from "$components/elements/Select.svelte"
-  import { settings, windowControlsSpacerVisible } from "$lib/stores"
+  import Select from "$components/elements/Select.svelte"
+  import { settings, windowControlsSpacerVisible } from "$lib/stores.svelte"
 
   import type { PageData } from "./$types"
   import SidebatTagsSection from "./SidebarTagsSection.svelte"

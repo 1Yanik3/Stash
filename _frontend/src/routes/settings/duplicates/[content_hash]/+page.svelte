@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import type { Media } from "@prisma/client/wasm"
+  import { run } from "svelte/legacy"
 
   import { goto, invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
@@ -14,10 +13,10 @@
   import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
 
   interface Props {
-    data: PageData;
+    data: PageData
   }
 
-  let { data }: Props = $props();
+  let { data }: Props = $props()
 
   const dateFormatter = (input: string) =>
     new Date(input).toLocaleString("en-ca", { hour12: false }).replace(",", "")
@@ -74,7 +73,7 @@
         attributesToTransfer[i].selectedIndex = 0
       }
     })
-  });
+  })
 
   const getValueToKeep = (
     attribute: (typeof attributesToTransfer)[number]["attr"]
@@ -95,9 +94,9 @@
         {/each}
       </div>
     </div>
-    <Table borderless data={data.duplicate_media}  >
+    <Table borderless data={data.duplicate_media}>
       {#snippet children({ entry, i })}
-            <td>
+        <td>
           {#if entry.type.startsWith("image")}
             <img
               src={`${$page.data.serverURL}/file/${entry.id}`}
@@ -147,77 +146,73 @@
             </div>
           {/each}
         </td>
-                {/snippet}
-        </Table>
+      {/snippet}
+    </Table>
   </main>
 
   {#snippet actionsLeft()}
-  
-      <Button
-        card
-        icon="mdiDebugStepOver"
-        onclick={() => {
-          fetch(`${$page.url.href}/ignore`, {
-            method: "PUT"
+    <Button
+      card
+      icon="mdiDebugStepOver"
+      onclick={() => {
+        fetch(`${$page.url.href}/ignore`, {
+          method: "PUT"
+        })
+          .then(async () => {
+            await invalidateAll()
+            goto("/settings/duplicates")
           })
-            .then(async () => {
-              await invalidateAll()
-              goto("/settings/duplicates")
-            })
-            .catch(e => {
-              console.error(e)
-              window.alert("An error occurred!")
-            })
-        }}
-      >
-        Ignore
-      </Button>
-    
+          .catch(e => {
+            console.error(e)
+            window.alert("An error occurred!")
+          })
+      }}
+    >
+      Ignore
+    </Button>
   {/snippet}
 
   {#snippet actionsRight()}
-  
-      {#key attributesToTransfer}
-        <Button
-          card
-          icon="mdiSourceMerge"
-          highlighted
-          onclick={() => {
-            fetch(`${$page.url.href}/merge`, {
-              method: "PUT",
-              body: JSON.stringify({
-                idToKeep: getValueToKeep("id"),
-                idsToRemove: data.duplicate_media
-                  .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
-                  .map(m => m.id),
-                attributesToKeep: {
-                  clustersId: getValueToKeep("clustersId"),
-                  createdDate: getValueToKeep("createdDate"),
-                  date: getValueToKeep("date"),
-                  favourited: getValueToKeep("favourited"),
-                  groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
-                  name: getValueToKeep("name"),
-                  specialFilterAttribute: getValueToKeep(
-                    "specialFilterAttribute"
-                  ),
-                  tags: tags.map(t => t.id)
-                }
-              } satisfies DuplicatesMergeServerPutRequestData)
-            })
-            //   .then(async () => {
-            //     await invalidateAll()
-            //     goto("/settings/duplicates")
-            //   })
-            //   .catch(e => {
-            //     console.error(e)
-            //     window.alert("An error occurred!")
-            //   })
-          }}
-        >
-          Merge
-        </Button>
-      {/key}
-    
+    {#key attributesToTransfer}
+      <Button
+        card
+        icon="mdiSourceMerge"
+        highlighted
+        onclick={() => {
+          fetch(`${$page.url.href}/merge`, {
+            method: "PUT",
+            body: JSON.stringify({
+              idToKeep: getValueToKeep("id"),
+              idsToRemove: data.duplicate_media
+                .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
+                .map(m => m.id),
+              attributesToKeep: {
+                clustersId: getValueToKeep("clustersId"),
+                createdDate: getValueToKeep("createdDate"),
+                date: getValueToKeep("date"),
+                favourited: getValueToKeep("favourited"),
+                groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
+                name: getValueToKeep("name"),
+                specialFilterAttribute: getValueToKeep(
+                  "specialFilterAttribute"
+                ),
+                tags: tags.map(t => t.id)
+              }
+            } satisfies DuplicatesMergeServerPutRequestData)
+          })
+          //   .then(async () => {
+          //     await invalidateAll()
+          //     goto("/settings/duplicates")
+          //   })
+          //   .catch(e => {
+          //     console.error(e)
+          //     window.alert("An error occurred!")
+          //   })
+        }}
+      >
+        Merge
+      </Button>
+    {/key}
   {/snippet}
 </Popup>
 

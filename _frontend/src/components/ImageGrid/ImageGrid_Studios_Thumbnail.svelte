@@ -12,12 +12,11 @@
 
   const dispatch = createEventDispatcher()
 
-
   interface Props {
-    selectedMedia: string[];
-    medium: MediaType;
-    parent?: boolean;
-    sub?: boolean;
+    selectedMedia: string[]
+    medium: MediaType
+    parent?: boolean
+    sub?: boolean
   }
 
   let {
@@ -25,7 +24,7 @@
     medium,
     parent = false,
     sub = false
-  }: Props = $props();
+  }: Props = $props()
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {

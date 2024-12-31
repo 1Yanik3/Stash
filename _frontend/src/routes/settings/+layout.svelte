@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
-  import { mobileBottomBarVisible, settings } from "$lib/stores"
+  import { mobileBottomBarVisible, settings } from "$lib/stores.svelte.js"
 
   let { children, data } = $props()
 </script>

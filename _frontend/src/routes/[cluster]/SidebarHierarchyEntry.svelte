@@ -4,7 +4,7 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
   import type { possibleIcons } from "$lib/possibleIcons"
-  import { selectedMediaIds } from "$lib/stores"
+  import { selectedMediaIds } from "$lib/stores.svelte"
   import Dropdown from "$reusables/Dropdown.svelte"
 
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"

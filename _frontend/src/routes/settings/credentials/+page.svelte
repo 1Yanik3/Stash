@@ -1,17 +1,17 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/elements/Table.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import { prompts } from "$lib/controllers/PromptController"
 
   import type { PageData } from "./$types"
 
   interface Props {
-    data: PageData;
+    data: PageData
   }
 
-  let { data }: Props = $props();
+  let { data }: Props = $props()
 
   const editUsername = async (id: number, newUsername: string) => {
     const response = await fetch("/settings/credentials/edit/username", {
@@ -51,13 +51,9 @@
     </Button>
   {/snippet}
 
-  <Table
-    headers={["Username", "Permitted Clusters"]}
-    data={data.credentials}
-    
-  >
+  <Table headers={["Username", "Permitted Clusters"]} data={data.credentials}>
     {#snippet children({ entry })}
-        <td>
+      <td>
         {entry.username}
         <div class="floating">
           <Button
@@ -94,8 +90,8 @@
           />
         </div>
       </td>
-          {/snippet}
-    </Table>
+    {/snippet}
+  </Table>
 </SettingsPageContent>
 
 <style lang="scss">

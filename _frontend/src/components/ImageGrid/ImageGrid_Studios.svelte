@@ -3,17 +3,17 @@
 
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
-  import { settings } from "$lib/stores"
+  import { settings } from "$lib/stores.svelte"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
   interface Props {
-    media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>;
-    i: number;
+    media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
+    i: number
   }
 
-  let { media, i }: Props = $props();
+  let { media, i }: Props = $props()
 
   const getProcessedMedia = $state((oldMedia: typeof media) => {
     let alreadyProcessedGroupedInto: number[] = []
@@ -43,12 +43,7 @@
   let selectedMedia: string[] = $state([])
 </script>
 
-<IntersectionObserver
-  once={true}
-  top={750}
-  
-  delay={i > 0 ? 300 : 0}
->
+<IntersectionObserver once={true} top={750} delay={i > 0 ? 300 : 0}>
   {#snippet children({ intersecting })}
     {#if intersecting}
       <main class:isMobile={$settings.mobileLayout}>

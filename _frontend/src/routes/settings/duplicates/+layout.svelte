@@ -2,23 +2,23 @@
   import { invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/elements/Table.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
 
   import type { LayoutData } from "./$types"
 
   interface Props {
-    data: LayoutData;
-    children?: import('svelte').Snippet;
+    data: LayoutData
+    children?: import("svelte").Snippet
   }
 
-  let { data, children }: Props = $props();
+  let { data, children }: Props = $props()
 </script>
 
 <SettingsPageContent title="Duplicates">
-  <Table data={data.duplicates} >
+  <Table data={data.duplicates}>
     {#snippet children({ entry })}
-        <td>
+      <td>
         {#each entry.media_ids as id}
           <img
             src={`${$page.data.serverURL}/api/media/${id}/thumbnail`}
@@ -53,8 +53,8 @@
           >
         </div>
       </td>
-          {/snippet}
-    </Table>
+    {/snippet}
+  </Table>
 
   {@render children?.()}
 </SettingsPageContent>

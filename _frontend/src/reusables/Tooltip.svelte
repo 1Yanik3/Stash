@@ -2,18 +2,13 @@
   import type { Readable } from "svelte/store"
 
   interface Props {
-    title: Readable<string>;
-    x: number;
-    y: number;
-    position: "top" | "bottom" | "left" | "right";
+    title: Readable<string>
+    x: number
+    y: number
+    position: "top" | "bottom" | "left" | "right"
   }
 
-  let {
-    title,
-    x,
-    y,
-    position
-  }: Props = $props();
+  let { title, x, y, position }: Props = $props()
 </script>
 
 <div

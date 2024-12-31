@@ -4,8 +4,8 @@
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/elements/Table.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import query from "$lib/client/call"
   import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"
@@ -14,10 +14,10 @@
   import AddNewClusterPopup from "./AddNewClusterPopup.svelte"
 
   interface Props {
-    data: PageData;
+    data: PageData
   }
 
-  let { data }: Props = $props();
+  let { data }: Props = $props()
 
   const ClusterType = [
     "normal",
@@ -83,13 +83,9 @@
     </Button>
   {/snippet}
 
-  <Table
-    headers={["Id", "Icon", "Name", "Type"]}
-    data={data.clusters}
-    
-  >
+  <Table headers={["Id", "Icon", "Name", "Type"]} data={data.clusters}>
     {#snippet children({ entry })}
-        <td>
+      <td>
         {entry.id}
       </td>
       <td>
@@ -135,8 +131,8 @@
           />
         </div>
       </td>
-          {/snippet}
-    </Table>
+    {/snippet}
+  </Table>
 </SettingsPageContent>
 
 <style lang="scss">

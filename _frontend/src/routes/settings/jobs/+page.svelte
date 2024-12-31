@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from "$components/elements/Button.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Table from "$components/elements/Table.svelte"
+  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   let { data } = $props()
@@ -18,11 +18,12 @@
 </script>
 
 <SettingsPageContent title="Jobs">
-  <Table headers={["id", "name", "status"]} data={data.jobs} >
+  <Table headers={["id", "name", "status"]} data={data.jobs}>
     {#snippet children({ entry })}
-        <td>{entry.id}</td>
+      <td>{entry.id}</td>
       <td>{entry.name}</td>
-      <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td>
+      <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td
+      >
       <div>
         <Button
           noMargin
@@ -30,8 +31,8 @@
           onclick={() => (jobDetails = entry)}
         />
       </div>
-          {/snippet}
-    </Table>
+    {/snippet}
+  </Table>
 </SettingsPageContent>
 
 {#if jobDetails}

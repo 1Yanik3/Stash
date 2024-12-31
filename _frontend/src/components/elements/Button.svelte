@@ -141,7 +141,11 @@
 </a>
 
 {#if shortcut}
-  <Shortcut modifier={shortcut.modifier as any} key={shortcut.key} action={onclick} />
+  <Shortcut
+    modifier={shortcut.modifier as any}
+    key={shortcut.key}
+    action={onclick}
+  />
 {/if}
 
 <style lang="scss">
@@ -206,6 +210,7 @@
       border: 1px solid var(--border-color-1);
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
           background: var(--color-dark-level-2-hover);
           border: 1px solid var(--border-color-1-hover);
@@ -244,6 +249,7 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
@@ -251,7 +257,9 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
+
         &:not(.transparentButton) {
           background: var(--color-dark-level-2);
           border: 1px solid var(--border-color-1);

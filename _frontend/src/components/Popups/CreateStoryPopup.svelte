@@ -2,10 +2,10 @@
   import { mdiSend } from "@mdi/js"
 
   import { page } from "$app/stores"
+  import Button from "$components/elements/Button.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
-  import Button from "$components/elements/Button.svelte"
 
   let pageData = $derived($page.data as PageData)
 

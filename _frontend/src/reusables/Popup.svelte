@@ -4,19 +4,18 @@
 
   import Icon from "$components/elements/Icon.svelte"
 
-  import { controller, settings } from "../lib/stores"
-
+  import { controller, settings } from "../lib/stores.svelte"
 
   interface Props {
-    title?: string;
-    hideHeader?: boolean;
-    bottomSheet?: boolean;
-    fullscreen?: boolean;
-    onclose?: any;
-    headerElement?: import('svelte').Snippet;
-    actionsLeft?: import('svelte').Snippet;
-    actionsRight?: import('svelte').Snippet;
-    children?: import('svelte').Snippet;
+    title?: string
+    hideHeader?: boolean
+    bottomSheet?: boolean
+    fullscreen?: boolean
+    onclose?: any
+    headerElement?: import("svelte").Snippet
+    actionsLeft?: import("svelte").Snippet
+    actionsRight?: import("svelte").Snippet
+    children?: import("svelte").Snippet
   }
 
   let {
@@ -29,7 +28,7 @@
     actionsLeft,
     actionsRight,
     children
-  }: Props = $props();
+  }: Props = $props()
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key != "Escape") return
@@ -86,10 +85,7 @@
         {/if}
       </div>
     {/if}
-    <div
-      id="content"
-      class:hasActions={actionsLeft || actionsRight}
-    >
+    <div id="content" class:hasActions={actionsLeft || actionsRight}>
       {@render children?.()}
     </div>
     {#if actionsLeft || actionsRight}

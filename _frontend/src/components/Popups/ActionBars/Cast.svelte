@@ -2,12 +2,11 @@
   import { fade } from "svelte/transition"
 
   import { page } from "$app/stores"
+  import Icon from "$components/elements/Icon.svelte"
   import { FCastController, PlaybackStateState } from "$lib/client/fcast.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
-  import { controller, settings } from "$lib/stores"
-
-  import Icon from "$components/elements/Icon.svelte"
+  import { controller, settings } from "$lib/stores.svelte"
 
   let disableSeeking = $state(false)
   let seekVideo: HTMLVideoElement | null = $state(null)

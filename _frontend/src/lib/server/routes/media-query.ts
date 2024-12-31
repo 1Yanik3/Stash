@@ -1,7 +1,7 @@
 import type { Media } from "@prisma/client"
 
 import prisma from "$lib/server/prisma"
-import { PAGE_SIZE } from "$lib/stores"
+import { PAGE_SIZE } from "$lib/stores.svelte"
 
 import { sortingMethods } from "../../../types"
 

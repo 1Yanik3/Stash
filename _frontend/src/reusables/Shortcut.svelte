@@ -1,15 +1,13 @@
 <script lang="ts">
-
-
   interface Props {
-    alt?: boolean;
-    opt?: boolean;
-    meta?: boolean;
-    control?: boolean;
-    shift?: boolean;
-    modifier?: "alt" | "opt" | "meta" | "control" | "shift" | null;
-    key: string;
-    action: Function;
+    alt?: boolean
+    opt?: boolean
+    meta?: boolean
+    control?: boolean
+    shift?: boolean
+    modifier?: "alt" | "opt" | "meta" | "control" | "shift" | null
+    key: string
+    action: Function
   }
 
   let {
@@ -21,7 +19,7 @@
     modifier = null,
     key,
     action
-  }: Props = $props();
+  }: Props = $props()
 
   let handler = (e: KeyboardEvent) => {
     if (

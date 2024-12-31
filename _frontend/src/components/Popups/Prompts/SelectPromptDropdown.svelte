@@ -3,12 +3,12 @@
   import Dropdown from "$reusables/Dropdown.svelte"
 
   interface Props {
-    options: string[];
-    value: string;
-    onresult: (value: string | null) => void;
+    options: string[]
+    value: string
+    onresult: (value: string | null) => void
   }
 
-  let { options, value, onresult }: Props = $props();
+  let { options, value, onresult }: Props = $props()
 </script>
 
 <svelte:window

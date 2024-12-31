@@ -5,7 +5,7 @@ import { get } from "svelte/store"
 
 import { page } from "$app/stores"
 import query from "$lib/client/call"
-import { mediaTypeFilter, PAGE_SIZE, traverse } from "$lib/stores"
+import { mediaTypeFilter, PAGE_SIZE, traverse } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
 
 import type { TagExtended } from "./TagsController.svelte"
@@ -177,7 +177,7 @@ const calculatePages = async (media: MediaType[]) => {
     const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
     if (!page.length) break
 
-    const hash = await md5(page.map(m => ([m.id, m.tags])).join())
+    const hash = await md5(page.map(m => [m.id, m.tags]).join())
 
     // If the page has changed, update it
     if (_mediaController.pages[i]?.hash != hash) {

@@ -2,18 +2,13 @@
   import PromptFramework from "./_PromptFramework.svelte"
 
   interface Props {
-    question: string;
-    options: string[];
-    value: string;
-    onresult: (value: string | null) => void;
+    question: string
+    options: string[]
+    value: string
+    onresult: (value: string | null) => void
   }
 
-  let {
-    question,
-    options,
-    value = $bindable(),
-    onresult
-  }: Props = $props();
+  let { question, options, value = $bindable(), onresult }: Props = $props()
 </script>
 
 <PromptFramework oncancel={() => onresult(null)} onok={() => onresult(value)}>

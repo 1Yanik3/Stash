@@ -11,7 +11,7 @@
     imageSuffixParameter,
     isFullscreen,
     settings
-  } from "$lib/stores"
+  } from "$lib/stores.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import MediaViewerImage from "./MediaViewerImage.svelte"

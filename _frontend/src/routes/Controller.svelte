@@ -17,7 +17,7 @@
     actionBars,
     settings,
     windowControlsSpacerVisible
-  } from "$lib/stores"
+  } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
