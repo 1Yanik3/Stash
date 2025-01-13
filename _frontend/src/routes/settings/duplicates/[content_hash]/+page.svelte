@@ -187,7 +187,6 @@
                 .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
                 .map(m => m.id),
               attributesToKeep: {
-                clustersId: getValueToKeep("clustersId"),
                 createdDate: getValueToKeep("createdDate"),
                 date: getValueToKeep("date"),
                 favourited: getValueToKeep("favourited"),

@@ -76,7 +76,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     where: { id: data.idToKeep },
     data: {
       name: data.attributesToKeep.name,
-      favourited: data.attributesToKeep.favourited,
+      favourited: data.attributesToKeep.favourited || false,
       tags: {
         set: data.attributesToKeep.tags.map(tag => ({ id: tag }))
       },
