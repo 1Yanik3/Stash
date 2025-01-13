@@ -199,14 +199,14 @@
               }
             } satisfies DuplicatesMergeServerPutRequestData)
           })
-          //   .then(async () => {
-          //     await invalidateAll()
-          //     goto("/settings/duplicates")
-          //   })
-          //   .catch(e => {
-          //     console.error(e)
-          //     window.alert("An error occurred!")
-          //   })
+            .then(async () => {
+              await invalidateAll()
+              goto("/settings/duplicates")
+            })
+            .catch(e => {
+              console.error(e)
+              window.alert("An error occurred!")
+            })
         }}
       >
         Merge
@@ -244,11 +244,11 @@
 
       &.disabled {
         pointer-events: none;
-        opacity: 0.5;
+        opacity: 0.3;
       }
 
       .disabled {
-        opacity: 0.5;
+        opacity: 0.3;
       }
     }
   }
