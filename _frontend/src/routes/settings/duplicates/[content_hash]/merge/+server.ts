@@ -4,6 +4,9 @@ import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
 
+// TODO: Move to new query() system
+// TODO: Add e2e tests
+
 export type DuplicatesMergeServerPutRequestData = {
   idToKeep: string
   idsToRemove: string[]
@@ -79,11 +82,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     where: { id: data.idToKeep },
     data: {
       name: data.attributesToKeep.name,
-      cluster: {
-        connect: {
-          id: data.attributesToKeep.clustersId
-        }
-      },
+      clustersId: data.attributesToKeep.clustersId,
       favourited: data.attributesToKeep.favourited,
       tags: {
         set: data.attributesToKeep.tags.map(tag => ({ id: tag }))
