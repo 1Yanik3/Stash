@@ -18,7 +18,7 @@
 </script>
 
 <SettingsPageContent title="Jobs">
-  <Table headers={["id", "name", "status"]} data={data.jobs}>
+  <Table headers={["ID", "Name", "Status"]} data={data.jobs}>
     {#snippet children({ entry })}
       <td>{entry.id}</td>
       <td>{entry.name}</td>

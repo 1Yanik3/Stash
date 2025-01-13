@@ -19,7 +19,7 @@
 
     if (request.ok) {
       console.log("Logged in!")
-      window.location.href = "/People"
+      window.location.href = "/Secret"
     } else {
       console.error("Failed to log in!")
       window.alert(await request.text())

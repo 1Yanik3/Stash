@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { ClusterType } from "@prisma/client/wasm"
-
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import { possibleIcons } from "$lib/possibleIcons"
@@ -67,7 +65,7 @@
 
     <label for="e-type"> Type </label>
     <select bind:value={type} id="e-type">
-      {#each Object.keys(ClusterType) as type}
+      {#each Object.keys( ["normal", "collection", "screenshots", "stories", "withName"] ) as type}
         <option value={type}
           >{type.substring(0, 1).toUpperCase()}{type.substring(1)}</option
         >

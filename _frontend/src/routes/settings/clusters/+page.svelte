@@ -6,7 +6,6 @@
   import Icon from "$components/elements/Icon.svelte"
   import Table from "$components/elements/Table.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-  import query from "$lib/client/call"
   import { prompts } from "$lib/controllers/PromptController"
   import { possibleIcons } from "$lib/possibleIcons"
 

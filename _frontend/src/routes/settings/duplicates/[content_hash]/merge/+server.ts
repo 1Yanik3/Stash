@@ -14,7 +14,7 @@ export type DuplicatesMergeServerPutRequestData = {
     tags: number[]
     createdDate: string
     date: string
-    groupedIntoNamesId: number
+    groupedIntoNamesId: number | null
     specialFilterAttribute: string
   }
 }
@@ -56,7 +56,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 400
     })
   }
-  if (!data.attributesToKeep.groupedIntoNamesId) {
+  if (!data.attributesToKeep.groupedIntoNamesId && data.attributesToKeep.groupedIntoNamesId !== null) {
     return new Response(
       "Did not specify 'attributesToKeep.groupedIntoNamesId'",
       { status: 400 }

@@ -2,7 +2,7 @@
   "name": "Stash",
   "short_name": "Stash",
   "description": "Stash",
-  "start_url": "/People",
+  "start_url": "/Secret",
   "scope": "/",
   "icons": [
     {
