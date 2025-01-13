@@ -62,7 +62,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       { status: 400 }
     )
   }
-  if (!data.attributesToKeep.specialFilterAttribute) {
+  if (!data.attributesToKeep.specialFilterAttribute && data.attributesToKeep.specialFilterAttribute !== null) {
     return new Response(
       "Did not specify 'attributesToKeep.specialFilterAttribute'",
       { status: 400 }
