@@ -15,7 +15,7 @@ export type DuplicatesMergeServerPutRequestData = {
     createdDate: string
     date: string
     groupedIntoNamesId: number | null
-    specialFilterAttribute: string
+    specialFilterAttribute: string | null
   }
 }
 
@@ -56,13 +56,19 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 400
     })
   }
-  if (!data.attributesToKeep.groupedIntoNamesId && data.attributesToKeep.groupedIntoNamesId !== null) {
+  if (
+    !data.attributesToKeep.groupedIntoNamesId &&
+    data.attributesToKeep.groupedIntoNamesId !== null
+  ) {
     return new Response(
       "Did not specify 'attributesToKeep.groupedIntoNamesId'",
       { status: 400 }
     )
   }
-  if (!data.attributesToKeep.specialFilterAttribute && data.attributesToKeep.specialFilterAttribute !== null) {
+  if (
+    !data.attributesToKeep.specialFilterAttribute &&
+    data.attributesToKeep.specialFilterAttribute !== null
+  ) {
     return new Response(
       "Did not specify 'attributesToKeep.specialFilterAttribute'",
       { status: 400 }
@@ -73,14 +79,22 @@ export const PUT: RequestHandler = async ({ request }) => {
     where: { id: data.idToKeep },
     data: {
       name: data.attributesToKeep.name,
-      clustersId: data.attributesToKeep.clustersId,
+      cluster: {
+        connect: {
+          id: data.attributesToKeep.clustersId
+        }
+      },
       favourited: data.attributesToKeep.favourited,
       tags: {
         set: data.attributesToKeep.tags.map(tag => ({ id: tag }))
       },
       createdDate: new Date(data.attributesToKeep.createdDate),
       date: new Date(data.attributesToKeep.date),
-      groupedIntoNamesId: data.attributesToKeep.groupedIntoNamesId,
+      groupedInto: {
+        connect: data.attributesToKeep.groupedIntoNamesId
+          ? { id: data.attributesToKeep.groupedIntoNamesId }
+          : undefined
+      },
       specialFilterAttribute: data.attributesToKeep.specialFilterAttribute
     }
   })
