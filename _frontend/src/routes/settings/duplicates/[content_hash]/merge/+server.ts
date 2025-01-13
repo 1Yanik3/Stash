@@ -12,7 +12,6 @@ export type DuplicatesMergeServerPutRequestData = {
   idsToRemove: string[]
   attributesToKeep: {
     name: string
-    clustersId: number
     favourited: boolean
     tags: number[]
     createdDate: string
@@ -36,11 +35,6 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
   if (!data.attributesToKeep.name) {
     return new Response("Did not specify 'attributesToKeep.name'", {
-      status: 400
-    })
-  }
-  if (!data.attributesToKeep.clustersId) {
-    return new Response("Did not specify 'attributesToKeep.clustersId'", {
       status: 400
     })
   }
@@ -82,7 +76,6 @@ export const PUT: RequestHandler = async ({ request }) => {
     where: { id: data.idToKeep },
     data: {
       name: data.attributesToKeep.name,
-      clustersId: data.attributesToKeep.clustersId,
       favourited: data.attributesToKeep.favourited,
       tags: {
         set: data.attributesToKeep.tags.map(tag => ({ id: tag }))
