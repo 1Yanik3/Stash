@@ -63,7 +63,7 @@
         {#if pageData.cluster.type == "withName"}
           <ImageGridStudios {media} {i} />
         {:else}
-          <ImageGridPage {media} {i} />
+          <ImageGridPage {media} />
         {/if}
       </div>
     {/each}

@@ -4,46 +4,56 @@
   import Button from "$components/elements/Button.svelte"
   import Select from "$components/elements/Select.svelte"
   import { settings, windowControlsSpacerVisible } from "$lib/stores.svelte"
+  import varsSvelte from "$lib/vars.svelte"
 
   import type { PageData } from "./$types"
-  import SidebatTagsSection from "./SidebarTagsSection.svelte"
+  import SidebarTagsSection from "./SidebarTagsSection.svelte"
 
   let pageData = $derived($page.data as PageData)
 </script>
 
-{#if $page.data.cluster.type != "stories"}
-  <main
-    class:mobile={$settings.mobileLayout}
-    class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
-  >
-    <div class="header">
-      <Select
-        onchange={name => {
-          goto(`/${name}`)
-        }}
-        value={$page.data.cluster.name}
-        options={pageData.clusters.map(c => ({
-          value: c.name,
-          name: c.name,
-          icon: c.icon as any
-        }))}
-        width={-1}
-        allowMouseWheel
-      />
+<main
+  class:mobile={$settings.mobileLayout}
+  class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
+>
+  <div class="header">
+    <Select
+      onchange={name => {
+        goto(`/${name}`)
+      }}
+      value={$page.data.cluster.name}
+      options={pageData.clusters.map(c => ({
+        value: c.name,
+        name: c.name,
+        icon: c.icon as any
+      }))}
+      width={-1}
+      allowMouseWheel
+    />
+    <Button
+      icon="mdiCog"
+      href="/settings/general"
+      active={$page.url.pathname.startsWith("/settings")}
+      noMargin
+      styleOverride="margin-left: 1rem"
+    />
+  </div>
+  {#if $page.data.cluster.type == "stories"}
+    {#each varsSvelte.chaptersOfStory as { name }, i}
       <Button
-        icon="mdiCog"
-        href="/settings/general"
-        active={$page.url.pathname.startsWith("/settings")}
-        noMargin
-        styleOverride="margin-left: 1rem"
-      />
-    </div>
-
-    <div class="tags-section">
-      <SidebatTagsSection />
-    </div>
-  </main>
-{/if}
+        onclick={() => {
+          varsSvelte.selectedChapterIndex = i
+        }}
+      >
+        {name}
+      </Button>
+    {/each}
+  {:else}
+    <section>
+      <SidebarTagsSection />
+    </section>
+  {/if}
+</main>
 
 <style lang="scss">
   main {
@@ -56,14 +66,14 @@
     height: 100vh;
 
     background: var(--color-dark-level-1);
+    border-right: 1px solid var(--border-color-base);
 
     -webkit-app-region: drag;
 
-    .tags-section {
+    section {
       flex-grow: 1;
       padding-top: 0.5rem;
       border-top: 1px solid var(--border-color-base);
-      border-right: 1px solid var(--border-color-base);
 
       &::-webkit-scrollbar {
         display: none;

@@ -55,6 +55,13 @@ const actions = async () => {
         get(controller).setPopup(null)
         get(controller).setActionBar(get(actionBar) == "Cast" ? null : "Cast")
       }
+    },
+    {
+      icon: "mdiViewGallery",
+      label: "/Gallery",
+      onEnter: () => {
+        get(controller).setPopup("Gallery")
+      }
     }
   ]
 

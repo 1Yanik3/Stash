@@ -18,6 +18,7 @@ export const load: LayoutServerLoad = async ({ params, depends }) => {
     }
 
   return {
-    cluster
+    cluster,
+    clusters
   }
 }
