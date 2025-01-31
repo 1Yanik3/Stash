@@ -55,8 +55,8 @@
 <div>
   <main>
     {#each pageContents as content, index}
-      <section bind:this={pageElements[index]}>
-        <SvelteMarkdown source={content} />
+      <section bind:this={pageElements[index]} style="text-align: justify">
+        <SvelteMarkdown source={content} options={{}} />
       </section>
     {/each}
   </main>
@@ -85,7 +85,7 @@
       overflow: hidden;
 
       font-family: "Caudex", serif;
-      font-size: 115%;
+      font-size: 17px;
     }
   }
 </style>

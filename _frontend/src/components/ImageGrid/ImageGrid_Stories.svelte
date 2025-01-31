@@ -1,16 +1,10 @@
 <script lang="ts">
-  import { run } from "svelte/legacy"
-
   import { page } from "$app/stores"
-  import Button from "$components/elements/Button.svelte"
   import ChapterPageController from "$lib/client/Stories/Pages/ChapterPageController.svelte"
   import {
     controller,
-    mobileBottomBarVisible,
-    settings
   } from "$lib/stores.svelte"
   import varsSvelte from "$lib/vars.svelte"
-  import Popup from "$reusables/Popup.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
