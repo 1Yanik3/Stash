@@ -249,10 +249,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
 
-      max-width: 100%;
-      max-height: 100%;
       width: inherit;
+      max-width: 100%;
       height: inherit;
+      max-height: 100%;
 
       object-fit: contain;
       outline: none !important;
@@ -323,6 +323,7 @@
         }
 
         &:not(:hover) {
+
           & > video {
             display: none;
           }

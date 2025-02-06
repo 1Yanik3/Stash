@@ -74,13 +74,16 @@
       }
     })
   })
-  
+
   const getValueToKeep = (
     attribute: (typeof attributesToTransfer)[number]["attr"]
   ) => {
     const dominantObject = attributesToTransfer.find(a => a.attr === attribute)
     if (!dominantObject) throw new Error("Attribute not found!")
-    return data.duplicate_media[dominantObject.selectedIndex][attribute] as any || null
+    return (
+      (data.duplicate_media[dominantObject.selectedIndex][attribute] as any) ||
+      null
+    )
   }
 </script>
 

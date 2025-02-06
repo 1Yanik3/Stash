@@ -39,6 +39,19 @@
     />
   </div>
   {#if $page.data.cluster.type == "stories"}
+    {#if varsSvelte.chaptersOfStory.length}
+      <Button
+        card
+        icon="mdiArrowLeft"
+        onclick={() => {
+          varsSvelte.selectedChapterIndex = 0
+          varsSvelte.chaptersOfStory = []
+          window.history.pushState({ storyOpen: false }, "")
+        }}
+      >
+        Go back
+      </Button>
+    {/if}
     {#each varsSvelte.chaptersOfStory as { name }, i}
       <Button
         onclick={() => {

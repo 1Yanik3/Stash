@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { mdiSend } from "@mdi/js"
-
+  import { invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
+  import query from "$lib/client/call"
+  import { prompts } from "$lib/controllers/PromptController"
+  import { controller } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   import type { PageData } from "../../routes/[cluster]/$types"
@@ -28,14 +30,30 @@
 
     if (!response.ok) throw window.alert("Failed to add story")
 
-    const { id } = await response.json()
-
-    window.location.href = `/?c=${pageData.cluster.id}&g=${id}`
+    invalidateAll()
   }
 </script>
 
-<Popup title="Create Story">
+<Popup title="Create Story" onclose={() => $controller.setPopup(null)}>
   <main>
+    <Button
+      card
+      icon="mdiImport"
+      onclick={async () => {
+        const url = await prompts.text("Enter the URL of the story")
+        if (!url) return
+        const data = await query("gks_fetch", { url })
+        title = data.title
+        source = data.source
+        content = data.chapters
+          .map(c => {
+            return `## ${c.title}\n\n${c.content}`
+          })
+          .join("\n")
+      }}
+    >
+      Import
+    </Button>
     <label>
       Title
       <input type="text" bind:value={title} />
@@ -45,7 +63,7 @@
       <input type="text" bind:value={source} />
     </label>
     <label for="contentTextarea"> Content </label>
-    <textarea bind:value={content} id="contentTextarea" cols="50" rows="20"
+    <textarea bind:value={content} id="contentTextarea" cols="120" rows="30"
     ></textarea>
 
     <div style="display: flex; justify-content: right">

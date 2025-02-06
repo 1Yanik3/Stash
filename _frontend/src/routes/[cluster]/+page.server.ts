@@ -20,10 +20,17 @@ const loadCounters = async (clusterName: string) => {
   )[0] as { untagged_count: number }
 }
 
-const loadStories = (parent: Promise<PageServerParentData>): Promise<Story[]> =>
+const loadStories = (
+  parent: Promise<PageServerParentData>
+): Promise<{ id: string; title: string; date: Date }[]> =>
   new Promise(async resolve =>
     resolve(
       await prisma.story.findMany({
+        select: {
+          id: true,
+          title: true,
+          date: true
+        },
         where: {
           cluster: {
             id: (await parent).cluster.id

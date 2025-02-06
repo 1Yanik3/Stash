@@ -1,9 +1,8 @@
 <script lang="ts">
   import { page } from "$app/stores"
+  import query from "$lib/client/call"
   import ChapterPageController from "$lib/client/Stories/Pages/ChapterPageController.svelte"
-  import {
-    controller,
-  } from "$lib/stores.svelte"
+  import { controller } from "$lib/stores.svelte"
   import varsSvelte from "$lib/vars.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
@@ -17,7 +16,9 @@
     varsSvelte.selectedChapterIndex = 0
     varsSvelte.chaptersOfStory = []
 
-    const chapters = _story.content.split("\n#")
+    const chapters = (await query("getStoryContent", { id: _story.id })).split(
+      "\n#"
+    )
 
     for (const i in chapters) {
       const chapter = chapters[i]
@@ -71,7 +72,7 @@
 
       padding: 0.5em;
 
-      background: hsl(0, 0%, 13%);
+      background: var(--color-dark-level-1);
       border: 1px solid var(--border-color-1-hover);
       border-radius: 0.35em;
 
@@ -88,8 +89,11 @@
       .date {
         display: flex;
         justify-content: center;
+
         margin: 0.25em;
+
         font-size: 14px;
+
         opacity: 0.8;
       }
     }

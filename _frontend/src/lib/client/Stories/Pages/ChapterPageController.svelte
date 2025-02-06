@@ -41,16 +41,30 @@
     console.log("Finished filling page", pageIndex)
   }
 
-  onMount(async () => {
+  const fillPages = async () => {
+    pageElements = []
+    pageContents = []
+    globalRemainingStoryContent = $state.snapshot(storyContent)
     let pageIndex = 0
+    let previousRemaining = globalRemainingStoryContent
+    await new Promise(resolve => setTimeout(resolve, 0)) // Allow DOM to update
     while (globalRemainingStoryContent) {
       pageContents.push("")
       await new Promise(resolve => setTimeout(resolve, 0)) // Allow DOM to update
       await fillPage(pageElements[pageIndex], pageIndex)
+      if (globalRemainingStoryContent === previousRemaining) {
+        // No content was consumed, prevent infinite loop
+        break
+      }
+      previousRemaining = globalRemainingStoryContent
       pageIndex++
     }
-  })
+  }
+
+  onMount(fillPages)
 </script>
+
+<svelte:window onresize={fillPages} />
 
 <div>
   <main>
@@ -70,22 +84,29 @@
   }
 
   main {
+    overflow: scroll;
     display: flex;
     gap: 1rem;
+
     width: max-content;
     height: calc(100vh - 2rem);
-    overflow: scroll;
 
     section {
+      overflow: hidden;
+
       width: calc(50vw - 125px - 3.5rem);
       max-width: 700px;
-      background: var(--color-dark-level-1);
       padding: 1rem;
       padding-top: 0;
-      overflow: hidden;
 
       font-family: "Caudex", serif;
       font-size: 17px;
+
+      background: var(--color-dark-level-1);
     }
+  }
+
+  :global(code) {
+    white-space: normal;
   }
 </style>
