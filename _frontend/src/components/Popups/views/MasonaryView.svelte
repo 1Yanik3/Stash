@@ -7,7 +7,7 @@
   } from "$lib/controllers/MediaController.svelte"
   import Popup from "$reusables/Popup.svelte"
 
-  const minColumnWidth = 450
+  const minColumnWidth = 550
   const maxColumnWidth = 800
 
   let popupContent: HTMLElement = $state(null) as any
