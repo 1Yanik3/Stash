@@ -3,6 +3,7 @@
   import { fade, scale } from "svelte/transition"
 
   import Icon from "$components/elements/Icon.svelte"
+  import { isMobile } from "$lib/context"
 
   import { controller, settings } from "../lib/stores.svelte"
 
@@ -58,7 +59,7 @@
     onclose()
     $controller.setPopup(null)
   }}
-  class:mobile={$settings.mobileLayout}
+  class:mobile={isMobile.current}
   class:fullscreen
 >
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -67,7 +68,7 @@
     class:bottomSheet
     onclick={e => e.stopPropagation()}
   >
-    {#if !hideHeader || $settings.mobileLayout}
+    {#if !hideHeader || isMobile.current}
       <div id="header">
         {#if bottomSheet}
           <!-- svelte-ignore element_invalid_self_closing_tag -->
@@ -189,7 +190,6 @@
     }
 
     &.mobile {
-
       section {
         display: grid;
         align-content: start;
@@ -212,7 +212,6 @@
     }
 
     &.fullscreen {
-
       section {
         display: grid;
         grid-template-rows: auto 1fr;

@@ -1,5 +1,10 @@
 <script lang="ts">
-  let { toggle, enable, disable, state } = $props<{
+  let {
+    toggle,
+    enable,
+    disable,
+    state = $bindable()
+  } = $props<{
     toggle?: (value: boolean) => void
     enable?: (value: boolean) => void
     disable?: (value: boolean) => void
@@ -17,9 +22,9 @@
 <main
   onclick={() => {
     state = !state
-    if (toggle) toggle(state)
-    if (state == true && enable) enable(true)
-    if (state == false && disable) disable(false)
+    if (state != undefined) toggle(state)
+    if (state == true) enable(true)
+    if (state == false) disable(false)
   }}
 >
   <!-- svelte-ignore element_invalid_self_closing_tag -->
@@ -69,7 +74,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover div {
         filter: brightness(1.2);
       }

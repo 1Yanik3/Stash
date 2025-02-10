@@ -12,7 +12,6 @@ export const PAGE_SIZE = 50
 export let collapsedTags: Writable<string[]> = writable([])
 
 // Navigation and Layout
-export let mobileBottomBarVisible: Writable<boolean> = writable(true)
 export const actionBars = {
   Cast: QuickActionsCast
 }
@@ -35,7 +34,6 @@ export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
   mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
-  mobileLayout: false,
   tooltipEnabled: true,
   theme: "default" as "default" | "light" | "amoled"
 })

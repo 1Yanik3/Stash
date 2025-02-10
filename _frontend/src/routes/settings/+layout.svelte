@@ -2,15 +2,15 @@
   import { goto } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
-  import { mobileBottomBarVisible, settings } from "$lib/stores.svelte.js"
+  import { isMobile } from "$lib/context.js"
 
   let { children, data } = $props()
 </script>
 
-<main class:mobile={$settings.mobileLayout}>
+<main class:mobile={isMobile.current}>
   <!-- TODO: Mobile support -->
   <section class="sidebar">
-    {#if !$settings.mobileLayout}
+    {#if !isMobile.current}
       <div style="display: flex;">
         <Button icon="mdiArrowLeft" onclick={() => goto("/")} />
       </div>
@@ -47,7 +47,7 @@
     {@render children()}
   </div>
 
-  {#if $settings.mobileLayout && $mobileBottomBarVisible}
+  {#if isMobile.current}
     <div class="mobileBottomBar">
       <MobileBottomBar />
     </div>

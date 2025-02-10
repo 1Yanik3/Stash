@@ -1,13 +1,13 @@
 <script lang="ts">
   import { page } from "$app/stores"
   import SidebarSection from "$components/SidebarSection.svelte"
+  import { isMobile } from "$lib/context"
   import tagsController from "$lib/controllers/TagsController.svelte"
-  import { settings } from "$lib/stores.svelte"
 
   import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 </script>
 
-<main class:mobile={$settings.mobileLayout}>
+<main class:mobile={isMobile.current}>
   <SidebarSection>
     {#each Object.values(tagsController.tagMap)
       .filter(t => !t.parentId)
@@ -25,7 +25,9 @@
     max-height: calc(100vh - 69px);
 
     &.mobile {
-      max-height: calc(100vh - 200px);
+      max-height: calc(100vh - 56px - 1rem);
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
   }
 </style>

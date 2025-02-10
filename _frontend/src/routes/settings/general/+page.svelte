@@ -2,6 +2,7 @@
   import Select from "$components/elements/Select.svelte"
   import Toggle from "$components/elements/Toggle.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+  import { isMobile } from "$lib/context"
   import { settings } from "$lib/stores.svelte"
 </script>
 
@@ -33,14 +34,7 @@
 
     <div>
       <span>Mobile Layout</span>
-      <Toggle
-        state={$settings.mobileLayout}
-        toggle={value =>
-          settings.update(s => {
-            s.mobileLayout = value
-            return s
-          })}
-      />
+      <Toggle bind:state={isMobile.current} />
     </div>
 
     <div>

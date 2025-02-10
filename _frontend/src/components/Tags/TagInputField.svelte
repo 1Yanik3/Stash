@@ -1,6 +1,7 @@
 <script lang="ts">
   import FuzzySearch from "fuzzy-search"
 
+  import { isMobile } from "$lib/context"
   import {
     default as tagsController,
     type TagExtended
@@ -56,7 +57,7 @@
 
     return searcher
       .search(query)
-      .slice(0, $settings.mobileLayout ? 15 : 10) as TagExtended[]
+      .slice(0, isMobile.current ? 15 : 10) as TagExtended[]
   }
   let results: TagExtended[] = $derived(executeSearch(value))
 </script>

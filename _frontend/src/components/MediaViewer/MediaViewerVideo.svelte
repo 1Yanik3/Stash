@@ -4,6 +4,7 @@
 
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
+  import { isMobile } from "$lib/context"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { settings, videoElement } from "$lib/stores.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
@@ -181,7 +182,7 @@
       <div class="track-before" style="width: {playbackPercentage}%"></div>
       <div class="track-after" style="width: {100 - playbackPercentage}%"></div>
       <div class="thumb" style="left: {playbackPercentage}%"></div>
-      {#if !$settings.mobileLayout && !disableSeeking}
+      {#if !isMobile.current && !disableSeeking}
         <video
           src="{$page.data.serverURL}/thumb/{mediaController.visibleMedium
             ?.id}_seek.webm"
@@ -323,7 +324,6 @@
         }
 
         &:not(:hover) {
-
           & > video {
             display: none;
           }

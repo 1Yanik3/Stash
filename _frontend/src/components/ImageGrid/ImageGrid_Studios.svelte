@@ -3,7 +3,7 @@
 
   import { invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
-  import { settings } from "$lib/stores.svelte"
+  import { isMobile } from "$lib/context"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
@@ -46,7 +46,7 @@
 <IntersectionObserver once={true} top={750} delay={i > 0 ? 300 : 0}>
   {#snippet children({ intersecting })}
     {#if intersecting}
-      <main class:isMobile={$settings.mobileLayout}>
+      <main class:isMobile={isMobile.current}>
         {#if selectedMedia.length}
           <div class="groupActions">
             <Button

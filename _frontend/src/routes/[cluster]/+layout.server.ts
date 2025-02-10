@@ -1,12 +1,10 @@
-import prisma from "$lib/server/prisma"
-
 import type { LayoutServerLoad } from "./$types"
 
-export const load: LayoutServerLoad = async ({ params, depends }) => {
+export const load: LayoutServerLoad = async ({ params, depends, parent }) => {
   depends("cluster")
 
   // TODO: pass from parent
-  const clusters = await prisma.clusters.findMany()
+  const { clusters } = await parent()
 
   const cluster = clusters.find(c => c.name == params.cluster) ||
     clusters[0] || {
@@ -18,7 +16,6 @@ export const load: LayoutServerLoad = async ({ params, depends }) => {
     }
 
   return {
-    cluster,
-    clusters
+    cluster
   }
 }

@@ -2,6 +2,7 @@
   import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
+  import { isMobile } from "$lib/context"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
     actionBar,
@@ -20,8 +21,8 @@
   }
 </script>
 
-<main class:mobile={$settings.mobileLayout}>
-  {#if !$isFullscreen && !$settings.mobileLayout}
+<main class:mobile={isMobile.current}>
+  {#if !$isFullscreen && !isMobile.current}
     <Sidebar />
   {/if}
 
@@ -40,7 +41,7 @@
     <SvelteComponent />
   {/if}
 
-  {#if mediaController.visibleMedium && !$settings.mobileLayout && $actionBar != "Cast"}
+  {#if mediaController.visibleMedium && !isMobile.current && $actionBar != "Cast"}
     <MediaViewer />
   {/if}
 </main>
@@ -70,7 +71,6 @@
     }
 
     &.mobile {
-
       #imageGallerySection {
         min-width: unset;
       }

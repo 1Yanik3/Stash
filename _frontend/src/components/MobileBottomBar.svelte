@@ -1,42 +1,73 @@
 <script lang="ts">
+  import { mdiConsoleNetworkOutline } from "@mdi/js"
+
   import { page } from "$app/stores"
+  import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
-  import tagsController from "$lib/controllers/TagsController.svelte"
+  import SidebarSection from "$components/SidebarSection.svelte"
   import { controller } from "$lib/stores.svelte"
 
   import type { PageData } from "../routes/[cluster]/$types"
-  import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
+  import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
 
   let pageData = $derived($page.data as PageData)
 
-  let tagsSidebarVisible = $state(false)
+  let visibleSidebar: "clusters" | "tags" | null = $state(null)
+
+  $effect(() => {
+    console.log(pageData)
+  })
 </script>
 
-{#if tagsSidebarVisible}
+{#if visibleSidebar == "clusters"}
   <div class="sidebar">
-    {#each tagsController.tagsHierarchy as tag}
-      <SidebarHierarchyEntry {tag} />
-    {/each}
+    <SidebarSection>
+      {#each pageData.clusters.sort((a, b) => b.sortOrder - a.sortOrder) as cluster}
+        <Button
+          icon={cluster.icon as any}
+          href="/{cluster.name}"
+          onclick={() => (visibleSidebar = null)}
+        >
+          {cluster.name}
+        </Button>
+      {/each}
+      <Button
+        icon="mdiCog"
+        href="/settings/general"
+        onclick={() => (visibleSidebar = null)}
+      >
+        Settings
+      </Button>
+    </SidebarSection>
+  </div>
+{/if}
+
+{#if visibleSidebar == "tags"}
+  <div class="sidebar">
+    <SidebarTagsSection />
   </div>
 {/if}
 
 <main>
   <div
     class="button"
-    onmousedown={() => (tagsSidebarVisible = !tagsSidebarVisible)}
+    onmousedown={() => (visibleSidebar = visibleSidebar ? null : "clusters")}
   >
-    <div class="iconContainer">
-      <div class="icon">
-        <Icon name="mdiTag" />
-      </div>
+    <div class="icon">
+      <Icon name={(pageData.cluster?.icon as any) || "mdiCog"} />
     </div>
   </div>
 
-  <div class="title">
-    <span>
-      {pageData.cluster?.name}
-    </span>
+  <div
+    class="button"
+    onmousedown={() => (visibleSidebar = visibleSidebar ? null : "tags")}
+  >
+    <div class="icon">
+      <Icon name="mdiTagMultiple" />
+    </div>
   </div>
+
+  <div class="spacer"></div>
 
   <div class="button" onmousedown={() => $controller.setPopup("Quick Switch")}>
     <div class="icon">
@@ -71,17 +102,15 @@
     $background-color: color.mix(#1c1c1c, #303030, 50%);
 
     display: flex;
-    gap: 8px;
+    gap: 4px;
     justify-content: space-between;
 
-    padding: 4px 0;
+    padding: 4px 12px;
 
     background: $background-color;
 
-    .title {
-      display: flex;
-      align-items: center;
-      font-size: 16px;
+    .spacer {
+      flex-grow: 1;
     }
 
     .button {
@@ -100,7 +129,8 @@
         align-items: center;
         justify-content: center;
 
-        width: 64px;
+        // width: 64px;
+        width: 32px;
         height: 32px;
 
         border-radius: 16px;

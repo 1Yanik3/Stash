@@ -4,8 +4,8 @@
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { actionBar, controller } from "$lib/stores.svelte"
 
-  import MediaViewer from "../../MediaViewer/MediaViewer.svelte"
-  import Toolbar from "../../MediaViewer/Toolbar.svelte"
+  import MediaViewer from "../MediaViewer/MediaViewer.svelte"
+  import Toolbar from "../MediaViewer/Toolbar.svelte"
 
   onMount(() => {
     window.history.pushState({ popupOpened: true }, "")

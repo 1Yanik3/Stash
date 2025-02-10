@@ -7,7 +7,8 @@
     executeSearch,
     type ResultsType
   } from "$lib/client/QuickSwitchHelpers/search.svelte"
-  import { controller } from "$lib/stores.svelte"
+  import { isMobile } from "$lib/context"
+  import { controller, settings } from "$lib/stores.svelte"
   import Popup from "$reusables/Popup.svelte"
 
   let value = $state("")
@@ -29,7 +30,7 @@
 </script>
 
 <Popup hideHeader onclose={() => $controller.setPopup(null)}>
-  <main>
+  <main class:mobile={isMobile.current}>
     <input
       id="quick-switch-input"
       type="search"
@@ -65,7 +66,17 @@
     />
     <div class="search-result-section">
       {#each submenuOverwrite.length ? submenuOverwrite : results as result, i}
-        <div class="result-row" class:selected={selectedIndex == i}>
+        <div
+          class="result-row"
+          class:selected={selectedIndex == i}
+          onmousedown={e => {
+            if (result.onEnter) {
+              result.onEnter(e as any)
+            } else if (result.submenu) {
+              submenuOverwrite = result.submenu
+            }
+          }}
+        >
           <div class="icon">
             <Icon name={result.icon} size={0.8} />
           </div>
@@ -168,6 +179,12 @@
         span {
           margin-left: 0.5rem;
         }
+      }
+    }
+
+    &.mobile {
+      input {
+        border: 1px solid var(--border-color-1);
       }
     }
   }

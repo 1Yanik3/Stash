@@ -3,6 +3,7 @@
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import Select from "$components/elements/Select.svelte"
+  import { isMobile } from "$lib/context"
   import { settings, windowControlsSpacerVisible } from "$lib/stores.svelte"
   import varsSvelte from "$lib/vars.svelte"
 
@@ -13,7 +14,7 @@
 </script>
 
 <main
-  class:mobile={$settings.mobileLayout}
+  class:mobile={isMobile.current}
   class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
 >
   <div class="header">

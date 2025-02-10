@@ -4,12 +4,13 @@
   import { browser } from "$app/environment"
   import { goto } from "$app/navigation"
   import { page } from "$app/stores"
+  import MediaViewerMobile from "$components/Mobile/MediaViewerMobile.svelte"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
-  import MediaViewerMobile from "$components/Popups/Mobile/MediaViewerMobile.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
+  import { isMobile } from "$lib/context"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
   import {
@@ -40,7 +41,7 @@
   })
 
   $effect(() => {
-    if ($settings.mobileLayout) {
+    if (isMobile.current) {
       setPopup(mediaController.visibleMedium ? "Media Viewer Mobile" : null)
     }
   })
