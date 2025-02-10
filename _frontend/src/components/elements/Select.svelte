@@ -130,6 +130,8 @@
 
     transition: all 200ms ease;
 
+    -webkit-app-region: no-drag;
+
     &.large {
       padding: 8px;
       border-radius: 5px;
@@ -147,7 +149,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
         filter: brightness(110%);
       }

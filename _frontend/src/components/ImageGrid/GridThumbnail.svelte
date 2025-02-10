@@ -3,6 +3,7 @@
 
   import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
+  import imageRetry from "$lib/actions/imageRetry.svelte"
   import {
     mediaController,
     type MediaType
@@ -65,7 +66,6 @@
       ? `?${vars.thumbnailSuffixParameter.suffix}`
       : ""
   )
-  let errorSuffix = $state("")
 
   // TODO: Move to a separate file (with the use directive?)
   let showSeekPreview = $state(false)
@@ -124,20 +124,15 @@
 
       {#if intersecting}
         <img
+          use:imageRetry
           in:fade={{ duration: 100 }}
-          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}${errorSuffix}`}
+          src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
           alt={medium.name}
           class:active={!disableActive &&
             mediaController.visibleMedium?.id == medium.id}
           crossorigin="use-credentials"
           class:disableZoom
           bind:this={thumbElement}
-          onerror={() => {
-            if (!suffix)
-              setTimeout(() => {
-                errorSuffix = `?${Math.random().toString(16).substring(2, 8)}`
-              }, 500)
-          }}
         />
 
         {#if medium.type.startsWith("video") && showSeekPreview}
@@ -200,7 +195,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);
