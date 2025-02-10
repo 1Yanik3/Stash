@@ -14,12 +14,12 @@ const config = {
   },
 
   plugins: [
-    // sentrySvelteKit({
-    //   sourceMapsUploadOptions: {
-    //     org: "ant-2s",
-    //     project: "stash"
-    //   }
-    // }),
+    sentrySvelteKit({
+      sourceMapsUploadOptions: {
+        org: "ant-2s",
+        project: "stash"
+      }
+    }),
     sveltekit()
   ],
 
