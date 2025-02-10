@@ -16,13 +16,13 @@
   import {
     actionBar,
     actionBars,
-    settings,
     windowControlsSpacerVisible
   } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
+  import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
 
   let pageData = $page.data as PageData
 
@@ -79,7 +79,8 @@
     Shortcuts: ShortcutPopup,
     "Create Story": CreateStoryPopup,
     "Media Viewer Mobile": MediaViewerMobile,
-    "Media Details": MediaDetailsPopup
+    "Media Details": MediaDetailsPopup,
+    "Masonary View": MasonaryView
   } as const
 
   let popup: keyof typeof popups | null = $state(null)

@@ -58,9 +58,9 @@ const actions = async () => {
     },
     {
       icon: "mdiViewGallery",
-      label: "/Gallery",
+      label: "/Masonary",
       onEnter: () => {
-        get(controller).setPopup("Gallery")
+        get(controller).setPopup("Masonary View")
       }
     }
   ]
