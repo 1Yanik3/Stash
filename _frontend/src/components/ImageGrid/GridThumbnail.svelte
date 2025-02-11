@@ -4,12 +4,14 @@
   import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
   import imageRetry from "$lib/actions/imageRetry.svelte"
+  import { SUBJECT_TYPES } from "$lib/constants"
   import {
     mediaController,
     type MediaType
   } from "$lib/controllers/MediaController.svelte"
   import { selectedMediaIds } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
+  import varsSvelte from "$lib/vars.svelte"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
   interface Props {
@@ -83,7 +85,33 @@
       seekVideo.currentTime = (seekVideo.duration / 100) * playbackPercentage
     }
   }
+
+  let isBeingHovered = $state(false)
+
+  const captureKeydownEventWhenHovering = (e: KeyboardEvent) => {
+    if (isBeingHovered) {
+      let newValue: (typeof SUBJECT_TYPES)[number]["value"] | null = null
+
+      if (e.key == "1") newValue = "solo"
+      else if (e.key == "2") newValue = "two"
+      else if (e.key == "3") newValue = "three"
+      else if (e.key == "4") newValue = "group"
+
+      fetch(`/api/media/${medium.id}/specialFilterAttribute`, {
+        method: "PUT",
+        body: JSON.stringify({
+          specialFilterAttribute: newValue
+        })
+      })
+        .then(() => {
+          medium.specialFilterAttribute = newValue
+        })
+        .catch(console.error)
+    }
+  }
 </script>
+
+<svelte:document onkeydown={captureKeydownEventWhenHovering} />
 
 <svelte:head>
   <link
@@ -108,6 +136,8 @@
       class:rigidAspectRatio
       onmousemove={processSeeking}
       ontouchmove={processSeeking}
+      onmouseenter={() => (isBeingHovered = true)}
+      onmouseleave={() => (isBeingHovered = false)}
     >
       <svg
         viewBox={`0 0 ${medium.width} ${medium.height}`}
@@ -161,6 +191,20 @@
         {#if medium.favourited}
           <div style="position: absolute; right: 0.25em; bottom: 0.25em;">
             <Icon name="mdiStar" size={0.8} />
+          </div>
+        {/if}
+
+        {#if varsSvelte.isInSubjectEditingMode}
+          <div style="position: absolute; left: 0.25em; bottom: 0.25em;">
+            {#if SUBJECT_TYPES.some(s => s.value == medium.specialFilterAttribute)}
+              <Icon
+                nameAlt={SUBJECT_TYPES.find(
+                  s => s.value == medium.specialFilterAttribute
+                )?.icon}
+              />
+            {:else}
+              <Icon name="mdiHelp" />
+            {/if}
           </div>
         {/if}
       {/if}

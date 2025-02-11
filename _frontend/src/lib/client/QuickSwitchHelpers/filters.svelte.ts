@@ -2,6 +2,7 @@ import { get } from "svelte/store"
 
 import { goto } from "$app/navigation"
 import { page } from "$app/stores"
+import { SUBJECT_TYPES } from "$lib/constants"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
 import {
@@ -10,6 +11,7 @@ import {
 } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
 import { actionBar, controller, selectedMediaIds } from "$lib/stores.svelte"
+import varsSvelte from "$lib/vars.svelte"
 
 import type { PageData } from "../../../routes/[cluster]/$types"
 import { sortingMethods } from "../../../types"
@@ -61,6 +63,14 @@ const actions = async () => {
       label: "/Masonary",
       onEnter: () => {
         get(controller).setPopup("Masonary View")
+      }
+    },
+    {
+      icon: "mdiCounter",
+      label: "/Bulk edit subject counts",
+      onEnter: () => {
+        get(controller).setPopup(null)
+        varsSvelte.isInSubjectEditingMode = !varsSvelte.isInSubjectEditingMode
       }
     }
   ]
@@ -256,15 +266,7 @@ const gatherAllFilters = async () =>
         }
       }))
     },
-    // TODO: Make dynamic (in DB)
-    ...[
-      { value: null, icon: "mdiAllInclusive" },
-      { value: "solo", icon: "mdiAccount" },
-      { value: "two", icon: "mdiAccountMultiple" },
-      { value: "three", icon: "mdiAccountGroup" },
-      { value: "group", icon: "mdiAccountMultiplePlus" },
-      { value: "show_unknown", icon: "mdiAccountQuestion" }
-    ].map(({ value, icon }) =>
+    ...SUBJECT_TYPES.map(({ value, icon }) =>
       createBasicFilterAction("specialFilterAttribute", value, icon, "subject")
     ),
     {

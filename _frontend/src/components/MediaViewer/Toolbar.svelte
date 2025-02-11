@@ -155,6 +155,7 @@
         width={40}
         hideName
         onchange={newValue => {
+          // TODO: Remove duplication
           fetch(
             `/api/media/${mediaController.visibleMedium?.id}/specialFilterAttribute`,
             {

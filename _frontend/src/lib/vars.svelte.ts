@@ -10,6 +10,8 @@ class Vars {
     content: string
   }[] = $state([])
   public selectedChapterIndex: number = $state(0)
+
+  public isInSubjectEditingMode: boolean = $state(false)
 }
 
 export default new Vars()
