@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { invalidate, invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import Table from "$components/elements/Table.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+  import query from "$lib/client/call.js"
   import Popup from "$reusables/Popup.svelte"
 
   let { data } = $props()
@@ -22,15 +24,22 @@
     {#snippet children({ entry })}
       <td>{entry.id}</td>
       <td>{entry.name}</td>
-      <td style="color: {colourPalletteStatus[entry.status]}">{entry.status}</td
+      <td
+        style="
+        color: {colourPalletteStatus[
+          entry.status as keyof typeof colourPalletteStatus
+        ]}
+        "
       >
-      <div>
+        {entry.status}
+      </td>
+      <td class="floating">
         <Button
           noMargin
           icon="mdiInformation"
           onclick={() => (jobDetails = entry)}
         />
-      </div>
+      </td>
     {/snippet}
   </Table>
 </SettingsPageContent>
@@ -41,11 +50,27 @@
     onclose={() => (jobDetails = null)}
   >
     <pre>{JSON.stringify(jobDetails, null, 2)}</pre>
+
+    {#snippet actionsRight()}
+      <Button
+        card
+        icon="mdiRefresh"
+        onclick={async () => {
+          await query("setJobStatus", {
+            // @ts-ignore
+            id: jobDetails.id,
+            status: "created"
+          })
+          invalidateAll()
+        }}>Retry</Button
+      >
+    {/snippet}
   </Popup>
 {/if}
 
 <style lang="scss">
-  div {
+  .floating {
+    padding-top: 2px;
     position: absolute;
     top: 0;
     right: 0;
