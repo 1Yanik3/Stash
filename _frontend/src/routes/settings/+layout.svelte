@@ -66,9 +66,9 @@
       flex-direction: column;
 
       padding: 5px 0;
+      border-right: 1px solid var(--border-color-base);
 
       background: var(--color-dark-level-1);
-      border-right: 1px solid var(--border-color-base);
 
       .divider {
         flex-grow: 1;

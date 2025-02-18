@@ -144,7 +144,8 @@
       </button>
       <!-- TODO: Move these definitions into the DB -->
       <Select
-        value={mediaController.visibleMedium.specialFilterAttribute}
+        value={mediaController.visibleMedium.specialFilterAttribute ||
+          mediaController.visibleMedium.specialFilterAttributeGuess}
         options={[
           { value: null, name: "Unknown", icon: "mdiAccountQuestion" },
           { value: "solo", name: "Solo", icon: "mdiAccount" },
@@ -271,9 +272,9 @@
     min-width: calc(100% - 4em);
     height: 33px;
     padding: 0.35em;
+    border-bottom: 1px solid var(--border-color-base);
 
     background: var(--color-dark-level-1);
-    border-bottom: 1px solid var(--border-color-base);
 
     // TODO: Still make click interractions possible even with dragging
     // -webkit-app-region: drag;
@@ -299,8 +300,9 @@
 
       justify-content: right;
 
-      background: none;
       border-bottom: none;
+
+      background: none;
       box-shadow: none;
 
       div,

@@ -16,7 +16,7 @@
 
 <SettingsPageContent title="Tags">
   <Table
-    headers={["Id", "Icons", "Tag", "Media count", "Clusters"]}
+    headers={["Id", "Icons", "Tag", "Description", "Media count", "Clusters"]}
     data={data.tags}
   >
     {#snippet children({ entry })}
@@ -53,6 +53,33 @@
       </td>
       <td style="text-transform: capitalize">
         {entry.tag}
+      </td>
+      <td>
+        {entry.description}
+        <div class="floating">
+          <Button
+            icon="mdiPencil"
+            onclick={async () => {
+              const newDescription = await prompts.text(
+                "Enter a new description for the medium",
+                entry.description || ""
+              )
+              if (newDescription) {
+                const previousDescription = entry.description || null
+                entry.description = newDescription
+                query("TagUpdateDescription", {
+                  tagId: entry.id,
+                  description: newDescription
+                })
+                  .catch(e => {
+                    console.error(e)
+                    entry.icon = previousDescription
+                  })
+                  .then(() => invalidateAll())
+              }
+            }}
+          />
+        </div>
       </td>
       <td>
         {entry.count}

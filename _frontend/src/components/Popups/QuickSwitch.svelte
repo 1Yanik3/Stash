@@ -110,11 +110,10 @@
       margin: -0.5rem;
       margin-bottom: 0;
       padding: 0.5rem;
-
-      font-size: 1rem;
-
       border: none;
       border-bottom: 1px solid var(--border-color-1);
+
+      font-size: 1rem;
     }
 
     .search-result-section {
@@ -146,11 +145,11 @@
           justify-content: center;
 
           padding: 0.25rem 0.5rem;
+          border-radius: 0.5rem;
 
           font-size: 14px;
 
           background-color: var(--color-dark-level-3);
-          border-radius: 0.5rem;
         }
 
         &.selected {
@@ -171,10 +170,10 @@
         align-items: center;
 
         padding: 0.25rem 0.5rem;
-
-        background-color: var(--color-dark-level-2);
         border: 1px solid var(--border-color-1);
         border-radius: 0.5rem;
+
+        background-color: var(--color-dark-level-2);
 
         span {
           margin-left: 0.5rem;
@@ -183,6 +182,7 @@
     }
 
     &.mobile {
+
       input {
         border: 1px solid var(--border-color-1);
       }

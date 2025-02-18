@@ -72,11 +72,11 @@
     justify-content: center;
 
     margin: 0.5em;
+    border-radius: 0.4em;
 
     text-decoration: none;
 
     background: #212121;
-    border-radius: 0.4em;
     box-shadow:
       rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
@@ -93,10 +93,10 @@
     img {
       width: 100%;
       height: 100%;
-
-      object-fit: cover;
       border-top-left-radius: 0.4em;
       border-top-right-radius: 0.4em;
+
+      object-fit: cover;
     }
 
     @media (hover: hover) and (pointer: fine) {

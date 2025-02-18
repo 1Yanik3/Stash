@@ -90,6 +90,16 @@
   // }
 
   //#endregion
+
+  let loading = $state(false)
+  const handleClick = (e: MouseEvent) => {
+    loading = true
+    try {
+      onclick?.(e)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 </script>
 
 <!-- TODO: Maybe we can get rid of the href? -->
@@ -104,7 +114,7 @@
   class:noMargin
   class:transparentButton
   {oncontextmenu}
-  {onclick}
+  onclick={handleClick}
   {onmouseenter}
   class:isDraggingOver
   class:card
@@ -161,11 +171,10 @@
     justify-content: space-between;
 
     padding: 0.5em 0.75em;
-
-    text-decoration: none;
-
     border: 1px solid transparent;
     border-radius: 0.35em;
+
+    text-decoration: none;
 
     transition:
       background 100ms,
@@ -181,12 +190,12 @@
 
     &.card {
       margin: 0.25em;
-      background: var(--color-dark-level-2);
       border: 1px solid var(--border-color-1);
+      background: var(--color-dark-level-2);
 
       &:hover {
-        background: var(--color-dark-level-2-hover) !important;
         border: 1px solid var(--border-color-1-hover) !important;
+        background: var(--color-dark-level-2-hover) !important;
       }
     }
 
@@ -196,31 +205,31 @@
     }
 
     &.active {
-      background: var(--color-dark-level-2);
       border: 1px solid var(--border-color-1);
+      background: var(--color-dark-level-2);
 
       &:hover {
-        background: var(--color-dark-level-2-hover);
         border: 1px solid var(--border-color-1-hover);
+        background: var(--color-dark-level-2-hover);
       }
     }
 
     &.highlighted {
-      background: var(--color-dark-level-3);
       border: 1px solid var(--border-color-1);
+      background: var(--color-dark-level-3);
 
       @media (hover: hover) and (pointer: fine) {
 
         &:hover {
-          background: var(--color-dark-level-2-hover);
           border: 1px solid var(--border-color-1-hover);
+          background: var(--color-dark-level-2-hover);
         }
       }
     }
 
     &.isDraggingOver {
-      background: var(--color-dark-level-2-hover);
       border: 1px solid var(--border-color-1-hover);
+      background: var(--color-dark-level-2-hover);
     }
 
     .section {
@@ -261,8 +270,8 @@
       &:hover {
 
         &:not(.transparentButton) {
-          background: var(--color-dark-level-2);
           border: 1px solid var(--border-color-1);
+          background: var(--color-dark-level-2);
         }
 
         &.transparentButton {

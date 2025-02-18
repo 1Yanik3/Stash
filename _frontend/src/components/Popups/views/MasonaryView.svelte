@@ -68,6 +68,7 @@
     display: flex;
     gap: 1rem;
     margin: 0.5rem;
+
     .column {
       display: flex;
       flex-direction: column;

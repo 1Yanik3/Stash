@@ -49,11 +49,12 @@
   main {
     z-index: 10;
 
+    border: 1px solid var(--border-color-1);
+    border-radius: 0.5em;
+
     // padding: 5px 0;
 
     background: var(--color-dark-level-base);
-    border: 1px solid var(--border-color-1);
-    border-radius: 0.5em;
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,
       rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;

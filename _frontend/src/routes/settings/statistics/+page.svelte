@@ -30,10 +30,10 @@
       gap: 0.25em;
 
       padding: 0.75em;
-
-      background: var(--color-dark-level-base);
       border: 1px solid var(--border-color-1);
       border-radius: 0.5em;
+
+      background: var(--color-dark-level-base);
 
       b {
         font-size: 2.5rem;

@@ -112,8 +112,9 @@
 
       display: grid;
 
-      background: var(--color-dark-level-1);
       border: 1px solid var(--border-color-1);
+
+      background: var(--color-dark-level-1);
 
       span {
         overflow: hidden;

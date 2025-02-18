@@ -210,7 +210,6 @@
     height: calc(100% - 1em);
     padding-top: 0.5em;
     padding-bottom: 0.5em;
-
     border-left: 1px solid var(--border-color-1);
 
     section.first {
@@ -231,7 +230,6 @@
       width: 45px;
       height: 37px;
       margin: 0.25em;
-
       border: 1px solid transparent;
       border-radius: 0.35em;
 
@@ -245,9 +243,10 @@
       }
 
       @media (hover: hover) and (pointer: fine) {
+
         &:not(.disabled):hover {
-          background: var(--border-color-1);
           border: 1px solid var(--border-color-1-hover);
+          background: var(--border-color-1);
         }
       }
     }
@@ -276,7 +275,6 @@
         display: none;
 
         height: 85px;
-
         border-radius: 5px;
       }
 

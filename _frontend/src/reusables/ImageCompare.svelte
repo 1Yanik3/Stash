@@ -105,10 +105,10 @@
     height: 40px;
     margin-top: -4px;
     margin-left: -4px;
-
-    background: none;
     border: 4px solid white;
     border-radius: 50px;
+
+    background: none;
   }
 
   .handle:before,
@@ -119,7 +119,6 @@
     left: calc(50% - 2px);
 
     height: 9999px;
-
     border: 2px solid white;
   }
 
@@ -139,7 +138,6 @@
 
     width: 0;
     height: 0;
-
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
   }

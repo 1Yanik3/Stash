@@ -132,7 +132,6 @@
         // width: 64px;
         width: 32px;
         height: 32px;
-
         border-radius: 16px;
       }
     }

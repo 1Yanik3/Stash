@@ -179,9 +179,9 @@
 
                 width: 100%;
                 height: 100%;
+                border-radius: 3px;
 
                 object-fit: cover;
-                border-radius: 3px;
             "
           >
             <track kind="captions" />
@@ -195,8 +195,8 @@
         {/if}
 
         {#if varsSvelte.isInSubjectEditingMode}
-          <div style="position: absolute; left: 0.25em; bottom: 0.25em;">
-            {#if SUBJECT_TYPES.some(s => s.value == medium.specialFilterAttribute)}
+          <div style="position: absolute; bottom: 0.25em; left: 0.25em;">
+            {#if SUBJECT_TYPES.some(s => s.value == medium.specialFilterAttribute || medium.specialFilterAttributeGuess)}
               <Icon
                 nameAlt={SUBJECT_TYPES.find(
                   s => s.value == medium.specialFilterAttribute
@@ -224,8 +224,8 @@
 
     width: 100%;
     height: 100%;
-
     border-radius: 3px;
+
     box-shadow:
       rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
@@ -239,6 +239,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

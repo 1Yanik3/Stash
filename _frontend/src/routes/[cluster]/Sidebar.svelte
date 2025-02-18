@@ -78,9 +78,9 @@
 
     width: 250px;
     height: 100vh;
+    border-right: 1px solid var(--border-color-base);
 
     background: var(--color-dark-level-1);
-    border-right: 1px solid var(--border-color-base);
 
     -webkit-app-region: drag;
 

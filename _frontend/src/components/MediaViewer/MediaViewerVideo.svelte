@@ -291,18 +291,18 @@
 
         .track-before {
           height: $height;
-          background: rgba(255, 255, 255, 0.5);
           border-top-left-radius: $border-radius;
           border-bottom-left-radius: $border-radius;
+          background: rgba(255, 255, 255, 0.5);
         }
 
         .track-after {
           height: $height;
-
-          background: rgba(50, 50, 50, 0.5);
           border-radius: 2px;
           border-top-right-radius: $border-radius;
           border-bottom-right-radius: $border-radius;
+
+          background: rgba(50, 50, 50, 0.5);
         }
 
         .thumb {
@@ -312,9 +312,9 @@
 
           width: 8px;
           height: $height + 8px;
+          border-radius: 4px;
 
           background: white;
-          border-radius: 4px;
 
           transition: height 200ms;
 
@@ -324,6 +324,7 @@
         }
 
         &:not(:hover) {
+
           & > video {
             display: none;
           }
@@ -337,7 +338,6 @@
           transform: translate(-50%);
 
           width: 150px;
-
           border-radius: 5px;
         }
       }

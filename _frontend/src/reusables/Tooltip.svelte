@@ -33,10 +33,10 @@
     justify-content: center;
 
     padding: 0.5em;
-
-    background: var(--color-dark-level-1);
     border: 1px solid var(--order-color-base);
     border-radius: 0.35em;
+
+    background: var(--color-dark-level-1);
 
     &.direction-bottom {
       transform: translateX(-50%);

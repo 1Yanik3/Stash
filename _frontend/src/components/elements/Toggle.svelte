@@ -43,10 +43,10 @@
     width: $size * 2.25;
     height: $size;
     padding: $padding;
-
-    background: var(--color-dark-level-base);
     border: 1px solid var(--border-color-base);
     border-radius: 0.6em;
+
+    background: var(--color-dark-level-base);
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
@@ -58,9 +58,9 @@
 
       width: $size;
       height: $size;
+      border-radius: 0.45em;
 
       background: hsl(0, 0%, 24%);
-      border-radius: 0.45em;
 
       transition: all 200ms ease;
 
@@ -74,6 +74,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover div {
         filter: brightness(1.2);
       }

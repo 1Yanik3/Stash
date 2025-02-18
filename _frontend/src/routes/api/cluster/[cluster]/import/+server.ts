@@ -80,5 +80,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
     })
   }
 
+  if (type.startsWith("image")) {
+    await prisma.job.create({
+      data: {
+        name: "attemptManualTagging",
+        data: JSON.stringify({ id: mediaId })
+      }
+    })
+  }
+
   return new Response()
 }

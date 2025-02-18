@@ -3,7 +3,6 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl", "debian-openssl-1.1.x", "darwin-arm64"]
-  previewFeatures = ["tracing"]
 }
 
 datasource db {
@@ -37,10 +36,11 @@ model Clusters {
 }
 
 model Tags {
-  id        Int     @id @default(autoincrement())
-  tag       String
-  icon      String?
-  collapsed Boolean @default(false)
+  id          Int     @id @default(autoincrement())
+  tag         String
+  icon        String?
+  collapsed   Boolean @default(false)
+  description String?
 
   parentId Int?
   parent   Tags?      @relation("ParentChildTags", fields: [parentId], references: [id])
@@ -62,8 +62,9 @@ model Media {
   source       String? // TODO
   content_hash String?
 
-  favourited             Boolean @default(false)
-  specialFilterAttribute String?
+  favourited                  Boolean @default(false)
+  specialFilterAttribute      String?
+  specialFilterAttributeGuess String?
 
   // Link to cluster
   cluster    Clusters? @relation(fields: [clustersId], references: [id])
@@ -73,7 +74,8 @@ model Media {
   groupedInto        GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
   groupedIntoNamesId Int?
 
-  tags Tags[]
+  tags      Tags[]
+  tagsGuess String[]
 
   @@index([id, clustersId, tags_old])
 }

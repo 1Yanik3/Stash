@@ -49,10 +49,10 @@
     margin: 0.15em;
     margin-right: 0.25em;
     padding: 0.3em 0.5em;
-
-    background: var(--color-dark-level-2);
     border: 1px solid var(--color-dark-level-1);
     border-radius: 3px;
+
+    background: var(--color-dark-level-2);
 
     &.compact {
       cursor: default;

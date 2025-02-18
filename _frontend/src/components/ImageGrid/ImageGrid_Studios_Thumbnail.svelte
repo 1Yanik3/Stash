@@ -87,7 +87,6 @@
     gap: 0.5em;
 
     padding: 1em;
-
     border: 1px solid transparent;
     border-radius: 0.5em;
 
@@ -98,16 +97,16 @@
     }
 
     &.active {
-      background: var(--color-dark-level-1-hover);
       border: 1px solid var(--border-color-1-hover);
+      background: var(--color-dark-level-1-hover);
       box-shadow:
         rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
         rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;
     }
 
     &.selected {
-      background: var(--color-dark-level-2-hover);
       border: 1px solid var(--border-color-2-hover);
+      background: var(--color-dark-level-2-hover);
       box-shadow:
         rgba(68, 68, 68, 0.2) 0px 1px 3px 0px,
         rgba(68, 68, 68, 0.12) 0px 1px 2px 0px;
@@ -144,8 +143,8 @@
     @media (hover: hover) and (pointer: fine) {
 
       &:hover {
-        background: var(--color-dark-level-1-hover);
         border: 1px solid var(--border-color-1-hover);
+        background: var(--color-dark-level-1-hover);
         box-shadow:
           rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
           rgba(0, 0, 0, 0.12) 0px 1px 2px 0px;

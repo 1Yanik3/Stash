@@ -71,14 +71,14 @@
       cursor: pointer;
 
       padding: 0.5em;
-
-      background: var(--color-dark-level-1);
       border: 1px solid var(--border-color-1-hover);
       border-radius: 0.35em;
 
+      background: var(--color-dark-level-1);
+
       &:hover {
-        background: var(--color-dark-level-2);
         border: 1px solid var(--border-color-1);
+        background: var(--color-dark-level-2);
       }
 
       .title {

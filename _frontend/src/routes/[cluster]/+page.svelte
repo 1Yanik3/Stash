@@ -71,6 +71,7 @@
     }
 
     &.mobile {
+
       #imageGallerySection {
         min-width: unset;
       }

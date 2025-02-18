@@ -10,6 +10,7 @@
   import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
   import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
+  import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
   import { isMobile } from "$lib/context"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import tagsController from "$lib/controllers/TagsController.svelte"
@@ -22,7 +23,6 @@
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
-  import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
 
   let pageData = $page.data as PageData
 

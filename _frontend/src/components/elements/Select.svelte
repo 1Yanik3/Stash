@@ -117,13 +117,13 @@
 
     width: max-content;
     padding: 4.25px;
+    border: 1px solid var(--border-color-base);
+    border-radius: 3px;
 
     font-size: 14px;
     font-weight: 200;
 
     background: var(--color-dark-level-base);
-    border: 1px solid var(--border-color-base);
-    border-radius: 3px;
     box-shadow:
       rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
@@ -149,6 +149,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
         filter: brightness(110%);
       }

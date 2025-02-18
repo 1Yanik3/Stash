@@ -1,6 +1,7 @@
 <script lang="ts">
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
+  import query from "$lib/client/call"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
   import { controller } from "$lib/stores.svelte"
@@ -97,6 +98,18 @@
           <b>Metadata</b>
           <div>
             <Button
+              icon="mdiCameraFlip"
+              noMargin
+              onclick={() => {
+                query("createJob", {
+                  name: "attemptManualTagging",
+                  data: JSON.stringify({
+                    id: mediaController.visibleMedium?.id
+                  })
+                })
+              }}
+            />
+            <Button
               icon="mdiImageRefresh"
               noMargin
               onclick={() => {
@@ -144,9 +157,25 @@
 
         <div>
           <Icon name="mdiCalendar" />
+          <span>
+            {toIsoString(new Date(mediaController.visibleMedium.date))}
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <b>Suggestions</b>
+
+        <div>
+          <Icon name="mdiCounter" />
           <span
-            >{toIsoString(new Date(mediaController.visibleMedium.date))}</span
+            >{mediaController.visibleMedium.specialFilterAttributeGuess}</span
           >
+        </div>
+
+        <div>
+          <Icon name="mdiTagHidden" />
+          <span>{mediaController.visibleMedium.tagsGuess.join(", ")}</span>
         </div>
       </section>
     </main>

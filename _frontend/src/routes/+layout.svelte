@@ -1,11 +1,12 @@
 <script lang="ts">
   import "../styles/app.scss"
 
+  import { onMount } from "svelte"
+
   import { browser } from "$app/environment"
   import { controller, settings } from "$lib/stores.svelte"
 
   import Controller from "./Controller.svelte"
-  import { onMount } from "svelte"
 
   let { children } = $props()
 

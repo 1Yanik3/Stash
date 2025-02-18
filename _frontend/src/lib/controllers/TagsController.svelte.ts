@@ -17,6 +17,7 @@ export type TagBase = {
   collapsed: boolean
   parentId: number | null
   count: number
+  description?: string
 }
 
 export type TagExtended = TagBase & {

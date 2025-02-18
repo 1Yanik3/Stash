@@ -158,16 +158,16 @@
 
       margin: 0 0.15em;
       padding: 0.4em;
-
-      background: transparent;
       border: 1px solid transparent;
       border-radius: 0.35em;
+
+      background: transparent;
 
       transition: background 150ms;
 
       &.active {
-        background: #303030;
         border: 1px solid var(--border-color-1-hover);
+        background: #303030;
       }
 
       &.mobileNavigationButtons {
@@ -175,8 +175,9 @@
         right: 10px;
         bottom: 10px;
 
-        background: var(--color-dark-level-base);
         border: 1px solid var(--border-color-base);
+
+        background: var(--color-dark-level-base);
       }
     }
   }

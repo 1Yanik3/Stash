@@ -102,3 +102,17 @@ export const tag_update_icon = async (d: { tagId: number; newIcon: string }) =>
       icon: d.newIcon
     }
   })
+
+export const TagUpdateDescription = async (d: {
+  tagId: number
+  description: string
+}) => {
+  await prisma.tags.update({
+    where: {
+      id: d.tagId
+    },
+    data: {
+      description: d.description
+    }
+  })
+}

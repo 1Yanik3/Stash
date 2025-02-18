@@ -62,17 +62,19 @@
             status: "created"
           })
           invalidateAll()
-        }}>Retry</Button
+        }}
       >
+        Retry
+      </Button>
     {/snippet}
   </Popup>
 {/if}
 
 <style lang="scss">
   .floating {
-    padding-top: 2px;
     position: absolute;
     top: 0;
     right: 0;
+    padding-top: 2px;
   }
 </style>
