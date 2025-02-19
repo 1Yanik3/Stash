@@ -39,3 +39,14 @@ export const media_bulk_remove_tags = async (d: {
     })
   }
 }
+
+export const markMediaAsDeleted = async (d: { mediaId: string }) => {
+  await prisma.media.update({
+    where: {
+      id: d.mediaId
+    },
+    data: {
+      deleted: true
+    }
+  })
+}

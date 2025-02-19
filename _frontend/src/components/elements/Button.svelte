@@ -104,6 +104,7 @@
 
 <!-- TODO: Maybe we can get rid of the href? -->
 <a
+  class:loading
   {download}
   {href}
   style={styleOverride}
@@ -118,7 +119,7 @@
   {onmouseenter}
   class:isDraggingOver
   class:card
-  class:disabled
+  class:disabled={disabled || loading}
   {title}
 >
   <div class="section">
@@ -219,7 +220,6 @@
       background: var(--color-dark-level-3);
 
       @media (hover: hover) and (pointer: fine) {
-
         &:hover {
           border: 1px solid var(--border-color-1-hover);
           background: var(--color-dark-level-2-hover);
@@ -258,7 +258,6 @@
     }
 
     &.right {
-
       &,
       .section {
         flex-direction: row-reverse;
@@ -266,9 +265,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
-
         &:not(.transparentButton) {
           border: 1px solid var(--border-color-1);
           background: var(--color-dark-level-2);

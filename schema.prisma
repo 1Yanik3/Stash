@@ -77,6 +77,8 @@ model Media {
   tags      Tags[]
   tagsGuess String[]
 
+  deleted Boolean @default(false)
+
   @@index([id, clustersId, tags_old])
 }
 

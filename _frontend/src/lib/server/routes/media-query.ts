@@ -27,6 +27,7 @@ export const media_query_from_database = async (d: {
             LEFT JOIN "Tags" ON "_MediaToTags"."B" = "Tags"."id"
         WHERE
             "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${d.cluster}')
+            AND "Media"."deleted" = false
             ${assembleTagsFilter(d.tags)}
             ${assembleFavouritesOnlyFilter(d.favouritesOnly)}
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}

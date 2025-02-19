@@ -6,6 +6,7 @@
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
   import Select from "$components/elements/Select.svelte"
+  import query from "$lib/client/call"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
@@ -260,6 +261,22 @@
     }}
   >
     Open in new tab
+  </Button>
+
+  <Button
+    icon="mdiTrashCan"
+    onclick={async () => {
+      await query("markMediaAsDeleted", {
+        mediaId: mediaController.visibleMedium?.id as string
+      })
+      mediaController.setMedia(mediaController.media.filter(
+        (m) => m.id != mediaController.visibleMedium?.id
+      ))
+      mediaController.visibleMedium = null
+      dropdownVisible = false
+    }}
+  >
+    Delete media
   </Button>
 </Dropdown>
 
