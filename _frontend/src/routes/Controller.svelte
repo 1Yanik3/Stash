@@ -17,6 +17,7 @@
   import {
     actionBar,
     actionBars,
+    selectedMediaIds,
     windowControlsSpacerVisible
   } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
@@ -96,6 +97,8 @@
     window.fullscreenChanged = (state: boolean) => {
       windowControlsSpacerVisible.set(!state)
     }
+    // @ts-ignore
+    window.getSelectedMediaIds = () => $selectedMediaIds
   })
 </script>
 
