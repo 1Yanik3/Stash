@@ -5,6 +5,7 @@
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import query from "$lib/client/call.js"
   import Popup from "$reusables/Popup.svelte"
+  import { onMount } from "svelte"
 
   let { data } = $props()
 

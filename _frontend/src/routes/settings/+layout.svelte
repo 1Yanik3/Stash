@@ -21,6 +21,7 @@
     <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
     <Button icon="mdiPassport" href="/settings/credentials">Credentials</Button>
     <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
+    <Button icon="mdiDatabaseSearch" href="/settings/queries">Queries</Button>
     <Button
       icon="mdiContentDuplicate"
       href="/settings/duplicates"
