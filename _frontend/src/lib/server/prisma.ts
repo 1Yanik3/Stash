@@ -26,5 +26,4 @@ export default prisma
 
 prisma.$on("query", async e => {
   await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
-  console.log("added query to db")
 })

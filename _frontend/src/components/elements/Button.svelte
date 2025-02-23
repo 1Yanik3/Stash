@@ -93,11 +93,14 @@
 
   let loading = $state(false)
   const handleClick = (e: MouseEvent) => {
-    loading = true
     try {
+    //   loading = true
       onclick?.(e)
     } catch (e) {
       console.error(e)
+    }
+    finally {
+        loading = false
     }
   }
 </script>

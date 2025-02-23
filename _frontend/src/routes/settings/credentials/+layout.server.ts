@@ -1,8 +1,8 @@
 import prisma from "$lib/server/prisma"
 
-import type { PageServerLoad } from "./$types"
+import type { LayoutServerLoad } from "./$types"
 
-export const load: PageServerLoad = async () => ({
+export const load: LayoutServerLoad = async () => ({
   allClusters: await prisma.clusters.findMany({
     orderBy: {
       sortOrder: "asc"

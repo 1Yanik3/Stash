@@ -1,22 +1,29 @@
 import type { Media } from "@prisma/client"
+import type { Cookies } from "@sveltejs/kit"
 
 import prisma from "$lib/server/prisma"
 import { PAGE_SIZE } from "$lib/stores.svelte"
 
 import { sortingMethods } from "../../../types"
+import { protectEndpoint } from "../protect-endpoint"
 
-export const media_query_from_database = async (d: {
-  cluster: string
-  tags: number[]
-  offset: number
-  favouritesOnly: boolean
-  specialFilterAttribute: string | null
-  seed: number
-  activeSortingMethod: number
-  countOfTags: number
-  minResolution: number | null
-  mediaType: "all" | "image" | "video"
-}) => {
+export const media_query_from_database = async (
+  d: {
+    cluster: string
+    tags: number[]
+    offset: number
+    favouritesOnly: boolean
+    specialFilterAttribute: string | null
+    seed: number
+    activeSortingMethod: number
+    countOfTags: number
+    minResolution: number | null
+    mediaType: "all" | "image" | "video"
+  },
+  cookies: Cookies
+) => {
+  await protectEndpoint(d.cluster, cookies)
+
   return (await prisma.$queryRawUnsafe(/*sql*/ `
         SELECT
             "Media".*,

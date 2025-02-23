@@ -1,10 +1,18 @@
-import prisma from "../prisma"
+import type { Cookies } from "@sveltejs/kit"
 
-export const tags_query_from_database = async (d: {
-  cluster: string | null
-  mediaTypeFilter: string
-  favouritesOnly: boolean
-}) => {
+import prisma from "../prisma"
+import { protectEndpoint } from "../protect-endpoint"
+
+export const tags_query_from_database = async (
+  d: {
+    cluster: string | null
+    mediaTypeFilter: string
+    favouritesOnly: boolean
+  },
+  cookies: Cookies
+) => {
+  await protectEndpoint(d.cluster || "", cookies)
+
   const typeFilter = d.mediaTypeFilter
     ? /*sql*/ `
         AND "Media"."type" LIKE '${d.mediaTypeFilter}%'
