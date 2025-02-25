@@ -30,7 +30,7 @@
                 }
               }}
             >
-              Process another 100
+              Process remaining
             </Button>
           </td>
         {/await}

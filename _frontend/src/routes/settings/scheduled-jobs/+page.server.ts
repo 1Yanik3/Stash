@@ -5,6 +5,9 @@ import type { PageServerLoad } from "./$types"
 export const load: PageServerLoad = async () => ({
   imagesMissingAiTagMatching: prisma.media.findMany({
     where: {
+      type: {
+        startsWith: "image"
+      },
       visualAiMatchingVersion: {
         lt: 1
       }

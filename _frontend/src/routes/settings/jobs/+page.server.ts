@@ -7,6 +7,6 @@ export const load: PageServerLoad = async () => ({
     orderBy: {
       createdAt: "desc"
     },
-    take: 100
+    take: 1000
   })
 })

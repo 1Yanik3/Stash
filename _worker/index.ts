@@ -42,6 +42,7 @@ while (true) {
               });
             })
             .catch(async (error) => {
+              console.trace(error)
               await prisma.job.update({
                 where: {
                   id: job.id,

@@ -79,4 +79,8 @@
     right: 0;
     padding-top: 2px;
   }
+
+  pre {
+    overflow: auto;
+  }
 </style>
