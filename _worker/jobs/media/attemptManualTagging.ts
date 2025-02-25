@@ -49,7 +49,7 @@ export const execute = async (job: Job) => {
   });
 
   const { object } = await generateObject({
-    model: openrouter("mistralai/pixtral-12b"),
+    model: openrouter("qwen/qwen-vl-plus:free"),
     messages: [
       {
         role: "system",
@@ -97,6 +97,7 @@ export const execute = async (job: Job) => {
         object.numberOfPeopleInImage
       ),
       tagsGuess: object.tags,
+      visualAiMatchingVersion: 1
     },
   });
 };

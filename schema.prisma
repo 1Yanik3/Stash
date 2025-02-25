@@ -55,27 +55,29 @@ model Media {
   name        String
   date        DateTime @default(now())
   createdDate DateTime @default(now())
+  tags        Tags[]
 
+  // Metadata
   height       Int
   width        Int
   tags_old     String[]
   source       String? // TODO
   content_hash String?
 
-  favourited                  Boolean @default(false)
-  specialFilterAttribute      String?
-  specialFilterAttributeGuess String?
-
+  favourited             Boolean   @default(false)
+  specialFilterAttribute String?
   // Link to cluster
-  cluster    Clusters? @relation(fields: [clustersId], references: [id])
-  clustersId Int
+  cluster                Clusters? @relation(fields: [clustersId], references: [id])
+  clustersId             Int
 
   // Grouped with other media
   groupedInto        GroupedIntoNames? @relation(fields: [groupedIntoNamesId], references: [id])
   groupedIntoNamesId Int?
 
-  tags      Tags[]
-  tagsGuess String[]
+  // Automatic Metadata
+  visualAiMatchingVersion     Int      @default(0) @db.SmallInt
+  specialFilterAttributeGuess String?
+  tagsGuess                   String[]
 
   deleted Boolean @default(false)
 

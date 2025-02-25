@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
+  import SidebarSection from "$components/SidebarSection.svelte"
   import { isMobile } from "$lib/context.js"
   import varsSvelte from "$lib/vars.svelte.js"
 
@@ -22,27 +23,43 @@
       </div>
     {/if}
 
-    <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
-    <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
-    <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
-    <Button icon="mdiPassport" href="/settings/credentials">Credentials</Button>
-    <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
-    <Button icon="mdiDatabaseSearch" href="/settings/queries">Queries</Button>
-    <Button
-      icon="mdiContentDuplicate"
-      href="/settings/duplicates"
-      count={data.duplicates_count}
-    >
-      Duplicates
-    </Button>
-    <Button icon="mdiImageMultiple" href="/settings/icon-packs">
-      Icon Packs
-    </Button>
-    <Button
-      icon="mdiFileFind"
-      href="/settings/orphaned"
-      count={data.unimported_count}>Orphaned Files</Button
-    >
+    <SidebarSection title="Personal">
+      <Button icon="mdiToggleSwitch" href="/settings/general">General</Button>
+    </SidebarSection>
+
+    <SidebarSection title="Content">
+      <Button icon="mdiRhombusSplit" href="/settings/clusters">Clusters</Button>
+      <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
+    </SidebarSection>
+
+    <SidebarSection title="Administration">
+      <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
+      <Button icon="mdiTimelapse" href="/settings/scheduled-jobs">Scheduled Jobs</Button>
+      <Button icon="mdiPassport" href="/settings/credentials">
+        Credentials
+      </Button>
+      <Button icon="mdiDatabaseSearch" href="/settings/queries">Queries</Button>
+      <Button icon="mdiImageMultiple" href="/settings/icon-packs">
+        Icon Packs
+      </Button>
+    </SidebarSection>
+
+    <SidebarSection title="Tasks">
+      <Button
+        icon="mdiFileFind"
+        href="/settings/orphaned"
+        count={data.unimported_count}
+      >
+        Orphaned Files
+      </Button>
+      <Button
+        icon="mdiContentDuplicate"
+        href="/settings/duplicates"
+        count={data.duplicates_count}
+      >
+        Duplicates
+      </Button>
+    </SidebarSection>
 
     <div class="divider"></div>
 
