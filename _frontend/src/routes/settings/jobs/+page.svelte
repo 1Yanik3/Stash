@@ -19,6 +19,12 @@
   } as const
 
   let jobDetails: null | (typeof data.jobs)[number] = $state(null)
+
+  onMount(() => {
+    // TODO
+    const interval = setInterval(() => invalidateAll(), 1000)
+    return () => clearInterval(interval)
+  })
 </script>
 
 <SettingsPageContent title="Jobs">

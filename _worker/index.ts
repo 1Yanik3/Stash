@@ -6,6 +6,8 @@ import { Job } from "@prisma/client";
 
 const registeredJobs = await importAllTsFiles();
 
+console.log("Started...")
+
 while (true) {
   const openJobs = await prisma.job.findMany({
     where: {
@@ -42,7 +44,7 @@ while (true) {
               });
             })
             .catch(async (error) => {
-              console.trace(error)
+              console.trace(JSON.stringify(error))
               await prisma.job.update({
                 where: {
                   id: job.id,

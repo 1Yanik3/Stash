@@ -5,12 +5,15 @@ import { tags_query_from_database } from "$lib/server/routes/tags"
 
 import type { PageServerLoad } from "./$types"
 
-export const load = (async () => {
-  const data = await tags_query_from_database({
-    cluster: null,
-    favouritesOnly: false,
-    mediaTypeFilter: ""
-  })
+export const load = (async ({ cookies }) => {
+  const data = await tags_query_from_database(
+    {
+      cluster: null,
+      favouritesOnly: false,
+      mediaTypeFilter: ""
+    },
+    cookies
+  )
 
   const tmpTagMap = assembleTagHierarchyMap(data)
 

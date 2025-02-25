@@ -49,7 +49,7 @@ export const execute = async (job: Job) => {
   });
 
   const { object } = await generateObject({
-    model: openrouter("qwen/qwen-vl-plus:free"),
+    model: openrouter("google/gemini-2.0-flash-lite-preview-02-05:free"),
     messages: [
       {
         role: "system",
