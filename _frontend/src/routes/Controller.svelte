@@ -21,6 +21,7 @@
     windowControlsSpacerVisible
   } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
+  import varsSvelte from "$lib/vars.svelte"
   import Shortcut from "$reusables/Shortcut.svelte"
 
   import type { PageData } from "./[cluster]/$types"
@@ -93,9 +94,11 @@
   windowControlsSpacerVisible.set($page.data.userAgent?.includes("Electron"))
 
   onMount(() => {
+    varsSvelte.layout.isElectron = $page.data.userAgent?.includes("Electron")
     // @ts-ignore
     window.fullscreenChanged = (state: boolean) => {
       windowControlsSpacerVisible.set(!state)
+      varsSvelte.layout.isElectron = state ? "fullscreen" : true
     }
     // @ts-ignore
     window.getSelectedMediaIds = () => $selectedMediaIds

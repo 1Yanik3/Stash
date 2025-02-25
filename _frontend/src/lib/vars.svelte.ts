@@ -1,3 +1,7 @@
+class Layout {
+  isElectron = $state(false) as false | true | "fullscreen"
+}
+
 class Vars {
   public clusterName: string | undefined = $state()
   public thumbnailSuffixParameter: {
@@ -12,6 +16,8 @@ class Vars {
   public selectedChapterIndex: number = $state(0)
 
   public isInSubjectEditingMode: boolean = $state(false)
+
+  layout = new Layout()
 }
 
 export default new Vars()

@@ -3,6 +3,7 @@
   import Button from "$components/elements/Button.svelte"
   import MobileBottomBar from "$components/MobileBottomBar.svelte"
   import { isMobile } from "$lib/context.js"
+  import varsSvelte from "$lib/vars.svelte.js"
 
   let { children, data } = $props()
 </script>
@@ -11,7 +12,12 @@
   <!-- TODO: Mobile support -->
   <section class="sidebar">
     {#if !isMobile.current}
-      <div style="display: flex;">
+      <div
+        style="display: flex;
+
+-webkit-app-region: drag;"
+        style:justify-content={varsSvelte.layout.isElectron ? "right" : "left"}
+      >
         <Button icon="mdiArrowLeft" onclick={() => goto("/")} />
       </div>
     {/if}

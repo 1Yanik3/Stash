@@ -94,13 +94,12 @@
   let loading = $state(false)
   const handleClick = (e: MouseEvent) => {
     try {
-    //   loading = true
+      //   loading = true
       onclick?.(e)
     } catch (e) {
       console.error(e)
-    }
-    finally {
-        loading = false
+    } finally {
+      loading = false
     }
   }
 </script>
@@ -223,6 +222,7 @@
       background: var(--color-dark-level-3);
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
           border: 1px solid var(--border-color-1-hover);
           background: var(--color-dark-level-2-hover);
@@ -261,6 +261,7 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
@@ -268,7 +269,9 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
+
         &:not(.transparentButton) {
           border: 1px solid var(--border-color-1);
           background: var(--color-dark-level-2);

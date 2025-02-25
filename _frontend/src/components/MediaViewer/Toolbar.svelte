@@ -269,9 +269,11 @@
       await query("markMediaAsDeleted", {
         mediaId: mediaController.visibleMedium?.id as string
       })
-      mediaController.setMedia(mediaController.media.filter(
-        (m) => m.id != mediaController.visibleMedium?.id
-      ))
+      mediaController.setMedia(
+        mediaController.media.filter(
+          m => m.id != mediaController.visibleMedium?.id
+        )
+      )
       mediaController.visibleMedium = null
       dropdownVisible = false
     }}

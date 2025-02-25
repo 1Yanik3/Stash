@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { onMount } from "svelte"
+
   import { invalidate, invalidateAll } from "$app/navigation"
   import Button from "$components/elements/Button.svelte"
   import Table from "$components/elements/Table.svelte"
   import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
   import query from "$lib/client/call.js"
   import Popup from "$reusables/Popup.svelte"
-  import { onMount } from "svelte"
 
   let { data } = $props()
 

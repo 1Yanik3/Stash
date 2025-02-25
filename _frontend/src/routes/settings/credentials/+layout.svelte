@@ -11,7 +11,7 @@
     data,
     children
   }: {
-    data: LayoutData,
+    data: LayoutData
     children: any
   } = $props()
 
@@ -112,6 +112,7 @@
     }
 
     &:not(:hover) {
+
       .floating {
         display: none;
       }
