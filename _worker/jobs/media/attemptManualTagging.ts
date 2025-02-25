@@ -48,9 +48,8 @@ export const execute = async (job: Job) => {
     },
   });
 
-  const modelToUse = process.env.VISUAL_AI_MODEL
-  if (!modelToUse)
-    throw "Variable VISUAL_AI_MODEL is not set"
+  const modelToUse = process.env.VISUAL_AI_MODEL;
+  if (!modelToUse) throw "Variable VISUAL_AI_MODEL is not set";
 
   const { object } = await generateObject({
     model: openrouter(modelToUse),
@@ -90,7 +89,9 @@ export const execute = async (job: Job) => {
   await prisma.job.update({
     where: { id: job.id },
     data: {
-      debugMessages: [`Completed with data: ${JSON.stringify(object)}`],
+      debugMessages: {
+        push: `Completed with data: ${JSON.stringify(object)}`,
+      },
     },
   });
 
@@ -101,7 +102,7 @@ export const execute = async (job: Job) => {
         object.numberOfPeopleInImage
       ),
       tagsGuess: object.tags,
-      visualAiMatchingVersion: 1
+      visualAiMatchingVersion: 1,
     },
   });
 };
