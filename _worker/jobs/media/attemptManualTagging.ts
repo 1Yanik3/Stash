@@ -63,7 +63,7 @@ export const execute = async (job: Job) => {
         content: [
           {
             type: "text",
-            text: "Extract relavant data from the included image. Only use tags that you have been given.",
+            text: "Extract relavant data from the included image. Only use tags that you have been given and only return the tags of which you are at least 30% certain that they are actually applicable.",
           },
           {
             type: "image",
@@ -77,9 +77,6 @@ export const execute = async (job: Job) => {
         .number()
         .int()
         .describe("The number of people in the image."),
-      isOutdoors: z
-        .boolean()
-        .describe("Indicates whether the image is outdoors."),
       tags: z
         .array(z.string())
         .describe("A list of tags associated with the image."),
