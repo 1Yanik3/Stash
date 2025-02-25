@@ -48,8 +48,12 @@ export const execute = async (job: Job) => {
     },
   });
 
+  const modelToUse = process.env.VISUAL_AI_MODEL
+  if (!modelToUse)
+    throw "Variable VISUAL_AI_MODEL is not set"
+
   const { object } = await generateObject({
-    model: openrouter("google/gemini-2.0-flash-exp:free"),
+    model: openrouter(modelToUse),
     messages: [
       {
         role: "system",
