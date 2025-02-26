@@ -1,12 +1,12 @@
 <script lang="ts">
   import FuzzySearch from "fuzzy-search"
 
+  import Icon from "$components/elements/Icon.svelte"
   import { isMobile } from "$lib/context"
   import {
     default as tagsController,
     type TagExtended
   } from "$lib/controllers/TagsController.svelte"
-  import { settings } from "$lib/stores.svelte"
 
   let value = $state("")
   let focused = $state(false)
@@ -20,6 +20,7 @@
 
   let {
     alwaysExpanded = false,
+    height = 25,
     onselected = (() => {}) as (tag: TagExtended) => void
   } = $props()
 
@@ -62,7 +63,7 @@
   let results: TagExtended[] = $derived(executeSearch(value))
 </script>
 
-<main>
+<main style:--height="{height}px">
   <input
     bind:this={inputElement}
     type="text"
@@ -79,23 +80,27 @@
   {#if value?.length > 0 && focused}
     <div class="results">
       {#each results as result, i}
-        <!-- TODO: Add count -->
-        <span class:active={i == selectionIndex}>{result.tag}</span>
+        <div class:active={i == selectionIndex}>
+          {#if result.icon}
+            <Icon name={result.icon} />
+          {/if}
+          <span>{result.tag}</span>
+          <span>{result.count}</span>
+        </div>
       {/each}
     </div>
   {/if}
 </main>
 
 <style lang="scss">
-  $height: 25px;
   $width: 13em;
 
   main {
     position: relative;
 
     input {
-      width: $height;
-      height: $height;
+      width: var(--height);
+      height: var(--height);
       transition: width 200ms;
 
       &:focus,
@@ -107,7 +112,7 @@
     .results {
       position: absolute;
       z-index: 10;
-      top: $height + 8px;
+      top: calc(var(--height) + 8px);
       left: 0;
 
       display: grid;
@@ -116,7 +121,11 @@
 
       background: var(--color-dark-level-1);
 
-      span {
+      div {
+        display: flex;
+        gap: 1rem;
+        align-content: center;
+
         overflow: hidden;
         display: block;
 
@@ -124,11 +133,17 @@
 
         text-overflow: ellipsis;
         white-space: nowrap;
+        text-transform: capitalize;
 
         transition: background 150ms;
 
         &.active {
           background: #303030;
+        }
+
+        span:last-child {
+          font-size: 14px;
+          opacity: 0.7;
         }
       }
     }

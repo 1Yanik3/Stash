@@ -10,7 +10,7 @@ export const protectEndpoint = async (cluster: string, cookies: Cookies) => {
         some: {
           Session: {
             some: {
-              token: cookies.get("session") || ""
+              token: cookies?.get("session") || ""
             }
           }
         }

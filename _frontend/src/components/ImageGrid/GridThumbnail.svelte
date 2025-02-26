@@ -4,6 +4,7 @@
   import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
   import imageRetry from "$lib/actions/imageRetry.svelte"
+  import { setSpecialFilterAttribute } from "$lib/client/actions/mediaActions.svelte"
   import { SUBJECT_TYPES } from "$lib/constants"
   import {
     mediaController,
@@ -96,17 +97,9 @@
       else if (e.key == "2") newValue = "two"
       else if (e.key == "3") newValue = "three"
       else if (e.key == "4") newValue = "group"
+      else throw "Invalid special filter attribute"
 
-      fetch(`/api/media/${medium.id}/specialFilterAttribute`, {
-        method: "PUT",
-        body: JSON.stringify({
-          specialFilterAttribute: newValue
-        })
-      })
-        .then(() => {
-          medium.specialFilterAttribute = newValue
-        })
-        .catch(console.error)
+      setSpecialFilterAttribute(medium, newValue)
     }
   }
 </script>
@@ -239,7 +232,6 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);

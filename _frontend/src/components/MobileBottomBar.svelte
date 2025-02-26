@@ -1,6 +1,7 @@
 <script lang="ts">
   import { mdiConsoleNetworkOutline } from "@mdi/js"
 
+  import { goto } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
@@ -9,6 +10,7 @@
 
   import type { PageData } from "../routes/[cluster]/$types"
   import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
+  import Select from "./elements/Select.svelte"
 
   let pageData = $derived($page.data as PageData)
 
@@ -19,29 +21,6 @@
   })
 </script>
 
-{#if visibleSidebar == "clusters"}
-  <div class="sidebar">
-    <SidebarSection>
-      {#each pageData.clusters.sort((a, b) => b.sortOrder - a.sortOrder) as cluster}
-        <Button
-          icon={cluster.icon as any}
-          href="/{cluster.name}"
-          onclick={() => (visibleSidebar = null)}
-        >
-          {cluster.name}
-        </Button>
-      {/each}
-      <Button
-        icon="mdiCog"
-        href="/settings/general"
-        onclick={() => (visibleSidebar = null)}
-      >
-        Settings
-      </Button>
-    </SidebarSection>
-  </div>
-{/if}
-
 {#if visibleSidebar == "tags"}
   <div class="sidebar">
     <SidebarTagsSection />
@@ -49,14 +28,27 @@
 {/if}
 
 <main>
-  <div
-    class="button"
-    onmousedown={() => (visibleSidebar = visibleSidebar ? null : "clusters")}
-  >
-    <div class="icon">
-      <Icon name={(pageData.cluster?.icon as any) || "mdiCog"} />
-    </div>
-  </div>
+  <Select
+    hideName
+    onchange={name => {
+      goto(`/${name}`)
+    }}
+    value={$page.data.cluster.name}
+    options={[
+      ...pageData.clusters.map(c => ({
+        value: c.name,
+        name: c.name,
+        icon: c.icon as any
+      })),
+      {
+        value: "settings/general",
+        name: "Settings",
+        icon: "mdiCog"
+      }
+    ]}
+    width={50}
+    position="top"
+  />
 
   <div
     class="button"

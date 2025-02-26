@@ -85,7 +85,7 @@ const actions = async () => {
             "Select a tag to add to the selected media"
           )
           if (tagToAdd?.id) {
-            await query("media_bulk_add_tags", {
+            await query("bulkAddTagsToMedia", {
               mediaIds: get(selectedMediaIds),
               tagId: tagToAdd.id
             })
@@ -118,7 +118,7 @@ const actions = async () => {
           )
           if (tagToRemove) {
             const [tagId] = tagToRemove.split(" - ")
-            await query("media_bulk_remove_tags", {
+            await query("bulkRemoveTagsFromMedia", {
               mediaIds: get(selectedMediaIds),
               tagId: +tagId
             })

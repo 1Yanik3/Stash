@@ -1,9 +1,19 @@
 <script lang="ts">
+  import { mdiTag } from "@mdi/js"
+
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
+  import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
+  import TagChip from "$components/Tags/TagChip.svelte"
+  import TagInputField from "$components/Tags/TagInputField.svelte"
+  import {
+    addTagToMedia,
+    removeTagFromMedia
+  } from "$lib/client/actions/mediaActions.svelte"
   import query from "$lib/client/call"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
+  import TagsControllerSvelte from "$lib/controllers/TagsController.svelte"
   import { controller } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
   import Popup from "$reusables/Popup.svelte"
@@ -34,11 +44,9 @@
     const newName = await prompts.text("Enter new name", suggestedName)
     if (newName) {
       mediaController.visibleMedium.name = newName
-      fetch(`/api/media/${mediaController.visibleMedium.id}/rename`, {
-        method: "PUT",
-        body: JSON.stringify({
-          name: newName
-        })
+      await query("renameNameOfMedia", {
+        mediaId: mediaController.visibleMedium.id,
+        newName
       })
     }
   }
@@ -149,10 +157,10 @@
 
         <div>
           <Icon name="mdiMoveResize" />
-          <span
-            >{mediaController.visibleMedium.width}x{mediaController
-              .visibleMedium.height}</span
-          >
+          <span>
+            {mediaController.visibleMedium.width}x{mediaController.visibleMedium
+              .height}
+          </span>
         </div>
 
         <div>
@@ -164,18 +172,52 @@
       </section>
 
       <section>
-        <b>Suggestions</b>
-
         <div>
-          <Icon name="mdiCounter" />
-          <span
-            >{mediaController.visibleMedium.specialFilterAttributeGuess}</span
-          >
+          <b>Special Filter Attribute</b>
         </div>
 
+        <SpecialFilterAttributeDropdown hideName={false} />
+      </section>
+
+      <section>
         <div>
+          <b>Tags</b>
+          <div>
+            <TagInputField
+              onselected={({ id }) => addTagToMedia(id)}
+              alwaysExpanded
+              height={18}
+            />
+          </div>
+        </div>
+
+        <div style="height: 40px">
+          <Icon name="mdiTag" />
+          <div style="display: flex; gap: 0">
+            {#each mediaController.visibleMedium.tags || [] as tag (tag)}
+              <TagChip
+                {tag}
+                show="both"
+                oncontextmenu={() => removeTagFromMedia(tag)}
+              />
+            {/each}
+          </div>
+        </div>
+
+        <div style="height: 40px">
           <Icon name="mdiTagHidden" />
-          <span>{mediaController.visibleMedium.tagsGuess.join(", ")}</span>
+          {#each mediaController.visibleMedium.tagsGuess as tagGuess}
+            {@const tag = Object.values(TagsControllerSvelte.tagMap).find(
+              t => t.tag.toLowerCase() == tagGuess.toLowerCase()
+            )}
+            {#if tag && !mediaController.visibleMedium.tags.includes(tag.id)}
+              <TagChip
+                tag={tag.id}
+                show="both"
+                onclick={() => addTagToMedia(tag.id)}
+              />
+            {/if}
+          {/each}
         </div>
       </section>
     </main>
@@ -200,7 +242,7 @@
 
     section {
       display: grid;
-      gap: 1em;
+      gap: 0.75em;
 
       div:first-child {
         justify-content: space-between;
@@ -210,11 +252,10 @@
         b {
           font-size: 1.1em;
           font-weight: 500;
+          margin-top: 8px;
+          margin-bottom: 8px;
         }
       }
-      //   div {
-      //     margin: 0 1em;
-      //   }
     }
   }
 </style>

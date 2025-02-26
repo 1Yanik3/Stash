@@ -9,6 +9,7 @@
       value: T
       name?: string
       icon?: keyof typeof possibleIcons
+      disabled?: boolean
     }[]
     value?: T
     prefix?: string
@@ -16,6 +17,7 @@
     hideName?: boolean
     allowMouseWheel?: boolean
     large?: boolean
+    position?: "top" | "bottom"
     onchange?: (value: T) => void
     oncontextmenu?: (e: MouseEvent) => void
   }
@@ -28,6 +30,7 @@
     hideName = false,
     allowMouseWheel = false,
     large = false,
+    position = "bottom",
     onchange = () => {},
     oncontextmenu = () => {}
   }: Props = $props()
@@ -46,8 +49,14 @@
   {oncontextmenu}
   onclick={() => {
     const rect = main.getBoundingClientRect()
-    top = rect.bottom + 4
     left = rect.left
+
+    if (position === "bottom") {
+      top = rect.bottom + 4
+    } else if (position === "top") {
+      top = rect.top - 4 - (options.length * 30) 
+    }
+
     open = !open
   }}
   style:min-width={width > 0 ? `${width}px` : "100%"}
@@ -85,7 +94,7 @@
     style:left="{left}px"
     style:width="{width}px"
   >
-    {#each options as o}
+    {#each options.filter(o => !o.disabled) as o}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <span
         class:active={o.value === value}

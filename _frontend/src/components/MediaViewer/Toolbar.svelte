@@ -6,6 +6,11 @@
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
   import Select from "$components/elements/Select.svelte"
+  import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
+  import {
+    addTagToMedia,
+    removeTagFromMedia
+  } from "$lib/client/actions/mediaActions.svelte"
   import query from "$lib/client/call"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -25,32 +30,6 @@
 
   let dropdownVisible = $state(false)
   let { hideControls } = $props()
-
-  const addTagToMedia = (tagId: number) => {
-    fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {
-      method: "PUT"
-    })
-      .then(() => {
-        if (!mediaController.visibleMedium) return
-        mediaController.visibleMedium.tags = [
-          ...mediaController.visibleMedium.tags,
-          tagId
-        ]
-      })
-      .catch(console.error)
-  }
-
-  const removeTagFromMedia = (tagId: number) => {
-    fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {
-      method: "DELETE"
-    })
-      .then(() => {
-        if (!mediaController.visibleMedium) return
-        mediaController.visibleMedium.tags =
-          mediaController.visibleMedium.tags.filter(t => t != tagId)
-      })
-      .catch(console.error)
-  }
 
   ;(window as any).test = () =>
     imageSuffixParameter.set(`?${Math.random().toString(16).substring(2, 8)}`)
@@ -144,36 +123,7 @@
         {/if}
       </button>
       <!-- TODO: Move these definitions into the DB -->
-      <Select
-        value={mediaController.visibleMedium.specialFilterAttribute ||
-          mediaController.visibleMedium.specialFilterAttributeGuess}
-        options={[
-          { value: null, name: "Unknown", icon: "mdiAccountQuestion" },
-          { value: "solo", name: "Solo", icon: "mdiAccount" },
-          { value: "two", name: "Two", icon: "mdiAccountMultiple" },
-          { value: "three", name: "Three", icon: "mdiAccountGroup" },
-          { value: "group", name: "Group", icon: "mdiAccountMultiplePlus" }
-        ]}
-        width={40}
-        hideName
-        onchange={newValue => {
-          // TODO: Remove duplication
-          fetch(
-            `/api/media/${mediaController.visibleMedium?.id}/specialFilterAttribute`,
-            {
-              method: "PUT",
-              body: JSON.stringify({
-                specialFilterAttribute: newValue
-              })
-            }
-          )
-            .then(() => {
-              if (!mediaController.visibleMedium) return
-              mediaController.visibleMedium.specialFilterAttribute = newValue
-            })
-            .catch(console.error)
-        }}
-      />
+      <SpecialFilterAttributeDropdown />
       {#each mediaController.visibleMedium.tags || [] as tag (tag)}
         <TagChip {tag} oncontextmenu={() => removeTagFromMedia(tag)} />
       {/each}
