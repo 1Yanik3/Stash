@@ -11,10 +11,13 @@
   let contentHeight = $state(0)
   let contentElement: HTMLElement
   let windowHeight = $state(0)
-  let innerHeight = $derived(windowHeight - 100)
+  let innerHeight = $derived(windowHeight - 96)
   let startedAtTop = $state(false)
 
   function startDrag(event: MouseEvent | TouchEvent) {
+    const target = event.target as HTMLElement
+    if (target.closest("a")) return
+
     event.preventDefault()
     isDragging = true
 
@@ -79,30 +82,31 @@
 <svelte:window bind:innerHeight={windowHeight} />
 
 <main>
-  <div class="drag-region" onmousedown={startDrag} ontouchstart={startDrag}>
-    <div class="dragger"></div>
-  </div>
-  <div class="buttons">
-    {#each page.data.clusters as cluster}
+  <div class="always-visible" onmousedown={startDrag} ontouchstart={startDrag}>
+    <div class="drag-region">
+      <div class="dragger"></div>
+    </div>
+    <div class="buttons">
+      {#each page.data.clusters as cluster}
+        <Button
+          size="large"
+          active={page.url.pathname.includes(cluster.name)}
+          card
+          icon={cluster.icon}
+          href="/{cluster.name}"
+          styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
+        />
+      {/each}
+      <div class="spacer"></div>
       <Button
         size="large"
-        active={page.url.pathname.includes(cluster.name)}
+        active={page.url.pathname.includes("settings")}
         card
-        icon={cluster.icon}
-        href="/{cluster.name}"
+        icon="mdiCog"
+        href="/settings/general"
         styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
       />
-    {/each}
-    <div class="spacer"></div>
-
-    <Button
-      size="large"
-      active={page.url.pathname.includes("settings")}
-      card
-      icon="mdiCog"
-      href="/settings/general"
-      styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
-    />
+    </div>
   </div>
   <div
     class="content-out-of-view"
