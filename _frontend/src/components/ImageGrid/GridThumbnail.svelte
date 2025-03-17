@@ -208,6 +208,7 @@
 <style lang="scss">
   img {
     cursor: pointer;
+    user-select: none;
 
     position: absolute;
     top: 0;
@@ -232,6 +233,7 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
+
       &:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);
@@ -240,6 +242,7 @@
   }
 
   div {
+    user-select: none;
     scroll-margin: 11px;
 
     -webkit-tap-highlight-color: transparent;

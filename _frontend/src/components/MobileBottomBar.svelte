@@ -1,131 +1,163 @@
 <script lang="ts">
-  import { mdiConsoleNetworkOutline } from "@mdi/js"
+  import { page } from "$app/state"
+  import TagsController from "$lib/controllers/TagsController.svelte"
 
-  import { goto } from "$app/navigation"
-  import { page } from "$app/stores"
-  import Button from "$components/elements/Button.svelte"
-  import Icon from "$components/elements/Icon.svelte"
-  import SidebarSection from "$components/SidebarSection.svelte"
-  import { controller } from "$lib/stores.svelte"
+  import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
+  import Button from "./elements/Button.svelte"
 
-  import type { PageData } from "../routes/[cluster]/$types"
-  import SidebarTagsSection from "../routes/[cluster]/SidebarTagsSection.svelte"
-  import Select from "./elements/Select.svelte"
+  let isDragging = $state(false)
+  let startY = $state(0)
+  let startHeight = $state(0)
+  let contentHeight = $state(0)
+  let contentElement: HTMLElement
+  let windowHeight = $state(0)
+  let innerHeight = $derived(windowHeight - 100)
+  let startedAtTop = $state(false)
 
-  let pageData = $derived($page.data as PageData)
+  function startDrag(event: MouseEvent | TouchEvent) {
+    event.preventDefault()
+    isDragging = true
 
-  let visibleSidebar: "clusters" | "tags" | null = $state(null)
+    // Get initial Y position based on input type
+    if (event instanceof TouchEvent) {
+      startY = event.touches[0].clientY
+    } else {
+      startY = event.clientY
+    }
 
-  $effect(() => {
-    console.log(pageData)
-  })
+    startHeight = contentHeight
+    startedAtTop = contentHeight === innerHeight
+
+    // Add appropriate event listeners
+    if (event instanceof TouchEvent) {
+      window.addEventListener("touchmove", handleDrag, { passive: false })
+      window.addEventListener("touchend", stopDrag)
+    } else {
+      window.addEventListener("mousemove", handleDrag)
+      window.addEventListener("mouseup", stopDrag)
+    }
+  }
+
+  function handleDrag(event: MouseEvent | TouchEvent) {
+    if (!isDragging) return
+
+    // Prevent default touch behavior
+    if (event instanceof TouchEvent) {
+      event.preventDefault()
+    }
+
+    // Get current Y position based on input type
+    const currentY =
+      event instanceof TouchEvent ? event.touches[0].clientY : event.clientY
+
+    const deltaY = startY - currentY // Inverted for natural dragging
+    let newHeight = startHeight + deltaY
+
+    // Keep height within bounds
+    newHeight = Math.max(0, Math.min(innerHeight, newHeight))
+    contentHeight = newHeight
+  }
+
+  function stopDrag() {
+    isDragging = false
+
+    // Snap to nearest position
+    if (startedAtTop) {
+      contentHeight = contentHeight > window.innerHeight * 0.8 ? innerHeight : 0
+    } else {
+      contentHeight = contentHeight > window.innerHeight * 0.2 ? innerHeight : 0
+    }
+
+    // Clean up all event listeners
+    window.removeEventListener("mousemove", handleDrag)
+    window.removeEventListener("mouseup", stopDrag)
+    window.removeEventListener("touchmove", handleDrag)
+    window.removeEventListener("touchend", stopDrag)
+  }
 </script>
 
-{#if visibleSidebar == "tags"}
-  <div class="sidebar">
-    <SidebarTagsSection />
-  </div>
-{/if}
+<svelte:window bind:innerHeight={windowHeight} />
 
 <main>
-  <Select
-    hideName
-    onchange={name => {
-      goto(`/${name}`)
-    }}
-    value={$page.data.cluster?.name || "settings/general"}
-    options={[
-      ...pageData.clusters.map(c => ({
-        value: c.name,
-        name: c.name,
-        icon: c.icon as any
-      })),
-      {
-        value: "settings/general",
-        name: "Settings",
-        icon: "mdiCog"
-      }
-    ]}
-    width={50}
-    position="top"
-  />
-
-  <div
-    class="button"
-    onmousedown={() => (visibleSidebar = visibleSidebar ? null : "tags")}
-  >
-    <div class="icon">
-      <Icon name="mdiTagMultiple" />
-    </div>
+  <div class="drag-region" onmousedown={startDrag} ontouchstart={startDrag}>
+    <div class="dragger"></div>
   </div>
+  <div class="buttons">
+    {#each page.data.clusters as cluster}
+      <Button
+        size="large"
+        active={page.url.pathname.includes(cluster.name)}
+        card
+        icon={cluster.icon}
+        href="/{cluster.name}"
+        styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
+      />
+    {/each}
+    <div class="spacer"></div>
 
-  <div class="spacer"></div>
-
-  <div class="button" onmousedown={() => $controller.setPopup("Quick Switch")}>
-    <div class="icon">
-      <Icon name="mdiCardSearch" />
-    </div>
+    <Button
+      size="large"
+      active={page.url.pathname.includes("settings")}
+      card
+      icon="mdiCog"
+      href="/settings/general"
+      styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
+    />
+  </div>
+  <div
+    class="content-out-of-view"
+    bind:this={contentElement}
+    style="height: {contentHeight}px"
+  >
+    {#each Object.values(TagsController.tagMap)
+      .filter(t => !t.parentId)
+      .sort( (a, b) => (page.params.cluster == "Camp Buddy" ? b.tag.localeCompare(a.tag) : b.count + b.indirectCount - (a.count + a.indirectCount)) ) as tag}
+      <SidebarHierarchyEntry tagId={tag.id} />
+    {/each}
   </div>
 </main>
 
 <style lang="scss">
-  @use "sass:color";
-  $bottom-bar-height: 56px;
-
-  .sidebar {
-    scrollbar-width: none;
-    scroll-padding: 38px;
-
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    bottom: $bottom-bar-height;
-    left: 0;
-
-    overflow-y: auto;
-
-    width: 100%;
-
-    background: var(--color-dark-level-1);
-  }
-
   main {
-    // TODO: Make dynamic
-    $background-color: color.mix(#1c1c1c, #303030, 50%);
+    display: grid;
+    gap: 0.5rem;
 
-    display: flex;
-    gap: 4px;
-    justify-content: space-between;
+    padding: 0.5rem;
+    border-top-left-radius: 1.75rem;
+    border-top-right-radius: 1.75rem;
 
-    padding: 4px 12px;
+    background-color: var(--accent-background);
 
-    background: $background-color;
+    .drag-region {
+      cursor: ns-resize;
 
-    .spacer {
-      flex-grow: 1;
-    }
-
-    .button {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
       align-items: center;
       justify-content: center;
 
-      padding: 0.5rem;
+      width: 100%;
+      height: 10px;
 
-      .icon {
-        position: relative;
+      -webkit-app-region: drag;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        // width: 64px;
-        width: 32px;
-        height: 32px;
-        border-radius: 16px;
+      .dragger {
+        width: 30px;
+        height: 4px;
+        border-radius: 2px;
+        background: #777;
       }
+    }
+
+    .buttons {
+      display: flex;
+
+      .spacer {
+        flex-grow: 1;
+      }
+    }
+
+    .content-out-of-view {
+      overflow: scroll;
     }
   }
 </style>

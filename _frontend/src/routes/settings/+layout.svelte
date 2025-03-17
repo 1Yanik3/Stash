@@ -34,7 +34,9 @@
 
     <SidebarSection title="Administration">
       <Button icon="mdiSync" href="/settings/jobs">Jobs</Button>
-      <Button icon="mdiTimelapse" href="/settings/scheduled-jobs">Scheduled Jobs</Button>
+      <Button icon="mdiTimelapse" href="/settings/scheduled-jobs"
+        >Scheduled Jobs</Button
+      >
       <Button icon="mdiPassport" href="/settings/credentials">
         Credentials
       </Button>

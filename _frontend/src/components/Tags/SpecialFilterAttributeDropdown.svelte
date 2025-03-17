@@ -11,7 +11,12 @@
     value={mediaController.visibleMedium.specialFilterAttribute ||
       mediaController.visibleMedium.specialFilterAttributeGuess}
     options={[
-      { value: null, name: "Unknown", icon: "mdiAccountQuestion", disabled: true },
+      {
+        value: null,
+        name: "Unknown",
+        icon: "mdiAccountQuestion",
+        disabled: true
+      },
       { value: "solo", name: "Solo", icon: "mdiAccount" },
       { value: "two", name: "Two", icon: "mdiAccountMultiple" },
       { value: "three", name: "Three", icon: "mdiAccountGroup" },

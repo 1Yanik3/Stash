@@ -5,7 +5,6 @@
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
-  import Select from "$components/elements/Select.svelte"
   import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
   import {
     addTagToMedia,

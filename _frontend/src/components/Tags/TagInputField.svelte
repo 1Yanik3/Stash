@@ -122,18 +122,17 @@
       background: var(--color-dark-level-1);
 
       div {
+        overflow: hidden;
         display: flex;
+        display: block;
         gap: 1rem;
         align-content: center;
-
-        overflow: hidden;
-        display: block;
 
         padding: 0.5em;
 
         text-overflow: ellipsis;
-        white-space: nowrap;
         text-transform: capitalize;
+        white-space: nowrap;
 
         transition: background 150ms;
 

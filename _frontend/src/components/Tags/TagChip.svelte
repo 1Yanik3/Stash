@@ -30,12 +30,12 @@
       e.preventDefault()
       oncontextmenu(e)
     }}
-    title={_tag.icon && (show != "icon-prefered" || !_tag) ? _tag.tag : null}
+    title={_tag?.icon && (show != "icon-prefered" || !_tag) ? _tag.tag : null}
   >
-    {#if _tag.icon && show != "name-only"}
-      <Icon name={_tag.icon} size={compact ? 0.9 : 1} />
+    {#if _tag?.icon && show != "name-only"}
+      <Icon name={_tag?.icon} size={compact ? 0.9 : 1} />
     {/if}
-    {#if show != "icon-prefered" || !_tag.icon}
+    {#if show != "icon-prefered" || !_tag?.icon}
       {_tag?.tag}
     {/if}
   </span>
@@ -44,10 +44,11 @@
 <style lang="scss">
   span {
     cursor: pointer;
+    user-select: none;
 
     display: flex;
-    align-items: center;
     gap: 5px;
+    align-items: center;
 
     margin: 0.15em;
     margin-right: 0.25em;
@@ -56,8 +57,8 @@
     border-radius: 3px;
 
     text-transform: capitalize;
+
     background: var(--color-dark-level-2);
-    user-select: none;
 
     &.compact {
       cursor: default;

@@ -51,7 +51,10 @@ export const markMediaAsDeleted = async (d: { mediaId: string }) => {
   })
 }
 
-export const renameNameOfMedia = async (d: { mediaId: string, newName: string }) => {
+export const renameNameOfMedia = async (d: {
+  mediaId: string
+  newName: string
+}) => {
   await prisma.media.update({
     where: {
       id: d.mediaId

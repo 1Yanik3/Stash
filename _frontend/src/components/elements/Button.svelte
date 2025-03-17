@@ -33,7 +33,8 @@
     oncontextmenu = (() => {}) as (e: MouseEvent) => void,
     onclick = (() => {}) as (e: MouseEvent) => void,
     onmouseenter = (() => {}) as (e: MouseEvent) => void,
-    children = null
+    children = null,
+    size = "medium" as "small" | "medium" | "large"
   } = $props()
 
   //   export let tooltip: any = {
@@ -123,13 +124,15 @@
   class:card
   class:disabled={disabled || loading}
   {title}
+  class:large={size == "large"}
+  class:small={size == "small"}
 >
   <div class="section">
     {#if (icon || iconNoTyping) != null}
       <!-- @ts-ignore -->
       <Icon
         nameAlt={icon || iconNoTyping || "mdiHelp"}
-        size={"1.25em"}
+        size={size == "large" ? "1.5rem" : "1.25em"}
         opacity={iconOpacity}
       />
     {/if}
@@ -165,6 +168,9 @@
   @use "sass:color";
 
   a {
+    --outline-size: 1px;
+    --border-radius: 0.35em1px;
+
     cursor: pointer;
     user-select: none;
 
@@ -175,7 +181,7 @@
 
     padding: 0.5em 0.75em;
     border: 1px solid transparent;
-    border-radius: 0.35em;
+    border-radius: var(--border-radius);
 
     text-decoration: none;
 
@@ -208,7 +214,8 @@
     }
 
     &.active {
-      border: 1px solid var(--border-color-1);
+      outline: var(--outline-size) solid var(--accent);
+      outline-offset: calc(var(--outline-size) * -1);
       background: var(--color-dark-level-2);
 
       &:hover {

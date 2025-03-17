@@ -132,8 +132,8 @@ const gd_fetch = async (parsedURL: URL) => {
 export const story_import = async (d: { url: string }) => {
   const parsedURL = new URL(d.url)
 
-    const gks_content = await gks_fetch(parsedURL)
-    if (gks_content) return gks_content
+  const gks_content = await gks_fetch(parsedURL)
+  if (gks_content) return gks_content
 
   const gd_content = await gd_fetch(parsedURL)
   if (gd_content) return gd_content

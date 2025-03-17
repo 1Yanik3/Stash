@@ -54,7 +54,7 @@
     if (position === "bottom") {
       top = rect.bottom + 4
     } else if (position === "top") {
-      top = rect.top - 4 - (options.length * 30) 
+      top = rect.top - 4 - options.length * 30
     }
 
     open = !open

@@ -250,10 +250,10 @@
         margin-bottom: -10px;
 
         b {
-          font-size: 1.1em;
-          font-weight: 500;
           margin-top: 8px;
           margin-bottom: 8px;
+          font-size: 1.1em;
+          font-weight: 500;
         }
       }
     }
