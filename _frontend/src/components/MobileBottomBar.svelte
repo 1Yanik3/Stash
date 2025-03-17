@@ -33,7 +33,7 @@
     onchange={name => {
       goto(`/${name}`)
     }}
-    value={$page.data.cluster.name}
+    value={$page.data.cluster?.name || "settings/general"}
     options={[
       ...pageData.clusters.map(c => ({
         value: c.name,

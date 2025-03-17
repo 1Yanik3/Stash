@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation"
   import { page } from "$app/stores"
   import Button from "$components/elements/Button.svelte"
   import query from "$lib/client/call"
@@ -30,7 +29,7 @@
 
     if (!response.ok) throw window.alert("Failed to add story")
 
-    invalidateAll()
+    location.reload()
   }
 </script>
 
@@ -42,7 +41,7 @@
       onclick={async () => {
         const url = await prompts.text("Enter the URL of the story")
         if (!url) return
-        const data = await query("gks_fetch", { url })
+        const data = await query("story_import", { url })
         title = data.title
         source = data.source
         content = data.chapters

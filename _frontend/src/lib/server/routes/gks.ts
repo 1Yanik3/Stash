@@ -1,4 +1,5 @@
 import { parse } from "node-html-parser"
+import TurndownService from "turndown"
 
 export type SeriesData = {
   title: string
@@ -73,15 +74,12 @@ const getStoryData = async (url: URL): Promise<StoryData["chapters"]> => {
   }
 }
 
-// : Promise<StoryData>
-export const gks_fetch = async (d: { url: string }) => {
-  const parsedURL = new URL(d.url)
+const gks_fetch = async (parsedURL: URL) => {
   if (
     !parsedURL.pathname.startsWith("/story") &&
     !parsedURL.pathname.startsWith("/series")
-  ) {
-    throw new Error("Unsuported URL")
-  }
+  )
+    return null
 
   const seriesData = await getSeriesData(parsedURL)
 
@@ -90,4 +88,55 @@ export const gks_fetch = async (d: { url: string }) => {
     source: seriesData.source,
     chapters: await Promise.all(seriesData.chapters.map(getStoryData))
   }
+}
+
+const gd_fetch = async (parsedURL: URL) => {
+  const html = await fetchPageAndParse(parsedURL)
+
+  const title = html.querySelector("#story h1[itemprop=name]")
+  if (!title) return
+
+  const chapterLinks = html
+    .querySelectorAll("nav#chapter-nav li a")
+    .map(e => e.getAttribute("href"))
+  if (!chapterLinks.length) return
+
+  const turndownService = new TurndownService()
+  const chapterContents: string[] = []
+  try {
+    for (const chapterLink of chapterLinks) {
+      const chapterURL = new URL(chapterLink || "", parsedURL.origin)
+      const chapterHtml = await fetchPageAndParse(chapterURL)
+      const chapterElement = chapterHtml.querySelector(
+        "div[itemprop=articleBody]"
+      )
+      if (!chapterElement) continue
+      chapterContents.push(turndownService.turndown(chapterElement.innerHTML))
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
+  console.log(chapterContents)
+
+  return {
+    title: title.innerText,
+    source: parsedURL.toString(),
+    chapters: chapterContents.map((content, index) => ({
+      title: `Chapter ${index + 1}`,
+      content
+    }))
+  }
+}
+
+export const story_import = async (d: { url: string }) => {
+  const parsedURL = new URL(d.url)
+
+    const gks_content = await gks_fetch(parsedURL)
+    if (gks_content) return gks_content
+
+  const gd_content = await gd_fetch(parsedURL)
+  if (gd_content) return gd_content
+
+  throw "Unknown URL"
 }
