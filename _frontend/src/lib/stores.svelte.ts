@@ -3,6 +3,8 @@ import { writable, type Writable } from "svelte/store"
 
 import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
 
+import type Controller from "../routes/Controller.svelte"
+
 export let controller: Writable<Controller> = writable()
 
 // Constants
@@ -34,7 +36,6 @@ export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
   mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
-  tooltipEnabled: true,
   theme: "default" as "default" | "light" | "amoled"
 })
 

@@ -37,12 +37,6 @@
     size = "medium" as "small" | "medium" | "large"
   } = $props()
 
-  //   export let tooltip: any = {
-  //     title: "",
-  //     position: "bottom",
-  //     enabled: false
-  //   }
-
   //#region Handle Drag (for moving media)
 
   const isFileTransfer = (e: DragEvent) =>
@@ -169,7 +163,7 @@
 
   a {
     --outline-size: 1px;
-    --border-radius: 0.35em1px;
+    --border-radius: 0.35em;
 
     cursor: pointer;
     user-select: none;
@@ -180,14 +174,14 @@
     justify-content: space-between;
 
     padding: 0.5em 0.75em;
-    border: 1px solid transparent;
+    outline: 1px solid transparent;
     border-radius: var(--border-radius);
 
     text-decoration: none;
 
     transition:
+      outline 100ms,
       background 100ms,
-      border 100ms,
       transform 200ms;
 
     -webkit-app-region: no-drag;
@@ -199,11 +193,12 @@
 
     &.card {
       margin: 0.25em;
-      border: 1px solid var(--border-color-1);
+      outline: 1px solid var(--border-color-1);
+      outline-offset: calc(var(--outline-size) * -1);
       background: var(--color-dark-level-2);
 
       &:hover {
-        border: 1px solid var(--border-color-1-hover) !important;
+        outline: 1px solid var(--border-color-1-hover) !important;
         background: var(--color-dark-level-2-hover) !important;
       }
     }
@@ -213,32 +208,23 @@
       opacity: 75%;
     }
 
-    &.active {
-      outline: var(--outline-size) solid var(--accent);
-      outline-offset: calc(var(--outline-size) * -1);
-      background: var(--color-dark-level-2);
-
-      &:hover {
-        border: 1px solid var(--border-color-1-hover);
-        background: var(--color-dark-level-2-hover);
-      }
-    }
-
     &.highlighted {
-      border: 1px solid var(--border-color-1);
+      outline: 1px solid var(--border-color-1);
+      outline-offset: calc(var(--outline-size) * -1);
       background: var(--color-dark-level-3);
 
       @media (hover: hover) and (pointer: fine) {
-
         &:hover {
-          border: 1px solid var(--border-color-1-hover);
+          outline: 1px solid var(--border-color-1-hover);
+          outline-offset: calc(var(--outline-size) * -1);
           background: var(--color-dark-level-2-hover);
         }
       }
     }
 
     &.isDraggingOver {
-      border: 1px solid var(--border-color-1-hover);
+      outline: 1px solid var(--border-color-1-hover);
+      outline-offset: calc(var(--outline-size) * -1);
       background: var(--color-dark-level-2-hover);
     }
 
@@ -268,7 +254,6 @@
     }
 
     &.right {
-
       &,
       .section {
         flex-direction: row-reverse;
@@ -276,11 +261,10 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-
       &:hover {
-
         &:not(.transparentButton) {
-          border: 1px solid var(--border-color-1);
+          outline: 1px solid var(--border-color-1);
+          outline-offset: calc(var(--outline-size) * -1);
           background: var(--color-dark-level-2);
         }
 
@@ -288,6 +272,13 @@
           transform: scale(1.1);
         }
       }
+    }
+
+    &.active,
+    &.active:hover {
+      outline: var(--outline-size) solid var(--accent);
+      outline-offset: calc(var(--outline-size) * -1);
+      background: var(--accent-background);
     }
   }
 </style>

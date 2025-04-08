@@ -1,24 +1,28 @@
+$hue: 13;
+$saturation: 16%;
+$accent: hsl($hue, $saturation + 10%, 30%);
+
 body {
   --color-lowest: #000;
-  --color-dark-level-lower: hsl(0, 0%, 5%);
-  --color-dark-level-base: hsl(0, 0%, 7%);
-  --color-dark-level-1: hsl(0, 0%, 9%);
-  --color-dark-level-1-hover: hsl(0, 0%, 11%);
-  --color-dark-level-2: hsl(0, 0%, 12.5%);
-  --color-dark-level-2-hover: hsl(0, 0%, 14.5%);
-  --color-dark-level-3: hsl(0, 0%, 31%);
+  --color-dark-level-lower: hsl(#{$hue}, #{$saturation}, 7%);
+  --color-dark-level-base: hsl(#{$hue}, #{$saturation}, 8.5%);
+  --color-dark-level-1: hsl(#{$hue}, #{$saturation}, 12%);
+  --color-dark-level-1-hover: hsl(#{$hue}, #{$saturation}, 14%);
+  --color-dark-level-2: hsl(#{$hue}, #{$saturation}, 14.5%);
+  --color-dark-level-2-hover: hsl(#{$hue}, #{$saturation}, 16.5%);
+  --color-dark-level-3: hsl(#{$hue}, #{$saturation}, 33%);
 
-  --color-text: hsl(0, 0%, 92%);
+  --color-text: hsl(0, 0%, 100%);
 
-  --border-color-lower: hsl(0, 0%, 11%);
-  --border-color-base: hsl(0, 0%, 14%);
-  --border-color-1: hsl(0, 0%, 20%);
-  --border-color-1-hover: hsl(0, 0%, 22%);
-  --border-color-2: hsl(0, 0%, 25%);
-  --border-color-2-hover: hsl(0, 0%, 27%);
+  --border-color-lower: hsl(0, 0%, 13%);
+  --border-color-base: hsl(0, 0%, 16%);
+  --border-color-1: hsl(0, 0%, 22%);
+  --border-color-1-hover: hsl(0, 0%, 24%);
+  --border-color-2: hsl(0, 0%, 27%);
+  --border-color-2-hover: hsl(0, 0%, 29%);
 
-  --accent: hsl(25, 57%, 48%);
-  --accent-background: hsl(27, 15%, 27%);
+  --accent: #{$accent};
+  --accent-background: #{mix(hsl($hue, $saturation, 12%), $accent, 50%)};
 }
 
 body.light {
@@ -109,31 +113,33 @@ select {
   justify-content: space-between;
 
   padding: 0.3em 0.5em;
-  // margin: 0.1em 0.3em;
+  border: none;
   border-radius: 0.35em;
 
   background: transparent;
   transition:
     background 100ms,
     border 100ms;
-  border: 1px solid transparent;
 
   &.card {
     background: var(--color-dark-level-1);
-    border: 1px solid var(--border-color-1);
+    outline: 1px solid var(--border-color-1);
+    outline-offset: calc(var(--outline-size) * -1);
     border-radius: 3px;
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       background: var(--border-color-1);
-      border: 1px solid var(--border-color-1-hover);
+      outline: 1px solid var(--border-color-1-hover);
+      outline-offset: calc(var(--outline-size) * -1);
     }
   }
 
   &.active {
     background: var(--border-color-1-hover);
-    border: 1px solid hsl(0, 0%, 33%);
+    outline: 1px solid hsl(0, 0%, 33%);
+    outline-offset: calc(var(--outline-size) * -1);
   }
 }
 

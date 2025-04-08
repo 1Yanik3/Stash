@@ -9,18 +9,6 @@
 <SettingsPageContent title="General">
   <section>
     <div>
-      <span>Tooltip Enabled</span>
-      <Toggle
-        state={$settings.tooltipEnabled}
-        toggle={detail =>
-          settings.update(s => {
-            s.tooltipEnabled = detail
-            return s
-          })}
-      />
-    </div>
-
-    <div>
       <span>Mobile Navigation Touch areas</span>
       <Select
         options={[

@@ -132,31 +132,36 @@
 
     background-color: var(--accent-background);
 
-    .drag-region {
-      cursor: ns-resize;
+    .always-visible {
+      display: grid;
+      gap: 0.5rem;
+      
+      .drag-region {
+        cursor: ns-resize;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-      width: 100%;
-      height: 10px;
+        width: 100%;
+        height: 10px;
 
-      -webkit-app-region: drag;
+        -webkit-app-region: drag;
 
-      .dragger {
-        width: 30px;
-        height: 4px;
-        border-radius: 2px;
-        background: #777;
+        .dragger {
+          width: 30px;
+          height: 4px;
+          border-radius: 2px;
+          background: #777;
+        }
       }
-    }
 
-    .buttons {
-      display: flex;
+      .buttons {
+        display: flex;
 
-      .spacer {
-        flex-grow: 1;
+        .spacer {
+          flex-grow: 1;
+        }
       }
     }
 
