@@ -172,7 +172,7 @@
 
                 width: 100%;
                 height: 100%;
-                border-radius: 3px;
+                border-radius: 5px;
 
                 object-fit: cover;
             "
@@ -218,7 +218,7 @@
 
     width: 100%;
     height: 100%;
-    border-radius: 3px;
+    border-radius: 5px;
 
     box-shadow:
       rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,

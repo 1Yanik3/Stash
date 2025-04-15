@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state"
   import TagsController from "$lib/controllers/TagsController.svelte"
+  import { controller } from "$lib/stores.svelte"
 
   import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
   import Button from "./elements/Button.svelte"
@@ -82,6 +83,7 @@
 <svelte:window bind:innerHeight={windowHeight} />
 
 <main>
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="always-visible" onmousedown={startDrag} ontouchstart={startDrag}>
     <div class="drag-region">
       <div class="dragger"></div>
@@ -104,6 +106,10 @@
         card
         icon="mdiCog"
         href="/settings/general"
+        oncontextmenu={e => {
+            e.preventDefault()
+            $controller.setPopup("Quick Switch")
+        }}
         styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
       />
     </div>
@@ -127,15 +133,15 @@
     gap: 0.5rem;
 
     padding: 0.5rem;
-    border-top-left-radius: 1.75rem;
-    border-top-right-radius: 1.75rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
 
     background-color: var(--accent-background);
 
     .always-visible {
       display: grid;
       gap: 0.5rem;
-      
+
       .drag-region {
         cursor: ns-resize;
 
