@@ -39,7 +39,7 @@ func main() {
 	// Middleware to check session header for each request
 	authMiddleware := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/signin" || startsWith(r.URL.Path, "/signin") || startsWith(r.URL.Path, "/_app") {
+			if r.URL.Path == "/signin" || r.URL.Path == "/manifest.json" || r.URL.Path == "/worker.js" || startsWith(r.URL.Path, "/signin") || startsWith(r.URL.Path, "/_app") || startsWith(r.URL.Path, "/icons/") {
 				next.ServeHTTP(w, r)
 				return
 			}
