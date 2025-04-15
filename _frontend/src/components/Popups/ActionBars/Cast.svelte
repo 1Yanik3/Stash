@@ -21,6 +21,8 @@
   $effect(() => {
     if (mediaController.visibleMedium && client)
       client.play(mediaController.visibleMedium)
+    else if (!mediaController.visibleMedium && client)
+      client.stop()
   })
 </script>
 
