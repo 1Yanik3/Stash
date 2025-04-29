@@ -2,16 +2,30 @@ import prisma from "./prisma";
 import { readdirSync } from "fs";
 import { join, extname } from "path";
 
-import { Job } from "@prisma/client";
+import { Job, JobStatus } from "@prisma/client";
 
 const registeredJobs = await importAllTsFiles();
 
-console.log("Started...")
+console.log("Started...");
 
 while (true) {
+  const blockingNames = (
+    await prisma.job.findMany({
+      where: {
+        status: {
+          in: [JobStatus.created, JobStatus.running],
+        },
+      },
+      select: {
+        name: true,
+      },
+    })
+  ).map((job) => job.name);
+
   const openJobs = await prisma.job.findMany({
     where: {
       status: "created",
+      OR: [{ waitFor: null }, { waitFor: { notIn: blockingNames } }],
     },
     orderBy: {
       priority: "desc",
@@ -44,7 +58,7 @@ while (true) {
               });
             })
             .catch(async (error: Error) => {
-              console.trace(error.message, error.stack)
+              console.trace(error.message, error.stack);
               await prisma.job.update({
                 where: {
                   id: job.id,

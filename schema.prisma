@@ -137,4 +137,5 @@ model Job {
   createdAt            DateTime  @default(now())
   priority             Int       @default(0)
   debugMessages        String[]
+  waitFor              String?
 }
