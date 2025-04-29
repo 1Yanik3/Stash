@@ -6,6 +6,7 @@
   import { page } from "$app/stores"
   import MediaViewerMobile from "$components/Mobile/MediaViewerMobile.svelte"
   import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
+  import ImportPopup from "$components/Popups/ImportPopup/ImportPopup.svelte"
   import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
   import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
   import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
@@ -82,7 +83,8 @@
     "Create Story": CreateStoryPopup,
     "Media Viewer Mobile": MediaViewerMobile,
     "Media Details": MediaDetailsPopup,
-    "Masonary View": MasonaryView
+    "Masonary View": MasonaryView,
+    Import: ImportPopup
   } as const
 
   let popup: keyof typeof popups | null = $state(null)

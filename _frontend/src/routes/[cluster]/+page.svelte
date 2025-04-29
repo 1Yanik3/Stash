@@ -1,5 +1,4 @@
 <script lang="ts">
-  import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
   import MenuBar from "$components/MenuBar.svelte"
@@ -31,9 +30,7 @@
     <div class="center">
       <section id="imageGallerySection" {onscroll}>
         <MenuBar />
-        <DropFile>
-          <ImageGrid />
-        </DropFile>
+        <ImageGrid />
       </section>
     </div>
   {/if}

@@ -40,7 +40,10 @@
               )
               if (newIcon) {
                 const previousIcon = entry.icon
-                query("tag_update_icon", { tagId: entry.id, newIcon })
+                query("tag_update_icon", {
+                  tagId: entry.id,
+                  newIcon
+                })
                   .catch(e => {
                     console.error(e)
                     entry.icon = previousIcon

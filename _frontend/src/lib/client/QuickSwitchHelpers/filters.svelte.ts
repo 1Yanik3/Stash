@@ -46,7 +46,7 @@ const actions = async () => {
       icon: "mdiImport",
       label: "/Import",
       onEnter: () => {
-        get(controller).setPopup("Quick Actions Import")
+        get(controller).setPopup("Import")
       }
     },
     {

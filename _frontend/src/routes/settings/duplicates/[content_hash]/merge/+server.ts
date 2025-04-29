@@ -31,7 +31,9 @@ export const PUT: RequestHandler = async ({ request }) => {
     return new Response("Did not specify 'idsToRemove'", { status: 400 })
   }
   if (!data.attributesToKeep) {
-    return new Response("Did not specify 'attributesToKeep'", { status: 400 })
+    return new Response("Did not specify 'attributesToKeep'", {
+      status: 400
+    })
   }
   if (!data.attributesToKeep.name) {
     return new Response("Did not specify 'attributesToKeep.name'", {

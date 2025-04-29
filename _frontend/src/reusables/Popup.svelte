@@ -18,6 +18,7 @@
     actionsLeft?: Snippet
     actionsRight?: Snippet
     children?: Snippet
+    sidebar?: Snippet
   }
 
   let {
@@ -30,7 +31,8 @@
     headerElement,
     actionsLeft,
     actionsRight,
-    children
+    children,
+    sidebar
   }: Props = $props()
 
   const onKeyDown = (e: KeyboardEvent) => {
@@ -70,34 +72,41 @@
     class:bottomSheet
     onclick={e => e.stopPropagation()}
   >
-    {#if !hideHeader || (isMobile.current && !disableMobileFullscreen)}
-      <div id="header">
-        {#if bottomSheet}
-          <!-- svelte-ignore element_invalid_self_closing_tag -->
-          <div class="centralBlob" onclick={onclose}></div>
-        {:else}
-          <h2>{title}</h2>
+    {#if sidebar}
+      <div class="sidebar">
+        {@render sidebar?.()}
+      </div>
+    {/if}
+    <div class="not-sidebar">
+      {#if !hideHeader || (isMobile.current && !disableMobileFullscreen)}
+        <div id="header">
+          {#if bottomSheet}
+            <!-- svelte-ignore element_invalid_self_closing_tag -->
+            <div class="centralBlob" onclick={onclose}></div>
+          {:else}
+            <h2>{title}</h2>
 
-          {#if headerElement}
-            {@render headerElement?.()}
+            {#if headerElement}
+              {@render headerElement?.()}
+            {/if}
+
+            <button onclick={onclose}>
+              <Icon name="mdiClose" />
+            </button>
           {/if}
-
-          <button onclick={onclose}>
-            <Icon name="mdiClose" />
-          </button>
-        {/if}
+        </div>
+      {/if}
+      <div id="content" class:hasActions={actionsLeft || actionsRight}>
+        {@render children?.()}
       </div>
-    {/if}
-    <div id="content" class:hasActions={actionsLeft || actionsRight}>
-      {@render children?.()}
+      {#if actionsLeft || actionsRight}
+        <div class="actions">
+          {@render actionsLeft?.()}
+          <div class="spacer"></div>
+          {@render actionsRight?.()}
+        </div>
+      {/if}
     </div>
-    {#if actionsLeft || actionsRight}
-      <div class="actions">
-        {@render actionsLeft?.()}
-        <div class="spacer"></div>
-        {@render actionsRight?.()}
-      </div>
-    {/if}
   </section>
 </main>
 
@@ -118,44 +127,68 @@
     background: hsla(0, 0%, 0%, 30%);
 
     section {
+      display: flex;
+
       min-width: 320px;
       max-width: 90%;
       max-height: 90%;
+
       background: var(--color-dark-level-base);
 
-      #header {
+      .sidebar {
         display: flex;
-        gap: 1rem;
-        align-items: center;
+        flex-direction: column;
         padding: 0.5em;
-
-        h2 {
-          flex-grow: 1;
-          margin: 0 0.2em;
-        }
-
-        &:not(:has(.centralBlob)) {
-          box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
-        }
-
-        .centralBlob {
-          width: 48px;
-          height: 4px;
-          margin: auto;
-          margin-top: 4px;
-          margin-bottom: 4px;
-          border-radius: 2px;
-
-          opacity: 40%;
-          background: hsl(0, 0%, 50%);
-        }
+        box-shadow: inset -0.7px 0 0 rgba($color: #fff, $alpha: 0.15);
       }
 
-      #content {
-        padding: 0.5em;
+      .not-sidebar {
+        flex: 1;
 
-        &.hasActions {
-          box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+        #header {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          padding: 0.5em;
+
+          h2 {
+            flex-grow: 1;
+            margin: 0 0.2em;
+          }
+
+          &:not(:has(.centralBlob)) {
+            box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+          }
+
+          .centralBlob {
+            width: 48px;
+            height: 4px;
+            margin: auto;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            border-radius: 2px;
+
+            opacity: 40%;
+            background: hsl(0, 0%, 50%);
+          }
+        }
+
+        #content {
+          padding: 0.5em;
+
+          &.hasActions {
+            box-shadow: inset 0 -0.7px 0 rgba($color: #fff, $alpha: 0.15);
+          }
+        }
+
+        .actions {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5em;
+
+          .spacer {
+            flex-grow: 1;
+          }
         }
       }
 
@@ -171,16 +204,6 @@
         border-top-right-radius: 20px;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
-      }
-
-      .actions {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5em;
-
-        .spacer {
-          flex-grow: 1;
-        }
       }
     }
 

@@ -1,43 +1,23 @@
 import fs from "fs/promises"
 
-import prisma from "$lib/server/prisma"
+import { createPostUploadJobs } from "$lib/server/actions/create-post-upload-jobs"
+import { createPreUploadMediaEntry } from "$lib/server/actions/create-pre-upload-media-entry"
 
 import type { RequestHandler } from "./$types"
 
 export const POST: RequestHandler = async ({ params, request }) => {
   const data = await request.formData()
   const file = data.get("file") as File
-  const selectedTags: number[] = JSON.parse(data.get("selectedTags") as string)
+  const selectedTagIds: number[] = JSON.parse(
+    data.get("selectedTags") as string
+  )
 
-  const { id: mediaId, type } = await prisma.media.create({
-    data: {
-      name: file.name,
-      type: file.type,
-      date: new Date(),
-      height: 0,
-      width: 0,
-      cluster: {
-        connect: {
-          name: params.cluster
-        }
-      }
-    }
+  const mediaId = await createPreUploadMediaEntry({
+    name: file.name,
+    type: file.type,
+    clusterName: params.cluster,
+    tagIds: selectedTagIds
   })
-
-  for (const tagId of selectedTags) {
-    await prisma.tags.update({
-      where: {
-        id: tagId
-      },
-      data: {
-        media: {
-          connect: {
-            id: mediaId
-          }
-        }
-      }
-    })
-  }
 
   // TODO: Get rid of this step
   const fileBuffer = Buffer.from(await file.arrayBuffer())
@@ -45,39 +25,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   await fs.writeFile(`./media/${mediaId}`, fileBuffer)
   console.timeEnd("media post request: store file")
 
-  await prisma.job.create({
-    data: {
-      name: "updateMediaMetadataFromFile",
-      data: JSON.stringify({ id: mediaId, initial: true }),
-      priority: 15
-    }
-  })
-
-  await prisma.job.create({
-    data: {
-      name: "createMediaThumbnail",
-      data: JSON.stringify({ id: mediaId }),
-      priority: 10
-    }
-  })
-
-  if (type.startsWith("video")) {
-    await prisma.job.create({
-      data: {
-        name: "createMediaSeekThumbnails",
-        data: JSON.stringify({ id: mediaId })
-      }
-    })
-  }
-
-  if (type.startsWith("image")) {
-    await prisma.job.create({
-      data: {
-        name: "attemptManualTagging",
-        data: JSON.stringify({ id: mediaId })
-      }
-    })
-  }
+  await createPostUploadJobs(mediaId, file.type)
 
   return new Response()
 }
