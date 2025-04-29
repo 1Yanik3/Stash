@@ -24,3 +24,52 @@ export const renameNameOfMedia = async (d: {
     }
   })
 }
+
+
+
+export const addTagsToMedias = async (d: {
+  mediaIds: string[]
+  tagIds: number[]
+}) => {
+  const { default: prisma } = await import("$lib/server/prisma")
+  for (const tagId of d.tagIds) {
+    for (const mediaId of d.mediaIds) {
+      await prisma.media.update({
+        where: {
+          id: mediaId
+        },
+        data: {
+          tags: {
+            connect: {
+              id: tagId
+            }
+          }
+        }
+      })
+    }
+  }
+}
+
+
+export const removeTagsFromMedias = async (d: {
+  mediaIds: string[]
+  tagIds: number[]
+}) => {
+  const { default: prisma } = await import("$lib/server/prisma")
+  for (const tagId of d.tagIds) {
+    for (const mediaId of d.mediaIds) {
+      await prisma.media.update({
+        where: {
+          id: mediaId
+        },
+        data: {
+          tags: {
+            disconnect: {
+              id: tagId
+            }
+          }
+        }
+      })
+    }
+  }
+}

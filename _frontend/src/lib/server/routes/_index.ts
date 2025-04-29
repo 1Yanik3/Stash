@@ -1,5 +1,4 @@
-import { _server_bulkAddTagToMedia } from "$lib/actions/addTagToMedia.svelte"
-import { _server_bulkRemoveTagsFromMedia } from "$lib/actions/removeTagFromMedia.svelte"
+import { removeTagsFromMedias } from "$lib/actions/removeTagFromMedia.svelte"
 
 import * as credentials from "./credentials"
 import * as gks from "./gks"
@@ -17,6 +16,5 @@ export default {
   ...stories,
   ...jobs,
   ...credentials,
-  _server_bulkAddTagToMedia,
-  _server_bulkRemoveTagsFromMedia
+  removeTagsFromMedias
 }

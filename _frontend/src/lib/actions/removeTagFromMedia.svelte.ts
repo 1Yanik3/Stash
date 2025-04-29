@@ -30,9 +30,9 @@ export const removeTagFromMedia = async (
     tagId = parseInt(tagToRemoveId)
   }
 
-  await query("_server_bulkRemoveTagsFromMedia", {
+  await query("removeTagsFromMedias", {
     mediaIds: medias.map(m => m.id),
-    tagId: +tagId
+    tagIds: [+tagId]
   })
   for (const media of medias) {
     if (media && media.tags.find(t => t == +tagId)) {
@@ -40,27 +40,4 @@ export const removeTagFromMedia = async (
     }
   }
   mediaController.setMedia(mediaController.media)
-}
-
-export const _server_bulkRemoveTagsFromMedia = async (d: {
-  mediaIds: string[]
-  tagIds: number[]
-}) => {
-  const { default: prisma } = await import("$lib/server/prisma")
-  for (const tagId of d.tagIds) {
-    for (const mediaId of d.mediaIds) {
-      await prisma.media.update({
-        where: {
-          id: mediaId
-        },
-        data: {
-          tags: {
-            disconnect: {
-              id: tagId
-            }
-          }
-        }
-      })
-    }
-  }
 }

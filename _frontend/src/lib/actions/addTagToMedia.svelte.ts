@@ -19,7 +19,7 @@ export const addTagToMedia = async (
   }
   if (tagId) {
     // Change server side
-    await query("_server_bulkAddTagToMedia", {
+    await query("addTagsToMedias", {
       mediaIds: medias.map(m => m.id),
       tagIds: [tagId]
     })
@@ -29,28 +29,5 @@ export const addTagToMedia = async (
       media.tags = [...media.tags, tagId]
     }
     mediaController.setMedia(mediaController.media)
-  }
-}
-
-export const _server_bulkAddTagToMedia = async (d: {
-  mediaIds: string[]
-  tagIds: number[]
-}) => {
-  const { default: prisma } = await import("$lib/server/prisma")
-  for (const tagId of d.tagIds) {
-    for (const mediaId of d.mediaIds) {
-      await prisma.media.update({
-        where: {
-          id: mediaId
-        },
-        data: {
-          tags: {
-            connect: {
-              id: tagId
-            }
-          }
-        }
-      })
-    }
   }
 }

@@ -134,7 +134,7 @@
           onselected={({ id }) => {
             if (!mediaController.visibleMedium)
               throw "Expected mediaController.visibleMedium to be defined"
-            query("_server_bulkAddTagToMedia", {
+            query("addTagsToMedias", {
               mediaIds: [mediaController.visibleMedium.id],
               tagIds: [id]
             })
