@@ -3,7 +3,7 @@ import prisma from "$lib/server/prisma"
 import type { LayoutServerLoad } from "./$types"
 
 export const load: LayoutServerLoad = async () => ({
-  duplicates: (await prisma.$queryRaw`
+    duplicates: (await prisma.$queryRaw`
     SELECT 
         content_hash, 
         ARRAY_AGG(id) AS media_ids

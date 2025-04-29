@@ -4,28 +4,28 @@ import prisma from "../prisma"
 import { protectEndpoint } from "../protect-endpoint"
 
 export const tags_query_from_database = async (
-  d: {
-    cluster: string | null
-    mediaTypeFilter: string
-    favouritesOnly: boolean
-  },
-  cookies: Cookies
+    d: {
+        cluster: string | null
+        mediaTypeFilter: string
+        favouritesOnly: boolean
+    },
+    cookies: Cookies
 ) => {
-  await protectEndpoint(d.cluster || "", cookies)
+    await protectEndpoint(d.cluster || "", cookies)
 
-  const typeFilter = d.mediaTypeFilter
-    ? /*sql*/ `
+    const typeFilter = d.mediaTypeFilter
+        ? /*sql*/ `
         AND "Media"."type" LIKE '${d.mediaTypeFilter}%'
     `
-    : ""
+        : ""
 
-  const favouriteFilter = d.favouritesOnly
-    ? /*sql*/ `
+    const favouriteFilter = d.favouritesOnly
+        ? /*sql*/ `
         AND "Media"."favourited" = true
     `
-    : ""
+        : ""
 
-  return (await prisma.$queryRawUnsafe(/*sql*/ `
+    return (await prisma.$queryRawUnsafe(/*sql*/ `
         WITH RECURSIVE
             TagHierarchy AS (
                 -- Base case: start with all tags
@@ -53,10 +53,10 @@ export const tags_query_from_database = async (
                 LEFT JOIN "_MediaToTags" ON "_MediaToTags"."B" = "Tags"."id"
                 LEFT JOIN "Media" ON "_MediaToTags"."A" = "Media"."id"
                 ${
-                  d.cluster
-                    ? `WHERE
+                    d.cluster
+                        ? `WHERE
                     "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')`
-                    : ""
+                        : ""
                 }
                 GROUP BY
                     "Tags"."id"
@@ -69,10 +69,10 @@ export const tags_query_from_database = async (
                     "Tags"
                 INNER JOIN "_ClustersToTags" ON "_ClustersToTags"."B" = "Tags"."id"
                 ${
-                  d.cluster
-                    ? `WHERE
+                    d.cluster
+                        ? `WHERE
                     "_ClustersToTags"."A" = (SELECT id FROM "Clusters" WHERE "Clusters"."name" = '${d.cluster}')`
-                    : ""
+                        : ""
                 }
             ),
             AllRelatedTags AS (
@@ -102,25 +102,25 @@ export const tags_query_from_database = async (
 }
 
 export const tag_update_icon = async (d: { tagId: number; newIcon: string }) =>
-  await prisma.tags.update({
-    where: {
-      id: d.tagId
-    },
-    data: {
-      icon: d.newIcon
-    }
-  })
+    await prisma.tags.update({
+        where: {
+            id: d.tagId
+        },
+        data: {
+            icon: d.newIcon
+        }
+    })
 
 export const TagUpdateDescription = async (d: {
-  tagId: number
-  description: string
+    tagId: number
+    description: string
 }) => {
-  await prisma.tags.update({
-    where: {
-      id: d.tagId
-    },
-    data: {
-      description: d.description
-    }
-  })
+    await prisma.tags.update({
+        where: {
+            id: d.tagId
+        },
+        data: {
+            description: d.description
+        }
+    })
 }

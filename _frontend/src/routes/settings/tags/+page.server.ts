@@ -6,57 +6,57 @@ import { tags_query_from_database } from "$lib/server/routes/tags"
 import type { PageServerLoad } from "./$types"
 
 export const load = (async ({ cookies }) => {
-  const data = await tags_query_from_database(
-    {
-      cluster: null,
-      favouritesOnly: false,
-      mediaTypeFilter: ""
-    },
-    cookies
-  )
+    const data = await tags_query_from_database(
+        {
+            cluster: null,
+            favouritesOnly: false,
+            mediaTypeFilter: ""
+        },
+        cookies
+    )
 
-  const tmpTagMap = assembleTagHierarchyMap(data)
+    const tmpTagMap = assembleTagHierarchyMap(data)
 
-  const tags: TagExtended[] = []
+    const tags: TagExtended[] = []
 
-  const addTags = (tag: TagExtended, prefix: string | null = null) => {
-    const tagBeforePrefix = prefix ? `${prefix}/${tag.tag}` : tag.tag
+    const addTags = (tag: TagExtended, prefix: string | null = null) => {
+        const tagBeforePrefix = prefix ? `${prefix}/${tag.tag}` : tag.tag
 
-    tags.push({ ...tag, tag: tagBeforePrefix })
+        tags.push({ ...tag, tag: tagBeforePrefix })
 
-    tag.children.forEach(c => addTags(c, tagBeforePrefix))
-  }
+        tag.children.forEach(c => addTags(c, tagBeforePrefix))
+    }
 
-  Object.values(tmpTagMap)
-    .filter(t => !t.parentId)
-    .forEach(tag => addTags(tag))
+    Object.values(tmpTagMap)
+        .filter(t => !t.parentId)
+        .forEach(tag => addTags(tag))
 
-  const tagClusterMappings = (
-    await prisma.clusters.findMany({
-      select: {
-        id: true,
-        Tags: {
-          select: {
-            id: true
-          }
-        }
-      }
-    })
-  ).reduce(
-    (acc, cluster) => {
-      cluster.Tags.forEach(
-        tag =>
-          (acc[tag.id] = acc[tag.id]
-            ? [...acc[tag.id], cluster.id]
-            : [cluster.id])
-      )
-      return acc
-    },
-    {} as Record<number, number[]>
-  )
+    const tagClusterMappings = (
+        await prisma.clusters.findMany({
+            select: {
+                id: true,
+                Tags: {
+                    select: {
+                        id: true
+                    }
+                }
+            }
+        })
+    ).reduce(
+        (acc, cluster) => {
+            cluster.Tags.forEach(
+                tag =>
+                    (acc[tag.id] = acc[tag.id]
+                        ? [...acc[tag.id], cluster.id]
+                        : [cluster.id])
+            )
+            return acc
+        },
+        {} as Record<number, number[]>
+    )
 
-  return {
-    tags,
-    tagClusterMappings
-  }
+    return {
+        tags,
+        tagClusterMappings
+    }
 }) satisfies PageServerLoad

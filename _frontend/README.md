@@ -11,12 +11,12 @@ This is a big project for me, but also one that is going to take a long long tim
 ## TODO
 
 - [x] Allow to move other places
-  - incl. Trash
+    - incl. Trash
 - [ ] Bulk edit features
-  - [ ] Tags
-  - [ ] Move
+    - [ ] Tags
+    - [ ] Move
 - [x] Allow replacing the media from the UI
-  - Maybe have an "AI upscale this" button?
+    - Maybe have an "AI upscale this" button?
 - [ ] Allow replacing thumbnail on videos by generating thumbnails at random positions and letting the user choose the one they prefer
 - [x] Have info button show information about the media
 

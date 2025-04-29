@@ -8,23 +8,23 @@ import { sortingMethods } from "../../../types"
 import { protectEndpoint } from "../protect-endpoint"
 
 export const media_query_from_database = async (
-  d: {
-    cluster: string
-    tags: number[]
-    offset: number
-    favouritesOnly: boolean
-    specialFilterAttribute: string | null
-    seed: number
-    activeSortingMethod: number
-    countOfTags: number
-    minResolution: number | null
-    mediaType: "all" | "image" | "video"
-  },
-  cookies: Cookies
+    d: {
+        cluster: string
+        tags: number[]
+        offset: number
+        favouritesOnly: boolean
+        specialFilterAttribute: string | null
+        seed: number
+        activeSortingMethod: number
+        countOfTags: number
+        minResolution: number | null
+        mediaType: "all" | "image" | "video"
+    },
+    cookies: Cookies
 ) => {
-  await protectEndpoint(d.cluster, cookies)
+    await protectEndpoint(d.cluster, cookies)
 
-  return (await prisma.$queryRawUnsafe(/*sql*/ `
+    return (await prisma.$queryRawUnsafe(/*sql*/ `
         SELECT
             "Media".*,
             STRING_AGG ("Tags"."id"::text, ',') as tags
@@ -50,8 +50,8 @@ export const media_query_from_database = async (
 }
 
 const assembleMinResultionFilter = (minResolution: number | null) => {
-  if (!minResolution) return ""
-  return /*sql*/ `
+    if (!minResolution) return ""
+    return /*sql*/ `
     AND (
         "Media"."width" >= ${minResolution}
         OR
@@ -62,8 +62,8 @@ const assembleMinResultionFilter = (minResolution: number | null) => {
 }
 
 const assembleTagsFilter = (tags: number[]) => {
-  if (tags.length === 0) return ""
-  return /*sql*/ `
+    if (tags.length === 0) return ""
+    return /*sql*/ `
       AND "Media"."id" IN (
         SELECT
           "_MediaToTags"."A"
@@ -76,48 +76,48 @@ const assembleTagsFilter = (tags: number[]) => {
 }
 
 const assembleFavouritesOnlyFilter = (favouritesOnly: boolean) => {
-  if (!favouritesOnly) return ""
-  return /*sql*/ `
+    if (!favouritesOnly) return ""
+    return /*sql*/ `
       AND "Media"."favourited" = true
     `
 }
 
 const assembleSpecialFilterAttributeFilter = (
-  specialFilterAttribute: string | null
+    specialFilterAttribute: string | null
 ) => {
-  if (!specialFilterAttribute) return ""
-  if (specialFilterAttribute == "show_unknown")
-    return /*sql*/ `
+    if (!specialFilterAttribute) return ""
+    if (specialFilterAttribute == "show_unknown")
+        return /*sql*/ `
         AND "Media"."specialFilterAttribute" IS NULL
       `
-  return /*sql*/ `
+    return /*sql*/ `
       AND "Media"."specialFilterAttribute" = '${specialFilterAttribute}'
     `
 }
 
 const assembleOrderBy = async (d: {
-  seed: number
-  activeSortingMethod: number
+    seed: number
+    activeSortingMethod: number
 }) => {
-  if (sortingMethods[d.activeSortingMethod].icon === "mdiSort")
-    await prisma.$executeRawUnsafe(/*sql*/ `
+    if (sortingMethods[d.activeSortingMethod].icon === "mdiSort")
+        await prisma.$executeRawUnsafe(/*sql*/ `
         SELECT setseed(${d.seed});
       `)
-  return /*sql*/ `
+    return /*sql*/ `
       ORDER BY ${sortingMethods[d.activeSortingMethod].orderBy}
     `
 }
 
 const assembleCountOfTagsFilter = (countOfTags: number) => {
-  if (countOfTags < 0) return ""
-  return /*sql*/ `
+    if (countOfTags < 0) return ""
+    return /*sql*/ `
         HAVING COUNT("Tags"."id") = ${countOfTags}
     `
 }
 
 const assembleMediaTypeFilter = (mediaType: "all" | "image" | "video") => {
-  if (mediaType === "all") return ""
-  return /*sql*/ `
+    if (mediaType === "all") return ""
+    return /*sql*/ `
         AND "Media"."type" LIKE '${mediaType}%'
     `
 }

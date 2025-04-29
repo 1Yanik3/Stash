@@ -1,46 +1,51 @@
 <script lang="ts">
-  import PromptFramework from "./_PromptFramework.svelte"
+    import PromptFramework from "./_PromptFramework.svelte"
 
-  interface Props {
-    question: string
-    options: { value: string; name: string }[]
-    selected: string[]
-    onresult: (value: string[] | null) => void
-  }
+    interface Props {
+        question: string
+        options: { value: string; name: string }[]
+        selected: string[]
+        onresult: (value: string[] | null) => void
+    }
 
-  let { question, options, selected = $bindable(), onresult }: Props = $props()
+    let {
+        question,
+        options,
+        selected = $bindable(),
+        onresult
+    }: Props = $props()
 </script>
 
 <PromptFramework
-  oncancel={() => onresult(null)}
-  onok={() => onresult(selected)}
+    oncancel={() => onresult(null)}
+    onok={() => onresult(selected)}
 >
-  <span>{question}:</span>
+    <span>{question}:</span>
 
-  <section>
-    {#each options as { value, name }}
-      <label>
-        <input type="checkbox" {value} bind:group={selected} />
-        {name}
-      </label>
-    {/each}
-  </section>
+    <section>
+        {#each options as { value, name }}
+            <label>
+                <input type="checkbox" {value} bind:group={selected} />
+                {name}
+            </label>
+        {/each}
+    </section>
 </PromptFramework>
 
 <style>
-  section {
-    display: grid;
-    gap: 0.5em;
-    padding-top: 0.5em;
-  }
+    section {
+        display: grid;
+        gap: 0.5em;
+        padding-top: 0.5em;
+    }
 
-  label {
-    display: flex;
-    gap: 0.5em;
-    align-items: center;
-  }
+    label {
+        display: flex;
+        gap: 0.5em;
+        align-items: center;
+    }
 
-  input:checked {
-    background-color: #e0e0e0 !important;
-  }
+    input:checked {
+        background-color: #e0e0e0 !important;
+    }
 </style>

@@ -15,7 +15,7 @@ export let collapsedTags: Writable<string[]> = writable([])
 
 // Navigation and Layout
 export const actionBars = {
-  Cast: QuickActionsCast
+    Cast: QuickActionsCast
 }
 export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
 export let windowControlsSpacerVisible = writable(false)
@@ -35,8 +35,8 @@ export let traverse = writable(false)
 export let videoElement: Writable<HTMLVideoElement | null> = writable(null)
 
 export let settings = persisted("settings", {
-  mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
-  theme: "default" as "default" | "light" | "amoled"
+    mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
+    theme: "default" as "default" | "light" | "amoled"
 })
 
 // TODO: Change to a "mode"

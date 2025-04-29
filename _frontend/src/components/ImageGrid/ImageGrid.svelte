@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { page } from "$app/stores"
-  import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import { page } from "$app/stores"
+    import { mediaController } from "$lib/controllers/MediaController.svelte"
 
-  import type { PageData } from "../../routes/[cluster]/$types"
-  import ImageGridCollection from "./ImageGrid_Collection.svelte"
-  import ImageGridPage from "./ImageGrid_Page.svelte"
-  import ImageGridStories from "./ImageGrid_Stories.svelte"
-  import ImageGridStudios from "./ImageGrid_Studios.svelte"
+    import type { PageData } from "../../routes/[cluster]/$types"
+    import ImageGridCollection from "./ImageGrid_Collection.svelte"
+    import ImageGridPage from "./ImageGrid_Page.svelte"
+    import ImageGridStories from "./ImageGrid_Stories.svelte"
+    import ImageGridStudios from "./ImageGrid_Studios.svelte"
 
-  let pageData = $derived($page.data as PageData)
+    let pageData = $derived($page.data as PageData)
 </script>
 
 <main>
-  {#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}
-    <ImageGridCollection />
-  {:else if pageData.cluster.type == "stories"}
-    <ImageGridStories />
-  {:else}
-    <!-- TODO -->
-    <!-- {#if pageData.cluster.type == "collection"}
+    {#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}
+        <ImageGridCollection />
+    {:else if pageData.cluster.type == "stories"}
+        <ImageGridStories />
+    {:else}
+        <!-- TODO -->
+        <!-- {#if pageData.cluster.type == "collection"}
         <div id="collectionGroups">
           {#if mediaController.selectedTags.length == 1 && mediaController.selectedTags[0].includes("/")}
             <Button
@@ -57,38 +57,38 @@
         </div>
       {/if} -->
 
-    <section>
-      {#each mediaController.pages as { hash, media }, i (hash)}
-        <div>
-          {#if pageData.cluster.type == "withName"}
-            <ImageGridStudios {media} {i} />
-          {:else}
-            <ImageGridPage {media} />
-          {/if}
-        </div>
-      {/each}
-    </section>
-  {/if}
+        <section>
+            {#each mediaController.pages as { hash, media }, i (hash)}
+                <div>
+                    {#if pageData.cluster.type == "withName"}
+                        <ImageGridStudios {media} {i} />
+                    {:else}
+                        <ImageGridPage {media} />
+                    {/if}
+                </div>
+            {/each}
+        </section>
+    {/if}
 </main>
 
 <style lang="scss">
-  main {
-    padding: 1em;
-  }
+    main {
+        padding: 1em;
+    }
 
-  section {
-    display: grid;
-    gap: 14px;
-    max-width: 100vw;
-  }
+    section {
+        display: grid;
+        gap: 14px;
+        max-width: 100vw;
+    }
 
-  #collectionGroups {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    #collectionGroups {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 
-    margin-top: -0.5em;
-    margin-right: -0.5em;
-    margin-bottom: 0.5em;
-    margin-left: -0.5em;
-  }
+        margin-top: -0.5em;
+        margin-right: -0.5em;
+        margin-bottom: 0.5em;
+        margin-left: -0.5em;
+    }
 </style>

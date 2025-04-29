@@ -1,74 +1,74 @@
 <script lang="ts">
-  import { invalidateAll } from "$app/navigation"
-  import Button from "$components/elements/Button.svelte"
-  import Table from "$components/elements/Table.svelte"
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+    import { invalidateAll } from "$app/navigation"
+    import Button from "$components/elements/Button.svelte"
+    import Table from "$components/elements/Table.svelte"
+    import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
 
-  import type { PageData } from "./$types"
+    import type { PageData } from "./$types"
 
-  interface Props {
-    data: PageData
-  }
+    interface Props {
+        data: PageData
+    }
 
-  let { data }: Props = $props()
+    let { data }: Props = $props()
 
-  const importOrphan = async (cluster: number, filename: string) => {
-    const response = await fetch(`/settings/orphaned/${filename}`, {
-      method: "POST",
-      body: JSON.stringify({
-        cluster: cluster
-      })
-    })
+    const importOrphan = async (cluster: number, filename: string) => {
+        const response = await fetch(`/settings/orphaned/${filename}`, {
+            method: "POST",
+            body: JSON.stringify({
+                cluster: cluster
+            })
+        })
 
-    if (!response.ok) throw "Something went wrong with the import"
-    invalidateAll()
-  }
+        if (!response.ok) throw "Something went wrong with the import"
+        invalidateAll()
+    }
 
-  const deleteOrphan = async (filename: string) => {
-    const response = await fetch(`/settings/orphaned/${filename}`, {
-      method: "DELETE"
-    })
+    const deleteOrphan = async (filename: string) => {
+        const response = await fetch(`/settings/orphaned/${filename}`, {
+            method: "DELETE"
+        })
 
-    if (!response.ok) throw "Something went wrong with the deletion"
-    invalidateAll()
-  }
+        if (!response.ok) throw "Something went wrong with the deletion"
+        invalidateAll()
+    }
 </script>
 
 <SettingsPageContent title="Orphaned Files">
-  <Table data={data.unimportedFiles}>
-    {#snippet children({ entry })}
-      <td>
-        <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
-        {#each data.clusters as cluster}
-          <Button
-            noMargin
-            onclick={() => {
-              importOrphan(cluster.id, entry)
-            }}
-          >
-            {cluster.name}
-          </Button>
-        {/each}
-        <Button
-          noMargin
-          icon="mdiTrashCan"
-          onclick={() => {
-            deleteOrphan(entry)
-          }}
-        />
-      </td>
-    {/snippet}
-  </Table>
+    <Table data={data.unimportedFiles}>
+        {#snippet children({ entry })}
+            <td>
+                <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
+                {#each data.clusters as cluster}
+                    <Button
+                        noMargin
+                        onclick={() => {
+                            importOrphan(cluster.id, entry)
+                        }}
+                    >
+                        {cluster.name}
+                    </Button>
+                {/each}
+                <Button
+                    noMargin
+                    icon="mdiTrashCan"
+                    onclick={() => {
+                        deleteOrphan(entry)
+                    }}
+                />
+            </td>
+        {/snippet}
+    </Table>
 </SettingsPageContent>
 
 <style lang="scss">
-  td {
-    display: flex;
-    align-items: center;
-    justify-content: end;
+    td {
+        display: flex;
+        align-items: center;
+        justify-content: end;
 
-    a {
-      flex-grow: 1;
+        a {
+            flex-grow: 1;
+        }
     }
-  }
 </style>

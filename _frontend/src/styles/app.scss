@@ -3,171 +3,171 @@ $saturation: 16%;
 $accent: hsl($hue, $saturation + 10%, 30%);
 
 body {
-  --color-lowest: #000;
-  --color-dark-level-lower: hsl(#{$hue}, #{$saturation}, 7%);
-  --color-dark-level-base: hsl(#{$hue}, #{$saturation}, 8.5%);
-  --color-dark-level-1: hsl(#{$hue}, #{$saturation}, 12%);
-  --color-dark-level-1-hover: hsl(#{$hue}, #{$saturation}, 14%);
-  --color-dark-level-2: hsl(#{$hue}, #{$saturation}, 14.5%);
-  --color-dark-level-2-hover: hsl(#{$hue}, #{$saturation}, 16.5%);
-  --color-dark-level-3: hsl(#{$hue}, #{$saturation}, 33%);
+    --color-lowest: #000;
+    --color-dark-level-lower: hsl(#{$hue}, #{$saturation}, 7%);
+    --color-dark-level-base: hsl(#{$hue}, #{$saturation}, 8.5%);
+    --color-dark-level-1: hsl(#{$hue}, #{$saturation}, 12%);
+    --color-dark-level-1-hover: hsl(#{$hue}, #{$saturation}, 14%);
+    --color-dark-level-2: hsl(#{$hue}, #{$saturation}, 14.5%);
+    --color-dark-level-2-hover: hsl(#{$hue}, #{$saturation}, 16.5%);
+    --color-dark-level-3: hsl(#{$hue}, #{$saturation}, 33%);
 
-  --color-text: hsl(0, 0%, 100%);
+    --color-text: hsl(0, 0%, 100%);
 
-  --border-color-lower: hsl(0, 0%, 13%);
-  --border-color-base: hsl(0, 0%, 16%);
-  --border-color-1: hsl(0, 0%, 22%);
-  --border-color-1-hover: hsl(0, 0%, 24%);
-  --border-color-2: hsl(0, 0%, 27%);
-  --border-color-2-hover: hsl(0, 0%, 29%);
+    --border-color-lower: hsl(0, 0%, 13%);
+    --border-color-base: hsl(0, 0%, 16%);
+    --border-color-1: hsl(0, 0%, 22%);
+    --border-color-1-hover: hsl(0, 0%, 24%);
+    --border-color-2: hsl(0, 0%, 27%);
+    --border-color-2-hover: hsl(0, 0%, 29%);
 
-  --accent: #{$accent};
-  --accent-background: #{mix(hsl($hue, $saturation, 12%), $accent, 50%)};
+    --accent: #{$accent};
+    --accent-background: #{mix(hsl($hue, $saturation, 12%), $accent, 50%)};
 }
 
 body.light {
-  --color-lowest: #fff;
-  --color-dark-level-lower: hsl(0, 0%, 95%);
-  --color-dark-level-base: hsl(0, 0%, 100%);
-  --color-dark-level-1: hsl(0, 0%, 95%);
-  --color-dark-level-1-hover: hsl(0, 0%, 90%);
-  --color-dark-level-2: hsl(0, 0%, 87.5%);
-  --color-dark-level-2-hover: hsl(0, 0%, 85.5%);
-  --color-dark-level-3: hsl(0, 0%, 69%);
+    --color-lowest: #fff;
+    --color-dark-level-lower: hsl(0, 0%, 95%);
+    --color-dark-level-base: hsl(0, 0%, 100%);
+    --color-dark-level-1: hsl(0, 0%, 95%);
+    --color-dark-level-1-hover: hsl(0, 0%, 90%);
+    --color-dark-level-2: hsl(0, 0%, 87.5%);
+    --color-dark-level-2-hover: hsl(0, 0%, 85.5%);
+    --color-dark-level-3: hsl(0, 0%, 69%);
 
-  --color-text: hsl(0, 0%, 15%);
+    --color-text: hsl(0, 0%, 15%);
 
-  --border-color-lower: hsl(0, 0%, 89%);
-  --border-color-base: hsl(0, 0%, 86%);
-  --border-color-1: hsl(0, 0%, 80%);
-  --border-color-1-hover: hsl(0, 0%, 78%);
-  --border-color-2: hsl(0, 0%, 71%);
-  --border-color-2-hover: hsl(0, 0%, 70%);
+    --border-color-lower: hsl(0, 0%, 89%);
+    --border-color-base: hsl(0, 0%, 86%);
+    --border-color-1: hsl(0, 0%, 80%);
+    --border-color-1-hover: hsl(0, 0%, 78%);
+    --border-color-2: hsl(0, 0%, 71%);
+    --border-color-2-hover: hsl(0, 0%, 70%);
 }
 
 body.amoled {
-  --color-lowest: #000;
-  --color-dark-level-lower: #000;
-  --color-dark-level-base: #000;
-  --color-dark-level-1: #000;
-  --color-dark-level-1-hover: hsl(0, 0%, 2%);
-  --color-dark-level-2: hsl(0, 0%, 10%);
-  --color-dark-level-2-hover: hsl(0, 0%, 12%);
-  --color-dark-level-3: hsl(0, 0%, 15%);
+    --color-lowest: #000;
+    --color-dark-level-lower: #000;
+    --color-dark-level-base: #000;
+    --color-dark-level-1: #000;
+    --color-dark-level-1-hover: hsl(0, 0%, 2%);
+    --color-dark-level-2: hsl(0, 0%, 10%);
+    --color-dark-level-2-hover: hsl(0, 0%, 12%);
+    --color-dark-level-3: hsl(0, 0%, 15%);
 
-  --color-text: hsl(0, 0%, 93%);
+    --color-text: hsl(0, 0%, 93%);
 
-  --border-color-base: hsl(0, 0%, 7%);
-  --border-color-1: hsl(0, 0%, 10%);
-  --border-color-1-hover: hsl(0, 0%, 12%);
-  --border-color-2: hsl(0, 0%, 14%);
-  --border-color-2-hover: hsl(0, 0%, 16%);
+    --border-color-base: hsl(0, 0%, 7%);
+    --border-color-1: hsl(0, 0%, 10%);
+    --border-color-1-hover: hsl(0, 0%, 12%);
+    --border-color-2: hsl(0, 0%, 14%);
+    --border-color-2-hover: hsl(0, 0%, 16%);
 }
 
 html,
 textarea {
-  font-family: Inter;
+    font-family: Inter;
 }
 
 html,
 * {
-  color: var(--color-text);
-  font-weight: 300;
-  scrollbar-width: none;
+    color: var(--color-text);
+    font-weight: 300;
+    scrollbar-width: none;
 }
 
 body {
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-  font-size: 15px;
-  background: var(--color-dark-level-1);
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    font-size: 15px;
+    background: var(--color-dark-level-1);
 }
 
 input,
 textarea {
-  background: hsl(0, 0%, 26%);
-  border: none;
-  border-radius: 3px;
-  padding: 0.35em;
+    background: hsl(0, 0%, 26%);
+    border: none;
+    border-radius: 3px;
+    padding: 0.35em;
 
-  transition: background 150ms;
-  background: var(--color-dark-level-1);
-  border: 1px solid var(--border-color-1);
-  border-radius: 3px;
-  appearance: none;
+    transition: background 150ms;
+    background: var(--color-dark-level-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 3px;
+    appearance: none;
 
-  outline: none !important;
+    outline: none !important;
 }
 
 button,
 select {
-  font-weight: 200;
-  text-decoration: none;
-  outline: none;
+    font-weight: 200;
+    text-decoration: none;
+    outline: none;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  padding: 0.3em 0.5em;
-  border: none;
-  border-radius: 0.35em;
+    padding: 0.3em 0.5em;
+    border: none;
+    border-radius: 0.35em;
 
-  background: transparent;
-  transition:
-    background 100ms,
-    border 100ms;
+    background: transparent;
+    transition:
+        background 100ms,
+        border 100ms;
 
-  &.card {
-    background: var(--color-dark-level-1);
-    outline: 1px solid var(--border-color-1);
-    outline-offset: calc(var(--outline-size) * -1);
-    border-radius: 3px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: var(--border-color-1);
-      outline: 1px solid var(--border-color-1-hover);
-      outline-offset: calc(var(--outline-size) * -1);
+    &.card {
+        background: var(--color-dark-level-1);
+        outline: 1px solid var(--border-color-1);
+        outline-offset: calc(var(--outline-size) * -1);
+        border-radius: 3px;
     }
-  }
 
-  &.active {
-    background: var(--border-color-1-hover);
-    outline: 1px solid hsl(0, 0%, 33%);
-    outline-offset: calc(var(--outline-size) * -1);
-  }
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--border-color-1);
+            outline: 1px solid var(--border-color-1-hover);
+            outline-offset: calc(var(--outline-size) * -1);
+        }
+    }
+
+    &.active {
+        background: var(--border-color-1-hover);
+        outline: 1px solid hsl(0, 0%, 33%);
+        outline-offset: calc(var(--outline-size) * -1);
+    }
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 10px;
-  }
-
-  tr {
-    background: var(--color-dark-level-base);
-    transition: background 200ms;
-    &:hover {
-      background: var(--color-dark-level-lower);
-    }
-  }
-
-  &:not(.borderless) {
-    border-top: 1px solid var(--border-color-base);
-    border-right: 1px solid var(--border-color-base);
+    width: 100%;
+    border-collapse: collapse;
 
     th,
     td {
-      border-bottom: 1px solid var(--border-color-base);
-      border-left: 1px solid var(--border-color-base);
+        padding: 10px;
     }
-  }
+
+    tr {
+        background: var(--color-dark-level-base);
+        transition: background 200ms;
+        &:hover {
+            background: var(--color-dark-level-lower);
+        }
+    }
+
+    &:not(.borderless) {
+        border-top: 1px solid var(--border-color-base);
+        border-right: 1px solid var(--border-color-base);
+
+        th,
+        td {
+            border-bottom: 1px solid var(--border-color-base);
+            border-left: 1px solid var(--border-color-base);
+        }
+    }
 }

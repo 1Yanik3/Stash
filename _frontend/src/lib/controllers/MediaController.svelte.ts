@@ -13,179 +13,185 @@ import type { TagExtended } from "./TagsController.svelte"
 export type MediaType = Media & { tags: number[] }
 
 class MediaController {
-  private alreadyInitialized = false
-  public init = () => {
-    if (this.alreadyInitialized) {
-      console.log("MediaController already initialized!")
-      return
+    private alreadyInitialized = false
+    public init = () => {
+        if (this.alreadyInitialized) {
+            console.log("MediaController already initialized!")
+            return
+        }
+
+        $effect(() => {
+            if (!this.filters) {
+            }
+            console.group(
+                "%cUpdating via effect",
+                "color: grey; font-weight: normal"
+            )
+            this.updateMedia()
+            console.groupEnd()
+        })
+
+        $effect(() => {
+            this.updateMedia(vars.clusterName)
+        })
+
+        traverse.subscribe(() => this.updateMedia)
+        mediaTypeFilter.subscribe(() => this.updateMedia)
+
+        this.alreadyInitialized = true
     }
 
-    $effect(() => {
-      if (!this.filters) {
-      }
-      console.group("%cUpdating via effect", "color: grey; font-weight: normal")
-      this.updateMedia()
-      console.groupEnd()
+    public visibleMedium: MediaType | null = $state(null)
+    public media: MediaType[] = $state([])
+    public pages: { hash: string; media: Media[] }[] = $state([])
+
+    public selectedTags: TagExtended[] = $state([])
+    public filters = $state({
+        specialFilterAttribute: null as string | null,
+        favouritesOnly: false,
+        countOfTags: -1,
+        activeSortingMethod: 3,
+        seed: Math.random(),
+        minResolution: null as number | null,
+        mediaType: "all" as "all" | "image" | "video"
     })
+    private _filtersOverrides: typeof this.filters | null = null
 
-    $effect(() => {
-      this.updateMedia(vars.clusterName)
-    })
+    public updateMedia = async (
+        newCluster: string | undefined = undefined,
+        filters: typeof this.filters | null = null
+    ) => {
+        console.debug(
+            `%cUpdating media with new cluster: ${newCluster} to ${get(page).params.cluster}`,
+            "color: grey"
+        )
 
-    traverse.subscribe(() => this.updateMedia)
-    mediaTypeFilter.subscribe(() => this.updateMedia)
+        if (filters) this._filtersOverrides = filters
 
-    this.alreadyInitialized = true
-  }
-
-  public visibleMedium: MediaType | null = $state(null)
-  public media: MediaType[] = $state([])
-  public pages: { hash: string; media: Media[] }[] = $state([])
-
-  public selectedTags: TagExtended[] = $state([])
-  public filters = $state({
-    specialFilterAttribute: null as string | null,
-    favouritesOnly: false,
-    countOfTags: -1,
-    activeSortingMethod: 3,
-    seed: Math.random(),
-    minResolution: null as number | null,
-    mediaType: "all" as "all" | "image" | "video"
-  })
-  private _filtersOverrides: typeof this.filters | null = null
-
-  public updateMedia = async (
-    newCluster: string | undefined = undefined,
-    filters: typeof this.filters | null = null
-  ) => {
-    console.debug(
-      `%cUpdating media with new cluster: ${newCluster} to ${get(page).params.cluster}`,
-      "color: grey"
-    )
-
-    if (filters) this._filtersOverrides = filters
-
-    this.setMedia(await this.loadMedia(0, newCluster))
-  }
-
-  // TODO: Change to event
-  public setMedia = async (media: typeof this.media) => {
-    this.media = media
-    this.pages = await calculatePages(media)
-  }
-
-  public prefetchedQueryForTagId:
-    | [number, ReturnType<typeof query<"media_query_from_database">>]
-    | null = $state(null)
-  public prefetchMediaForTag = async (tagId: number) => {
-    if (
-      this.prefetchedQueryForTagId &&
-      this.prefetchedQueryForTagId[0] == tagId
-    )
-      return
-    this.prefetchedQueryForTagId = [
-      tagId,
-      query("media_query_from_database", {
-        cluster: get(page).params.cluster,
-        tags: [tagId],
-        offset: 0,
-        ...(this._filtersOverrides || this.filters)
-      })
-    ]
-  }
-
-  public isCurrentlyLoadingNewMedia = false
-  // TODO: Make easier to read / more organised
-  private loadMedia = async (
-    offset: number,
-    cluster = get(page).params.cluster
-  ) => {
-    // TODO: This is ridiculous, there must be a better way
-    if ([this.selectedTags, this.filters, this._filtersOverrides].length) {
+        this.setMedia(await this.loadMedia(0, newCluster))
     }
 
-    if (this.isCurrentlyLoadingNewMedia) return []
-    this.isCurrentlyLoadingNewMedia = true
-
-    let dataPromise: ReturnType<
-      typeof query<"media_query_from_database">
-    > | null = null
-
-    untrack(() => {
-      if (
-        this.prefetchedQueryForTagId &&
-        this.selectedTags.length == 1 &&
-        this.selectedTags[0].id == this.prefetchedQueryForTagId[0]
-      ) {
-        dataPromise = this.prefetchedQueryForTagId[1]
-        this.prefetchedQueryForTagId = null
-      }
-    })
-
-    if (dataPromise === null) {
-      dataPromise = query("media_query_from_database", {
-        cluster,
-        tags: this.selectedTags.map(t => t.id),
-        offset,
-        ...(this._filtersOverrides || this.filters)
-      })
+    // TODO: Change to event
+    public setMedia = async (media: typeof this.media) => {
+        this.media = media
+        this.pages = await calculatePages(media)
     }
 
-    const data = await dataPromise
+    public prefetchedQueryForTagId:
+        | [number, ReturnType<typeof query<"media_query_from_database">>]
+        | null = $state(null)
+    public prefetchMediaForTag = async (tagId: number) => {
+        if (
+            this.prefetchedQueryForTagId &&
+            this.prefetchedQueryForTagId[0] == tagId
+        )
+            return
+        this.prefetchedQueryForTagId = [
+            tagId,
+            query("media_query_from_database", {
+                cluster: get(page).params.cluster,
+                tags: [tagId],
+                offset: 0,
+                ...(this._filtersOverrides || this.filters)
+            })
+        ]
+    }
 
-    $effect.root(() => {
-      this._filtersOverrides = null
-      this.filters = this._filtersOverrides || this.filters
-    })
+    public isCurrentlyLoadingNewMedia = false
+    // TODO: Make easier to read / more organised
+    private loadMedia = async (
+        offset: number,
+        cluster = get(page).params.cluster
+    ) => {
+        // TODO: This is ridiculous, there must be a better way
+        if ([this.selectedTags, this.filters, this._filtersOverrides].length) {
+        }
 
-    const processedData = data.map(m => ({
-      ...m,
-      tags: m.tags?.split(",").map(t => +t) || []
-    })) satisfies MediaType[]
-    this.isCurrentlyLoadingNewMedia = false
-    return processedData
-  }
+        if (this.isCurrentlyLoadingNewMedia) return []
+        this.isCurrentlyLoadingNewMedia = true
 
-  public async loadMoreMedia() {
-    if (this.isCurrentlyLoadingNewMedia) this.isCurrentlyLoadingNewMedia = true
+        let dataPromise: ReturnType<
+            typeof query<"media_query_from_database">
+        > | null = null
 
-    this.setMedia(this.media.concat(await this.loadMedia(this.media.length)))
+        untrack(() => {
+            if (
+                this.prefetchedQueryForTagId &&
+                this.selectedTags.length == 1 &&
+                this.selectedTags[0].id == this.prefetchedQueryForTagId[0]
+            ) {
+                dataPromise = this.prefetchedQueryForTagId[1]
+                this.prefetchedQueryForTagId = null
+            }
+        })
 
-    this.isCurrentlyLoadingNewMedia = false
-  }
+        if (dataPromise === null) {
+            dataPromise = query("media_query_from_database", {
+                cluster,
+                tags: this.selectedTags.map(t => t.id),
+                offset,
+                ...(this._filtersOverrides || this.filters)
+            })
+        }
+
+        const data = await dataPromise
+
+        $effect.root(() => {
+            this._filtersOverrides = null
+            this.filters = this._filtersOverrides || this.filters
+        })
+
+        const processedData = data.map(m => ({
+            ...m,
+            tags: m.tags?.split(",").map(t => +t) || []
+        })) satisfies MediaType[]
+        this.isCurrentlyLoadingNewMedia = false
+        return processedData
+    }
+
+    public async loadMoreMedia() {
+        if (this.isCurrentlyLoadingNewMedia)
+            this.isCurrentlyLoadingNewMedia = true
+
+        this.setMedia(
+            this.media.concat(await this.loadMedia(this.media.length))
+        )
+
+        this.isCurrentlyLoadingNewMedia = false
+    }
 }
 
 const _mediaController = new MediaController()
 export const mediaController = _mediaController
 
 const calculatePages = async (media: MediaType[]) => {
-  // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
+    // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
 
-  if (!media.length) {
-    return []
-  }
-  const pages: { hash: string; media: Media[] }[] = []
+    if (!media.length) {
+        return []
+    }
+    const pages: { hash: string; media: Media[] }[] = []
 
-  // For each page
-  for (
-    let i = 0;
-    i <
-    Math.max(
-      Math.ceil(media.length / PAGE_SIZE),
-      _mediaController.pages.length
-    );
-    i++
-  ) {
-    const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
-    if (!page.length) break
+    // For each page
+    for (
+        let i = 0;
+        i <
+        Math.max(
+            Math.ceil(media.length / PAGE_SIZE),
+            _mediaController.pages.length
+        );
+        i++
+    ) {
+        const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
+        if (!page.length) break
 
-    const hash = await md5(page.map(m => [m.id, m.tags]).join())
+        const hash = await md5(page.map(m => [m.id, m.tags]).join())
 
-    // If the page has changed, update it
-    if (_mediaController.pages[i]?.hash != hash) {
-      pages[i] = { hash, media: page }
-    } else pages[i] = _mediaController.pages[i]
-  }
+        // If the page has changed, update it
+        if (_mediaController.pages[i]?.hash != hash) {
+            pages[i] = { hash, media: page }
+        } else pages[i] = _mediaController.pages[i]
+    }
 
-  return pages
+    return pages
 }

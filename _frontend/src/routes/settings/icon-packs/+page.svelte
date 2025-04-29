@@ -1,7 +1,7 @@
 <script lang="ts">
-  import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+    import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
 </script>
 
 <SettingsPageContent title="Icon Packs">
-  <span>TODO</span>
+    <span>TODO</span>
 </SettingsPageContent>

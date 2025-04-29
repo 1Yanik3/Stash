@@ -7,11 +7,11 @@ import * as stories from "./stories"
 import * as tags from "./tags"
 
 export default {
-  ...tags,
-  ...media,
-  ...mediaQuery,
-  ...gks,
-  ...stories,
-  ...jobs,
-  ...credentials
+    ...tags,
+    ...media,
+    ...mediaQuery,
+    ...gks,
+    ...stories,
+    ...jobs,
+    ...credentials
 }

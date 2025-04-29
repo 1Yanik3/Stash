@@ -1,12 +1,12 @@
 {
-  "extends": [
-    "stylelint-config-recommended-scss",
-    "stylelint-config-clean-order/error"
-  ],
-  "rules": {
-    "rule-empty-line-before": "always"
-  },
-  "ignoreFiles": ["node_modules/*", "build/**"],
-  "defaultSeverity": "error",
-  "customSyntax": "postcss-html"
+    "extends": [
+        "stylelint-config-recommended-scss",
+        "stylelint-config-clean-order/error"
+    ],
+    "rules": {
+        "rule-empty-line-before": "always"
+    },
+    "ignoreFiles": ["node_modules/*", "build/**"],
+    "defaultSeverity": "error",
+    "customSyntax": "postcss-html"
 }

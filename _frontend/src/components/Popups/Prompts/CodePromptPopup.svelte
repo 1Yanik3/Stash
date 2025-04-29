@@ -1,22 +1,22 @@
 <script lang="ts">
-  import PromptFramework from "./_PromptFramework.svelte"
+    import PromptFramework from "./_PromptFramework.svelte"
 
-  interface Props {
-    text: string
-    onresult: (result: boolean) => void
-  }
+    interface Props {
+        text: string
+        onresult: (result: boolean) => void
+    }
 
-  let { text, onresult }: Props = $props()
+    let { text, onresult }: Props = $props()
 </script>
 
 <PromptFramework oncancel={() => onresult(false)} onok={() => onresult(true)}>
-  <pre>
+    <pre>
     <code>{text}</code>
   </pre>
 </PromptFramework>
 
 <style>
-  pre {
-    overflow-y: auto;
-  }
+    pre {
+        overflow-y: auto;
+    }
 </style>

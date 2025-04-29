@@ -6,8 +6,8 @@ import type { RequestHandler } from "./$types"
 
 // TODO
 export const GET: RequestHandler = async ({ params }) =>
-  json(
-    await prisma.$queryRaw`
+    json(
+        await prisma.$queryRaw`
         SELECT DISTINCT ON ("Tags"."tag")
             "Tags"."id" as tagid,
             "Tags"."tag",
@@ -20,4 +20,4 @@ export const GET: RequestHandler = async ({ params }) =>
             "Tags"."tag" DESC,
             "Media".date ASC;
 `
-  )
+    )
