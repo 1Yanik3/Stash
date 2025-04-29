@@ -6,9 +6,6 @@
   import Button from "$components/elements/Button.svelte"
   import Icon from "$components/elements/Icon.svelte"
   import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
-  import {
-    removeTagFromMedia
-  } from "$lib/client/actions/mediaActions.svelte"
   import query from "$lib/client/call"
   import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -123,13 +120,26 @@
       <!-- TODO: Move these definitions into the DB -->
       <SpecialFilterAttributeDropdown />
       {#each mediaController.visibleMedium.tags || [] as tag (tag)}
-        <TagChip {tag} oncontextmenu={() => removeTagFromMedia(tag)} />
+        <TagChip
+          {tag}
+          oncontextmenu={() => {
+            if (!mediaController.visibleMedium)
+              throw "Expected mediaController.visibleMedium to be defined"
+            removeTagFromMedia([mediaController.visibleMedium], tag)
+          }}
+        />
       {/each}
       {#if pageData.cluster.type != "collection" || mediaController.visibleMedium.tags.length != 1}
-        <TagInputField onselected={({ id }) => {
-            if (!mediaController.visibleMedium) throw "Expected mediaController.visibleMedium to be defined"
-            query("_server_bulkAddTagToMedia", {mediaIds: [mediaController.visibleMedium.id], tagIds: [id]})
-        }} />
+        <TagInputField
+          onselected={({ id }) => {
+            if (!mediaController.visibleMedium)
+              throw "Expected mediaController.visibleMedium to be defined"
+            query("_server_bulkAddTagToMedia", {
+              mediaIds: [mediaController.visibleMedium.id],
+              tagIds: [id]
+            })
+          }}
+        />
       {/if}
     </div>
 

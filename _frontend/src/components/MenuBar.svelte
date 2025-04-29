@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
   import { addTagToMedia } from "$lib/actions/addTagToMedia.svelte"
+  import { removeTagFromMedia } from "$lib/actions/removeTagFromMedia.svelte"
   import varsSvelte from "$lib/vars.svelte"
 
   import Button from "./elements/Button.svelte"
@@ -40,8 +41,18 @@
     </Button>
     <div style="flex-grow: 1"></div>
     <Button card icon="mdiPencil">Rename</Button>
-    <Button card icon="mdiTagPlus" onclick={addTagToMedia}>Add Tag</Button>
-    <Button card icon="mdiTagMinus">Remove Tag</Button>
+    <Button
+      card
+      icon="mdiTagPlus"
+      onclick={() => addTagToMedia(varsSvelte.selectedMedias)}>Add Tag</Button
+    >
+    <Button
+      card
+      icon="mdiTagMinus"
+      onclick={() => removeTagFromMedia(varsSvelte.selectedMedias)}
+    >
+      Remove Tag
+    </Button>
   </main>
   <div style="height: 50px" bind:clientWidth></div>
 {/if}

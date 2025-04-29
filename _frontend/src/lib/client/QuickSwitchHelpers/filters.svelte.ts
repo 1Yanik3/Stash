@@ -74,44 +74,6 @@ const actions = async () => {
     }
   ]
 
-  // if (get(selectedMediaIds).length) {
-  //   tags.push(
-  //     {
-  //       icon: "mdiTagMinus",
-  //       label: "/Remove Tags",
-  //       onEnter: async () => {
-  //         const existingTags = new Set(
-  //           get(selectedMediaIds).flatMap(
-  //             mediaId =>
-  //               mediaController.media.find(m => m.id == mediaId)?.tags || []
-  //           )
-  //         )
-  //           .values()
-  //           .map(t => `${t} - ${tagsController.tagMap[t].tag}`)
-
-  //         const tagToRemove = await prompts.select(
-  //           "Select a tag to remove from the selected media",
-  //           [...existingTags]
-  //         )
-  //         if (tagToRemove) {
-  //           const [tagId] = tagToRemove.split(" - ")
-  //           await query("bulkRemoveTagsFromMedia", {
-  //             mediaIds: get(selectedMediaIds),
-  //             tagId: +tagId
-  //           })
-  //           for (const mediaId of get(selectedMediaIds)) {
-  //             const media = mediaController.media.find(m => m.id == mediaId)
-  //             if (media && media.tags.find(t => t == +tagId)) {
-  //               media.tags = media.tags.filter(t => t != +tagId)
-  //             }
-  //           }
-  //           mediaController.setMedia(mediaController.media)
-  //         }
-  //       }
-  //     }
-  //   )
-  // }
-
   return tags
 }
 

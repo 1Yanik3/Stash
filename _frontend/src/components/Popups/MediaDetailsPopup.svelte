@@ -6,9 +6,8 @@
   import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
   import TagInputField from "$components/Tags/TagInputField.svelte"
-  import {
-    removeTagFromMedia
-  } from "$lib/client/actions/mediaActions.svelte"
+  import { addTagToMedia } from "$lib/actions/addTagToMedia.svelte"
+  import { removeTagFromMedia } from "$lib/actions/removeTagFromMedia.svelte"
   import query from "$lib/client/call"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import { prompts } from "$lib/controllers/PromptController"
@@ -184,8 +183,12 @@
           <div>
             <TagInputField
               onselected={({ id }) => {
-                  if (!mediaController.visibleMedium) throw "Expected mediaController.visibleMedium to be defined"
-                  query("_server_bulkAddTagToMedia", {mediaIds: [mediaController.visibleMedium.id], tagIds: [id]})
+                if (!mediaController.visibleMedium)
+                  throw "Expected mediaController.visibleMedium to be defined"
+                query("_server_bulkAddTagToMedia", {
+                  mediaIds: [mediaController.visibleMedium.id],
+                  tagIds: [id]
+                })
               }}
               alwaysExpanded
               height={18}
@@ -200,7 +203,11 @@
               <TagChip
                 {tag}
                 show="both"
-                oncontextmenu={() => removeTagFromMedia(tag)}
+                oncontextmenu={() => {
+                  if (!mediaController.visibleMedium)
+                    throw "Expected mediaController.visibleMedium to be defined"
+                  removeTagFromMedia([mediaController.visibleMedium], tag)
+                }}
               />
             {/each}
           </div>
@@ -216,7 +223,11 @@
               <TagChip
                 tag={tag.id}
                 show="both"
-                onclick={() => addTagToMedia(tag.id)}
+                onclick={() => {
+                  if (!mediaController.visibleMedium)
+                    throw "Expected mediaController.visibleMedium to be defined"
+                  addTagToMedia([mediaController.visibleMedium], tag.id)
+                }}
               />
             {/if}
           {/each}
