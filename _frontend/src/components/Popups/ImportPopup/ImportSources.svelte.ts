@@ -20,11 +20,11 @@ export abstract class ImportSource {
     constructor(
         public params: {
             filename: string
-            size: number
+            size?: number
         }
     ) {
         this.filename = params.filename
-        this.size = params.size
+        this.size = params.size || 0
     }
 
     async process(p: importParams): Promise<void> {
@@ -47,11 +47,10 @@ export class UploadImportSource extends ImportSource {
     constructor(file: File) {
         if (!file) throw new Error("File is required")
         if (!file.name) throw new Error("File name is required")
-        if (!file.size) throw new Error("File size is required")
 
         super({
             filename: file.name,
-            size: file.size
+            size: file.size || 0
         })
 
         this.file = file
@@ -86,12 +85,21 @@ export class UploadImportSource extends ImportSource {
 export class ImportablesImportSource extends ImportSource {
     public icon = "mdiImport" as const
 
-    constructor(filename: string, size: number) {
-        super({ filename, size })
+    constructor(filename: string) {
+        super({ filename })
     }
 
     async import(p: importParams): Promise<void> {
-        throw new Error("Method not implemented.")
+        await fetch(
+            `https://stash.hera.lan/api/cluster/${page.data.cluster.id}/import`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    filename: this.filename,
+                    selectedTags: p.tags.map(t => t.id)
+                })
+            }
+        )
     }
 }
 

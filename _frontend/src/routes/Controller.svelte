@@ -9,7 +9,6 @@
     import ImportPopup from "$components/Popups/ImportPopup/ImportPopup.svelte"
     import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
     import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
-    import QuickActionsImport from "$components/Popups/QuickSwitcher/QuickActions_Import.svelte"
     import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
     import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
     import { isMobile } from "$lib/context"
@@ -81,7 +80,6 @@
     }
 
     const popups = {
-        "Quick Actions Import": QuickActionsImport,
         "Quick Switch": QuickSwitch,
         Shortcuts: ShortcutPopup,
         "Create Story": CreateStoryPopup,

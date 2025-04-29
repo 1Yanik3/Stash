@@ -26,5 +26,5 @@ const prisma = new PrismaClient({
 export default prisma
 
 prisma.$on("query", async e => {
-  await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
+    await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
 })

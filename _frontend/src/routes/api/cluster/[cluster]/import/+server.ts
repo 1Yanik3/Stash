@@ -3,6 +3,8 @@ import fs from "fs/promises"
 import { json } from "@sveltejs/kit"
 import mime from "mime-types"
 
+import { createPostUploadJobs } from "$lib/server/actions/create-post-upload-jobs"
+import { createPreUploadMediaEntry } from "$lib/server/actions/create-pre-upload-media-entry"
 import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
@@ -22,72 +24,19 @@ export const POST: RequestHandler = async ({ params, request }) => {
         selectedTags
     }: { filename: string; selectedTags: number[] } = await request.json()
 
-    const { id: mediaId, type } = await prisma.media.create({
-        data: {
-            name: filename,
-            type: mime.lookup(`${importFolderPath}/${filename}`) || "Unknown",
-            date: new Date(),
-            height: 0,
-            width: 0,
-            cluster: {
-                connect: {
-                    id: +params.cluster
-                }
-            }
-        }
-    })
+    const type = mime.lookup(`${importFolderPath}/${filename}`) || "Unknown"
 
-    for (const tagId of selectedTags) {
-        await prisma.tags.update({
-            where: {
-                id: tagId
-            },
-            data: {
-                media: {
-                    connect: {
-                        id: mediaId
-                    }
-                }
-            }
-        })
-    }
+    const mediaId = await createPreUploadMediaEntry({
+        name: filename,
+        type,
+        clusterName: params.cluster,
+        tagIds: selectedTags
+    })
 
     await fs.copyFile(`${importFolderPath}/${filename}`, `./media/${mediaId}`)
     await fs.rm(`${importFolderPath}/${filename}`)
 
-    await prisma.job.create({
-        data: {
-            name: "updateMediaMetadataFromFile",
-            data: JSON.stringify({ id: mediaId, initial: true }),
-            priority: 15
-        }
-    })
-
-    await prisma.job.create({
-        data: {
-            name: "createMediaThumbnail",
-            data: JSON.stringify({ id: mediaId }),
-            priority: 10
-        }
-    })
-
-    if (type.startsWith("video")) {
-        await prisma.job.create({
-            data: {
-                name: "createMediaSeekThumbnails",
-                data: JSON.stringify({ id: mediaId })
-            }
-        })
-    }
-
-    if (type.startsWith("image")) {
-        await prisma.job.create({
-            data: {
-                name: "attemptManualTagging",
-                data: JSON.stringify({ id: mediaId })
-            }
-        })
-    }
+    await createPostUploadJobs(mediaId, type)
 
     return new Response()
 }

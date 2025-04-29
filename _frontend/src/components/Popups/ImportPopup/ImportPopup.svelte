@@ -5,6 +5,7 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import Key from "$components/elements/Key.svelte"
+    import FuzzyTemplate from "$components/FuzzyTemplate.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
     import TagInputField from "$components/Tags/TagInputField.svelte"
     import query from "$lib/client/call"
@@ -13,6 +14,7 @@
     import { controller } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
 
+    import ImportPopupImportablesSelection from "./ImportPopupImportablesSelection.svelte"
     import {
         UploadImportSource,
         type ImportSource
@@ -21,6 +23,7 @@
     let queue: ImportSource[] = $state([])
     let tags: TagExtended[] = $state(mediaController.selectedTags)
 
+    let mainPopupContent: "home" | "importables" = $state("home")
     let fileInputElement: HTMLInputElement
 </script>
 
@@ -68,7 +71,13 @@
                     icon="mdiUpload"
                     onclick={() => fileInputElement.click()}>Upload</Button
                 >
-                <Button card icon="mdiImport" disabled>Import</Button>
+                <Button
+                    card
+                    icon="mdiImport"
+                    onclick={() => (mainPopupContent = "importables")}
+                >
+                    Import
+                </Button>
                 <Button card icon="mdiTransmissionTower" disabled
                     >Transfer</Button
                 >
@@ -87,7 +96,9 @@
                         <Icon name={queueEntry.icon} size={0.9} />
                         <span>
                             {queueEntry.filename}
-                            ({prettyBytes(queueEntry.size)})
+                            {#if queueEntry.size}
+                                ({prettyBytes(queueEntry.size)})
+                            {/if}
                         </span>
                         <Button
                             noMargin
@@ -102,7 +113,7 @@
         </div>
     {/snippet}
 
-    <main>
+    {#if mainPopupContent === "home"}
         <div class="tags">
             <div class="tagsHeader">
                 <b>Tags</b>
@@ -133,7 +144,18 @@
                 {/if}
             </div>
         </div>
-    </main>
+    {:else if mainPopupContent === "importables"}
+        <Button
+            card
+            icon="mdiArrowLeft"
+            onclick={() => (mainPopupContent = "home")}
+        >
+            Back
+        </Button>
+
+        <ImportPopupImportablesSelection bind:queue />
+    {/if}
+    <main></main>
 
     {#snippet actionsRight()}
         <Button
