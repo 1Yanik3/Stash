@@ -1,5 +1,3 @@
-import { removeTagsFromMedias } from "$lib/actions/removeTagFromMedia.svelte"
-
 import * as credentials from "./credentials"
 import * as gks from "./gks"
 import * as jobs from "./jobs"

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
-  import { addTagToMedia } from "$lib/actions/addTagToMedia.svelte"
-  import { removeTagFromMedia } from "$lib/actions/removeTagFromMedia.svelte"
+  import { addTagToMedia } from "$lib/client/actions/addTagToMedia.svelte"
+  import { removeTagFromMedia } from "$lib/client/actions/removeTagFromMedia.svelte"
   import varsSvelte from "$lib/vars.svelte"
 
   import Button from "./elements/Button.svelte"

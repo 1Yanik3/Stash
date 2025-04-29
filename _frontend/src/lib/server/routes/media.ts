@@ -25,8 +25,6 @@ export const renameNameOfMedia = async (d: {
   })
 }
 
-
-
 export const addTagsToMedias = async (d: {
   mediaIds: string[]
   tagIds: number[]
@@ -49,7 +47,6 @@ export const addTagsToMedias = async (d: {
     }
   }
 }
-
 
 export const removeTagsFromMedias = async (d: {
   mediaIds: string[]

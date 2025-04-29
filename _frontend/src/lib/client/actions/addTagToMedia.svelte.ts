@@ -4,7 +4,7 @@ import {
 } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
 
-import query from "../client/call"
+import query from "../call"
 
 export const addTagToMedia = async (
   medias: MediaType[],

@@ -3,7 +3,7 @@
 
   import { page } from "$app/stores"
   import Icon from "$components/elements/Icon.svelte"
-  import imageRetry from "$lib/actions/imageRetry.svelte"
+  import imageRetry from "$lib/client/actions/imageRetry.svelte"
   import { setSpecialFilterAttribute } from "$lib/client/actions/mediaActions.svelte"
   import { SUBJECT_TYPES } from "$lib/constants"
   import {
