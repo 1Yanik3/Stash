@@ -4,7 +4,11 @@
   import Button from "$components/elements/Button.svelte"
   import Select from "$components/elements/Select.svelte"
   import { isMobile } from "$lib/context"
-  import { controller, settings, windowControlsSpacerVisible } from "$lib/stores.svelte"
+  import {
+    controller,
+    settings,
+    windowControlsSpacerVisible
+  } from "$lib/stores.svelte"
   import varsSvelte from "$lib/vars.svelte"
 
   import type { PageData } from "./$types"
@@ -35,8 +39,8 @@
       icon="mdiCog"
       href="/settings/general"
       oncontextmenu={e => {
-          e.preventDefault()
-          $controller.setPopup("Quick Switch")
+        e.preventDefault()
+        $controller.setPopup("Quick Switch")
       }}
       active={$page.url.pathname.startsWith("/settings")}
       noMargin

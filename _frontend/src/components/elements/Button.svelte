@@ -174,10 +174,11 @@
     justify-content: space-between;
 
     padding: 0.5em 0.75em;
-    outline: 1px solid transparent;
     border-radius: var(--border-radius);
 
     text-decoration: none;
+
+    outline: 1px solid transparent;
 
     transition:
       outline 100ms,
@@ -193,13 +194,13 @@
 
     &.card {
       margin: 0.25em;
+      background: var(--color-dark-level-2);
       outline: 1px solid var(--border-color-1);
       outline-offset: calc(var(--outline-size) * -1);
-      background: var(--color-dark-level-2);
 
       &:hover {
-        outline: 1px solid var(--border-color-1-hover) !important;
         background: var(--color-dark-level-2-hover) !important;
+        outline: 1px solid var(--border-color-1-hover) !important;
       }
     }
 
@@ -209,23 +210,24 @@
     }
 
     &.highlighted {
+      background: var(--color-dark-level-3);
       outline: 1px solid var(--border-color-1);
       outline-offset: calc(var(--outline-size) * -1);
-      background: var(--color-dark-level-3);
 
       @media (hover: hover) and (pointer: fine) {
+
         &:hover {
+          background: var(--color-dark-level-2-hover);
           outline: 1px solid var(--border-color-1-hover);
           outline-offset: calc(var(--outline-size) * -1);
-          background: var(--color-dark-level-2-hover);
         }
       }
     }
 
     &.isDraggingOver {
+      background: var(--color-dark-level-2-hover);
       outline: 1px solid var(--border-color-1-hover);
       outline-offset: calc(var(--outline-size) * -1);
-      background: var(--color-dark-level-2-hover);
     }
 
     .section {
@@ -254,31 +256,34 @@
     }
 
     &.right {
+
       &,
       .section {
         flex-direction: row-reverse;
       }
     }
 
+    &.active,
+    &.active:hover {
+      background: var(--accent-background);
+      outline: var(--outline-size) solid var(--accent);
+      outline-offset: calc(var(--outline-size) * -1);
+    }
+
     @media (hover: hover) and (pointer: fine) {
+
       &:hover {
+
         &:not(.transparentButton) {
+          background: var(--color-dark-level-2);
           outline: 1px solid var(--border-color-1);
           outline-offset: calc(var(--outline-size) * -1);
-          background: var(--color-dark-level-2);
         }
 
         &.transparentButton {
           transform: scale(1.1);
         }
       }
-    }
-
-    &.active,
-    &.active:hover {
-      outline: var(--outline-size) solid var(--accent);
-      outline-offset: calc(var(--outline-size) * -1);
-      background: var(--accent-background);
     }
   }
 </style>

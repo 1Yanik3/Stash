@@ -1,41 +1,38 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
-
   import Icon from "$components/elements/Icon.svelte"
   import TagChip from "$components/Tags/TagChip.svelte"
   import {
     mediaController,
     type MediaType
   } from "$lib/controllers/MediaController.svelte"
+  import { selectedMediaIds } from "$lib/stores.svelte"
 
   import GridThumbnail from "./GridThumbnail.svelte"
 
-  const dispatch = createEventDispatcher()
-
   interface Props {
-    selectedMedia: string[]
     medium: MediaType
     parent?: boolean
     sub?: boolean
+    onclick?: (e: MouseEvent) => void
   }
 
   let {
-    selectedMedia = $bindable(),
     medium,
     parent = false,
-    sub = false
+    sub = false,
+    onclick = undefined
   }: Props = $props()
 
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
       mediaController.visibleMedium = null
-      if (selectedMedia.includes(medium.id))
-        selectedMedia = selectedMedia.filter(j => j != medium.id)
-      else selectedMedia = [...selectedMedia, medium.id]
+      if ($selectedMediaIds.includes(medium.id))
+        selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
+      else selectedMediaIds.set([...$selectedMediaIds, medium.id])
     } else {
-      selectedMedia = []
+      selectedMediaIds.set([])
       if (parent) {
-        dispatch("click")
+        onclick?.(e)
       } else {
         mediaController.visibleMedium = medium
       }
@@ -46,7 +43,7 @@
 <main
   onmouseup={e => leftClick(e)}
   class:active={mediaController.visibleMedium == medium && !parent}
-  class:selected={selectedMedia.includes(medium.id)}
+  class:selected={$selectedMediaIds.includes(medium.id)}
   class:sub
 >
   <div class="thumb">

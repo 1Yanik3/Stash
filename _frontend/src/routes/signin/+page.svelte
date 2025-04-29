@@ -27,7 +27,7 @@
   }
 </script>
 
-<Popup hideHeader>
+<Popup hideHeader disableMobileFullscreen>
   <h1>Sign in to Stash</h1>
 
   <div class="inputs">

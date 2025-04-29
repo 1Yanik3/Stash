@@ -21,8 +21,7 @@
   $effect(() => {
     if (mediaController.visibleMedium && client)
       client.play(mediaController.visibleMedium)
-    else if (!mediaController.visibleMedium && client)
-      client.stop()
+    else if (!mediaController.visibleMedium && client) client.stop()
   })
 </script>
 
@@ -38,13 +37,30 @@
         <Icon name="mdiCastConnected" size={0.8} />
       </span>
     {:else}
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
       <span
         onclick={async () => {
           console.info("connect")
           const address = await prompts.text(
-            "What ip address should I connect to?"
+            "What ip address should I connect to?",
+            localStorage.getItem("lastConnectedAddress") || ""
           )
-          if (address) client = new FCastController(address)
+          if (address) {
+            localStorage.setItem("lastConnectedAddress", address)
+          }
+          const remoteAddress = await prompts.text(
+            "What addresss does this client use to connect to stash?",
+            localStorage.getItem("lastConnectedRemoteAddress") || ""
+          )
+          if (remoteAddress) {
+            localStorage.setItem("lastConnectedRemoteAddress", remoteAddress)
+          }
+          if (address)
+            client = new FCastController(
+              address,
+              remoteAddress || "https://stash.any.gay"
+            )
         }}
       >
         <Icon name="mdiCastOff" size={0.8} />
@@ -213,6 +229,8 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     border-left: 1px solid var(--border-color-1);
+
+    background: var(--color-dark-level-1);
 
     section.first {
       align-self: start;

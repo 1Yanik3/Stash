@@ -119,12 +119,13 @@
   on:click={e => leftClick(e.detail)}
   once
   top={500}
-  style={`position: relative`}
+  style={`position: relative; border-radius: 3px; overflow: hidden`}
 >
   {#snippet children({ intersecting })}
     <div
       ondragstart={dragStartHandler}
       bind:this={element}
+      class:selectedExists={$selectedMediaIds.length != 0}
       class:selected={$selectedMediaIds.includes(medium.id)}
       class:rigidAspectRatio
       onmousemove={processSeeking}
@@ -172,7 +173,6 @@
 
                 width: 100%;
                 height: 100%;
-                border-radius: 5px;
 
                 object-fit: cover;
             "
@@ -218,7 +218,6 @@
 
     width: 100%;
     height: 100%;
-    border-radius: 5px;
 
     box-shadow:
       rgba(0, 0, 0, 0.2) 0px 1px 3px 0px,
@@ -231,10 +230,12 @@
     &.active {
       transform: scale(1.04);
     }
+  }
 
+  div:not(.selected) {
     @media (hover: hover) and (pointer: fine) {
 
-      &:not(.disableZoom):hover {
+      img:not(.disableZoom):hover {
         transform: scale(1.04);
         filter: brightness(0.85);
       }
@@ -244,13 +245,24 @@
   div {
     user-select: none;
     scroll-margin: 11px;
-
-    -webkit-tap-highlight-color: transparent;
     // height: calc(100% - 2px);
     // position: relative;
 
-    &.selected img {
-      outline: 3px solid hsl(0, 0%, 36%);
+    filter: grayscale(0);
+
+    -webkit-tap-highlight-color: transparent;
+
+    &.selectedExists {
+      filter: grayscale(1);
+    }
+
+    &.selected {
+      filter: none;
+
+      img {
+        outline: 3px solid var(--accent);
+        outline-offset: -3px;
+      }
     }
 
     &.rigidAspectRatio {

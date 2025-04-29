@@ -107,8 +107,8 @@
         icon="mdiCog"
         href="/settings/general"
         oncontextmenu={e => {
-            e.preventDefault()
-            $controller.setPopup("Quick Switch")
+          e.preventDefault()
+          $controller.setPopup("Quick Switch")
         }}
         styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
       />

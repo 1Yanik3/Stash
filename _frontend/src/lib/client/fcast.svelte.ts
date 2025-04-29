@@ -30,6 +30,7 @@ enum Opcode {
 export class FCastController {
   private currentWebSocket: WebSocket | null = null
   public playbackState: PlaybackState | null = $state(null)
+  public addressToReachStash: string = $state("https://stash.any.gay")
   private playbackStateUpdateTime: number | null = null
   private selectedHost: string | null = null
 
@@ -45,9 +46,10 @@ export class FCastController {
   private bytesRead = 0
   private buffer = new Uint8Array(this.MAXIMUM_PACKET_LENGTH)
 
-  constructor(ip: string, port: number = 46898) {
+  constructor(ip: string, remoteAddress: string, port: number = 46898) {
     const wsUrl = `${get(page).data.serverURL}/ws/${ip}/${port}`
     this.selectedHost = `${ip}:${port}`
+    this.addressToReachStash = remoteAddress.trim()
     this.closeCurrentWebSocket()
 
     this.currentWebSocket = new WebSocket(wsUrl)
@@ -65,7 +67,7 @@ export class FCastController {
     // TODO: Make configurable and dynamic
     this.sendWebSocketPacket(Opcode.Play, {
       container: media.type,
-      url: `https://stash.any.gay/file/${media.id}?session=udhmunznya`
+      url: `${this.addressToReachStash}/file/${media.id}?session=udhmunznya`
     })
   }
 

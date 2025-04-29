@@ -75,65 +75,65 @@ const actions = async () => {
     }
   ]
 
-  if (get(selectedMediaIds).length) {
-    tags.push(
-      {
-        icon: "mdiTagPlus",
-        label: "/Add Tags",
-        onEnter: async () => {
-          const tagToAdd = await prompts.tag(
-            "Select a tag to add to the selected media"
-          )
-          if (tagToAdd?.id) {
-            await query("bulkAddTagsToMedia", {
-              mediaIds: get(selectedMediaIds),
-              tagId: tagToAdd.id
-            })
-            for (const mediaId of get(selectedMediaIds)) {
-              const media = mediaController.media.find(m => m.id == mediaId)
-              if (media && media.tags.find(t => t == tagToAdd.id)) {
-                media.tags = [...media.tags, tagToAdd.id]
-              }
-            }
-            mediaController.setMedia(mediaController.media)
-          }
-        }
-      },
-      {
-        icon: "mdiTagMinus",
-        label: "/Remove Tags",
-        onEnter: async () => {
-          const existingTags = new Set(
-            get(selectedMediaIds).flatMap(
-              mediaId =>
-                mediaController.media.find(m => m.id == mediaId)?.tags || []
-            )
-          )
-            .values()
-            .map(t => `${t} - ${tagsController.tagMap[t].tag}`)
+  // if (get(selectedMediaIds).length) {
+  //   tags.push(
+  //     {
+  //       icon: "mdiTagPlus",
+  //       label: "/Add Tags",
+  //       onEnter: async () => {
+  //         const tagToAdd = await prompts.tag(
+  //           "Select a tag to add to the selected media"
+  //         )
+  //         if (tagToAdd?.id) {
+  //           await query("bulkAddTagsToMedia", {
+  //             mediaIds: get(selectedMediaIds),
+  //             tagId: tagToAdd.id
+  //           })
+  //           for (const mediaId of get(selectedMediaIds)) {
+  //             const media = mediaController.media.find(m => m.id == mediaId)
+  //             if (media && media.tags.find(t => t == tagToAdd.id)) {
+  //               media.tags = [...media.tags, tagToAdd.id]
+  //             }
+  //           }
+  //           mediaController.setMedia(mediaController.media)
+  //         }
+  //       }
+  //     },
+  //     {
+  //       icon: "mdiTagMinus",
+  //       label: "/Remove Tags",
+  //       onEnter: async () => {
+  //         const existingTags = new Set(
+  //           get(selectedMediaIds).flatMap(
+  //             mediaId =>
+  //               mediaController.media.find(m => m.id == mediaId)?.tags || []
+  //           )
+  //         )
+  //           .values()
+  //           .map(t => `${t} - ${tagsController.tagMap[t].tag}`)
 
-          const tagToRemove = await prompts.select(
-            "Select a tag to remove from the selected media",
-            [...existingTags]
-          )
-          if (tagToRemove) {
-            const [tagId] = tagToRemove.split(" - ")
-            await query("bulkRemoveTagsFromMedia", {
-              mediaIds: get(selectedMediaIds),
-              tagId: +tagId
-            })
-            for (const mediaId of get(selectedMediaIds)) {
-              const media = mediaController.media.find(m => m.id == mediaId)
-              if (media && media.tags.find(t => t == +tagId)) {
-                media.tags = media.tags.filter(t => t != +tagId)
-              }
-            }
-            mediaController.setMedia(mediaController.media)
-          }
-        }
-      }
-    )
-  }
+  //         const tagToRemove = await prompts.select(
+  //           "Select a tag to remove from the selected media",
+  //           [...existingTags]
+  //         )
+  //         if (tagToRemove) {
+  //           const [tagId] = tagToRemove.split(" - ")
+  //           await query("bulkRemoveTagsFromMedia", {
+  //             mediaIds: get(selectedMediaIds),
+  //             tagId: +tagId
+  //           })
+  //           for (const mediaId of get(selectedMediaIds)) {
+  //             const media = mediaController.media.find(m => m.id == mediaId)
+  //             if (media && media.tags.find(t => t == +tagId)) {
+  //               media.tags = media.tags.filter(t => t != +tagId)
+  //             }
+  //           }
+  //           mediaController.setMedia(mediaController.media)
+  //         }
+  //       }
+  //     }
+  //   )
+  // }
 
   return tags
 }

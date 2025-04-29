@@ -2,6 +2,7 @@
   import DropFile from "$components/DropFile.svelte"
   import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
   import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
+  import MenuBar from "$components/MenuBar.svelte"
   import { isMobile } from "$lib/context"
   import { mediaController } from "$lib/controllers/MediaController.svelte"
   import {
@@ -29,6 +30,7 @@
   {#if !$isFullscreen}
     <div class="center">
       <section id="imageGallerySection" {onscroll}>
+        <MenuBar />
         <DropFile>
           <ImageGrid />
         </DropFile>
@@ -66,7 +68,6 @@
         flex-grow: 1;
 
         min-width: 350px;
-        padding: 1em;
       }
     }
 

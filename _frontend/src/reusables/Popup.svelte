@@ -1,22 +1,23 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { onMount, type Snippet } from "svelte"
   import { fade, scale } from "svelte/transition"
 
   import Icon from "$components/elements/Icon.svelte"
   import { isMobile } from "$lib/context"
 
-  import { controller, settings } from "../lib/stores.svelte"
+  import { controller } from "../lib/stores.svelte"
 
   interface Props {
     title?: string
     hideHeader?: boolean
     bottomSheet?: boolean
     fullscreen?: boolean
+    disableMobileFullscreen?: boolean
     onclose?: any
-    headerElement?: import("svelte").Snippet
-    actionsLeft?: import("svelte").Snippet
-    actionsRight?: import("svelte").Snippet
-    children?: import("svelte").Snippet
+    headerElement?: Snippet
+    actionsLeft?: Snippet
+    actionsRight?: Snippet
+    children?: Snippet
   }
 
   let {
@@ -24,6 +25,7 @@
     hideHeader = false,
     bottomSheet = false,
     fullscreen = false,
+    disableMobileFullscreen = false,
     onclose = () => {},
     headerElement,
     actionsLeft,
@@ -59,7 +61,7 @@
     onclose()
     $controller.setPopup(null)
   }}
-  class:mobile={isMobile.current}
+  class:mobile={isMobile.current && !disableMobileFullscreen}
   class:fullscreen
 >
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -68,7 +70,7 @@
     class:bottomSheet
     onclick={e => e.stopPropagation()}
   >
-    {#if !hideHeader || isMobile.current}
+    {#if !hideHeader || (isMobile.current && !disableMobileFullscreen)}
       <div id="header">
         {#if bottomSheet}
           <!-- svelte-ignore element_invalid_self_closing_tag -->
