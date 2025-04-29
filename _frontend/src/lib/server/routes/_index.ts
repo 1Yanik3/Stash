@@ -1,3 +1,5 @@
+import { _server_bulkAddTagToMedia } from "$lib/actions/addTagToMedia.svelte"
+
 import * as credentials from "./credentials"
 import * as gks from "./gks"
 import * as jobs from "./jobs"
@@ -13,5 +15,6 @@ export default {
   ...gks,
   ...stories,
   ...jobs,
-  ...credentials
+  ...credentials,
+  _server_bulkAddTagToMedia
 }

@@ -7,7 +7,6 @@
   import Icon from "$components/elements/Icon.svelte"
   import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
   import {
-    addTagToMedia,
     removeTagFromMedia
   } from "$lib/client/actions/mediaActions.svelte"
   import query from "$lib/client/call"
@@ -127,7 +126,10 @@
         <TagChip {tag} oncontextmenu={() => removeTagFromMedia(tag)} />
       {/each}
       {#if pageData.cluster.type != "collection" || mediaController.visibleMedium.tags.length != 1}
-        <TagInputField onselected={({ id }) => addTagToMedia(id)} />
+        <TagInputField onselected={({ id }) => {
+            if (!mediaController.visibleMedium) throw "Expected mediaController.visibleMedium to be defined"
+            query("_server_bulkAddTagToMedia", {mediaIds: [mediaController.visibleMedium.id], tagIds: [id]})
+        }} />
       {/if}
     </div>
 

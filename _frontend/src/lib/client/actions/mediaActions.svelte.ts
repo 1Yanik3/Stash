@@ -14,20 +14,6 @@ export const removeTagFromMedia = (tagId: number) => {
     .catch(console.error)
 }
 
-export const addTagToMedia = (tagId: number) => {
-  fetch(`/api/media/${mediaController.visibleMedium?.id}/tag/${tagId}`, {
-    method: "PUT"
-  })
-    .then(() => {
-      if (!mediaController.visibleMedium) return
-      mediaController.visibleMedium.tags = [
-        ...mediaController.visibleMedium.tags,
-        tagId
-      ]
-    })
-    .catch(console.error)
-}
-
 export const setSpecialFilterAttribute = (medium: Media, newValue: string) => {
   const oldValue = medium.specialFilterAttribute
   medium.specialFilterAttribute = newValue

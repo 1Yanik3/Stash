@@ -20,7 +20,9 @@ class MediaController {
       return
     }
 
-    $effect((_ = [this.filters]) => {
+    $effect(() => {
+      if (!this.filters) {
+      }
       console.group("%cUpdating via effect", "color: grey; font-weight: normal")
       this.updateMedia()
       console.groupEnd()

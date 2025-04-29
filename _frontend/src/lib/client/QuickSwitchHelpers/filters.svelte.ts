@@ -4,7 +4,6 @@ import { goto } from "$app/navigation"
 import { page } from "$app/stores"
 import { SUBJECT_TYPES } from "$lib/constants"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
-import { prompts } from "$lib/controllers/PromptController"
 import {
   default as tagsController,
   type TagExtended
@@ -77,28 +76,6 @@ const actions = async () => {
 
   // if (get(selectedMediaIds).length) {
   //   tags.push(
-  //     {
-  //       icon: "mdiTagPlus",
-  //       label: "/Add Tags",
-  //       onEnter: async () => {
-  //         const tagToAdd = await prompts.tag(
-  //           "Select a tag to add to the selected media"
-  //         )
-  //         if (tagToAdd?.id) {
-  //           await query("bulkAddTagsToMedia", {
-  //             mediaIds: get(selectedMediaIds),
-  //             tagId: tagToAdd.id
-  //           })
-  //           for (const mediaId of get(selectedMediaIds)) {
-  //             const media = mediaController.media.find(m => m.id == mediaId)
-  //             if (media && media.tags.find(t => t == tagToAdd.id)) {
-  //               media.tags = [...media.tags, tagToAdd.id]
-  //             }
-  //           }
-  //           mediaController.setMedia(mediaController.media)
-  //         }
-  //       }
-  //     },
   //     {
   //       icon: "mdiTagMinus",
   //       label: "/Remove Tags",

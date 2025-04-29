@@ -1,25 +1,5 @@
 import prisma from "../prisma"
 
-export const bulkAddTagsToMedia = async (d: {
-  mediaIds: string[]
-  tagId: number
-}) => {
-  for (const mediaId of d.mediaIds) {
-    await prisma.media.update({
-      where: {
-        id: mediaId
-      },
-      data: {
-        tags: {
-          connect: {
-            id: d.tagId
-          }
-        }
-      }
-    })
-  }
-}
-
 export const bulkRemoveTagsFromMedia = async (d: {
   mediaIds: string[]
   tagId: number

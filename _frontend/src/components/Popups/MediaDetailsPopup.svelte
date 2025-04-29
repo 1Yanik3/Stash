@@ -7,7 +7,6 @@
   import TagChip from "$components/Tags/TagChip.svelte"
   import TagInputField from "$components/Tags/TagInputField.svelte"
   import {
-    addTagToMedia,
     removeTagFromMedia
   } from "$lib/client/actions/mediaActions.svelte"
   import query from "$lib/client/call"
@@ -184,7 +183,10 @@
           <b>Tags</b>
           <div>
             <TagInputField
-              onselected={({ id }) => addTagToMedia(id)}
+              onselected={({ id }) => {
+                  if (!mediaController.visibleMedium) throw "Expected mediaController.visibleMedium to be defined"
+                  query("_server_bulkAddTagToMedia", {mediaIds: [mediaController.visibleMedium.id], tagIds: [id]})
+              }}
               alwaysExpanded
               height={18}
             />

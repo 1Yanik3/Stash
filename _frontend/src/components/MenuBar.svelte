@@ -1,42 +1,47 @@
 <script lang="ts">
   import { invalidateAll } from "$app/navigation"
-  import { selectedMediaIds } from "$lib/stores.svelte"
+  import { addTagToMedia } from "$lib/actions/addTagToMedia.svelte"
+  import varsSvelte from "$lib/vars.svelte"
 
   import Button from "./elements/Button.svelte"
 
   let clientWidth: number
 </script>
 
-{#if $selectedMediaIds.length}
+{#if varsSvelte.selectedMedias.length}
   <main style="width: {clientWidth - 8}px">
     <Button
       card
       icon="mdiGroup"
-      disabled={$selectedMediaIds.length <= 1}
+      disabled={varsSvelte.selectedMedias.length <= 1}
       onclick={() => {
-        // TODO: Allow grouping of media with UI
         fetch(`/api/group-together`, {
           method: "POST",
-          body: JSON.stringify($selectedMediaIds)
+          // TODO: rework this completely
+          body: JSON.stringify(varsSvelte.selectedMedias.map(media => media.id))
         }).then(() => invalidateAll())
       }}>Group</Button
     >
 
-    <Button card icon="mdiUngroup" disabled={$selectedMediaIds.length > 1}>
+    <Button
+      card
+      icon="mdiUngroup"
+      disabled={varsSvelte.selectedMedias.length > 1}
+    >
       Ungroup
     </Button>
 
     <Button
       noMargin
-      onclick={() => selectedMediaIds.set([])}
+      onclick={() => (varsSvelte.selectedMedias = [])}
       icon="mdiSelectionOff"
     >
-      Clear Selection ({$selectedMediaIds.length})
+      Clear Selection ({varsSvelte.selectedMedias.length})
     </Button>
     <div style="flex-grow: 1"></div>
     <Button card icon="mdiPencil">Rename</Button>
-    <Button card icon="mdiTagPlus">Add Tags</Button>
-    <Button card icon="mdiTagMinus">Remove Tags</Button>
+    <Button card icon="mdiTagPlus" onclick={addTagToMedia}>Add Tag</Button>
+    <Button card icon="mdiTagMinus">Remove Tag</Button>
   </main>
   <div style="height: 50px" bind:clientWidth></div>
 {/if}

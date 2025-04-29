@@ -10,7 +10,6 @@
     mediaController,
     type MediaType
   } from "$lib/controllers/MediaController.svelte"
-  import { selectedMediaIds } from "$lib/stores.svelte"
   import vars from "$lib/vars.svelte"
   import varsSvelte from "$lib/vars.svelte"
   import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
@@ -54,11 +53,13 @@
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
       mediaController.visibleMedium = null
-      if ($selectedMediaIds.includes(medium.id))
-        selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
-      else selectedMediaIds.set([...$selectedMediaIds, medium.id])
+      if (varsSvelte.selectedMedias.includes(medium))
+        varsSvelte.selectedMedias = varsSvelte.selectedMedias.filter(
+          j => j != medium
+        )
+      else varsSvelte.selectedMedias = [...varsSvelte.selectedMedias, medium]
     } else {
-      selectedMediaIds.set([])
+      varsSvelte.selectedMedias = []
       mediaController.visibleMedium = medium
     }
   }
@@ -90,7 +91,7 @@
   let isBeingHovered = $state(false)
 
   const captureKeydownEventWhenHovering = (e: KeyboardEvent) => {
-    if (isBeingHovered) {
+    if (isBeingHovered && varsSvelte.isInSubjectEditingMode) {
       let newValue: (typeof SUBJECT_TYPES)[number]["value"] | null = null
 
       if (e.key == "1") newValue = "solo"
@@ -125,8 +126,8 @@
     <div
       ondragstart={dragStartHandler}
       bind:this={element}
-      class:selectedExists={$selectedMediaIds.length != 0}
-      class:selected={$selectedMediaIds.includes(medium.id)}
+      class:selectedExists={varsSvelte.selectedMedias.length != 0}
+      class:selected={varsSvelte.selectedMedias.includes(medium)}
       class:rigidAspectRatio
       onmousemove={processSeeking}
       ontouchmove={processSeeking}

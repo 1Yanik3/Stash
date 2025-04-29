@@ -5,7 +5,7 @@
     mediaController,
     type MediaType
   } from "$lib/controllers/MediaController.svelte"
-  import { selectedMediaIds } from "$lib/stores.svelte"
+  import varsSvelte from "$lib/vars.svelte"
 
   import GridThumbnail from "./GridThumbnail.svelte"
 
@@ -26,11 +26,13 @@
   const leftClick = (e: MouseEvent) => {
     if (e.metaKey) {
       mediaController.visibleMedium = null
-      if ($selectedMediaIds.includes(medium.id))
-        selectedMediaIds.set($selectedMediaIds.filter(j => j != medium.id))
-      else selectedMediaIds.set([...$selectedMediaIds, medium.id])
+      if (varsSvelte.selectedMedias.includes(medium))
+        varsSvelte.selectedMedias = varsSvelte.selectedMedias.filter(
+          j => j != medium
+        )
+      else varsSvelte.selectedMedias = [...varsSvelte.selectedMedias, medium]
     } else {
-      selectedMediaIds.set([])
+      varsSvelte.selectedMedias = []
       if (parent) {
         onclick?.(e)
       } else {
@@ -43,7 +45,7 @@
 <main
   onmouseup={e => leftClick(e)}
   class:active={mediaController.visibleMedium == medium && !parent}
-  class:selected={$selectedMediaIds.includes(medium.id)}
+  class:selected={varsSvelte.selectedMedias.includes(medium)}
   class:sub
 >
   <div class="thumb">
