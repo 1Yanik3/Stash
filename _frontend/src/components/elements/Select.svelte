@@ -160,6 +160,7 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
+
             &:hover {
                 filter: brightness(110%);
             }

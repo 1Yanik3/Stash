@@ -121,6 +121,7 @@
         }
 
         &:not(:hover) {
+
             .floating {
                 display: none;
             }

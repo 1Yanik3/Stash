@@ -210,6 +210,7 @@
         }
 
         &:not(.fullscreen) {
+
             section {
                 border: 1px solid var(--border-color-1);
                 border-radius: 0.5em;
@@ -220,6 +221,7 @@
         }
 
         &.mobile {
+
             section {
                 display: grid;
                 align-content: start;
@@ -242,6 +244,7 @@
         }
 
         &.fullscreen {
+
             section {
                 display: grid;
                 grid-template-rows: auto 1fr;

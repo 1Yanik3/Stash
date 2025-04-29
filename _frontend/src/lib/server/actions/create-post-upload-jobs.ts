@@ -13,7 +13,8 @@ export const createPostUploadJobs = async (mediaId: string, type: string) => {
         data: {
             name: "createMediaThumbnail",
             data: JSON.stringify({ id: mediaId }),
-            priority: 10
+            priority: 10,
+            waitFor: "updateMediaMetadataFromFile"
         }
     })
 
@@ -21,7 +22,8 @@ export const createPostUploadJobs = async (mediaId: string, type: string) => {
         await prisma.job.create({
             data: {
                 name: "createMediaSeekThumbnails",
-                data: JSON.stringify({ id: mediaId })
+                data: JSON.stringify({ id: mediaId }),
+                waitFor: "updateMediaMetadataFromFile"
             }
         })
     }
@@ -30,7 +32,8 @@ export const createPostUploadJobs = async (mediaId: string, type: string) => {
         await prisma.job.create({
             data: {
                 name: "attemptManualTagging",
-                data: JSON.stringify({ id: mediaId })
+                data: JSON.stringify({ id: mediaId }),
+                waitFor: "updateMediaMetadataFromFile"
             }
         })
     }

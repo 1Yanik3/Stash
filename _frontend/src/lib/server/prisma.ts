@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 
-// import redis from "./redis"
+import redis from "./redis"
 
 const prisma = new PrismaClient({
     log: [
@@ -25,6 +25,6 @@ const prisma = new PrismaClient({
 
 export default prisma
 
-// prisma.$on("query", async e => {
-//   await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
-// })
+prisma.$on("query", async e => {
+  await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
+})

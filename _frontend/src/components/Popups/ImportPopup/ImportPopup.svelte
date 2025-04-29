@@ -7,6 +7,8 @@
     import Key from "$components/elements/Key.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
     import TagInputField from "$components/Tags/TagInputField.svelte"
+    import query from "$lib/client/call"
+    import { mediaController } from "$lib/controllers/MediaController.svelte"
     import type { TagExtended } from "$lib/controllers/TagsController.svelte"
     import { controller } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
@@ -17,7 +19,7 @@
     } from "./ImportSources.svelte"
 
     let queue: ImportSource[] = $state([])
-    let tags: TagExtended[] = $state([])
+    let tags: TagExtended[] = $state(mediaController.selectedTags)
 
     let fileInputElement: HTMLInputElement
 </script>
@@ -148,7 +150,16 @@
                 }
 
                 if (!queue.some(e => e.error)) {
+                    while (
+                        await query(
+                            "areThereUpdateMediaMetadataFromFileJobs",
+                            {}
+                        )
+                    ) {
+                        await new Promise(resolve => setTimeout(resolve, 100))
+                    }
                     $controller.setPopup(null)
+                    mediaController.updateMedia()
                 }
             }}
             shortcut={{ modifier: "meta", key: "enter" }}
@@ -168,6 +179,7 @@
         }
 
         .sidebar-queue-entries {
+
             .sidebar-queue-entry {
                 display: flex;
                 align-items: center;

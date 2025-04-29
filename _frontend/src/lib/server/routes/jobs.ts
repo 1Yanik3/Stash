@@ -1,4 +1,4 @@
-import type { Job } from "@prisma/client"
+import { JobStatus, type Job } from "@prisma/client"
 
 import prisma from "../prisma"
 
@@ -24,4 +24,16 @@ export const createJob = async (d: {
             priority: d.priority
         }
     })
+}
+
+export const areThereUpdateMediaMetadataFromFileJobs = async (d: {}) => {
+    const match = await prisma.job.findFirst({
+        where: {
+            name: "updateMediaMetadataFromFile",
+            status: {
+                in: [JobStatus.created, JobStatus.running]
+            }
+        }
+    })
+    return match != null
 }
