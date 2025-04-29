@@ -13,6 +13,5 @@ export default {
   ...gks,
   ...stories,
   ...jobs,
-  ...credentials,
-  removeTagsFromMedias
+  ...credentials
 }
