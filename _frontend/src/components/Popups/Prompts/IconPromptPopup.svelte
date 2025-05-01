@@ -41,7 +41,6 @@
     }
 
     let results: (keyof typeof possibleIcons)[] = $derived.by(() => {
-        console.log(_value)
         if (!_value) return []
         return searcher.search(_value).slice(0, 20)
     })

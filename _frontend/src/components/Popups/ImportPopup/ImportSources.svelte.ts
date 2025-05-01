@@ -1,4 +1,5 @@
 import { page } from "$app/state"
+import query from "$lib/client/call"
 import type { TagExtended } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
 
@@ -106,11 +107,39 @@ export class ImportablesImportSource extends ImportSource {
 export class TransmissionImportSource extends ImportSource {
     public icon = "mdiTransmissionTower" as const
 
-    constructor(filename: string, size: number) {
-        super({ filename, size })
+    private torrentId: number
+    private downloadDir: string
+
+    constructor(torrentId: number, filename: string, downloadDir: string) {
+        super({ filename })
+        this.torrentId = torrentId
+        this.downloadDir = downloadDir
     }
 
     async import(p: importParams): Promise<void> {
-        throw new Error("Method not implemented.")
+        // Step 1: Generate file entry
+        const mediaId = await query("transmissionCreatePreUploadMediaEntry", {
+            name: this.filename,
+            clusterName: p.cluster,
+            tagIds: p.tags.map(t => t.id),
+            downloadDir: this.downloadDir
+        })
+
+        // Step 2: Rename the torrent file
+        await query("renameTorrentPath", {
+            id: this.torrentId,
+            oldFileName: this.filename,
+            newFileName: mediaId
+        })
+
+        // Step 3: Move the torrent file to the media
+        await query("moveTorrentPath", {
+            id: this.torrentId
+        })
+
+        // Step 4: Create post upload jobs
+        await query("createPostMoveJobs", {
+            mediaId
+        })
     }
 }

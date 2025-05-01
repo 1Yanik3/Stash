@@ -18,7 +18,6 @@
     onMount(async () => {
         const res = await fetch(`/api/cluster/${pageData.cluster.id}/index`)
         data = await res.json()
-        console.log(data)
     })
 
     let filter = $state("")

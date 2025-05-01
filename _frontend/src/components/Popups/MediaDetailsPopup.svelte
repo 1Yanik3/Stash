@@ -193,12 +193,10 @@
                             onselected={({ id }) => {
                                 if (!mediaController.visibleMedium)
                                     throw "Expected mediaController.visibleMedium to be defined"
-                                query("addTagsToMedias", {
-                                    mediaIds: [
-                                        mediaController.visibleMedium.id
-                                    ],
-                                    tagIds: [id]
-                                })
+                                addTagToMedia(
+                                    [mediaController.visibleMedium],
+                                    id
+                                )
                             }}
                             alwaysExpanded
                             height={18}

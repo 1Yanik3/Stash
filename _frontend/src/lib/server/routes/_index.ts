@@ -5,6 +5,7 @@ import * as media from "./media"
 import * as mediaQuery from "./media-query"
 import * as stories from "./stories"
 import * as tags from "./tags"
+import * as transmission from "./transmission"
 
 export default {
     ...tags,
@@ -13,5 +14,6 @@ export default {
     ...gks,
     ...stories,
     ...jobs,
-    ...credentials
+    ...credentials,
+    ...transmission
 }

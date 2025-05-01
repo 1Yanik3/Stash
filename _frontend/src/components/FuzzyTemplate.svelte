@@ -113,7 +113,7 @@
 
             &.active {
                 border: 1px solid var(--border-color-1-hover);
-                background: #303030;
+                background: var(--border-color-1);
             }
         }
     }

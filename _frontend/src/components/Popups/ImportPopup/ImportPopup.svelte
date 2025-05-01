@@ -15,6 +15,7 @@
     import Popup from "$reusables/Popup.svelte"
 
     import ImportPopupImportablesSelection from "./ImportPopupImportablesSelection.svelte"
+    import ImportPopupTransmissionSection from "./ImportPopupTransmissionSection.svelte"
     import {
         UploadImportSource,
         type ImportSource
@@ -23,7 +24,8 @@
     let queue: ImportSource[] = $state([])
     let tags: TagExtended[] = $state(mediaController.selectedTags)
 
-    let mainPopupContent: "home" | "importables" = $state("home")
+    let mainPopupContent: "home" | "importables" | "transmission" =
+        $state("home")
     let fileInputElement: HTMLInputElement
 </script>
 
@@ -69,8 +71,10 @@
                 <Button
                     card
                     icon="mdiUpload"
-                    onclick={() => fileInputElement.click()}>Upload</Button
+                    onclick={() => fileInputElement.click()}
                 >
+                    Upload
+                </Button>
                 <Button
                     card
                     icon="mdiImport"
@@ -78,9 +82,13 @@
                 >
                     Import
                 </Button>
-                <Button card icon="mdiTransmissionTower" disabled
-                    >Transfer</Button
+                <Button
+                    card
+                    icon="mdiTransmissionTower"
+                    onclick={() => (mainPopupContent = "transmission")}
                 >
+                    Transfer
+                </Button>
             </div>
 
             <div class="sidebar-queue-entries">
@@ -113,49 +121,60 @@
         </div>
     {/snippet}
 
-    {#if mainPopupContent === "home"}
-        <div class="tags">
-            <div class="tagsHeader">
-                <b>Tags</b>
-                <div>
-                    <Key key="shift" />
-                    <Key key="T" />
+    <main>
+        {#if mainPopupContent === "home"}
+            <div class="tags">
+                <div class="tagsHeader">
+                    <b>Tags</b>
+                    <div>
+                        <Key key="shift" />
+                        <Key key="T" />
+                    </div>
+                </div>
+                <TagInputField
+                    alwaysExpanded
+                    onselected={tag => (tags = tags.concat(tag))}
+                />
+                <div class="tagsList">
+                    {#each tags as tag}
+                        <!-- svelte-ignore a11y_no_static_element_interactions -->
+                        <span
+                            class="tag"
+                            oncontextmenu={e => {
+                                e.preventDefault()
+                                tags = tags.filter(t => t != tag)
+                            }}
+                        >
+                            <TagChip show="both" tag={tag.id} />
+                        </span>
+                    {/each}
+                    {#if !tags.length}
+                        <span>No Tag</span>
+                    {/if}
                 </div>
             </div>
-            <TagInputField
-                alwaysExpanded
-                onselected={tag => (tags = tags.concat(tag))}
-            />
-            <div class="tagsList">
-                {#each tags as tag}
-                    <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <span
-                        class="tag"
-                        oncontextmenu={e => {
-                            e.preventDefault()
-                            tags = tags.filter(t => t != tag)
-                        }}
-                    >
-                        <TagChip show="both" tag={tag.id} />
-                    </span>
-                {/each}
-                {#if !tags.length}
-                    <span>No Tag</span>
-                {/if}
-            </div>
-        </div>
-    {:else if mainPopupContent === "importables"}
-        <Button
-            card
-            icon="mdiArrowLeft"
-            onclick={() => (mainPopupContent = "home")}
-        >
-            Back
-        </Button>
+        {:else if mainPopupContent === "importables"}
+            <Button
+                card
+                icon="mdiArrowLeft"
+                onclick={() => (mainPopupContent = "home")}
+            >
+                Back
+            </Button>
 
-        <ImportPopupImportablesSelection bind:queue />
-    {/if}
-    <main></main>
+            <ImportPopupImportablesSelection bind:queue />
+        {:else if mainPopupContent === "transmission"}
+            <Button
+                card
+                icon="mdiArrowLeft"
+                onclick={() => (mainPopupContent = "home")}
+            >
+                Back
+            </Button>
+
+            <ImportPopupTransmissionSection bind:queue />
+        {/if}
+    </main>
 
     {#snippet actionsRight()}
         <Button
@@ -194,6 +213,7 @@
 <style lang="scss">
     .sidebar {
         flex-grow: 1;
+        width: 314px;
 
         .sidebar-header {
             display: flex;
@@ -224,7 +244,7 @@
     }
 
     main {
-        flex: 1;
+        width: 400px;
 
         .tags {
             display: grid;

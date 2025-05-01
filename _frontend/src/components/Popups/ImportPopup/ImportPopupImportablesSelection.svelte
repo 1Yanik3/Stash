@@ -35,7 +35,6 @@
             queue.push(new ImportablesImportSource(filename))
             const valuesInQueue = queue.map(q => q.filename)
             data = [...data].filter(d => !valuesInQueue.includes(d))
-            console.log([...data], valuesInQueue)
         }}
     >
         {#snippet children(result)}

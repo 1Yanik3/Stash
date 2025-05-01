@@ -6,6 +6,8 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
+    import { addTagToMedia } from "$lib/client/actions/addTagToMedia.svelte"
+    import { removeTagFromMedia } from "$lib/client/actions/removeTagFromMedia.svelte"
     import query from "$lib/client/call"
     import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -143,10 +145,7 @@
                     onselected={({ id }) => {
                         if (!mediaController.visibleMedium)
                             throw "Expected mediaController.visibleMedium to be defined"
-                        query("addTagsToMedias", {
-                            mediaIds: [mediaController.visibleMedium.id],
-                            tagIds: [id]
-                        })
+                        addTagToMedia([mediaController.visibleMedium], id)
                     }}
                 />
             {/if}
