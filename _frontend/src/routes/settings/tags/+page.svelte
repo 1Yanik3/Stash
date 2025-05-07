@@ -11,7 +11,6 @@
     import type { PageData } from "./$types.js"
 
     let { data } = $props()
-    console.log(data)
 </script>
 
 <SettingsPageContent title="Tags">
@@ -62,7 +61,34 @@
                 </div>
             </td>
             <td style="text-transform: capitalize">
-                {entry.tag}
+                {entry.tagBeforePrefix
+                    .substring(0, entry.tagBeforePrefix.lastIndexOf("/"))
+                    .replace("/", " / ")}
+                /
+                <span style:color="var(--accent-foreground)">{entry.tag}</span>
+                <div class="floating">
+                    <Button
+                        icon="mdiPencil"
+                        onclick={async () => {
+                            const newName = await prompts.text(
+                                "Select a new name",
+                                entry.tag || ""
+                            )
+                            if (newName) {
+                                const previousName = entry.tag
+                                query("TagUpdateName", {
+                                    tagId: entry.id,
+                                    newName
+                                })
+                                    .catch(e => {
+                                        console.error(e)
+                                        entry.tag = previousName
+                                    })
+                                    .then(() => invalidateAll())
+                            }
+                        }}
+                    />
+                </div>
             </td>
             <td>
                 {entry.description}

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from "$app/stores"
+    import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { settings } from "$lib/stores.svelte"
 
@@ -92,6 +93,13 @@
     }
 
     let cursor = $state("default")
+
+    let src = $derived.by(() => {
+        if (presentationMode.current) {
+            return `https://picsum.photos/${mediaController.visibleMedium?.width}/${mediaController.visibleMedium?.height}?q=${mediaController.visibleMedium?.id}`
+        }
+        return `${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`
+    })
 </script>
 
 <main bind:this={mainElement}>
@@ -101,8 +109,8 @@
         oncontextmenu={e => e.preventDefault()}
         onmousemove={calculateCursor}
         style:cursor
-        src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
-        crossorigin="use-credentials"
+        {src}
+        crossorigin={presentationMode.current ? "anonymous" : "use-credentials"}
         alt={mediaController.visibleMedium?.name}
     />
 </main>

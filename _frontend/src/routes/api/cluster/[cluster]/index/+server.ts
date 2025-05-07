@@ -4,20 +4,32 @@ import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
 
-// TODO
+// TODO!!!
 export const GET: RequestHandler = async ({ params }) =>
     json(
         await prisma.$queryRaw`
         SELECT DISTINCT ON ("Tags"."tag")
-            "Tags"."id" as tagid,
+            "Tags"."id" AS tagid,
             "Tags"."tag",
-            "Media"."id" AS mediaid
+            COALESCE("Media"."id", "ChildMedia"."id") AS mediaid
         FROM "Tags"
+        LEFT JOIN "_ClustersToTags" ON "_ClustersToTags"."B" = "Tags"."id"
         LEFT JOIN "_MediaToTags" ON "_MediaToTags"."B" = "Tags"."id"
         LEFT JOIN "Media" ON "Media"."id" = "_MediaToTags"."A"
-        WHERE "Tags"."parentId" IS NULL AND "Media"."clustersId" = 3
+        LEFT JOIN LATERAL (
+            SELECT "Media"."id"
+            FROM "Tags" AS child
+            JOIN "_MediaToTags" ON "_MediaToTags"."B" = child."id"
+            JOIN "Media" ON "Media"."id" = "_MediaToTags"."A"
+            WHERE child."parentId" = "Tags"."id"
+            ORDER BY "Media"."date" ASC
+            LIMIT 1
+        ) AS "ChildMedia" ON TRUE
+        WHERE "Tags"."parentId" IS NULL
+            AND "_ClustersToTags"."A" = 3
         ORDER BY
             "Tags"."tag" DESC,
-            "Media".date ASC;
+            "Media"."date" ASC;
+
 `
     )

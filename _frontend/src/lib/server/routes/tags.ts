@@ -124,3 +124,42 @@ export const TagUpdateDescription = async (d: {
         }
     })
 }
+
+export const TagUpdateName = async (d: { tagId: number; newName: string }) => {
+    await prisma.tags.update({
+        where: {
+            id: d.tagId
+        },
+        data: {
+            tag: d.newName
+        }
+    })
+}
+
+export const TagCreate = async (d: {
+    name: string
+    parentTagId: number | null
+    clusterId: number
+}) =>
+    await prisma.tags.create({
+        data: {
+            tag: d.name,
+            parentId: d.parentTagId,
+            clusters: {
+                connect: {
+                    id: d.clusterId
+                }
+            }
+        },
+        select: {
+            id: true
+        }
+    })
+
+export const TagDelete = async (d: { tagId: number }) => {
+    await prisma.tags.delete({
+        where: {
+            id: d.tagId
+        }
+    })
+}

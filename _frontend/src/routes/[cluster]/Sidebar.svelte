@@ -3,7 +3,7 @@
     import { page } from "$app/stores"
     import Button from "$components/elements/Button.svelte"
     import Select from "$components/elements/Select.svelte"
-    import { isMobile } from "$lib/context"
+    import { isMobile, presentationMode } from "$lib/context"
     import {
         controller,
         settings,
@@ -29,7 +29,7 @@
             value={$page.data.cluster.name}
             options={pageData.clusters.map(c => ({
                 value: c.name,
-                name: c.name,
+                name: presentationMode.current ? "Lorem Ipsum" : c.name,
                 icon: c.icon as any
             }))}
             width={-1}

@@ -2,7 +2,7 @@
     import Select from "$components/elements/Select.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-    import { isMobile } from "$lib/context"
+    import { isMobile, presentationMode } from "$lib/context"
     import { settings } from "$lib/stores.svelte"
 </script>
 
@@ -35,6 +35,13 @@
                 ]}
                 bind:value={$settings.theme}
             />
+        </div>
+
+        <hr style="width: 100%" />
+
+        <div>
+            <span>Presentation Mode</span>
+            <Toggle bind:state={presentationMode.current} />
         </div>
     </section>
 </SettingsPageContent>

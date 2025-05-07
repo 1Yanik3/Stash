@@ -21,6 +21,7 @@ body {
     --border-color-2: hsl(0, 0%, 27%);
     --border-color-2-hover: hsl(0, 0%, 29%);
 
+    --accent-foreground: #{mix(hsl($hue, $saturation, 80%), $accent, 50%)};
     --accent: #{$accent};
     --accent-background: #{mix(hsl($hue, $saturation, 12%), $accent, 50%)};
 }

@@ -41,53 +41,44 @@ export class TagsController {
         // this.updateTags()
 
         $effect(() => {
-            const clusterName = vars.clusterName
-            console.log("updating with ", vars.clusterName)
-            ;(async () => {
-                if (!clusterName) {
-                    return {}
-                }
-
-                const data: TagBase[] = await query(
-                    "tags_query_from_database",
-                    {
-                        cluster: clusterName,
-                        favouritesOnly: mediaController.filters.favouritesOnly,
-                        mediaTypeFilter: get(mediaTypeFilter)
-                    }
-                )
-
-                const tmpTagMap = assembleTagHierarchyMap(data)
-
-                // Step 3: Calculate indirect counts
-                const calculateIndirectCounts = (tag: TagExtended) => {
-                    tag.children.forEach(child => {
-                        calculateIndirectCounts(child)
-                        tag.indirectCount += child.count + child.indirectCount
-                    })
-                }
-                data.forEach(tag => {
-                    if (tag.parentId === null) {
-                        calculateIndirectCounts(tmpTagMap[tag.id])
-                    }
-                })
-
-                this.tagMap = tmpTagMap
-            })()
+            console.log(
+                "updating with ",
+                vars.clusterName,
+                mediaController.filters.favouritesOnly,
+                get(mediaTypeFilter)
+            )
+            this.updateTags()
         })
     }
 
-    //   public updateTags = async (
-    //     newClusterName: string = get(page).params.cluster
-    //   ) => {
-    //     this.updateHierarchicalTags(
-    //       await query("tags_query_from_database", {
-    //         cluster: newClusterName,
-    //         favouritesOnly: mediaController.filters.favouritesOnly,
-    //         mediaTypeFilter: get(mediaTypeFilter)
-    //       })
-    //     )
-    //   }
+    public updateTags = async () => {
+        if (!vars.clusterName) {
+            return {}
+        }
+
+        const data: TagBase[] = await query("tags_query_from_database", {
+            cluster: vars.clusterName,
+            favouritesOnly: mediaController.filters.favouritesOnly,
+            mediaTypeFilter: get(mediaTypeFilter)
+        })
+
+        const tmpTagMap = assembleTagHierarchyMap(data)
+
+        // Step 3: Calculate indirect counts
+        const calculateIndirectCounts = (tag: TagExtended) => {
+            tag.children.forEach(child => {
+                calculateIndirectCounts(child)
+                tag.indirectCount += child.count + child.indirectCount
+            })
+        }
+        data.forEach(tag => {
+            if (tag.parentId === null) {
+                calculateIndirectCounts(tmpTagMap[tag.id])
+            }
+        })
+
+        this.tagMap = tmpTagMap
+    }
 
     public toggleTag = (tag: TagBase, callback: (collapsed: boolean) => {}) => {
         callback(!tag.collapsed)

@@ -6,6 +6,7 @@
     import imageRetry from "$lib/client/actions/imageRetry.svelte"
     import { setSpecialFilterAttribute } from "$lib/client/actions/mediaActions.svelte"
     import { SUBJECT_TYPES } from "$lib/constants"
+    import { presentationMode } from "$lib/context"
     import {
         mediaController,
         type MediaType
@@ -110,17 +111,26 @@
             setSpecialFilterAttribute(medium, newValue)
         }
     }
+
+    let src = $derived.by(() => {
+        if (presentationMode.current) {
+            return `https://picsum.photos/${medium.width}/${medium.height}?q=${medium.id}`
+        }
+        return `${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`
+    })
 </script>
 
 <svelte:document onkeydown={captureKeydownEventWhenHovering} />
 
 <svelte:head>
-    <link
-        rel="preload"
-        as="image"
-        href="{$page.data.serverURL}/thumb/{medium.id}.webp"
-        crossorigin="use-credentials"
-    />
+    {#if !presentationMode.current}
+        <link
+            rel="preload"
+            as="image"
+            href="{$page.data.serverURL}/thumb/{medium.id}.webp"
+            crossorigin="use-credentials"
+        />
+    {/if}
 </svelte:head>
 
 <IntersectionObserver
@@ -158,11 +168,13 @@
                 <img
                     use:imageRetry
                     in:fade={{ duration: 100 }}
-                    src={`${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`}
+                    {src}
                     alt={medium.name}
                     class:active={!disableActive &&
                         mediaController.visibleMedium?.id == medium.id}
-                    crossorigin="use-credentials"
+                    crossorigin={presentationMode.current
+                        ? "anonymous"
+                        : "use-credentials"}
                     class:disableZoom
                     bind:this={thumbElement}
                 />

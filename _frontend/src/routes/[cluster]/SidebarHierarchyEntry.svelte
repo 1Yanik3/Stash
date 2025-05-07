@@ -1,6 +1,7 @@
 <script lang="ts">
     import { page } from "$app/stores"
     import Button from "$components/elements/Button.svelte"
+    import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
     import type { possibleIcons } from "$lib/possibleIcons"
@@ -45,6 +46,20 @@
             return ["mdiFolderHidden", 1]
         return ["mdiFolderOutline", 1]
     }) as [keyof typeof possibleIcons, number]
+
+    function randomLoremChar(length: number) {
+        const lorem = "loremipsumdolorsitamet"
+        let result = ""
+        for (let i = 0; i < length; i++) {
+            const char = lorem[Math.floor(Math.random() * lorem.length)]
+            result += char
+        }
+        return result
+    }
+
+    function scrambleToLorem(input: string) {
+        return input.replace(/\S/g, () => randomLoremChar(1))
+    }
 </script>
 
 <main id="tag-{tagId}">
@@ -89,7 +104,11 @@
             t => t.id == tagsController.tagMap[tagId].id
         )}
     >
-        {nameOverwrite || tagsController.tagMap[tagId].tag}
+        {#if presentationMode.current}
+            {scrambleToLorem(nameOverwrite || tagsController.tagMap[tagId].tag)}
+        {:else}
+            {nameOverwrite || tagsController.tagMap[tagId].tag}
+        {/if}
     </Button>
 
     <Dropdown

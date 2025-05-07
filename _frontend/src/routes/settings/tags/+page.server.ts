@@ -17,12 +17,12 @@ export const load = (async ({ cookies }) => {
 
     const tmpTagMap = assembleTagHierarchyMap(data)
 
-    const tags: TagExtended[] = []
+    const tags: (TagExtended & { tagBeforePrefix: string })[] = []
 
     const addTags = (tag: TagExtended, prefix: string | null = null) => {
         const tagBeforePrefix = prefix ? `${prefix}/${tag.tag}` : tag.tag
 
-        tags.push({ ...tag, tag: tagBeforePrefix })
+        tags.push({ ...tag, tagBeforePrefix })
 
         tag.children.forEach(c => addTags(c, tagBeforePrefix))
     }

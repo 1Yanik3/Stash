@@ -4,6 +4,7 @@ import { goto } from "$app/navigation"
 import { page } from "$app/stores"
 import { SUBJECT_TYPES } from "$lib/constants"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
+import { prompts } from "$lib/controllers/PromptController"
 import {
     default as tagsController,
     type TagExtended
@@ -73,6 +74,37 @@ const actions = async () => {
                 get(controller).setPopup(null)
                 varsSvelte.isInSubjectEditingMode =
                     !varsSvelte.isInSubjectEditingMode
+            }
+        },
+        {
+            icon: "mdiTagPlus",
+            label: "/Create new tag at this location",
+            onEnter: async () => {
+                if (mediaController.selectedTags.length > 1) {
+                    console.error(
+                        "Tried creating a tag underneath multiple tags"
+                    )
+                }
+
+                get(controller).setPopup(null)
+                const toBePlaced = mediaController.selectedTags.length
+                    ? `underneath ${mediaController.selectedTags[0].tag} `
+                    : "at the root of this cluster"
+                const newTagName = await prompts.text(
+                    `Enter a new tag name, to be placed ${toBePlaced}`
+                )
+
+                if (!newTagName) return
+
+                await query("TagCreate", {
+                    name: newTagName,
+                    parentTagId: mediaController.selectedTags.length
+                        ? mediaController.selectedTags[0].id
+                        : null,
+                    clusterId: get(page).data.cluster.id
+                })
+
+                tagsController.updateTags()
             }
         }
     ]
