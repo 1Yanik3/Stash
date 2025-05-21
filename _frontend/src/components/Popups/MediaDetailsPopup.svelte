@@ -146,6 +146,13 @@
                 </div>
 
                 <div>
+                    <Icon name="mdiSvg" />
+                    <span>
+                        {mediaController.visibleMedium.type}
+                    </span>
+                </div>
+
+                <div>
                     <Icon name="mdiMoveResize" />
                     <span>
                         {mediaController.visibleMedium.width}x{mediaController

@@ -215,6 +215,7 @@
             outline-offset: calc(var(--outline-size) * -1);
 
             @media (hover: hover) and (pointer: fine) {
+
                 &:hover {
                     background: var(--color-dark-level-2-hover);
                     outline: 1px solid var(--border-color-1-hover);
@@ -255,6 +256,7 @@
         }
 
         &.right {
+
             &,
             .section {
                 flex-direction: row-reverse;
@@ -269,7 +271,9 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
+
             &:hover {
+
                 &:not(.transparentButton) {
                     background: var(--color-dark-level-2);
                     outline: 1px solid var(--border-color-1);

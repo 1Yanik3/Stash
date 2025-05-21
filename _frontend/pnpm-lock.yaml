@@ -28,6 +28,9 @@ importers:
             mdi-svelte:
                 specifier: ^1.1.2
                 version: 1.1.2
+            mime-types:
+                specifier: ^2.1.35
+                version: 2.1.35
             redis:
                 specifier: ^5.0.1
                 version: 5.0.1
@@ -89,9 +92,6 @@ importers:
             js-pick-file:
                 specifier: ^1.0.13
                 version: 1.0.13
-            mime-types:
-                specifier: ^3.0.1
-                version: 3.0.1
             node-html-parser:
                 specifier: ^7.0.1
                 version: 7.0.1
@@ -593,15 +593,6 @@ packages:
         engines: { node: ">=18" }
         cpu: [x64]
         os: [win32]
-
-    "@eslint-community/eslint-utils@4.4.1":
-        resolution:
-            {
-                integrity: sha512-s3O3waFUrMV8P/XaF/+ZTp1X9XBZW1a4B97ZnjQF2KYWaFD2A8KyFBsrsfSjEmjn3RGWAIuvlneuZm3CUK3jbA==
-            }
-        engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
-        peerDependencies:
-            eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
     "@eslint-community/eslint-utils@4.7.0":
         resolution:
@@ -2716,12 +2707,6 @@ packages:
                 integrity: sha512-DUqiKkTlAfhtl7g78IuwqYM+YqvT+as0mY+EVk6mfimy19U79pJCzDZQsnqk3Ou/T6hFXWLGbwbADzD/c8Tydg==
             }
 
-    flatted@3.3.2:
-        resolution:
-            {
-                integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==
-            }
-
     flatted@3.3.3:
         resolution:
             {
@@ -3279,17 +3264,17 @@ packages:
             }
         engines: { node: ">=8.6" }
 
-    mime-db@1.54.0:
+    mime-db@1.52.0:
         resolution:
             {
-                integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==
+                integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
             }
         engines: { node: ">= 0.6" }
 
-    mime-types@3.0.1:
+    mime-types@2.1.35:
         resolution:
             {
-                integrity: sha512-xRc4oEhT6eaBpU1XF7AjpOFD+xQmXNB5OVKwp4tqCuBpHLS/ZbBDrc07mYTDqVMg6PfxUjjNp85O6Cd2Z/5HWA==
+                integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
             }
         engines: { node: ">= 0.6" }
 
@@ -4647,11 +4632,6 @@ snapshots:
     "@esbuild/win32-x64@0.25.4":
         optional: true
 
-    "@eslint-community/eslint-utils@4.4.1(eslint@9.20.0(jiti@2.4.2))":
-        dependencies:
-            eslint: 9.20.0(jiti@2.4.2)
-            eslint-visitor-keys: 3.4.3
-
     "@eslint-community/eslint-utils@4.7.0(eslint@9.20.0(jiti@2.4.2))":
         dependencies:
             eslint: 9.20.0(jiti@2.4.2)
@@ -5865,7 +5845,7 @@ snapshots:
 
     eslint@9.20.0(jiti@2.4.2):
         dependencies:
-            "@eslint-community/eslint-utils": 4.4.1(eslint@9.20.0(jiti@2.4.2))
+            "@eslint-community/eslint-utils": 4.7.0(eslint@9.20.0(jiti@2.4.2))
             "@eslint-community/regexpp": 4.12.1
             "@eslint/config-array": 0.19.2
             "@eslint/core": 0.11.0
@@ -5875,7 +5855,7 @@ snapshots:
             "@humanfs/node": 0.16.6
             "@humanwhocodes/module-importer": 1.0.1
             "@humanwhocodes/retry": 0.4.1
-            "@types/estree": 1.0.6
+            "@types/estree": 1.0.7
             "@types/json-schema": 7.0.15
             ajv: 6.12.6
             chalk: 4.1.2
@@ -5981,7 +5961,7 @@ snapshots:
 
     flat-cache@4.0.1:
         dependencies:
-            flatted: 3.3.2
+            flatted: 3.3.3
             keyv: 4.5.4
 
     flat-cache@6.1.9:
@@ -5989,8 +5969,6 @@ snapshots:
             cacheable: 1.9.0
             flatted: 3.3.3
             hookified: 1.9.0
-
-    flatted@3.3.2: {}
 
     flatted@3.3.3: {}
 
@@ -6239,11 +6217,11 @@ snapshots:
             braces: 3.0.3
             picomatch: 2.3.1
 
-    mime-db@1.54.0: {}
+    mime-db@1.52.0: {}
 
-    mime-types@3.0.1:
+    mime-types@2.1.35:
         dependencies:
-            mime-db: 1.54.0
+            mime-db: 1.52.0
 
     minimatch@3.1.2:
         dependencies:

@@ -5,7 +5,6 @@ import mime from "mime-types"
 
 import { createPostUploadJobs } from "$lib/server/actions/create-post-upload-jobs"
 import { createPreUploadMediaEntry } from "$lib/server/actions/create-pre-upload-media-entry"
-import prisma from "$lib/server/prisma"
 
 import type { RequestHandler } from "./$types"
 
@@ -25,6 +24,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
     }: { filename: string; selectedTags: number[] } = await request.json()
 
     const type = mime.lookup(`${importFolderPath}/${filename}`) || "Unknown"
+    
+    console.log("found mime type of file ")
 
     const mediaId = await createPreUploadMediaEntry({
         name: filename,

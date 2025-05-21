@@ -149,11 +149,7 @@
         >
             Create new subtag
         </Button>
-        <Button
-            href="/settings/tags#{tagId}"
-            noMargin
-            icon="mdiCog"
-        >
+        <Button href="/settings/tags#{tagId}" noMargin icon="mdiCog">
             Edit in Setings
         </Button>
     </Dropdown>
