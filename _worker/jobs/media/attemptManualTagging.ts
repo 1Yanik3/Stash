@@ -81,6 +81,8 @@ export const execute = async (job: Job) => {
         .array(z.string())
         .describe("A list of tags associated with the image."),
     }),
+  }).catch((error) => {
+    console.error("Failed to generate object", error);
   });
 
   await prisma.job.update({
@@ -96,7 +98,7 @@ export const execute = async (job: Job) => {
     where: { id: media.id },
     data: {
       specialFilterAttributeGuess: getSpecialFilterAttributeFromNumber(
-        object.numberOfPeopleInImage
+        object.numberOfPeopleInImage,
       ),
       tagsGuess: object.tags,
       visualAiMatchingVersion: 1,
@@ -106,7 +108,7 @@ export const execute = async (job: Job) => {
 
 const parse = async (
   data: any,
-  job: Job
+  job: Job,
 ): Promise<{
   media: Media;
 }> => {
