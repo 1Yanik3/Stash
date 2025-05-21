@@ -81,8 +81,6 @@ export const execute = async (job: Job) => {
         .array(z.string())
         .describe("A list of tags associated with the image."),
     }),
-  }).catch((error) => {
-    console.error("Failed to generate object", error);
   });
 
   await prisma.job.update({
