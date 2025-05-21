@@ -182,7 +182,6 @@
         }
 
         &.mobile {
-
             input {
                 border: 1px solid var(--border-color-1);
             }

@@ -42,11 +42,17 @@ model Tags {
   collapsed   Boolean @default(false)
   description String?
 
+  clusters Clusters[]
+  media    Media[]
+
+  // parent-child hierarchy
   parentId Int?
   parent   Tags?      @relation("ParentChildTags", fields: [parentId], references: [id])
   children Tags[]     @relation("ParentChildTags")
-  clusters Clusters[]
-  media    Media[]
+
+  // many-to-many self-relation
+  tagged  Tags[] @relation("TagToTag")  // tags that this tag tags
+  taggedBy Tags[] @relation("TagToTag") // tags that tag this tag
 }
 
 model Media {

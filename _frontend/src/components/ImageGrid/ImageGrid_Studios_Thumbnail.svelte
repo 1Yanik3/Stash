@@ -1,6 +1,13 @@
 <script lang="ts">
+    import { onMount } from "svelte"
+
+    import ContextMenu from "$components/ContextMenu.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
+    import {
+        renameGroupName,
+        renameMediaName
+    } from "$lib/client/actions/mediaActions.svelte"
     import {
         mediaController,
         type MediaType
@@ -44,41 +51,77 @@
             }
         }
     }
+
+    let groupName: string | null = $state(null)
+
+    onMount(async () => {
+        if (parent) {
+            groupName = await fetch(
+                `/api/group-together/${medium.groupedIntoNamesId}`
+            ).then(response => response.text())
+        }
+    })
 </script>
 
-<main
-    onmouseup={e => leftClick(e)}
-    class:active={mediaController.visibleMedium == medium && !parent}
-    class:selected={varsSvelte.selectedMedias.includes(medium)}
-    class:sub
->
-    <div class="thumb">
-        <GridThumbnail {medium} disableActive rigidAspectRatio disableZoom />
-    </div>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 
-    <div class="details">
-        {#if parent}
-            {#await fetch(`/api/group-together/${medium.groupedIntoNamesId}`).then( response => response.text() ) then name}
+<ContextMenu
+    elements={[
+        {
+            label: "Rename",
+            icon: "mdiRename",
+            action: async () =>
+                parent
+                    ? medium.groupedIntoNamesId
+                        ? (groupName = await renameGroupName(
+                              medium.groupedIntoNamesId,
+                              groupName
+                          ))
+                        : console.error(
+                              "Tried to rename a group without medium.groupedIntoNamesId"
+                          )
+                    : renameMediaName(medium)
+        }
+    ]}
+>
+    <main
+        onclick={e => leftClick(e)}
+        class:active={mediaController.visibleMedium == medium && !parent}
+        class:selected={varsSvelte.selectedMedias.includes(medium)}
+        class:sub
+    >
+        <div class="thumb">
+            <GridThumbnail
+                {medium}
+                disableActive
+                rigidAspectRatio
+                disableZoom
+            />
+        </div>
+
+        <div class="details">
+            {#if parent}
                 <b>
                     <Icon name="mdiCardMultiple" size={0.8} />
-                    {name}
+                    {groupName}
                 </b>
-            {/await}
-        {:else}
-            {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
-                <b>{medium.name}</b>
-            {/key}
-        {/if}
-    </div>
-
-    {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
-        <div class="tags">
-            {#each medium.tags as tag}
-                <TagChip {tag} compact />
-            {/each}
+            {:else}
+                {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
+                    <b>{medium.name}</b>
+                {/key}
+            {/if}
         </div>
-    {/key}
-</main>
+
+        {#key mediaController.visibleMedium == medium ? mediaController.visibleMedium : null}
+            <div class="tags">
+                {#each medium.tags as tag}
+                    <TagChip {tag} compact />
+                {/each}
+            </div>
+        {/key}
+    </main>
+</ContextMenu>
 
 <style lang="scss">
     main {
@@ -144,7 +187,6 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
-
             &:hover {
                 border: 1px solid var(--border-color-1-hover);
                 background: var(--color-dark-level-1-hover);

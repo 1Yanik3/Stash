@@ -19,12 +19,21 @@ export const media_query_from_database = async (
         countOfTags: number
         minResolution: number | null
         mediaType: "all" | "image" | "video"
+        traverse: boolean
+        includeTaggedTags: boolean
     },
     cookies: Cookies
 ) => {
     await protectEndpoint(d.cluster, cookies)
 
+    const tagsFilterParts = generateTagsFilterParts(
+        d.tags,
+        d.traverse,
+        d.includeTaggedTags
+    )
+
     return (await prisma.$queryRawUnsafe(/*sql*/ `
+        ${tagsFilterParts.cte}
         SELECT
             "Media".*,
             STRING_AGG ("Tags"."id"::text, ',') as tags
@@ -35,7 +44,7 @@ export const media_query_from_database = async (
         WHERE
             "Media"."clustersId" = (SELECT id FROM "Clusters" WHERE "Clusters".name = '${d.cluster}')
             AND "Media"."deleted" = false
-            ${assembleTagsFilter(d.tags)}
+            ${tagsFilterParts.whereClause}
             ${assembleFavouritesOnlyFilter(d.favouritesOnly)}
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
             ${assembleMinResultionFilter(d.minResolution)}
@@ -61,18 +70,64 @@ const assembleMinResultionFilter = (minResolution: number | null) => {
   `
 }
 
-const assembleTagsFilter = (tags: number[]) => {
-    if (tags.length === 0) return ""
-    return /*sql*/ `
-      AND "Media"."id" IN (
-        SELECT
-          "_MediaToTags"."A"
-        FROM
-          "_MediaToTags"
-        WHERE
-          "_MediaToTags"."B" IN (${tags.join(",")})
-      )
-      `
+const generateTagsFilterParts = (
+    tags: number[],
+    traverse: boolean,
+    includeTaggedTags: boolean
+): { cte: string; whereClause: string } => {
+    if (tags.length === 0) return { cte: "", whereClause: "" }
+    const baseList = tags.join(",")
+
+    // 1) If traverse: build a recursive CTE to get all descendant tags
+    let cte = ""
+    let tagSource = `(${baseList})`
+    if (traverse) {
+        cte = `
+    WITH RECURSIVE tag_tree(id) AS (
+      SELECT id FROM "Tags" WHERE id IN (${baseList})
+      UNION ALL
+      SELECT c.id
+      FROM "Tags" c
+      JOIN tag_tree t ON c."parentId" = t.id
+    )`
+        tagSource = `(SELECT id FROM tag_tree)`
+    }
+
+    // 2) Build the pivot‐table predicates:
+    //    - B = tag.id in our set
+    //    - if includeTaggedTags: A = tag.id in our set
+    const predicates = [`"_MediaToTags"."B" IN ${tagSource}`]
+    if (includeTaggedTags) {
+        // Use subquery to find tags that are tagged with our target tags
+        predicates.push(`"_MediaToTags"."B" IN (
+            SELECT "_TagToTag"."A"
+            FROM "_TagToTag"
+            WHERE "_TagToTag"."B" IN (${baseList})
+        )`)
+    }
+    const pivotWhere = predicates.join(" OR ")
+
+    // 3) Return components separately
+    return {
+        cte: cte,
+        whereClause: /*sql*/ `
+    AND "Media"."id" IN (
+      SELECT "_MediaToTags"."A"
+      FROM "_MediaToTags"
+      WHERE ${pivotWhere}
+    )
+    `
+    }
+}
+
+// Keep this for backward compatibility
+const assembleTagsFilter = (
+    tags: number[],
+    traverse: boolean,
+    includeTaggedTags: boolean
+): string => {
+    const parts = generateTagsFilterParts(tags, traverse, includeTaggedTags)
+    return parts.cte + parts.whereClause
 }
 
 const assembleFavouritesOnlyFilter = (favouritesOnly: boolean) => {

@@ -5,6 +5,7 @@
     import Icon from "$components/elements/Icon.svelte"
     import Table from "$components/elements/Table.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
+    import TagChip from "$components/Tags/TagChip.svelte"
     import query from "$lib/client/call.js"
     import { prompts } from "$lib/controllers/PromptController.js"
 
@@ -20,13 +21,14 @@
             "Icons",
             "Tag",
             "Description",
+            "Tags",
             "Media count",
             "Clusters"
         ]}
         data={data.tags}
     >
         {#snippet children({ entry })}
-            <td>
+            <td id={entry.id}>
                 {entry.id}
             </td>
             <td align="center">
@@ -113,6 +115,31 @@
                                         entry.icon = previousDescription
                                     })
                                     .then(() => invalidateAll())
+                            }
+                        }}
+                    />
+                </div>
+            </td>
+            <td>
+                <span>
+                    {data.tagToTagMappings
+                        .filter(t => t.id == entry.id)
+                        .flatMap(t => t.tagged.map(tg => tg.tag))
+                        .join(", ")}
+                </span>
+                <div class="floating">
+                    <Button
+                        icon="mdiPlus"
+                        onclick={async () => {
+                            const tagToReference = await prompts.tag(
+                                "Select tag to reference"
+                            )
+                            if (tagToReference) {
+                                await query("createTagToTagReference", {
+                                    tagId: entry.id,
+                                    tagToReferenceId: tagToReference.id
+                                })
+                                invalidateAll()
                             }
                         }}
                     />

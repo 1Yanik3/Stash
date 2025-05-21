@@ -1,16 +1,14 @@
 <script lang="ts">
-    import { mdiTag } from "@mdi/js"
-
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
     import TagInputField from "$components/Tags/TagInputField.svelte"
     import { addTagToMedia } from "$lib/client/actions/addTagToMedia.svelte"
+    import { renameMediaName } from "$lib/client/actions/mediaActions.svelte"
     import { removeTagFromMedia } from "$lib/client/actions/removeTagFromMedia.svelte"
     import query from "$lib/client/call"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import { prompts } from "$lib/controllers/PromptController"
     import TagsControllerSvelte from "$lib/controllers/TagsController.svelte"
     import { controller } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
@@ -32,21 +30,6 @@
             ":" +
             pad(date.getSeconds())
         )
-    }
-
-    const rename = async (
-        suggestedName = mediaController.visibleMedium?.name
-    ) => {
-        if (!mediaController.visibleMedium) return
-
-        const newName = await prompts.text("Enter new name", suggestedName)
-        if (newName) {
-            mediaController.visibleMedium.name = newName
-            await query("renameNameOfMedia", {
-                mediaId: mediaController.visibleMedium.id,
-                newName
-            })
-        }
     }
 </script>
 
@@ -87,7 +70,10 @@
                                 return
                             }
 
-                            rename(await request.text())
+                            renameMediaName(
+                                mediaController.visibleMedium,
+                                await request.text()
+                            )
                         }}
                     />
                 {/if}
@@ -96,7 +82,7 @@
                     noMargin
                     onclick={() => {
                         if (!mediaController.visibleMedium) return
-                        rename(mediaController.visibleMedium.name)
+                        renameMediaName(mediaController.visibleMedium)
                     }}
                 />
             </div>

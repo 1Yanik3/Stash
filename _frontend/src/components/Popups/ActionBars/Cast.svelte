@@ -278,7 +278,6 @@
             }
 
             @media (hover: hover) and (pointer: fine) {
-
                 &:not(.disabled):hover {
                     border: 1px solid var(--border-color-1-hover);
                     background: var(--border-color-1);

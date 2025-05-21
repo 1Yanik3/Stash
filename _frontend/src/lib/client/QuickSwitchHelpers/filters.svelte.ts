@@ -200,6 +200,30 @@ const gatherAllFilters = async () =>
                 refreshFilters()
             }
         },
+        {
+            icon: mediaController.filters.traverse
+                ? "mdiGraph"
+                : "mdiGraphOutline",
+            label: "@traverse",
+            action: mediaController.filters.traverse ? "ON" : "OFF",
+            onEnter: () => {
+                mediaController.filters.traverse =
+                    !mediaController.filters.traverse
+                refreshFilters()
+            }
+        },
+        {
+            icon: mediaController.filters.includeTaggedTags
+                ? "mdiTagMultiple"
+                : "mdiTag",
+            label: "@includeTaggedTags",
+            action: mediaController.filters.includeTaggedTags ? "ON" : "OFF",
+            onEnter: () => {
+                mediaController.filters.includeTaggedTags =
+                    !mediaController.filters.includeTaggedTags
+                refreshFilters()
+            }
+        },
         ...sortingMethods.map((s, i) => ({
             icon: s.icon,
             label: `@sort/${s.title}`,

@@ -55,8 +55,16 @@ export const load = (async ({ cookies }) => {
         {} as Record<number, number[]>
     )
 
+    const tagToTagMappings = await prisma.tags.findMany({
+        select: {
+            id: true,
+            tagged: true
+        }
+    })
+
     return {
         tags,
-        tagClusterMappings
+        tagClusterMappings,
+        tagToTagMappings
     }
 }) satisfies PageServerLoad

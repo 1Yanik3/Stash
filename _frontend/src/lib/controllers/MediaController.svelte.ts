@@ -5,7 +5,7 @@ import { get } from "svelte/store"
 
 import { page } from "$app/stores"
 import query from "$lib/client/call"
-import { mediaTypeFilter, PAGE_SIZE, traverse } from "$lib/stores.svelte"
+import { mediaTypeFilter, PAGE_SIZE } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
 
 import type { TagExtended } from "./TagsController.svelte"
@@ -35,7 +35,6 @@ class MediaController {
             this.updateMedia(vars.clusterName)
         })
 
-        traverse.subscribe(() => this.updateMedia)
         mediaTypeFilter.subscribe(() => this.updateMedia)
 
         this.alreadyInitialized = true
@@ -53,7 +52,9 @@ class MediaController {
         activeSortingMethod: 3,
         seed: Math.random(),
         minResolution: null as number | null,
-        mediaType: "all" as "all" | "image" | "video"
+        mediaType: "all" as "all" | "image" | "video",
+        traverse: false,
+        includeTaggedTags: false
     })
     private _filtersOverrides: typeof this.filters | null = null
 

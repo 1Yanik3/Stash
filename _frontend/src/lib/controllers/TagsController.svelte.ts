@@ -52,12 +52,8 @@ export class TagsController {
     }
 
     public updateTags = async () => {
-        if (!vars.clusterName) {
-            return {}
-        }
-
         const data: TagBase[] = await query("tags_query_from_database", {
-            cluster: vars.clusterName,
+            cluster: vars.clusterName || null,
             favouritesOnly: mediaController.filters.favouritesOnly,
             mediaTypeFilter: get(mediaTypeFilter)
         })

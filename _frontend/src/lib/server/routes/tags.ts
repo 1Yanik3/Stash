@@ -163,3 +163,20 @@ export const TagDelete = async (d: { tagId: number }) => {
         }
     })
 }
+
+export const createTagToTagReference = async (d: {
+    tagId: number
+    tagToReferenceId: number
+}) =>
+    await prisma.tags.update({
+        where: {
+            id: d.tagId
+        },
+        data: {
+            tagged: {
+                connect: {
+                    id: d.tagToReferenceId
+                }
+            }
+        }
+    })

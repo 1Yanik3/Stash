@@ -1,5 +1,6 @@
 <script lang="ts">
     import FuzzySearch from "fuzzy-search"
+    import { onMount } from "svelte"
 
     import Icon from "$components/elements/Icon.svelte"
     import { isMobile } from "$lib/context"
@@ -18,10 +19,17 @@
         inputElement.focus()
     }
 
+    onMount(() => {
+        if (focusOnMount) {
+            inputElement.focus()
+        }
+    })
+
     let {
         alwaysExpanded = false,
         height = 25,
-        onselected = (() => {}) as (tag: TagExtended) => void
+        onselected = (() => {}) as (tag: TagExtended) => void,
+        focusOnMount = false
     } = $props()
 
     const handleKeyDown = (e: KeyboardEvent) => {

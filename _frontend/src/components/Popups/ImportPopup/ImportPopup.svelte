@@ -221,7 +221,6 @@
         }
 
         .sidebar-queue-entries {
-
             .sidebar-queue-entry {
                 display: flex;
                 align-items: center;

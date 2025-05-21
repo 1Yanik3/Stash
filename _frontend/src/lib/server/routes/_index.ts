@@ -1,5 +1,6 @@
 import * as credentials from "./credentials"
 import * as gks from "./gks"
+import * as groups from "./groups"
 import * as jobs from "./jobs"
 import * as media from "./media"
 import * as mediaQuery from "./media-query"
@@ -15,5 +16,6 @@ export default {
     ...stories,
     ...jobs,
     ...credentials,
-    ...transmission
+    ...transmission,
+    ...groups
 }

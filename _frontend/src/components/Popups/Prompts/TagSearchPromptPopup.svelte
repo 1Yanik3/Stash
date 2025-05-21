@@ -19,6 +19,6 @@
     <label>
         <span>{question}:</span>
 
-        <TagInputField onselected={onresult} />
+        <TagInputField focusOnMount onselected={onresult} />
     </label>
 </PromptFramework>

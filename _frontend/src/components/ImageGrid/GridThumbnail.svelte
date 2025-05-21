@@ -140,6 +140,7 @@
     style={`position: relative; border-radius: 3px; overflow: hidden`}
 >
     {#snippet children({ intersecting })}
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
             ondragstart={dragStartHandler}
             bind:this={element}
@@ -187,15 +188,15 @@
                         crossorigin="use-credentials"
                         preload="auto"
                         style="
-                position: absolute;
-                z-index: 100;
-                top: 0; left: 0;
+                            position: absolute;
+                            z-index: 100;
+                            top: 0; left: 0;
 
-                width: 100%;
-                height: 100%;
+                            width: 100%;
+                            height: 100%;
 
-                object-fit: cover;
-            "
+                            object-fit: cover;
+                        "
                     >
                         <track kind="captions" />
                     </video>
@@ -259,7 +260,6 @@
 
     div:not(.selected) {
         @media (hover: hover) and (pointer: fine) {
-
             img:not(.disableZoom):hover {
                 transform: scale(1.04);
                 filter: brightness(0.85);

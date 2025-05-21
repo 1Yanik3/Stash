@@ -29,7 +29,6 @@ export let selectedMediaIds: Writable<string[]> = writable([])
 
 // Media Filters
 export let mediaTypeFilter: Writable<"video" | "image" | ""> = writable("")
-export let traverse = writable(false)
 
 // Elements
 export let videoElement: Writable<HTMLVideoElement | null> = writable(null)

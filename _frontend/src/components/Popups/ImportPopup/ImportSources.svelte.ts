@@ -12,6 +12,7 @@ export abstract class ImportSource {
     abstract icon: keyof typeof possibleIcons
 
     protected abstract import(p: importParams): Promise<void>
+    protected cleanup?(): Promise<void>
 
     filename: string
     size: number
@@ -92,7 +93,7 @@ export class ImportablesImportSource extends ImportSource {
 
     async import(p: importParams): Promise<void> {
         await fetch(
-            `https://stash.hera.lan/api/cluster/${page.data.cluster.id}/import`,
+            `https://stash.hera.lan/api/cluster/${page.data.cluster.name}/import`,
             {
                 method: "POST",
                 body: JSON.stringify({
