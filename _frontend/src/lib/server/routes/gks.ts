@@ -99,7 +99,7 @@ const gd_fetch = async (parsedURL: URL) => {
     let chapterLinks = html
         .querySelectorAll("nav#chapter-nav li a")
         .map(e => e.getAttribute("href"))
-    if (!chapterLinks.length) chapterLinks=[parsedURL.toString()]
+    if (!chapterLinks.length) chapterLinks = [parsedURL.toString()]
 
     const turndownService = new TurndownService()
     const chapterContents: string[] = []

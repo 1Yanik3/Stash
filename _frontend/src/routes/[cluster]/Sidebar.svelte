@@ -16,7 +16,7 @@
 <main
     class:mobile={isMobile.current}
     class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
-    class:hidden={varsSvelte.layout.showSidebar}
+    class:hidden={varsSvelte.layout.hideSidebar}
 >
     <div class="header">
         <Select

@@ -12,7 +12,7 @@
     let pageData = $page.data as PageData
 
     $effect(() => {
-        varsSvelte.layout.showSidebar = storyPromise != null
+        varsSvelte.layout.hideSidebar = storyPromise != null
     })
 
     let story: Awaited<typeof pageData.streamed.stories>[number] | null =
@@ -88,12 +88,13 @@
     @import url("https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap");
 
     .content {
+        max-width: 55em;
         margin: auto;
-        max-width: 60em;
 
         font-family: Noto Serif;
         font-family: "Literata", serif;
         font-size: 1rem;
+        text-align: justify;
 
         .content-body {
             width: 100%;
@@ -104,6 +105,18 @@
         :global(h5),
         :global(h6) {
             font-weight: 500;
+        }
+
+        :global(p),
+        :global(h2),
+        :global(h3),
+        :global(h4),
+        :global(h5),
+        :global(h6) {
+            padding: 0 0.65rem;
+            border-right: 3px solid transparent;
+            border-left: 3px solid transparent;
+            transition: border 350ms;
         }
 
         .header {
@@ -128,7 +141,15 @@
 
         :global(p) {
             font-weight: 400;
-            opacity: 0.95;
+            letter-spacing: 0.3px;
+
+            &:hover {
+                border-left: 3px solid #ccc;
+            }
+        }
+
+        :global(hr) {
+            margin: 1.5em 0;
         }
     }
 
