@@ -1,9 +1,8 @@
-import type { Media } from "@prisma/client"
-
 import type { MediaType } from "./controllers/MediaController.svelte"
 
 class Layout {
     isElectron = $state(false) as false | true | "fullscreen"
+    showSidebar = $state(true)
 }
 
 class Vars {
@@ -14,10 +13,7 @@ class Vars {
     } | null = $state(null)
 
     // ========== State for reader ==========
-    public chaptersOfStory: {
-        name: string
-        content: string
-    }[] = $state([])
+    public chaptersOfStory: string[] = $state([])
     public selectedChapterIndex: number = $state(0)
 
     // ========== Global states =========

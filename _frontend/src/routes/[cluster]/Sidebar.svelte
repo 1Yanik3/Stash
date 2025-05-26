@@ -1,32 +1,29 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Select from "$components/elements/Select.svelte"
     import { isMobile, presentationMode } from "$lib/context"
-    import {
-        controller,
-        settings,
-        windowControlsSpacerVisible
-    } from "$lib/stores.svelte"
+    import { controller, windowControlsSpacerVisible } from "$lib/stores.svelte"
     import varsSvelte from "$lib/vars.svelte"
 
     import type { PageData } from "./$types"
     import SidebarTagsSection from "./SidebarTagsSection.svelte"
 
-    let pageData = $derived($page.data as PageData)
+    let pageData = $derived(page.data as PageData)
 </script>
 
 <main
     class:mobile={isMobile.current}
     class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
+    class:hidden={varsSvelte.layout.showSidebar}
 >
     <div class="header">
         <Select
             onchange={name => {
                 goto(`/${name}`)
             }}
-            value={$page.data.cluster.name}
+            value={page.data.cluster.name}
             options={pageData.clusters.map(c => ({
                 value: c.name,
                 name: presentationMode.current ? "Lorem Ipsum" : c.name,
@@ -42,39 +39,14 @@
                 e.preventDefault()
                 $controller.setPopup("Quick Switch")
             }}
-            active={$page.url.pathname.startsWith("/settings")}
+            active={page.url.pathname.startsWith("/settings")}
             noMargin
             styleOverride="margin-left: 1rem"
         />
     </div>
-    {#if $page.data.cluster.type == "stories"}
-        {#if varsSvelte.chaptersOfStory.length}
-            <Button
-                card
-                icon="mdiArrowLeft"
-                onclick={() => {
-                    varsSvelte.selectedChapterIndex = 0
-                    varsSvelte.chaptersOfStory = []
-                    window.history.pushState({ storyOpen: false }, "")
-                }}
-            >
-                Go back
-            </Button>
-        {/if}
-        {#each varsSvelte.chaptersOfStory as { name }, i}
-            <Button
-                onclick={() => {
-                    varsSvelte.selectedChapterIndex = i
-                }}
-            >
-                {name}
-            </Button>
-        {/each}
-    {:else}
-        <section>
-            <SidebarTagsSection />
-        </section>
-    {/if}
+    <section>
+        <SidebarTagsSection />
+    </section>
 </main>
 
 <style lang="scss">
@@ -91,6 +63,10 @@
         background: var(--color-dark-level-1);
 
         -webkit-app-region: drag;
+
+        &.hidden {
+            display: none;
+        }
 
         section {
             flex-grow: 1;
